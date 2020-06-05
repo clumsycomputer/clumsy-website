@@ -1,0 +1,12 @@
+body {
+  margin: 0;
+  font-family: monospace;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.rootContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}

@@ -1,0 +1,55 @@
+.contentContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding-top: 12px;
+}
+
+.textContainer {
+  padding-left: 12px;
+  padding-top: 4px;
+}
+
+.columnListContainer {
+  padding-left: 12px;
+  padding-top: 4px;
+}
+
+.columnListItemContainer {
+  display: flex;
+  flex-direction: row;
+  padding-bottom: 4px;
+}
+
+.columnListItem {
+  padding-left: 8px;
+}
+
+.wrapListContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  padding-left: 12px;
+}
+
+.wrapListItemContainer {
+  display: flex;
+  flex-direction: row;
+}
+
+.wrapListItem {
+  padding-right: 12px;
+  padding-top: 4px;
+}
+
+.contentTitle {
+  font-weight: 700;
+}
+
+.contentTitleLine {
+  background-color: black;
+  width: 100%;
+  height: 1px;
+  margin-left: 8px;
+}

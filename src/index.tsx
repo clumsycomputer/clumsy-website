@@ -43,9 +43,9 @@ ReactDOM.render(
             product:
               'datasplice is an offline-first, mobile-first, web-app that empowers enterprise to organize, navigate, and manipulate their data regardless of location',
             responsibilities: [
-              'listen|collaborate with teammates in client feature requests',
+              'listen|collaborate with teammates for client feature requests',
               'identify|describe|patch bugs',
-              'maintain|integrate bluetooth hardware with cordova ios extension',
+              'maintain|integrate bluetooth hardware for cordova ios extension',
               'maintain|design|implement shared react components library',
               'begin refactor of core app functionality towards improved readability and testability',
             ],

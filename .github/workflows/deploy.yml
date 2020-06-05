@@ -1,0 +1,21 @@
+name: deploy
+on:
+  push:
+    branches: [feat/basic-resume]
+jobs:
+  buildAndDeploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+      - uses: fregante/setup-git-token@v1
+        with:
+          token: ${{ secrets.REPO_ACCESS }}
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '12'
+      - run: yarn install
+      - run: yarn build
+      - run: yarn add -D gh-pages
+      - run: yarn gh-pages --branch master -d build

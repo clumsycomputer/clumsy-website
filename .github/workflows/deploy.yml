@@ -1,7 +1,7 @@
 name: deployWebsite
 on:
   push:
-    branches: [feat/basic-resume]
+    branches: [production]
 jobs:
   buildAndDeploy:
     runs-on: ubuntu-latest

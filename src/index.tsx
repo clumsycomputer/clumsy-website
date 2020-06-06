@@ -18,7 +18,7 @@ ReactDOM.render(
             dateRange: '2020.04 <= 2019.05',
             jobTitle: 'software engineer',
             product:
-              'a b2b marketplace/network that helps licensed businesses in the cannabis industry manage and transact their regulated inventory',
+              'a b2b marketplace/network that helps licensed businesses in the cannabis industry manage|transact regulated inventory',
             responsibilities: [
               'collaborate with teammates towards monthly milestones',
               'identify|describe|patch bugs',
@@ -41,7 +41,7 @@ ReactDOM.render(
             dateRange: '2018.05 <= 2016.05',
             jobTitle: 'software engineer',
             product:
-              'an offline-first mobile-first web app that helps enterprise organize, navigate, and manipulate their data regardless of location',
+              'an offline-first/mobile-first web app that helps enterprise organize|navigate|manipulate data regardless of location',
             responsibilities: [
               'collaborate with teammates towards serving clients',
               'identify|describe|patch bugs',

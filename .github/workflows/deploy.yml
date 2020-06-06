@@ -1,4 +1,4 @@
-name: deploy
+name: deployWebsite
 on:
   push:
     branches: [feat/basic-resume]

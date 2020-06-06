@@ -18,7 +18,7 @@ ReactDOM.render(
             dateRange: '2020.04 <= 2019.05',
             jobTitle: 'software engineer',
             product:
-              'confident cannabis wholesale is a b2b marketplace/network that facilitates licensed businesses in the cannabis industry to manage and transact their regulated inventory',
+              'confident cannabis wholesale is a b2b marketplace/network that helps licensed businesses in the cannabis industry, manage and transact their regulated inventory',
             responsibilities: [
               'listen|collaborate with teammates in monthly milestones',
               'identify|describe|patch bugs',

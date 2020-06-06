@@ -18,9 +18,9 @@ ReactDOM.render(
             dateRange: '2020.04 <= 2019.05',
             jobTitle: 'software engineer',
             product:
-              'confident cannabis wholesale is a b2b marketplace/network that helps licensed businesses in the cannabis industry, manage and transact their regulated inventory',
+              'a b2b marketplace/network that helps licensed businesses in the cannabis industry manage and transact their regulated inventory',
             responsibilities: [
-              'listen|collaborate with teammates in monthly milestones',
+              'collaborate with teammates towards monthly milestones',
               'identify|describe|patch bugs',
               'maintain|design|implement react form/input components',
               'maintain|design|implement react hooks',
@@ -41,13 +41,13 @@ ReactDOM.render(
             dateRange: '2018.05 <= 2016.05',
             jobTitle: 'software engineer',
             product:
-              'datasplice is an offline-first, mobile-first, web-app that empowers enterprise to organize, navigate, and manipulate their data regardless of location',
+              'an offline-first mobile-first web app that helps enterprise organize, navigate, and manipulate their data regardless of location',
             responsibilities: [
-              'listen|collaborate with teammates for client feature requests',
+              'collaborate with teammates towards serving clients',
               'identify|describe|patch bugs',
               'maintain|integrate bluetooth hardware for cordova ios extension',
               'maintain|design|implement shared react components library',
-              'begin refactor of core app functionality towards improved readability and testability',
+              'begin refactor of core app functionality towards improved readability/testability',
             ],
             toolbelt: [
               'git',

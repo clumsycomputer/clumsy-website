@@ -17,5 +17,7 @@ jobs:
           node-version: '12'
       - run: yarn install
       - run: yarn build
+      - run: yarn add -D puppeteer serve-handler
+      - run: node scripts/generatePdf.js
       - run: yarn add -D gh-pages
       - run: yarn gh-pages --branch master -d build

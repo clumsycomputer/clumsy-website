@@ -62,6 +62,23 @@ ReactDOM.render(
             ],
           },
         ]}
+        education={[
+          {
+            schoolName: 'galvanize',
+            programName: 'fullstack web development',
+            dateRange: '2016.04 <= 2015.10',
+            programDescription:
+              'an immersive six-month bootcamp that covered technologies/patterns/best-practices applied in industry',
+            toolbelt: [
+              'javascript',
+              'nodejs',
+              'git',
+              'css',
+              'express',
+              'postgresql',
+            ],
+          },
+        ]}
       />
     </div>
   </React.StrictMode>,

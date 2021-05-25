@@ -47,7 +47,7 @@ function Resume() {
             'revive an abandoned and brittle nextjs codebase',
             'stabilize repository via typescript, more comprehensive e2e test, simpler environment/dependency management, and a modernized palette of development scripts for a streamlined workflow',
             'migrate from shopify api to dutchie plus api for a smoother cannabis shopping experience',
-            'resolve outstanding wcag 2.1 level aa and ada title iii accessiblity lawsuit',
+            'resolve outstanding wcag 2.1 level aa and ada title iii accessibility lawsuit',
           ]}
           techStack={[
             'nextjs',

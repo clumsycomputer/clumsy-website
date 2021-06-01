@@ -53,6 +53,7 @@ function Resume() {
             'nextjs',
             'react',
             'typescript',
+            'graphql',
             'nodejs',
             'cypress',
             'firebase',

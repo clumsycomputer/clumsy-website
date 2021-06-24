@@ -2,6 +2,7 @@ import FileSystem from 'fs/promises'
 import Path from 'path'
 import { generatePageHtml, GeneratePageHtmlApi } from './generatePageHtml'
 import Playwright from 'playwright'
+import { renderPagePdfToBuffer } from '../../helpers/renderPagePdfToBuffer'
 
 export interface GeneratePagePdfApi extends GeneratePageHtmlApi {
   absolutePathPdfDirectory: string
@@ -27,23 +28,15 @@ export async function generatePagePdf(api: GeneratePagePdfApi) {
     htmlDescription,
     jssTheme,
   })
-  const playwrightBrowser = await Playwright.chromium.launch()
-  const playwrightContext = await playwrightBrowser.newContext()
-  const playwrightPage = await playwrightContext.newPage()
-  const htmlPageContent = await FileSystem.readFile(
+  const pageHtmlString = await FileSystem.readFile(
     absolutePathHtmlFile,
     'utf-8'
   )
-  await playwrightPage.setContent(htmlPageContent)
-  const bodyHandle = await playwrightPage.$('body')
-  if (!bodyHandle) throw new Error('wtf?')
-  const bodyBoundingBox = await bodyHandle.boundingBox()
-  if (!bodyBoundingBox) throw new Error('wtf?')
-  await playwrightPage.pdf({
-    path: Path.join(absolutePathPdfDirectory, `${pdfFileName}.pdf`),
-    printBackground: true,
-    height: bodyBoundingBox.height + 1,
-    width: 832,
+  const pagePdfBuffer = await renderPagePdfToBuffer({
+    pageHtmlString,
   })
-  await playwrightBrowser.close()
+  await FileSystem.writeFile(
+    Path.join(absolutePathPdfDirectory, `${pdfFileName}.pdf`),
+    pagePdfBuffer
+  )
 }

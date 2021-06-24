@@ -6,6 +6,7 @@ import { getPageHtmlStringWithInlineStyles } from '../helpers/getPageHtmlStringW
 import { importLocalModule } from '../helpers/importLocalModule'
 import { JssThemeModule, JssThemeModuleCodec } from '../helpers/JssThemeModule'
 import { PageModule, PageModuleCodec } from '../helpers/PageModule'
+import { renderPagePdfToBuffer } from '../helpers/renderPagePdfToBuffer'
 
 const absolutePathCurrentWorkingDirectory = process.cwd()
 Dotenv.config({
@@ -42,6 +43,11 @@ async function main() {
     result[someAdjustedPageModule.pageRoute] = {
       pageModulePath: someAdjustedPageModule.pageModulePath,
     }
+    if (someAdjustedPageModule.generatePdf) {
+      result[`/${someAdjustedPageModule.pdfFileName}.pdf`] = {
+        pageModulePath: someAdjustedPageModule.pageModulePath,
+      }
+    }
     return result
   }, {})
   const jssThemeModule = await importLocalModule<JssThemeModule>({
@@ -75,15 +81,33 @@ async function main() {
           })
           const { PageContent, htmlTitle, htmlDescription } =
             targetPageModule.default
-          const pageHtmlString = getPageHtmlStringWithInlineStyles({
-            PageContent,
-            htmlTitle,
-            htmlDescription,
-            jssTheme: jssThemeModule.default,
-          })
-          requestResponse.statusCode = 200
-          requestResponse.setHeader('Content-Type', 'text/html')
-          requestResponse.end(pageHtmlString)
+          if (requestRoute.endsWith('.pdf')) {
+            const pageHtmlString = getPageHtmlStringWithInlineStyles({
+              PageContent,
+              htmlTitle,
+              htmlDescription,
+              jssTheme: {
+                ...jssThemeModule.default,
+                pdfMode: true,
+              },
+            })
+            const pagePdfBuffer = await renderPagePdfToBuffer({
+              pageHtmlString,
+            })
+            requestResponse.statusCode = 200
+            requestResponse.setHeader('Content-Type', 'application/pdf')
+            requestResponse.end(pagePdfBuffer)
+          } else {
+            const pageHtmlString = getPageHtmlStringWithInlineStyles({
+              PageContent,
+              htmlTitle,
+              htmlDescription,
+              jssTheme: jssThemeModule.default,
+            })
+            requestResponse.statusCode = 200
+            requestResponse.setHeader('Content-Type', 'text/html')
+            requestResponse.end(pageHtmlString)
+          }
         }
       }
     }

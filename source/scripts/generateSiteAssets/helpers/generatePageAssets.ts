@@ -1,9 +1,9 @@
 import Path from 'path'
-import { decodeData } from './decodeData'
+import { importLocalModule } from '../../helpers/importLocalModule'
+import { PageModule, PageModuleCodec } from '../../helpers/PageModule'
 import { generatePageHtml } from './generatePageHtml'
 import { generatePagePdf } from './generatePagePdf'
 import { GenerateSiteAssetsApi } from './generateSiteAssets'
-import { PageModule, PageModuleCodec } from './PageModule'
 
 export interface GeneratePageAssetsApi
   extends Pick<GenerateSiteAssetsApi, 'absolutePathCurrentWorkingDirectory'> {
@@ -21,14 +21,10 @@ export async function generatePageAssets(api: GeneratePageAssetsApi) {
     jssTheme,
     absolutePathTempPdfHtmlDirectory,
   } = api
-  const absolutePathPageModule = Path.resolve(
+  const pageModule = await importLocalModule<PageModule>({
     absolutePathCurrentWorkingDirectory,
-    pageModulePath
-  )
-  const pageModuleImport: unknown = await import(absolutePathPageModule)
-  const pageModule = await decodeData<PageModule>({
-    inputData: pageModuleImport,
     targetCodec: PageModuleCodec,
+    localModulePath: pageModulePath,
   })
   const {
     pageRoute,

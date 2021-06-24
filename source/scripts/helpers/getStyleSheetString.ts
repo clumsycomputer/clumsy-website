@@ -11,13 +11,8 @@ export interface GetStyleSheetStringApi
   > {}
 
 export function getStyleSheetString(api: GetStyleSheetStringApi) {
-  const {
-    PageContent,
-    htmlTitle,
-    htmlDescription,
-    jssTheme,
-    sheetsRegistry,
-  } = api
+  const { PageContent, htmlTitle, htmlDescription, jssTheme, sheetsRegistry } =
+    api
   getHtmlFileString({
     PageContent,
     htmlTitle,

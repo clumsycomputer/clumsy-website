@@ -1,15 +1,20 @@
 import ChildProcess from 'child_process'
 import FileSystem from 'fs/promises'
-import Path from 'path'
 import Glob from 'glob'
+import Path from 'path'
+import { importLocalModule } from '../../helpers/importLocalModule'
+import {
+  JssThemeModule,
+  JssThemeModuleCodec,
+} from '../../helpers/JssThemeModule'
+import { LocalScript } from '../../helpers/LocalScript'
 import { generatePageAssets } from './generatePageAssets'
 
-export interface GenerateSiteAssetsApi {
+export interface GenerateSiteAssetsApi extends LocalScript {
   globPagesModule: string
   pathJssThemeModule: string
   pathOutputDirectory: string
   pathAssetsDirectory: string
-  absolutePathCurrentWorkingDirectory: string
 }
 
 export async function generateSiteAssets(api: GenerateSiteAssetsApi) {
@@ -37,10 +42,6 @@ export async function generateSiteAssets(api: GenerateSiteAssetsApi) {
   ChildProcess.execSync(
     `cp ${absoluteGlobAssets} ${absolutePathOutputDirectory}`
   )
-  const absolutePathJssThemeModule = Path.resolve(
-    absolutePathCurrentWorkingDirectory,
-    pathJssThemeModule
-  )
   const absolutePathTempPdfHtmlDirectory = Path.resolve(
     absolutePathCurrentWorkingDirectory,
     'tempPdfHtml'
@@ -50,7 +51,11 @@ export async function generateSiteAssets(api: GenerateSiteAssetsApi) {
     force: true,
   })
   await FileSystem.mkdir(absolutePathTempPdfHtmlDirectory)
-  const JssThemeModule = await import(absolutePathJssThemeModule)
+  const jssThemeModule = await importLocalModule<JssThemeModule>({
+    absolutePathCurrentWorkingDirectory,
+    targetCodec: JssThemeModuleCodec,
+    localModulePath: pathJssThemeModule,
+  })
   const pageModulesPaths = Glob.sync(globPagesModule)
   await Promise.all(
     pageModulesPaths.map((somePageModulePath) =>
@@ -58,7 +63,7 @@ export async function generateSiteAssets(api: GenerateSiteAssetsApi) {
         absolutePathCurrentWorkingDirectory,
         absolutePathOutputDirectory,
         absolutePathTempPdfHtmlDirectory,
-        jssTheme: JssThemeModule.default,
+        jssTheme: jssThemeModule.default,
         pageModulePath: somePageModulePath,
       })
     )

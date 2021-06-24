@@ -1,15 +1,13 @@
 import FileSystem from 'fs/promises'
 import Path from 'path'
-import { SheetsRegistry } from 'react-jss'
+import { getPageHtmlStringWithInlineStyles } from '../../helpers/getPageHtmlStringWithInlineStyles'
+import { PageModule } from '../../helpers/PageModule'
 import { GeneratePageAssetsApi } from './generatePageAssets'
-import { getHtmlFileString } from './getHtmlFileString'
-import { getStyleSheetString } from './getStyleSheetString'
-import { PageModuleExports } from './PageModule'
 
 export interface GeneratePageHtmlApi
   extends Pick<GeneratePageAssetsApi, 'jssTheme'>,
     Pick<
-      PageModuleExports,
+      PageModule['default'],
       'pageRoute' | 'PageContent' | 'htmlTitle' | 'htmlDescription'
     > {
   absolutePathHtmlFile: string
@@ -23,21 +21,11 @@ export async function generatePageHtml(api: GeneratePageHtmlApi) {
     jssTheme,
     absolutePathHtmlFile,
   } = api
-  const sheetsRegistry = new SheetsRegistry()
-  const styleSheetString = getStyleSheetString({
+  const pageHtmlFileString = getPageHtmlStringWithInlineStyles({
     PageContent,
     htmlTitle,
     htmlDescription,
     jssTheme,
-    sheetsRegistry,
-  })
-  const htmlFileString = getHtmlFileString({
-    PageContent,
-    htmlTitle,
-    htmlDescription,
-    jssTheme,
-    sheetsRegistry,
-    styleSheetString,
   })
   const absolutePathHtmlRouteDirectory = Path.dirname(absolutePathHtmlFile)
   await FileSystem.mkdir(absolutePathHtmlRouteDirectory, {
@@ -45,7 +33,7 @@ export async function generatePageHtml(api: GeneratePageHtmlApi) {
   })
   await FileSystem.writeFile(
     absolutePathHtmlFile,
-    `<!DOCTYPE html>${htmlFileString}`,
+    `<!DOCTYPE html>${pageHtmlFileString}`,
     {
       encoding: 'utf-8',
     }

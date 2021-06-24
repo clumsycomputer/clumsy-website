@@ -19,14 +19,13 @@
     "glob": "^7.1.7",
     "http-server": "^0.12.3",
     "io-ts": "^2.2.16",
-    "open": "^8.2.1",
     "playwright": "^1.11.0",
     "react-dom": "^17.0.2",
     "ts-node": "^9.1.1"
   },
   "scripts": {
     "develop": "ts-node ./source/scripts/startDevelopment/main.ts",
-    "build": "ts-node ./source/scripts/generateSiteAssets/main.tsx",
+    "build": "ts-node ./source/scripts/generateSiteAssets/main.ts",
     "deploy": "firebase deploy --token $FIREBASE_TOKEN",
     "serve": "http-server -c-1 -p 8080 ./public"
   }

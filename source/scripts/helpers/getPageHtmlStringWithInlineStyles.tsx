@@ -15,21 +15,18 @@ export interface GetPageHtmlStringWithInlineStylesApi
 export function getPageHtmlStringWithInlineStyles(
   api: GetPageHtmlStringWithInlineStylesApi
 ) {
-  const { htmlDescription, htmlTitle, jssTheme, PageContent } = api
+  const { jssTheme, PageContent, htmlDescription, htmlTitle } = api
   const sheetsRegistry = new SheetsRegistry()
-  const styleSheetString = getStyleSheetString({
-    PageContent,
-    htmlTitle,
-    htmlDescription,
-    jssTheme,
-    sheetsRegistry,
-  })
+  const { pageBodyInnerHtmlString, styleSheetString } =
+    getPageBodyInnerHtmlStringAndStyleSheetString({
+      jssTheme,
+      PageContent,
+      sheetsRegistry,
+    })
   const pageHtmlWithInlineStylesString = getPageHtmlString({
-    PageContent,
     htmlTitle,
     htmlDescription,
-    jssTheme,
-    sheetsRegistry,
+    pageBodyInnerHtmlString,
     styleSheetString,
   })
   return pageHtmlWithInlineStylesString
@@ -37,21 +34,20 @@ export function getPageHtmlStringWithInlineStyles(
 
 interface GetPageHtmlStringApi
   extends Pick<
-    GetPageHtmlStringWithInlineStylesApi,
-    'jssTheme' | 'PageContent' | 'htmlTitle' | 'htmlDescription'
-  > {
-  sheetsRegistry: SheetsRegistry
-  styleSheetString: ReturnType<typeof getStyleSheetString> | null
-}
+      GetPageHtmlStringWithInlineStylesApi,
+      'htmlTitle' | 'htmlDescription'
+    >,
+    Pick<
+      ReturnType<typeof getPageBodyInnerHtmlStringAndStyleSheetString>,
+      'styleSheetString' | 'pageBodyInnerHtmlString'
+    > {}
 
 function getPageHtmlString(api: GetPageHtmlStringApi) {
   const {
     htmlDescription,
     htmlTitle,
-    jssTheme,
-    PageContent,
-    sheetsRegistry,
     styleSheetString,
+    pageBodyInnerHtmlString,
   } = api
   return ReactDomServer.renderToStaticMarkup(
     <html lang={'en'}>
@@ -65,34 +61,37 @@ function getPageHtmlString(api: GetPageHtmlStringApi) {
         <title>{htmlTitle}</title>
         <style>{styleSheetString}</style>
       </head>
-      <body>
-        <JssProvider registry={sheetsRegistry}>
-          <ThemeProvider theme={jssTheme}>
-            <PageContent />
-          </ThemeProvider>
-        </JssProvider>
-      </body>
+      <body
+        dangerouslySetInnerHTML={{
+          __html: pageBodyInnerHtmlString,
+        }}
+      />
     </html>
   )
 }
 
-interface GetStyleSheetStringApi
+interface GetPageBodyHtmlStringApi
   extends Pick<
-      GetPageHtmlStringWithInlineStylesApi,
-      'PageContent' | 'htmlTitle' | 'htmlDescription' | 'jssTheme'
-    >,
-    Pick<GetPageHtmlStringApi, 'sheetsRegistry'> {}
+    GetPageHtmlStringWithInlineStylesApi,
+    'jssTheme' | 'PageContent'
+  > {
+  sheetsRegistry: SheetsRegistry
+}
 
-function getStyleSheetString(api: GetStyleSheetStringApi) {
-  const { PageContent, htmlTitle, htmlDescription, jssTheme, sheetsRegistry } =
-    api
-  getPageHtmlString({
-    PageContent,
-    htmlTitle,
-    htmlDescription,
-    jssTheme,
-    sheetsRegistry,
-    styleSheetString: null,
-  })
-  return sheetsRegistry.toString().replace(/\s+/g, '')
+function getPageBodyInnerHtmlStringAndStyleSheetString(
+  api: GetPageBodyHtmlStringApi
+) {
+  const { sheetsRegistry, jssTheme, PageContent } = api
+  const pageBodyInnerHtmlString = ReactDomServer.renderToStaticMarkup(
+    <JssProvider registry={sheetsRegistry}>
+      <ThemeProvider theme={jssTheme}>
+        <PageContent />
+      </ThemeProvider>
+    </JssProvider>
+  )
+  const styleSheetString = sheetsRegistry.toString().replace(/\s+/g, '')
+  return {
+    pageBodyInnerHtmlString,
+    styleSheetString,
+  }
 }

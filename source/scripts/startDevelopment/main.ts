@@ -108,6 +108,9 @@ async function main() {
             requestResponse.setHeader('Content-Type', 'text/html')
             requestResponse.end(pageHtmlString)
           }
+        } else {
+          requestResponse.statusCode = 404
+          requestResponse.end()
         }
       }
     }

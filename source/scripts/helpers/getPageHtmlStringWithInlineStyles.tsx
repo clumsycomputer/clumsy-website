@@ -1,7 +1,6 @@
 import React from 'react'
 import ReactDomServer from 'react-dom/server'
 import { JssProvider, SheetsRegistry, ThemeProvider } from 'react-jss'
-import { SiteTheme } from '../../siteTheme'
 import { PageModule } from './PageModule'
 
 export interface GetPageHtmlStringWithInlineStylesApi
@@ -9,7 +8,7 @@ export interface GetPageHtmlStringWithInlineStylesApi
     PageModule['default'],
     'PageContent' | 'htmlTitle' | 'htmlDescription'
   > {
-  jssTheme: SiteTheme
+  jssTheme: Jss.Theme
 }
 
 export function getPageHtmlStringWithInlineStyles(

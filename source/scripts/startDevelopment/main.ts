@@ -1,12 +1,19 @@
 import Dotenv from 'dotenv'
 import Glob from 'glob'
 import Http from 'http'
+import MemoryFileSystem from 'memory-fs'
 import Path from 'path'
+import createCompiler from 'webpack'
+import { decodeData } from '../helpers/decodeData'
 import { getPageHtmlStringWithInlineStyles } from '../helpers/getPageHtmlStringWithInlineStyles'
 import { importLocalModule } from '../helpers/importLocalModule'
 import { JssThemeModule, JssThemeModuleCodec } from '../helpers/JssThemeModule'
 import { PageModule, PageModuleCodec } from '../helpers/PageModule'
 import { renderPagePdfToBuffer } from '../helpers/renderPagePdfToBuffer'
+import React from 'react'
+import * as ReactJss from 'react-jss'
+;(global as any)['react'] = React
+;(global as any)['react-jss'] = ReactJss
 
 const absolutePathCurrentWorkingDirectory = process.cwd()
 Dotenv.config({
@@ -18,7 +25,7 @@ Dotenv.config({
   ),
 })
 const globPagesModule = './source/pages/**/*.page.tsx'
-const pathJssThemeModule = './source/siteTheme'
+const pathJssThemeModule = './source/siteTheme.ts'
 const serverPort = 3000
 main()
 
@@ -62,52 +69,81 @@ async function main() {
         const targetPageModulePath =
           pageRouteToPageModulePathMap[requestRoute]?.pageModulePath
         if (targetPageModulePath) {
-          const targetModuleCacheId = require.resolve(
-            Path.resolve(
+          const pageCompiler = createCompiler({
+            mode: 'development',
+            entry: Path.resolve(
               absolutePathCurrentWorkingDirectory,
               targetPageModulePath
-            )
-          )
-          const cachedTargetModule = require.cache[targetModuleCacheId]
-          if (cachedTargetModule) {
-            decacheNodeModule({
-              baseNodeModule: cachedTargetModule,
-            })
-          }
-          const targetPageModule = await importLocalModule<PageModule>({
-            absolutePathCurrentWorkingDirectory,
-            targetCodec: PageModuleCodec,
-            localModulePath: targetPageModulePath,
-          })
-          const { PageContent, htmlTitle, htmlDescription } =
-            targetPageModule.default
-          if (requestRoute.endsWith('.pdf')) {
-            const pageHtmlString = getPageHtmlStringWithInlineStyles({
-              PageContent,
-              htmlTitle,
-              htmlDescription,
-              jssTheme: {
-                ...jssThemeModule.default,
-                pdfMode: true,
+            ),
+            output: {
+              globalObject: 'global',
+              library: {
+                name: 'currentPageModule',
+                type: 'global',
               },
-            })
-            const pagePdfBuffer = await renderPagePdfToBuffer({
-              pageHtmlString,
-            })
-            requestResponse.statusCode = 200
-            requestResponse.setHeader('Content-Type', 'application/pdf')
-            requestResponse.end(pagePdfBuffer)
-          } else {
-            const pageHtmlString = getPageHtmlStringWithInlineStyles({
-              PageContent,
-              htmlTitle,
-              htmlDescription,
-              jssTheme: jssThemeModule.default,
-            })
-            requestResponse.statusCode = 200
-            requestResponse.setHeader('Content-Type', 'text/html')
-            requestResponse.end(pageHtmlString)
-          }
+              filename: 'bundle.js',
+              path: '/dist',
+            },
+            module: {
+              rules: [
+                {
+                  test: /\.tsx?$/,
+                  use: 'ts-loader',
+                  exclude: /node_modules/,
+                },
+              ],
+            },
+            resolve: {
+              extensions: ['.tsx', '.ts', '.js'],
+            },
+            externals: {
+              react: 'react',
+              ['react-jss']: 'react-jss',
+            },
+          })
+          pageCompiler.outputFileSystem = new MemoryFileSystem()
+          pageCompiler.run((compileError, compileStats) => {
+            pageCompiler.outputFileSystem.readFile(
+              '/dist/bundle.js',
+              async (readError, fileData) => {
+                eval(fileData?.toString() as string)
+                const targetPageModule = await decodeData<PageModule>({
+                  targetCodec: PageModuleCodec,
+                  inputData: (global as any)['currentPageModule'],
+                })
+                const { PageContent, htmlTitle, htmlDescription } =
+                  targetPageModule.default
+                if (requestRoute.endsWith('.pdf')) {
+                  const pageHtmlString = getPageHtmlStringWithInlineStyles({
+                    PageContent,
+                    htmlTitle,
+                    htmlDescription,
+                    jssTheme: {
+                      ...jssThemeModule.default,
+                      pdfMode: true,
+                    },
+                  })
+                  const pagePdfBuffer = await renderPagePdfToBuffer({
+                    pageHtmlString,
+                  })
+                  requestResponse.statusCode = 200
+                  requestResponse.setHeader('Content-Type', 'application/pdf')
+                  requestResponse.end(pagePdfBuffer)
+                } else {
+                  const pageHtmlString = getPageHtmlStringWithInlineStyles({
+                    PageContent,
+                    htmlTitle,
+                    htmlDescription,
+                    jssTheme: jssThemeModule.default,
+                  })
+                  requestResponse.statusCode = 200
+                  requestResponse.setHeader('Content-Type', 'text/html')
+                  requestResponse.end(pageHtmlString)
+                }
+              }
+            )
+            pageCompiler.close((closeError) => {})
+          })
         } else {
           requestResponse.statusCode = 404
           requestResponse.end()
@@ -116,20 +152,4 @@ async function main() {
     }
   )
   developmentServer.listen(serverPort)
-}
-
-interface DecacheNodeModuleApi {
-  baseNodeModule: NodeJS.Module
-}
-
-function decacheNodeModule(api: DecacheNodeModuleApi) {
-  const { baseNodeModule } = api
-  if (!baseNodeModule.path.match('node_modules')) {
-    baseNodeModule.children.forEach((someNodeModule) => {
-      decacheNodeModule({
-        baseNodeModule: someNodeModule,
-      })
-    })
-    delete require.cache[baseNodeModule.id]
-  }
 }

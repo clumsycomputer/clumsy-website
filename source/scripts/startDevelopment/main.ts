@@ -31,6 +31,44 @@ main()
 
 async function main() {
   const pageModulesPaths = Glob.sync(globPagesModule)
+  const pageCompiler = createCompiler({
+    mode: 'development',
+    entry: pageModulesPaths,
+    output: {
+      globalObject: 'global',
+      library: {
+        name: 'currentPageModule',
+        type: 'global',
+      },
+      filename: '[name].bundle.js',
+      path: '/dist',
+    },
+    module: {
+      rules: [
+        {
+          test: /\.tsx?$/,
+          use: 'ts-loader',
+          exclude: /node_modules/,
+        },
+      ],
+    },
+    resolve: {
+      extensions: ['.tsx', '.ts', '.js'],
+    },
+    externals: {
+      react: 'react',
+      ['react-jss']: 'react-jss',
+    },
+  })
+  pageCompiler.outputFileSystem = new MemoryFileSystem()
+  pageCompiler.watch(
+    {
+      aggregateTimeout: 0,
+    },
+    (watchError, watchStats) => {
+      console.log('built')
+    }
+  )
   const adjustedPageModules = await Promise.all(
     pageModulesPaths.map(async (somePageModulePath) => {
       const somePageModule = await importLocalModule<PageModule>({
@@ -69,81 +107,45 @@ async function main() {
         const targetPageModulePath =
           pageRouteToPageModulePathMap[requestRoute]?.pageModulePath
         if (targetPageModulePath) {
-          const pageCompiler = createCompiler({
-            mode: 'development',
-            entry: Path.resolve(
-              absolutePathCurrentWorkingDirectory,
-              targetPageModulePath
-            ),
-            output: {
-              globalObject: 'global',
-              library: {
-                name: 'currentPageModule',
-                type: 'global',
-              },
-              filename: 'bundle.js',
-              path: '/dist',
-            },
-            module: {
-              rules: [
-                {
-                  test: /\.tsx?$/,
-                  use: 'ts-loader',
-                  exclude: /node_modules/,
-                },
-              ],
-            },
-            resolve: {
-              extensions: ['.tsx', '.ts', '.js'],
-            },
-            externals: {
-              react: 'react',
-              ['react-jss']: 'react-jss',
-            },
-          })
-          pageCompiler.outputFileSystem = new MemoryFileSystem()
-          pageCompiler.run((compileError, compileStats) => {
-            pageCompiler.outputFileSystem.readFile(
-              '/dist/bundle.js',
-              async (readError, fileData) => {
-                eval(fileData?.toString() as string)
-                const targetPageModule = await decodeData<PageModule>({
-                  targetCodec: PageModuleCodec,
-                  inputData: (global as any)['currentPageModule'],
+          pageCompiler.outputFileSystem.readFile(
+            '/dist/bundle.js',
+            async (readError, fileData) => {
+              ;(() => eval(fileData?.toString() as string))()
+              const targetPageModule = await decodeData<PageModule>({
+                targetCodec: PageModuleCodec,
+                inputData: (global as any)['currentPageModule'],
+              })
+              const { PageContent, htmlTitle, htmlDescription } =
+                targetPageModule.default
+              if (requestRoute.endsWith('.pdf')) {
+                const pageHtmlString = getPageHtmlStringWithInlineStyles({
+                  PageContent,
+                  htmlTitle,
+                  htmlDescription,
+                  jssTheme: {
+                    ...jssThemeModule.default,
+                    pdfMode: true,
+                  },
                 })
-                const { PageContent, htmlTitle, htmlDescription } =
-                  targetPageModule.default
-                if (requestRoute.endsWith('.pdf')) {
-                  const pageHtmlString = getPageHtmlStringWithInlineStyles({
-                    PageContent,
-                    htmlTitle,
-                    htmlDescription,
-                    jssTheme: {
-                      ...jssThemeModule.default,
-                      pdfMode: true,
-                    },
-                  })
-                  const pagePdfBuffer = await renderPagePdfToBuffer({
-                    pageHtmlString,
-                  })
-                  requestResponse.statusCode = 200
-                  requestResponse.setHeader('Content-Type', 'application/pdf')
-                  requestResponse.end(pagePdfBuffer)
-                } else {
-                  const pageHtmlString = getPageHtmlStringWithInlineStyles({
-                    PageContent,
-                    htmlTitle,
-                    htmlDescription,
-                    jssTheme: jssThemeModule.default,
-                  })
-                  requestResponse.statusCode = 200
-                  requestResponse.setHeader('Content-Type', 'text/html')
-                  requestResponse.end(pageHtmlString)
-                }
+                const pagePdfBuffer = await renderPagePdfToBuffer({
+                  pageHtmlString,
+                })
+                requestResponse.statusCode = 200
+                requestResponse.setHeader('Content-Type', 'application/pdf')
+                requestResponse.end(pagePdfBuffer)
+              } else {
+                const pageHtmlString = getPageHtmlStringWithInlineStyles({
+                  PageContent,
+                  htmlTitle,
+                  htmlDescription,
+                  jssTheme: jssThemeModule.default,
+                })
+                requestResponse.statusCode = 200
+                requestResponse.setHeader('Content-Type', 'text/html')
+                requestResponse.end(pageHtmlString)
               }
-            )
-            pageCompiler.close((closeError) => {})
-          })
+            }
+          )
         } else {
           requestResponse.statusCode = 404
           requestResponse.end()

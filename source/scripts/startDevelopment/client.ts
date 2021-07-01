@@ -1,21 +1,28 @@
 /// <reference lib="DOM" />
 
+const displayElement = document.createElement('iframe')
+displayElement.setAttribute(
+  'style',
+  'position: absolute; left: 0; top: 0; width: 100vw; height: 100vh; border: none;'
+)
+displayElement.id = 'myFrame'
+document.body.append(displayElement)
 const webSocket = new WebSocket('ws://localhost:3000')
 webSocket.addEventListener('open', () => {
   console.log('open')
+  webSocket.send(
+    JSON.stringify({
+      messageType: 'updateClientPath',
+      messagePayload: {
+        clientPath: '/',
+      },
+    })
+  )
 })
 webSocket.addEventListener('message', (messageEvent) => {
-  console.log('message')
   const messageAction = JSON.parse(messageEvent.data)
-  if (messageAction.type === 'clientRegistered') {
-    webSocket.send(
-      JSON.stringify({
-        type: 'updateClientPath',
-        payload: {
-          id: messageAction.payload.id,
-          clientPath: '/',
-        },
-      })
-    )
-  }
+  const iframeElement = document.getElementById('myFrame') as HTMLIFrameElement
+  iframeElement.src =
+    'data:text/html;charset=utf-8,' +
+    escape(messageAction.messagePayload.pageHtmlString)
 })

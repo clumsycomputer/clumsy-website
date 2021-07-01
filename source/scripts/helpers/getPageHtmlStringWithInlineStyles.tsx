@@ -69,7 +69,7 @@ function getPageHtmlString(api: GetPageHtmlStringApi) {
   )
 }
 
-interface GetPageBodyHtmlStringApi
+export interface GetPageBodyInnerHtmlStringAndStyleSheetStringApi
   extends Pick<
     GetPageHtmlStringWithInlineStylesApi,
     'jssTheme' | 'PageContent'
@@ -77,8 +77,8 @@ interface GetPageBodyHtmlStringApi
   sheetsRegistry: SheetsRegistry
 }
 
-function getPageBodyInnerHtmlStringAndStyleSheetString(
-  api: GetPageBodyHtmlStringApi
+export function getPageBodyInnerHtmlStringAndStyleSheetString(
+  api: GetPageBodyInnerHtmlStringAndStyleSheetStringApi
 ) {
   const { sheetsRegistry, jssTheme, PageContent } = api
   const pageBodyInnerHtmlString = ReactDomServer.renderToStaticMarkup(

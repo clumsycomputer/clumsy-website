@@ -22,11 +22,12 @@ import {
 } from 'redux-saga/effects'
 import createBundler from 'webpack'
 import WebSocket from 'ws'
+import { getPageBodyInnerHtmlStringAndStyleSheetString } from '../helpers/getPageHtmlStringWithInlineStyles'
 import { decodeData } from '../helpers/decodeData'
-import { getPageHtmlStringWithInlineStyles } from '../helpers/getPageHtmlStringWithInlineStyles'
 import { importLocalModule } from '../helpers/importLocalModule'
 import { JssThemeModule, JssThemeModuleCodec } from '../helpers/JssThemeModule'
 import { PageModule, PageModuleCodec } from '../helpers/PageModule'
+import { SheetsRegistry } from 'react-jss'
 ;(global as any)['react'] = React
 ;(global as any)['react-jss'] = ReactJss
 
@@ -96,6 +97,7 @@ function* initializeDevelopmentServer(api: any): Generator {
       pageModulePath: string
     }
   }
+  const clientBundle = (yield call(getClientBundle)) as string
   const jssThemeModule = (yield call(() =>
     importLocalModule<JssThemeModule>({
       currentWorkingDirectoryAbsolutePath: process.cwd(),
@@ -130,9 +132,11 @@ function* initializeDevelopmentServer(api: any): Generator {
         })
       })
     })
-    httpServer.listen(serverPort, () => {})
+    httpServer.listen(serverPort, () => {
+      console.log('ready...')
+    })
     return () => {}
-  })) as EventChannel<any>
+  }, buffers.expanding(1))) as EventChannel<any>
   yield takeEvery(clientChannel, function* (someClientEvent) {
     switch (someClientEvent.eventType) {
       case 'newPageRequest':
@@ -166,7 +170,6 @@ function* initializeDevelopmentServer(api: any): Generator {
     }
   })
   yield fork(function* () {
-    const clientBundle = (yield call(getClientBundle)) as string
     while (true) {
       const { actionPayload } = yield take('initializeClient')
       const { requestResponse, requestRoute } = actionPayload
@@ -225,24 +228,31 @@ function* initializeDevelopmentServer(api: any): Generator {
             },
           })
           pageModuleBundler.outputFileSystem = new MemoryFileSystem()
-          pageModuleBundler.watch({ aggregateTimeout: 0 }, () => {
-            pageModuleBundler.outputFileSystem.readFile(
-              `/dist/${bundleId}.bundle.js`,
-              (readError, pageModuleBundleData) => {
-                const pageModuleBundle = pageModuleBundleData?.toString()
-                if (pageModuleBundle) {
-                  emitPageModuleBundlerEvent({
-                    eventType: `pageModuleBundled@${clientId}`,
-                    eventPayload: {
-                      pageModuleBundle,
-                    },
-                  })
-                } else {
-                  throw new Error('wtf? pageModuleBundle')
-                }
+          pageModuleBundler.watch(
+            { aggregateTimeout: 100 },
+            (buildError, bundleStats) => {
+              const minimalBundleStats = bundleStats?.toJson('minimal')
+              console.log(bundleStats?.toString('errors-warnings'))
+              if (minimalBundleStats?.errorsCount === 0) {
+                pageModuleBundler.outputFileSystem.readFile(
+                  `/dist/${bundleId}.bundle.js`,
+                  (readError, pageModuleBundleData) => {
+                    const pageModuleBundle = pageModuleBundleData?.toString()
+                    if (pageModuleBundle) {
+                      emitPageModuleBundlerEvent({
+                        eventType: `pageModuleBundled@${clientId}`,
+                        eventPayload: {
+                          pageModuleBundle,
+                        },
+                      })
+                    } else {
+                      throw new Error('wtf? pageModuleBundle')
+                    }
+                  }
+                )
               }
-            )
-          })
+            }
+          )
           return () => {}
         },
         buffers.expanding(1)
@@ -251,27 +261,26 @@ function* initializeDevelopmentServer(api: any): Generator {
       const { clientWebSocket } = clientRegisteredAction.actionPayload
       yield takeLatest(pageModuleBundlerChannel, function* ({ eventPayload }) {
         const { pageModuleBundle } = eventPayload
-        const { PageContent, htmlTitle, htmlDescription } = (yield call(
-          async () => {
-            ;(() => eval(pageModuleBundle))()
-            const targetPageModule = await decodeData<PageModule>({
-              targetCodec: PageModuleCodec,
-              inputData: (global as any)[`pageModule@${clientId}`],
-            })
-            return targetPageModule.default
-          }
-        )) as PageModule['default']
-        const pageHtmlString = getPageHtmlStringWithInlineStyles({
-          PageContent,
-          htmlTitle,
-          htmlDescription,
-          jssTheme: jssThemeModule.default,
-        })
+        const { PageContent } = (yield call(async () => {
+          ;(() => eval(pageModuleBundle))()
+          const targetPageModule = await decodeData<PageModule>({
+            targetCodec: PageModuleCodec,
+            inputData: (global as any)[`pageModule@${clientId}`],
+          })
+          return targetPageModule.default
+        })) as PageModule['default']
+        const { pageBodyInnerHtmlString, styleSheetString } =
+          getPageBodyInnerHtmlStringAndStyleSheetString({
+            PageContent,
+            sheetsRegistry: new SheetsRegistry(),
+            jssTheme: jssThemeModule.default,
+          })
         clientWebSocket.send(
           JSON.stringify({
             messageType: 'loadPageContent',
             messagePayload: {
-              pageHtmlString,
+              pageBodyInnerHtmlString,
+              styleSheetString,
             },
           })
         )
@@ -285,7 +294,7 @@ function getClientBundle() {
     const clientBundler = createBundler({
       mode: 'development',
       devtool: false,
-      entry: Path.resolve(__dirname, './client.ts'),
+      entry: Path.resolve(__dirname, './client.tsx'),
       module: {
         rules: [
           {

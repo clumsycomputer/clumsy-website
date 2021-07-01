@@ -4,7 +4,7 @@ import { LocalModule } from './LocalModule'
 import { LocalScript } from './LocalScript'
 
 export interface ImportLocalModuleApi<SomeLocalModule extends LocalModule>
-  extends Pick<LocalScript, 'absolutePathCurrentWorkingDirectory'>,
+  extends Pick<LocalScript, 'currentWorkingDirectoryAbsolutePath'>,
     Pick<DecodeDataApi<SomeLocalModule>, 'targetCodec'> {
   localModulePath: string
 }
@@ -12,10 +12,10 @@ export interface ImportLocalModuleApi<SomeLocalModule extends LocalModule>
 export async function importLocalModule<SomeLocalModule extends LocalModule>(
   api: ImportLocalModuleApi<SomeLocalModule>
 ) {
-  const { absolutePathCurrentWorkingDirectory, localModulePath, targetCodec } =
+  const { currentWorkingDirectoryAbsolutePath, localModulePath, targetCodec } =
     api
   const absolutePathLocalModule = Path.resolve(
-    absolutePathCurrentWorkingDirectory,
+    currentWorkingDirectoryAbsolutePath,
     localModulePath
   )
   const localModuleImport: unknown = await import(absolutePathLocalModule)

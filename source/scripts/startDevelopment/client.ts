@@ -9,12 +9,11 @@ displayElement.id = 'myFrame'
 document.body.append(displayElement)
 const webSocket = new WebSocket('ws://localhost:3000')
 webSocket.addEventListener('open', () => {
-  console.log('open')
   webSocket.send(
     JSON.stringify({
-      messageType: 'updateClientPath',
+      messageType: 'registerClient',
       messagePayload: {
-        clientPath: '/',
+        clientId: document.getElementById('clientId')?.innerText,
       },
     })
   )

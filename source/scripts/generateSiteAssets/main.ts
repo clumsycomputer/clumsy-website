@@ -5,17 +5,17 @@ import { generateSiteAssets } from './helpers/generateSiteAssets'
 main()
 
 function main() {
-  const absolutePathCurrentWorkingDirectory = process.cwd()
+  const currentWorkingDirectoryAbsolutePath = process.cwd()
   Dotenv.config({
     path: Path.join(
-      absolutePathCurrentWorkingDirectory,
+      currentWorkingDirectoryAbsolutePath,
       process.env.NODE_ENV === 'production'
         ? './.env.production'
         : './.env.development'
     ),
   })
   generateSiteAssets({
-    absolutePathCurrentWorkingDirectory,
+    currentWorkingDirectoryAbsolutePath,
     globPagesModule: './source/pages/**/*.page.tsx',
     pathJssThemeModule: './source/siteTheme',
     pathOutputDirectory: './public',

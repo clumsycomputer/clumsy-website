@@ -6,7 +6,7 @@ import { generatePagePdf } from './generatePagePdf'
 import { GenerateSiteAssetsApi } from './generateSiteAssets'
 
 export interface GeneratePageAssetsApi
-  extends Pick<GenerateSiteAssetsApi, 'absolutePathCurrentWorkingDirectory'> {
+  extends Pick<GenerateSiteAssetsApi, 'currentWorkingDirectoryAbsolutePath'> {
   absolutePathOutputDirectory: string
   absolutePathTempPdfHtmlDirectory: string
   pageModulePath: string
@@ -15,14 +15,14 @@ export interface GeneratePageAssetsApi
 
 export async function generatePageAssets(api: GeneratePageAssetsApi) {
   const {
-    absolutePathCurrentWorkingDirectory,
+    currentWorkingDirectoryAbsolutePath,
     pageModulePath,
     absolutePathOutputDirectory,
     jssTheme,
     absolutePathTempPdfHtmlDirectory,
   } = api
   const pageModule = await importLocalModule<PageModule>({
-    absolutePathCurrentWorkingDirectory,
+    currentWorkingDirectoryAbsolutePath,
     targetCodec: PageModuleCodec,
     localModulePath: pageModulePath,
   })

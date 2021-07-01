@@ -1,3 +1,3 @@
 export interface LocalScript {
-  absolutePathCurrentWorkingDirectory: string
+  currentWorkingDirectoryAbsolutePath: string
 }

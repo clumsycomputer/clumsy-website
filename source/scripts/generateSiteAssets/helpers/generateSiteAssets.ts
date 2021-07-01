@@ -19,14 +19,14 @@ export interface GenerateSiteAssetsApi extends LocalScript {
 
 export async function generateSiteAssets(api: GenerateSiteAssetsApi) {
   const {
-    absolutePathCurrentWorkingDirectory,
+    currentWorkingDirectoryAbsolutePath,
     pathOutputDirectory,
     pathAssetsDirectory,
     pathJssThemeModule,
     globPagesModule,
   } = api
   const absolutePathOutputDirectory = Path.resolve(
-    absolutePathCurrentWorkingDirectory,
+    currentWorkingDirectoryAbsolutePath,
     pathOutputDirectory
   )
   await FileSystem.rm(absolutePathOutputDirectory, {
@@ -35,7 +35,7 @@ export async function generateSiteAssets(api: GenerateSiteAssetsApi) {
   })
   await FileSystem.mkdir(absolutePathOutputDirectory)
   const absoluteGlobAssets = Path.join(
-    absolutePathCurrentWorkingDirectory,
+    currentWorkingDirectoryAbsolutePath,
     pathAssetsDirectory,
     '*'
   )
@@ -43,7 +43,7 @@ export async function generateSiteAssets(api: GenerateSiteAssetsApi) {
     `cp ${absoluteGlobAssets} ${absolutePathOutputDirectory}`
   )
   const absolutePathTempPdfHtmlDirectory = Path.resolve(
-    absolutePathCurrentWorkingDirectory,
+    currentWorkingDirectoryAbsolutePath,
     'tempPdfHtml'
   )
   await FileSystem.rm(absolutePathTempPdfHtmlDirectory, {
@@ -52,7 +52,7 @@ export async function generateSiteAssets(api: GenerateSiteAssetsApi) {
   })
   await FileSystem.mkdir(absolutePathTempPdfHtmlDirectory)
   const jssThemeModule = await importLocalModule<JssThemeModule>({
-    absolutePathCurrentWorkingDirectory,
+    currentWorkingDirectoryAbsolutePath,
     targetCodec: JssThemeModuleCodec,
     localModulePath: pathJssThemeModule,
   })
@@ -60,7 +60,7 @@ export async function generateSiteAssets(api: GenerateSiteAssetsApi) {
   await Promise.all(
     pageModulesPaths.map((somePageModulePath) =>
       generatePageAssets({
-        absolutePathCurrentWorkingDirectory,
+        currentWorkingDirectoryAbsolutePath,
         absolutePathOutputDirectory,
         absolutePathTempPdfHtmlDirectory,
         jssTheme: jssThemeModule.default,

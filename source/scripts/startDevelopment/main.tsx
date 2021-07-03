@@ -22,12 +22,16 @@ import {
 } from 'redux-saga/effects'
 import createBundler from 'webpack'
 import WebSocket from 'ws'
-import { getPageBodyInnerHtmlStringAndStyleSheetString } from '../helpers/getPageHtmlStringWithInlineStyles'
+import {
+  getPageBodyInnerHtmlStringAndStyleSheetString,
+  getPageHtmlStringWithInlineStyles,
+} from '../helpers/getPageHtmlStringWithInlineStyles'
 import { decodeData } from '../helpers/decodeData'
 import { importLocalModule } from '../helpers/importLocalModule'
 import { JssThemeModule, JssThemeModuleCodec } from '../helpers/JssThemeModule'
 import { PageModule, PageModuleCodec } from '../helpers/PageModule'
 import { SheetsRegistry } from 'react-jss'
+import Playwright from 'playwright'
 ;(global as any)['react'] = React
 ;(global as any)['react-jss'] = ReactJss
 
@@ -105,6 +109,11 @@ function* initializeDevelopmentServer(api: any): Generator {
       localModulePath: jssThemeModulePath,
     })
   )) as JssThemeModule
+  const playwrightContext = (yield call(async () => {
+    const playwrightBrowser = await Playwright.chromium.launch()
+    const playwrightContext = await playwrightBrowser.newContext()
+    return playwrightContext
+  })) as Playwright.BrowserContext
   const clientChannel = (yield eventChannel((emitClientEvent) => {
     const httpServer = Http.createServer((someRequest, requestResponse) => {
       const requestRoute = someRequest.url?.replace(/\?.*/, '')
@@ -261,29 +270,57 @@ function* initializeDevelopmentServer(api: any): Generator {
       const { clientWebSocket } = clientRegisteredAction.actionPayload
       yield takeLatest(pageModuleBundlerChannel, function* ({ eventPayload }) {
         const { pageModuleBundle } = eventPayload
-        const { PageContent } = (yield call(async () => {
-          ;(() => eval(pageModuleBundle))()
-          const targetPageModule = await decodeData<PageModule>({
-            targetCodec: PageModuleCodec,
-            inputData: (global as any)[`pageModule@${clientId}`],
-          })
-          return targetPageModule.default
-        })) as PageModule['default']
-        const { pageBodyInnerHtmlString, styleSheetString } =
-          getPageBodyInnerHtmlStringAndStyleSheetString({
+        const { generatePdf, PageContent, htmlTitle, htmlDescription } =
+          (yield call(async () => {
+            ;(() => eval(pageModuleBundle))()
+            const targetPageModule = await decodeData<PageModule>({
+              targetCodec: PageModuleCodec,
+              inputData: (global as any)[`pageModule@${clientId}`],
+            })
+            return targetPageModule.default
+          })) as PageModule['default']
+        if (requestRoute.endsWith('.pdf')) {
+          const pageHtmlString = getPageHtmlStringWithInlineStyles({
             PageContent,
-            sheetsRegistry: new SheetsRegistry(),
-            jssTheme: jssThemeModule.default,
-          })
-        clientWebSocket.send(
-          JSON.stringify({
-            messageType: 'loadPageContent',
-            messagePayload: {
-              pageBodyInnerHtmlString,
-              styleSheetString,
+            htmlTitle,
+            htmlDescription,
+            jssTheme: {
+              ...jssThemeModule.default,
+              pdfMode: true,
             },
           })
-        )
+          const pagePdfBuffer = (yield call(async () => {
+            const playwrightPage = await playwrightContext.newPage()
+            await playwrightPage.setContent(pageHtmlString)
+            const bodyHandle = await playwrightPage.$('body')
+            if (!bodyHandle) throw new Error('wtf? bodyHandle')
+            const bodyBoundingBox = await bodyHandle.boundingBox()
+            if (!bodyBoundingBox) throw new Error('wtf? bodyBoundingBox')
+            const pagePdfBuffer = await playwrightPage.pdf({
+              printBackground: true,
+              height: bodyBoundingBox.height + 1,
+              width: 832,
+            })
+            return pagePdfBuffer
+          })) as Buffer
+          clientWebSocket.send(pagePdfBuffer)
+        } else {
+          const { pageBodyInnerHtmlString, styleSheetString } =
+            getPageBodyInnerHtmlStringAndStyleSheetString({
+              PageContent,
+              sheetsRegistry: new SheetsRegistry(),
+              jssTheme: jssThemeModule.default,
+            })
+          clientWebSocket.send(
+            JSON.stringify({
+              messageType: 'loadHtmlContent',
+              messagePayload: {
+                pageBodyInnerHtmlString,
+                styleSheetString,
+              },
+            })
+          )
+        }
       })
     }
   })

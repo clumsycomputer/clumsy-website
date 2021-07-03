@@ -7,7 +7,7 @@ document.body.append(appContainer)
 ReactDOM.render(<DevelopmentApp />, appContainer)
 
 function DevelopmentApp() {
-  const [bodyContent, setBodyContent] = useState<any>({})
+  const [pageContent, setPageContent] = useState<any>({})
   useEffect(() => {
     const webSocket = new WebSocket('ws://localhost:3000')
     webSocket.addEventListener('open', () => {
@@ -21,22 +21,52 @@ function DevelopmentApp() {
       )
     })
     webSocket.addEventListener('message', (messageEvent) => {
-      const { messagePayload } = JSON.parse(messageEvent.data)
-      setBodyContent(messagePayload)
+      try {
+        const { messagePayload } = JSON.parse(messageEvent.data)
+        setPageContent({
+          contentType: 'html',
+          contentData: messagePayload,
+        })
+      } catch (jsonParseError) {
+        setPageContent({
+          contentType: 'pdf',
+          contentData: URL.createObjectURL(
+            new Blob([messageEvent.data], {
+              type: 'application/pdf',
+            })
+          ),
+        })
+      }
     })
   })
   return (
     <div>
-      <style
-        dangerouslySetInnerHTML={{
-          __html: bodyContent.styleSheetString,
-        }}
-      />
-      <div
-        dangerouslySetInnerHTML={{
-          __html: bodyContent.pageBodyInnerHtmlString,
-        }}
-      />
+      {pageContent.contentType === 'html' ? (
+        <>
+          <style
+            dangerouslySetInnerHTML={{
+              __html: pageContent.contentData.styleSheetString,
+            }}
+          />
+          <div
+            dangerouslySetInnerHTML={{
+              __html: pageContent.contentData.pageBodyInnerHtmlString,
+            }}
+          />
+        </>
+      ) : pageContent.contentType === 'pdf' ? (
+        <object
+          style={{
+            position: 'absolute',
+            left: 0,
+            top: 0,
+            width: '100vw',
+            height: '100vh',
+          }}
+          type={'application/pdf'}
+          data={pageContent.contentData}
+        />
+      ) : null}
     </div>
   )
 }

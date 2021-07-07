@@ -16,32 +16,36 @@ function DevelopmentApp() {
           messageType: 'registerClient',
           messagePayload: {
             clientId: document.getElementById('clientId')?.innerText,
+            clientRoute: window.location.pathname,
           },
         })
       )
     })
     webSocket.addEventListener('message', (messageEvent) => {
       try {
-        const { messagePayload } = JSON.parse(messageEvent.data)
-        setPageContent({
-          contentType: 'html',
-          contentData: messagePayload,
-        })
-      } catch (jsonParseError) {
-        setPageContent({
-          contentType: 'pdf',
-          contentData: URL.createObjectURL(
-            new Blob([messageEvent.data], {
-              type: 'application/pdf',
+        const serverMessage = JSON.parse(messageEvent.data)
+        switch (serverMessage.messageType) {
+          case 'loadHtmlContent':
+            setPageContent({
+              contentType: 'text/html',
+              contentData: serverMessage.messagePayload,
             })
-          ),
-        })
+            break
+          case 'loadPdfContent':
+            setPageContent({
+              contentType: 'application/pdf',
+              contentData: serverMessage.messagePayload,
+            })
+            break
+        }
+      } catch (jsonParseError) {
+        // todo
       }
     })
-  })
+  }, [])
   return (
     <div>
-      {pageContent.contentType === 'html' ? (
+      {pageContent.contentType === 'text/html' ? (
         <>
           <style
             dangerouslySetInnerHTML={{
@@ -54,7 +58,7 @@ function DevelopmentApp() {
             }}
           />
         </>
-      ) : pageContent.contentType === 'pdf' ? (
+      ) : pageContent.contentType === 'application/pdf' ? (
         <object
           style={{
             position: 'absolute',
@@ -64,7 +68,7 @@ function DevelopmentApp() {
             height: '100vh',
           }}
           type={'application/pdf'}
-          data={pageContent.contentData}
+          data={pageContent.contentData.pagePdfRoute}
         />
       ) : null}
     </div>

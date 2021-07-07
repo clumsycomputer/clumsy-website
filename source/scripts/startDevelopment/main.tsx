@@ -8,21 +8,21 @@ import React from 'react'
 import ReactDOMServer from 'react-dom/server'
 import * as ReactJss from 'react-jss'
 import { SheetsRegistry } from 'react-jss'
-import { Action, AnyAction, applyMiddleware, createStore } from 'redux'
+import { Action, applyMiddleware, createStore } from 'redux'
 import createSagaMiddleware, {
-  buffers,
+  buffers as SagaBuffer,
   EventChannel,
   eventChannel,
+  TakeableChannel,
 } from 'redux-saga'
 import {
-  ActionPattern,
   call,
   fork,
   put,
   SagaReturnType,
+  select,
+  Tail,
   take,
-  takeEvery,
-  takeLatest,
 } from 'redux-saga/effects'
 import createBundler from 'webpack'
 import WebSocket from 'ws'
@@ -37,21 +37,138 @@ import { PageModule, PageModuleCodec } from '../helpers/PageModule'
 ;(global as any)['react'] = React
 ;(global as any)['react-jss'] = ReactJss
 
-const Effects = {
-  call: function* <SomeFunction extends (...args: any[]) => any>(
-    someFunction: SomeFunction,
-    ...functionArgs: Parameters<SomeFunction>
-  ): Generator<unknown, SagaReturnType<SomeFunction>> {
-    return (yield call<SomeFunction>(
-      someFunction,
-      ...functionArgs
-    )) as SagaReturnType<SomeFunction>
+const Effect = getTypedEffects<ServerState>()
+
+const memoizedGeneratePageHtmlContent = memoizeSaga({
+  baseSaga: generatePageHtmlContent,
+  checkShouldRun: ({
+    previousArgs: [previousApi],
+    currentArgs: [currentApi],
+  }) => previousApi.targetPageModule !== currentApi.targetPageModule,
+})
+
+const memoizedGeneratePagePdfContent = memoizeSaga({
+  baseSaga: generatePagePdfContent,
+  checkShouldRun: ({
+    previousArgs: [previousApi],
+    currentArgs: [currentApi],
+  }) => previousApi.targetPageModule !== currentApi.targetPageModule,
+})
+
+interface ServerState {
+  registeredClients: {
+    [clientId: number]: {
+      clientId: number
+      clientRoute: string
+      pageModulePath: string
+      clientWebSocket: WebSocket
+    }
+  }
+  pageModuleBundlerEventChannels: {
+    [pageModulePath: string]: EventChannel<PageModuleBundlerEvent>
+  }
+  activePageModules: {
+    [pageModulePath: string]: {
+      pageModule: PageModule
+    }
+  }
+  tempPdfRoutes: {
+    [tempPdfRoute: string]: {
+      pagePdfBuffer: Buffer
+    }
+  }
+}
+
+function serverReducer(
+  serverState = {
+    registeredClients: {},
+    pageModuleBundlerEventChannels: {},
+    activePageModules: {},
+    tempPdfRoutes: {},
   },
-  take: function* <SomeAction extends Action<any>>(
-    actionPattern: SomeAction['type']
-  ) {
-    return (yield take<SomeAction>(actionPattern)) as SomeAction
-  },
+  someServerAction: ServerAction
+): ServerState {
+  switch (someServerAction.type) {
+    case 'clientBundleServed':
+      return serverState
+    case 'clientRegistered':
+      return handleClientRegistered(serverState, someServerAction.actionPayload)
+    case 'pageModuleBundlerCreated':
+      return handlePageModuleBundlerCreated(
+        serverState,
+        someServerAction.actionPayload
+      )
+    case 'pageModuleUpdated':
+      return handlePageModuleUpdated(
+        serverState,
+        someServerAction.actionPayload
+      )
+    case 'pagePdfRendered':
+      return handlePagePdfRendered(serverState, someServerAction.actionPayload)
+    default:
+      return serverState
+  }
+}
+
+function handleClientRegistered(
+  serverState: ServerState,
+  actionPayload: ClientRegisteredAction['actionPayload']
+): ServerState {
+  const { clientId } = actionPayload
+  return {
+    ...serverState,
+    registeredClients: {
+      ...serverState.registeredClients,
+      [clientId]: {
+        ...actionPayload,
+      },
+    },
+  }
+}
+
+function handlePageModuleBundlerCreated(
+  serverState: ServerState,
+  actionPayload: PageModuleBundlerCreatedAction['actionPayload']
+) {
+  const { pageModulePath, pageModuleBundlerEventChannel } = actionPayload
+  const nextPageModuleBundlerEventChannels = {
+    ...serverState.pageModuleBundlerEventChannels,
+    [pageModulePath]: pageModuleBundlerEventChannel,
+  }
+  return {
+    ...serverState,
+    pageModuleBundlerEventChannels: nextPageModuleBundlerEventChannels,
+  }
+}
+
+function handlePageModuleUpdated(
+  serverState: ServerState,
+  actionPayload: PageModuleUpdatedAction['actionPayload']
+): ServerState {
+  const { pageModulePath, updatedPageModule } = actionPayload
+  return {
+    ...serverState,
+    activePageModules: {
+      ...serverState.activePageModules,
+      [pageModulePath]: {
+        pageModule: updatedPageModule,
+      },
+    },
+  }
+}
+
+function handlePagePdfRendered(
+  serverState: ServerState,
+  actionPayload: PagePdfRenderedAction['actionPayload']
+): ServerState {
+  const { pagePdfRoute, pagePdfBuffer } = actionPayload
+  return {
+    ...serverState,
+    tempPdfRoutes: {
+      ...serverState.tempPdfRoutes,
+      [pagePdfRoute]: { pagePdfBuffer },
+    },
+  }
 }
 
 main()
@@ -70,55 +187,147 @@ function main() {
   const pageModuleGlob = './source/pages/**/*.page.tsx'
   const jssThemeModulePath = './source/siteTheme.ts'
   const sagaMiddleware = createSagaMiddleware()
-  createStore(() => null, applyMiddleware(sagaMiddleware))
-  sagaMiddleware.run(initializeDevelopmentServer, {
+  createStore<ServerState, ServerAction, { dispatch: unknown }, {}>(
+    serverReducer,
+    applyMiddleware(sagaMiddleware)
+  )
+  sagaMiddleware.run(developmentServer, {
     currentWorkingDirectoryAbsolutePath,
-    serverPort,
     pageModuleGlob,
+    serverPort,
     jssThemeModulePath,
   })
 }
 
-interface InitializeDevelopmentServerApi {
+interface DevelopmentServerApi {
   currentWorkingDirectoryAbsolutePath: string
-  serverPort: number
   pageModuleGlob: string
+  serverPort: number
   jssThemeModulePath: string
 }
 
-function* initializeDevelopmentServer(
-  api: InitializeDevelopmentServerApi
-): Generator {
+function* developmentServer(api: DevelopmentServerApi) {
   const {
-    serverPort,
-    pageModuleGlob,
     currentWorkingDirectoryAbsolutePath,
+    pageModuleGlob,
+    serverPort,
     jssThemeModulePath,
   } = api
-  const pageRouteToPageModulePathMap = yield* Effects.call(
+  const { jssThemeModule } = yield* Effect.call(importJssThemeModule, {
+    currentWorkingDirectoryAbsolutePath,
+    jssThemeModulePath,
+  })
+  const { playwrightBrowserContext } = yield* Effect.call(initializePlaywright)
+  yield fork(clientSaga, {
+    currentWorkingDirectoryAbsolutePath,
+    pageModuleGlob,
+    serverPort,
+    jssThemeModule,
+    playwrightBrowserContext,
+  })
+  yield fork(pageBundlerSaga, {
+    jssThemeModule,
+    playwrightBrowserContext,
+  })
+}
+
+interface ImportJssThemeModuleApi
+  extends Pick<
+    DevelopmentServerApi,
+    'currentWorkingDirectoryAbsolutePath' | 'jssThemeModulePath'
+  > {}
+
+async function importJssThemeModule(api: ImportJssThemeModuleApi) {
+  const { currentWorkingDirectoryAbsolutePath, jssThemeModulePath } = api
+  const jssThemeModule = await importLocalModule<JssThemeModule>({
+    currentWorkingDirectoryAbsolutePath,
+    targetCodec: JssThemeModuleCodec,
+    localModulePath: jssThemeModulePath,
+  })
+  return { jssThemeModule }
+}
+
+async function initializePlaywright() {
+  const playwrightBrowser = await Playwright.chromium.launch()
+  const playwrightBrowserContext = await playwrightBrowser.newContext()
+  return { playwrightBrowserContext }
+}
+
+interface ClientSagaApi
+  extends Pick<
+      DevelopmentServerApi,
+      'currentWorkingDirectoryAbsolutePath' | 'pageModuleGlob' | 'serverPort'
+    >,
+    BrandedReturnType<typeof importJssThemeModule>,
+    BrandedReturnType<typeof initializePlaywright> {}
+
+function* clientSaga(api: ClientSagaApi) {
+  const {
+    currentWorkingDirectoryAbsolutePath,
+    pageModuleGlob,
+    serverPort,
+    jssThemeModule,
+    playwrightBrowserContext,
+  } = api
+  const { clientBundle } = yield* Effect.call(bundleClient)
+  const { pageRouteToPageModulePathMap } = yield* Effect.call(
     mapPageRouteToPageModulePath,
     {
       currentWorkingDirectoryAbsolutePath,
       pageModulePaths: Glob.sync(pageModuleGlob),
     }
   )
-  const clientBundle = yield* Effects.call(bundleClient)
-  const jssThemeModule = yield* Effects.call(importJssThemeModule, {
-    currentWorkingDirectoryAbsolutePath,
-    jssThemeModulePath,
+  const { clientEventChannel } = getClientEventChannel({ serverPort })
+  yield fork(clientEventHandler, {
+    clientBundle,
+    pageRouteToPageModulePathMap,
+    clientEventChannel,
   })
-  const playwrightContext = yield* Effects.call(initializePlaywright)
-  const clientEventChannel = getClientEventChannel({ serverPort })
-  yield takeEvery(clientEventChannel, handleClientEvent)
-  yield takeEvery(
-    'initializeClient',
-    getInitializeClientHandler({
-      pageRouteToPageModulePathMap,
-      clientBundle,
-      jssThemeModule,
-      playwrightContext,
+  yield fork(clientRegisteredHandler, {
+    jssThemeModule,
+    playwrightBrowserContext,
+  })
+}
+
+function bundleClient() {
+  return new Promise<{ clientBundle: string }>((resolve) => {
+    const clientBundler = createBundler({
+      mode: 'development',
+      devtool: false,
+      entry: Path.resolve(__dirname, './client.tsx'),
+      module: {
+        rules: [
+          {
+            test: /\.tsx?$/,
+            use: 'ts-loader',
+            exclude: /node_modules/,
+          },
+        ],
+      },
+      resolve: {
+        extensions: ['.tsx', '.ts', '.js'],
+      },
+      output: {
+        path: '/dist',
+        filename: 'client.bundle.js',
+      },
     })
-  )
+    clientBundler.outputFileSystem = new MemoryFileSystem()
+    clientBundler.run(() => {
+      clientBundler.outputFileSystem.readFile(
+        '/dist/client.bundle.js',
+        (readError, clientBundleData) => {
+          const clientBundle = clientBundleData?.toString()
+          if (clientBundle) {
+            resolve({ clientBundle })
+          } else {
+            throw new Error('wtf? clientBundle')
+          }
+        }
+      )
+      clientBundler.close(() => {})
+    })
+  })
 }
 
 interface MapPageRouteToPageModulePathApi {
@@ -156,97 +365,47 @@ async function mapPageRouteToPageModulePath(
     }
     return result
   }, {})
-  return pageRouteToPageModulePathMap
+  return { pageRouteToPageModulePathMap }
 }
 
-function bundleClient() {
-  return new Promise<string>((resolve) => {
-    const clientBundler = createBundler({
-      mode: 'development',
-      devtool: false,
-      entry: Path.resolve(__dirname, './client.tsx'),
-      module: {
-        rules: [
-          {
-            test: /\.tsx?$/,
-            use: 'ts-loader',
-            exclude: /node_modules/,
-          },
-        ],
-      },
-      resolve: {
-        extensions: ['.tsx', '.ts', '.js'],
-      },
-      output: {
-        path: '/dist',
-        filename: 'client.bundle.js',
-      },
-    })
-    clientBundler.outputFileSystem = new MemoryFileSystem()
-    clientBundler.run(() => {
-      clientBundler.outputFileSystem.readFile(
-        '/dist/client.bundle.js',
-        (readError, clientBundleData) => {
-          const clientBundle = clientBundleData?.toString()
-          if (clientBundle) {
-            resolve(clientBundle)
-          } else {
-            throw new Error('wtf? clientBundle')
-          }
-        }
-      )
-      clientBundler.close(() => {})
-    })
-  })
-}
+interface GetClientEventChannelApi extends Pick<ClientSagaApi, 'serverPort'> {}
 
-interface ImportJssThemeModuleApi {
-  currentWorkingDirectoryAbsolutePath: string
-  jssThemeModulePath: string
-}
+type ClientEvent = ClientRequestEvent | ClientMessageEvent
 
-function importJssThemeModule(api: ImportJssThemeModuleApi) {
-  const { currentWorkingDirectoryAbsolutePath, jssThemeModulePath } = api
-  return importLocalModule<JssThemeModule>({
-    currentWorkingDirectoryAbsolutePath,
-    targetCodec: JssThemeModuleCodec,
-    localModulePath: jssThemeModulePath,
-  })
-}
+interface ClientRequestEvent
+  extends EventBase<
+    'clientRequest',
+    {
+      requestRoute: string
+      requestResponse: Http.ServerResponse
+    }
+  > {}
 
-async function initializePlaywright() {
-  const playwrightBrowser = await Playwright.chromium.launch()
-  const playwrightContext = await playwrightBrowser.newContext()
-  return playwrightContext
-}
+interface ClientMessageEvent
+  extends EventBase<
+    'clientMessage',
+    {
+      clientWebSocket: WebSocket
+      clientMessage: ClientMessage
+    }
+  > {}
 
-type ClientEvent =
-  | EventBase<
-      'newPageRequest',
-      {
-        requestRoute: string
-        requestResponse: Http.ServerResponse
-      }
-    >
-  | EventBase<
-      'clientMessage',
-      {
-        clientWebSocket: WebSocket
-        clientMessage: any
-      }
-    >
-
-interface GetClientEventChannelApi
-  extends Pick<InitializeDevelopmentServerApi, 'serverPort'> {}
+type ClientMessage = MessageBase<
+  'registerClient',
+  {
+    clientId: string
+    clientRoute: string
+  }
+>
 
 function getClientEventChannel(api: GetClientEventChannelApi) {
   const { serverPort } = api
-  return eventChannel<ClientEvent>((emitClientEvent) => {
+  const clientEventChannel = eventChannel<ClientEvent>((emitClientEvent) => {
     const httpServer = Http.createServer((someRequest, requestResponse) => {
       const requestRoute = someRequest.url?.replace(/\?.*/, '')
       if (requestRoute) {
         emitClientEvent({
-          eventType: 'newPageRequest',
+          eventType: 'clientRequest',
           eventPayload: {
             requestResponse,
             requestRoute,
@@ -272,266 +431,452 @@ function getClientEventChannel(api: GetClientEventChannelApi) {
       console.log('ready...')
     })
     return () => {}
-  }, buffers.expanding(1))
+  }, SagaBuffer.expanding(1))
+  return { clientEventChannel }
 }
 
-function* handleClientEvent(someClientEvent: ClientEvent) {
-  switch (someClientEvent.eventType) {
-    case 'newPageRequest':
-      const { requestRoute, requestResponse } = someClientEvent.eventPayload
-      yield put({
-        type: 'initializeClient',
-        actionPayload: {
-          requestResponse,
-          requestRoute,
-        },
-      })
-      break
-    case 'clientMessage':
-      const { clientMessage, clientWebSocket } = someClientEvent.eventPayload
-      switch (clientMessage.messageType) {
-        case 'registerClient':
-          const { clientId } = clientMessage.messagePayload
-          yield put({
-            type: `clientRegistered@${clientId}`,
-            actionPayload: {
-              clientWebSocket,
-            },
-          })
-          break
+interface ClientEventHandlerApi
+  extends BrandedReturnType<typeof bundleClient>,
+    BrandedReturnType<typeof mapPageRouteToPageModulePath>,
+    BrandedReturnType<typeof getClientEventChannel> {}
+
+function* clientEventHandler(api: ClientEventHandlerApi) {
+  const { clientEventChannel, clientBundle, pageRouteToPageModulePathMap } = api
+  while (true) {
+    const clientEvent = yield* Effect.takeEvent(clientEventChannel)
+    switch (clientEvent.eventType) {
+      case 'clientRequest':
+        yield* clientRequestHandler({
+          clientBundle,
+          pageRouteToPageModulePathMap,
+          ...clientEvent.eventPayload,
+        })
+        break
+      case 'clientMessage':
+        yield* clientMessageHandler({
+          pageRouteToPageModulePathMap,
+          ...clientEvent.eventPayload,
+        })
+        break
+    }
+  }
+}
+
+interface ClientRequestHandlerApi
+  extends Pick<
+      ClientEventHandlerApi,
+      'clientBundle' | 'pageRouteToPageModulePathMap'
+    >,
+    Child<ClientRequestEvent, 'eventPayload'> {}
+
+function* clientRequestHandler(api: ClientRequestHandlerApi) {
+  const {
+    pageRouteToPageModulePathMap,
+    requestRoute,
+    requestResponse,
+    clientBundle,
+  } = api
+  const pageModulePath =
+    pageRouteToPageModulePathMap[requestRoute]?.pageModulePath
+  const pagePdfBuffer = yield* Effect.select(
+    (serverState) => serverState['tempPdfRoutes'][requestRoute]?.pagePdfBuffer
+  )
+  if (pageModulePath) {
+    requestResponse.statusCode = 200
+    requestResponse.setHeader('Content-Type', 'text/html')
+    requestResponse.end(
+      ReactDOMServer.renderToStaticMarkup(
+        <html lang={'en'}>
+          <head>
+            <meta charSet={'utf-8'} />
+          </head>
+          <body>
+            <div id={'clientId'} style={{ display: 'none' }}>
+              {Math.random()}
+            </div>
+            <script
+              dangerouslySetInnerHTML={{
+                __html: clientBundle,
+              }}
+            />
+          </body>
+        </html>
+      )
+    )
+    yield put<ClientBundleServedAction>({
+      type: 'clientBundleServed',
+      actionPayload: {
+        pageModulePath,
+      },
+    })
+  } else if (pagePdfBuffer) {
+    requestResponse.statusCode = 200
+    requestResponse.setHeader('Content-Type', 'application/pdf')
+    requestResponse.end(pagePdfBuffer)
+  } else {
+    requestResponse.statusCode = 400
+    requestResponse.end()
+  }
+}
+
+interface ClientMessageHandlerApi
+  extends Pick<ClientEventHandlerApi, 'pageRouteToPageModulePathMap'>,
+    Child<ClientMessageEvent, 'eventPayload'> {}
+
+function* clientMessageHandler(api: ClientMessageHandlerApi) {
+  const { clientMessage, pageRouteToPageModulePathMap, clientWebSocket } = api
+  switch (clientMessage.messageType) {
+    case 'registerClient':
+      const { clientId, clientRoute } = clientMessage.messagePayload
+      const pageModulePath =
+        pageRouteToPageModulePathMap[clientRoute]?.pageModulePath
+      if (pageModulePath) {
+        yield put<ClientRegisteredAction>({
+          type: 'clientRegistered',
+          actionPayload: {
+            clientWebSocket,
+            clientRoute,
+            pageModulePath,
+            clientId: Number(clientId),
+          },
+        })
+      } else {
+        throw new Error('wtf? @clientRegistered/pageModulePath')
       }
       break
+  }
+}
+
+interface ClientRegisteredHandlerApi
+  extends Pick<ClientSagaApi, 'jssThemeModule' | 'playwrightBrowserContext'> {}
+
+function* clientRegisteredHandler(api: ClientRegisteredHandlerApi) {
+  const { jssThemeModule, playwrightBrowserContext } = api
+  while (true) {
+    const clientRegisteredAction =
+      yield* Effect.takeAction<ClientRegisteredAction>('clientRegistered')
+    const { pageModulePath, clientRoute, clientWebSocket } =
+      clientRegisteredAction.actionPayload
+    const targetPageModule = yield* Effect.select(
+      (serverState) =>
+        serverState['activePageModules'][pageModulePath]?.pageModule
+    )
+    if (targetPageModule) {
+      const loadPageContentServerMessage = yield* clientRoute.endsWith('.pdf')
+        ? memoizedGeneratePagePdfContent({
+            jssThemeModule,
+            playwrightBrowserContext,
+            targetPageModule,
+          })
+        : memoizedGeneratePageHtmlContent({
+            jssThemeModule,
+            targetPageModule,
+          })
+      clientWebSocket.send(loadPageContentServerMessage)
+    } else {
+      // first client
+    }
+    //
+    // else {
+    //   throw new Error(`wtf? activePageModules[${pageModulePath}]`)
+    // }
+  }
+}
+
+interface PageBundlerSagaApi
+  extends BrandedReturnType<typeof importJssThemeModule>,
+    BrandedReturnType<typeof initializePlaywright> {}
+
+function* pageBundlerSaga(api: PageBundlerSagaApi) {
+  const { jssThemeModule, playwrightBrowserContext } = api
+  while (true) {
+    const { actionPayload } =
+      yield* Effect.takeAction<ClientBundleServedAction>('clientBundleServed')
+    const { pageModulePath } = actionPayload
+    const targetPageModuleBundler = yield* Effect.select(
+      (serverState) =>
+        serverState.pageModuleBundlerEventChannels[pageModulePath]
+    )
+    if (!targetPageModuleBundler) {
+      const { pageModuleBundlerEventChannel } =
+        getPageModuleBundlerEventChannel({
+          pageModulePath,
+        })
+      yield put<PageModuleBundlerCreatedAction>({
+        type: 'pageModuleBundlerCreated',
+        actionPayload: {
+          pageModulePath,
+          pageModuleBundlerEventChannel,
+        },
+      })
+      yield fork(pageModuleUpdateHandler, {
+        jssThemeModule,
+        playwrightBrowserContext,
+        pageModulePath,
+        pageModuleBundlerEventChannel,
+      })
+    }
   }
 }
 
 interface GetPageModuleBundlerEventChannelApi {
   pageModulePath: string
-  clientId: number
 }
+
+type PageModuleBundlerEvent = EventBase<
+  `pageModuleBundled@${string}`,
+  { pageModuleBundle: string }
+>
 
 function getPageModuleBundlerEventChannel(
   api: GetPageModuleBundlerEventChannelApi
 ) {
-  const { pageModulePath, clientId } = api
-  return eventChannel<PageModuleBundlerEvent>((emitPageModuleBundlerEvent) => {
-    const bundleId = Math.random()
-    const pageModuleBundler = createBundler({
-      mode: 'development',
-      entry: pageModulePath,
-      output: {
-        globalObject: 'global',
-        library: {
-          name: `pageModule@${clientId}`,
-          type: 'global',
-        },
-        filename: `${bundleId}.bundle.js`,
-        path: '/dist',
-      },
-      module: {
-        rules: [
-          {
-            test: /\.tsx?$/,
-            use: 'ts-loader',
-            exclude: /node_modules/,
+  const { pageModulePath } = api
+  const pageModuleBundlerEventChannel = eventChannel<PageModuleBundlerEvent>(
+    (emitPageModuleBundlerEvent) => {
+      const bundleId = Math.random()
+      const pageModuleBundler = createBundler({
+        mode: 'development',
+        entry: pageModulePath,
+        output: {
+          globalObject: 'global',
+          library: {
+            name: `pageModule@${pageModulePath}`,
+            type: 'global',
           },
-        ],
-      },
-      resolve: {
-        extensions: ['.tsx', '.ts', '.js'],
-      },
-      externals: {
-        react: 'react',
-        ['react-jss']: 'react-jss',
+          filename: `${bundleId}.bundle.js`,
+          path: '/dist',
+        },
+        module: {
+          rules: [
+            {
+              test: /\.tsx?$/,
+              use: [
+                {
+                  loader: 'ts-loader',
+                  options: {
+                    configFile: 'devPage.tsconfig.json',
+                  },
+                },
+              ],
+              exclude: /node_modules/,
+            },
+          ],
+        },
+        resolve: {
+          extensions: ['.tsx', '.ts', '.js'],
+        },
+        externals: {
+          react: 'react',
+          ['react-jss']: 'react-jss',
+        },
+      })
+      pageModuleBundler.outputFileSystem = new MemoryFileSystem()
+      pageModuleBundler.watch(
+        { aggregateTimeout: 100 },
+        (buildError, bundleStats) => {
+          const minimalBundleStats = bundleStats?.toJson('minimal')
+          console.log(bundleStats?.toString('errors-warnings'))
+          if (minimalBundleStats?.errorsCount === 0) {
+            pageModuleBundler.outputFileSystem.readFile(
+              `/dist/${bundleId}.bundle.js`,
+              (readError, pageModuleBundleData) => {
+                const pageModuleBundle = pageModuleBundleData?.toString()
+                if (pageModuleBundle) {
+                  emitPageModuleBundlerEvent({
+                    eventType: `pageModuleBundled@${pageModulePath}`,
+                    eventPayload: {
+                      pageModuleBundle,
+                    },
+                  })
+                } else {
+                  throw new Error('wtf? pageModuleBundle')
+                }
+              }
+            )
+          }
+        }
+      )
+      return () => {}
+    },
+    SagaBuffer.expanding(1)
+  )
+  return { pageModuleBundlerEventChannel }
+}
+
+interface PageModuleUpdateHandlerApi
+  extends BrandedReturnType<typeof importJssThemeModule>,
+    BrandedReturnType<typeof initializePlaywright>,
+    BrandedReturnType<typeof getPageModuleBundlerEventChannel>,
+    Pick<Child<ClientBundleServedAction, 'actionPayload'>, 'pageModulePath'> {}
+
+function* pageModuleUpdateHandler(api: PageModuleUpdateHandlerApi) {
+  const {
+    pageModuleBundlerEventChannel,
+    pageModulePath,
+    jssThemeModule,
+    playwrightBrowserContext,
+  } = api
+  while (true) {
+    const { eventPayload } = yield* Effect.takeEvent(
+      pageModuleBundlerEventChannel
+    )
+    const { pageModuleBundle } = eventPayload
+    const { targetPageModule } = yield* Effect.call(decodeTargetPageModule, {
+      pageModulePath,
+      pageModuleBundle,
+    })
+    yield put<PageModuleUpdatedAction>({
+      type: 'pageModuleUpdated',
+      actionPayload: {
+        pageModulePath,
+        updatedPageModule: targetPageModule,
       },
     })
-    pageModuleBundler.outputFileSystem = new MemoryFileSystem()
-    pageModuleBundler.watch(
-      { aggregateTimeout: 100 },
-      (buildError, bundleStats) => {
-        const minimalBundleStats = bundleStats?.toJson('minimal')
-        console.log(bundleStats?.toString('errors-warnings'))
-        if (minimalBundleStats?.errorsCount === 0) {
-          pageModuleBundler.outputFileSystem.readFile(
-            `/dist/${bundleId}.bundle.js`,
-            (readError, pageModuleBundleData) => {
-              const pageModuleBundle = pageModuleBundleData?.toString()
-              if (pageModuleBundle) {
-                emitPageModuleBundlerEvent({
-                  eventType: `pageModuleBundled@${clientId}`,
-                  eventPayload: {
-                    pageModuleBundle,
-                  },
-                })
-              } else {
-                throw new Error('wtf? pageModuleBundle')
-              }
-            }
-          )
-        }
-      }
-    )
-    return () => {}
-  }, buffers.expanding(1))
-}
-
-interface GetInitializeClientHandlerApi {
-  clientBundle: string
-  pageRouteToPageModulePathMap: SagaReturnType<
-    typeof mapPageRouteToPageModulePath
-  >
-  jssThemeModule: JssThemeModule
-  playwrightContext: Playwright.BrowserContext
-}
-
-function getInitializeClientHandler(api: GetInitializeClientHandlerApi) {
-  const {
-    clientBundle,
-    pageRouteToPageModulePathMap,
-    jssThemeModule,
-    playwrightContext,
-  } = api
-  return function* ({
-    actionPayload,
-  }: {
-    type: 'initializeClient'
-    actionPayload: any
-  }) {
-    const { requestResponse, requestRoute } = actionPayload
-    const pageModulePath =
-      pageRouteToPageModulePathMap[requestRoute]?.pageModulePath
-    if (pageModulePath) {
-      const clientId = Math.random()
-      requestResponse.statusCode = 200
-      requestResponse.setHeader('Content-Type', 'text/html')
-      requestResponse.end(
-        ReactDOMServer.renderToStaticMarkup(
-          <html lang={'en'}>
-            <head>
-              <meta charSet={'utf-8'} />
-            </head>
-            <body>
-              <div id={'clientId'} style={{ display: 'none' }}>
-                {clientId}
-              </div>
-              <script
-                dangerouslySetInnerHTML={{
-                  __html: clientBundle,
-                }}
-              />
-            </body>
-          </html>
-        )
-      )
-      const pageModuleBundlerEventChannel = getPageModuleBundlerEventChannel({
-        pageModulePath,
-        clientId,
-      })
-      const clientRegisteredAction = yield* Effects.take<{
-        type: string // `clientRegistered@<number>`
-        actionPayload: { clientWebSocket: WebSocket }
-      }>(`clientRegistered@${clientId}`)
-      const { clientWebSocket } = clientRegisteredAction.actionPayload
-      yield takeLatest(
-        pageModuleBundlerEventChannel,
-        getPageModuleBundlerEventHandler({
+    const serverState = yield* Effect.select((serverState) => serverState)
+    const activeClients = getActiveClients({ pageModulePath, serverState })
+    if (activeClients.htmlClients.length > 0) {
+      const loadPageHtmlContentMessage = yield* memoizedGeneratePageHtmlContent(
+        {
+          targetPageModule,
           jssThemeModule,
-          playwrightContext,
-          requestRoute,
-          clientWebSocket,
-          clientId,
-        })
+        }
       )
-    } else {
-      requestResponse.statusCode = 404
-      requestResponse.end()
+      activeClients.htmlClients.forEach((someActiveHtmlClient) => {
+        someActiveHtmlClient.clientWebSocket.send(loadPageHtmlContentMessage)
+      })
+    }
+    if (activeClients.pdfClients.length > 0) {
+      const loadPagePdfContentMessage = yield* memoizedGeneratePagePdfContent({
+        jssThemeModule,
+        playwrightBrowserContext,
+        targetPageModule,
+      })
+      activeClients.pdfClients.forEach((someActivePdfClient) => {
+        someActivePdfClient.clientWebSocket.send(loadPagePdfContentMessage)
+      })
     }
   }
 }
 
-type PageModuleBundlerEvent = EventBase<string, { pageModuleBundle: string }>
+interface DecodePageModuleApi
+  extends Pick<PageModuleUpdateHandlerApi, 'pageModulePath'>,
+    Pick<Child<PageModuleBundlerEvent, 'eventPayload'>, 'pageModuleBundle'> {}
 
-interface GetPageModuleBundlerEventHandlerApi {
-  clientId: number
-  requestRoute: string
-  jssThemeModule: JssThemeModule
-  playwrightContext: Playwright.BrowserContext
-  clientWebSocket: WebSocket
-}
-
-function getPageModuleBundlerEventHandler(
-  api: GetPageModuleBundlerEventHandlerApi
-) {
-  const {
-    clientId,
-    requestRoute,
-    jssThemeModule,
-    playwrightContext,
-    clientWebSocket,
-  } = api
-  return function* ({ eventPayload }: PageModuleBundlerEvent) {
-    const { pageModuleBundle } = eventPayload
-    const { PageContent, htmlTitle, htmlDescription } = yield* Effects.call(
-      decodePageModule,
-      { pageModuleBundle, clientId }
-    )
-    if (requestRoute.endsWith('.pdf')) {
-      const pageHtmlString = getPageHtmlStringWithInlineStyles({
-        PageContent,
-        htmlTitle,
-        htmlDescription,
-        jssTheme: {
-          ...jssThemeModule.default,
-          pdfMode: true,
-        },
-      })
-      const pagePdfBuffer = yield* Effects.call(renderPagePdf, {
-        playwrightContext,
-        pageHtmlString,
-      })
-      clientWebSocket.send(pagePdfBuffer)
-    } else {
-      const { pageBodyInnerHtmlString, styleSheetString } =
-        getPageBodyInnerHtmlStringAndStyleSheetString({
-          PageContent,
-          sheetsRegistry: new SheetsRegistry(),
-          jssTheme: jssThemeModule.default,
-        })
-      clientWebSocket.send(
-        JSON.stringify({
-          messageType: 'loadHtmlContent',
-          messagePayload: {
-            pageBodyInnerHtmlString,
-            styleSheetString,
-          },
-        })
-      )
-    }
-  }
-}
-
-interface DecodePageModuleApi {
-  pageModuleBundle: string
-  clientId: number
-}
-
-async function decodePageModule(api: DecodePageModuleApi) {
-  const { pageModuleBundle, clientId } = api
+async function decodeTargetPageModule(api: DecodePageModuleApi) {
+  const { pageModuleBundle, pageModulePath } = api
   ;(() => eval(pageModuleBundle))()
   const targetPageModule = await decodeData<PageModule>({
     targetCodec: PageModuleCodec,
-    inputData: (global as any)[`pageModule@${clientId}`],
+    inputData: (global as any)[`pageModule@${pageModulePath}`],
   })
-  return targetPageModule.default
+  return { targetPageModule }
 }
 
-interface RenderPagePdfApi {
-  playwrightContext: Playwright.BrowserContext
-  pageHtmlString: string
+interface GetActiveClientsApi
+  extends Pick<PageModuleUpdateHandlerApi, 'pageModulePath'> {
+  serverState: ServerState
+}
+
+function getActiveClients(api: GetActiveClientsApi) {
+  const { serverState, pageModulePath } = api
+  const { registeredClients } = serverState
+  return Object.values(registeredClients).reduce<{
+    htmlClients: Array<
+      ChildValue<GetActiveClientsApi['serverState']['registeredClients']>
+    >
+    pdfClients: Array<
+      ChildValue<GetActiveClientsApi['serverState']['registeredClients']>
+    >
+  }>(
+    (result, someRegisteredClient) => {
+      const registeredClientIsActive =
+        pageModulePath === someRegisteredClient.pageModulePath
+      const activeClientWantsPdf =
+        registeredClientIsActive &&
+        someRegisteredClient.clientRoute.endsWith('.pdf')
+      if (activeClientWantsPdf) {
+        result.pdfClients.push(someRegisteredClient)
+      } else if (registeredClientIsActive) {
+        result.htmlClients.push(someRegisteredClient)
+      }
+      return result
+    },
+    {
+      htmlClients: [],
+      pdfClients: [],
+    }
+  )
+}
+
+interface GeneratePageHtmlContentApi
+  extends BrandedReturnType<typeof importJssThemeModule>,
+    BrandedReturnType<typeof decodeTargetPageModule> {}
+
+function* generatePageHtmlContent(api: GeneratePageHtmlContentApi) {
+  const { targetPageModule, jssThemeModule } = api
+  const { PageContent } = targetPageModule.default
+  const { pageBodyInnerHtmlString, styleSheetString } =
+    getPageBodyInnerHtmlStringAndStyleSheetString({
+      PageContent,
+      sheetsRegistry: new SheetsRegistry(),
+      jssTheme: jssThemeModule.default,
+    })
+  return JSON.stringify({
+    messageType: 'loadHtmlContent',
+    messagePayload: {
+      pageBodyInnerHtmlString,
+      styleSheetString,
+    },
+  })
+}
+
+interface GeneratePagePdfContentApi
+  extends BrandedReturnType<typeof importJssThemeModule>,
+    BrandedReturnType<typeof initializePlaywright>,
+    BrandedReturnType<typeof decodeTargetPageModule> {}
+
+function* generatePagePdfContent(api: GeneratePagePdfContentApi) {
+  const { targetPageModule, jssThemeModule, playwrightBrowserContext } = api
+  const { PageContent, htmlTitle, htmlDescription, pdfFileName } =
+    targetPageModule.default
+  const pageHtmlString = getPageHtmlStringWithInlineStyles({
+    PageContent,
+    htmlTitle,
+    htmlDescription,
+    jssTheme: {
+      ...jssThemeModule.default,
+      pdfMode: true,
+    },
+  })
+  const { pagePdfBuffer } = yield* Effect.call(renderPagePdf, {
+    playwrightBrowserContext,
+    pageHtmlString,
+  })
+  const newPagePdfRoute = `/tempPdf/${pdfFileName}.${Math.random()}.pdf`
+  yield put<PagePdfRenderedAction>({
+    type: 'pagePdfRendered',
+    actionPayload: {
+      pagePdfBuffer,
+      pagePdfRoute: newPagePdfRoute,
+    },
+  })
+  return JSON.stringify({
+    messageType: 'loadPdfContent',
+    messagePayload: {
+      pagePdfRoute: newPagePdfRoute,
+    },
+  })
+}
+
+interface RenderPagePdfApi
+  extends BrandedReturnType<typeof initializePlaywright> {
+  pageHtmlString: ReturnType<typeof getPageHtmlStringWithInlineStyles>
 }
 
 async function renderPagePdf(api: RenderPagePdfApi) {
-  const { playwrightContext, pageHtmlString } = api
-  const playwrightPage = await playwrightContext.newPage()
+  const { playwrightBrowserContext, pageHtmlString } = api
+  const playwrightPage = await playwrightBrowserContext.newPage()
   await playwrightPage.setContent(pageHtmlString)
   const bodyHandle = await playwrightPage.$('body')
   if (!bodyHandle) throw new Error('wtf? bodyHandle')
@@ -542,10 +887,160 @@ async function renderPagePdf(api: RenderPagePdfApi) {
     height: bodyBoundingBox.height + 1,
     width: 832,
   })
-  return pagePdfBuffer
+  return { pagePdfBuffer }
+}
+
+type ServerAction =
+  | ClientBundleServedAction
+  | ClientRegisteredAction
+  | PageModuleBundlerCreatedAction
+  | PageModuleUpdatedAction
+  | PagePdfRenderedAction
+
+interface ClientBundleServedAction
+  extends ActionBase<
+    'clientBundleServed',
+    {
+      pageModulePath: string
+    }
+  > {}
+
+interface ClientRegisteredAction
+  extends ActionBase<
+    'clientRegistered',
+    {
+      clientId: number
+      clientRoute: string
+      clientWebSocket: WebSocket
+      pageModulePath: string
+    }
+  > {}
+
+interface PageModuleBundlerCreatedAction
+  extends ActionBase<
+    'pageModuleBundlerCreated',
+    {
+      pageModulePath: string
+      pageModuleBundlerEventChannel: EventChannel<PageModuleBundlerEvent>
+    }
+  > {}
+
+interface PageModuleUpdatedAction
+  extends ActionBase<
+    'pageModuleUpdated',
+    {
+      pageModulePath: string
+      updatedPageModule: PageModule
+    }
+  > {}
+
+interface PagePdfRenderedAction
+  extends ActionBase<
+    'pagePdfRendered',
+    {
+      pagePdfBuffer: Buffer
+      pagePdfRoute: string
+    }
+  > {}
+
+interface ActionBase<ActionType extends string, ActionPayload extends object>
+  extends Action<ActionType> {
+  actionPayload: ActionPayload
 }
 
 interface EventBase<EventType extends string, EventPayload extends object> {
   eventType: EventType
   eventPayload: EventPayload
+}
+
+interface MessageBase<
+  MessageType extends string,
+  MessagePayload extends object
+> {
+  messageType: MessageType
+  messagePayload: MessagePayload
+}
+
+type Child<
+  SomeObject extends object,
+  SomeKey extends keyof SomeObject
+> = SomeObject[SomeKey]
+
+type BrandedReturnType<
+  SomeFunction extends (...args: any[]) => object,
+  SomeReturnKey extends keyof SagaReturnType<SomeFunction> = keyof SagaReturnType<SomeFunction>
+> = Pick<SagaReturnType<SomeFunction>, SomeReturnKey>
+
+type ChildValue<SomeObject extends object> = SomeObject[keyof SomeObject]
+
+type GetTypedEffectsApi = void
+
+function getTypedEffects<SomeStoreState>(api: GetTypedEffectsApi) {
+  return {
+    call: function* <SomeFunction extends (...args: any[]) => any>(
+      someFunction: SomeFunction,
+      ...functionArgs: Parameters<SomeFunction>
+    ): Generator<unknown, SagaReturnType<SomeFunction>> {
+      return (yield call<SomeFunction>(
+        someFunction,
+        ...functionArgs
+      )) as SagaReturnType<SomeFunction>
+    },
+    takeAction: function* <SomeAction extends Action<any>>(
+      actionPattern: SomeAction['type']
+    ) {
+      return (yield take<SomeAction>(actionPattern)) as SomeAction
+    },
+    takeEvent: function* <SomeEvent extends EventBase<string, any>>(
+      takeableChannel: TakeableChannel<SomeEvent>
+    ) {
+      return (yield take<SomeEvent>(takeableChannel)) as SomeEvent
+    },
+    select: function* <
+      SomeFunction extends (state: SomeStoreState, ...args: any[]) => any
+    >(
+      storeSelector: SomeFunction,
+      ...maybeArgs: Tail<Parameters<SomeFunction>>
+    ) {
+      return (yield select(storeSelector, ...maybeArgs)) as ReturnType<
+        typeof storeSelector
+      >
+    },
+  }
+}
+
+interface MemoizeSagaApi<SomeSaga extends (...args: any[]) => Generator> {
+  baseSaga: SomeSaga
+  checkShouldRun: (api: {
+    previousArgs: Parameters<SomeSaga>
+    currentArgs: Parameters<SomeSaga>
+  }) => boolean
+}
+
+function memoizeSaga<SomeSaga extends (...args: any[]) => Generator>(
+  api: MemoizeSagaApi<SomeSaga>
+) {
+  const { checkShouldRun, baseSaga } = api
+  let previousState: {
+    previousArgs: Parameters<SomeSaga>
+    previousResult: SagaReturnType<SomeSaga>
+  } | null = null
+  return function* (...sagaArgs: Parameters<SomeSaga>) {
+    if (
+      !previousState ||
+      checkShouldRun({
+        previousArgs: previousState.previousArgs,
+        currentArgs: sagaArgs,
+      })
+    ) {
+      const sagaResult = yield* baseSaga(...sagaArgs)
+      previousState = {
+        previousArgs: sagaArgs,
+        previousResult: sagaResult,
+      }
+      return sagaResult
+    } else {
+      return previousState.previousResult
+    }
+  }
 }

@@ -10,5 +10,6 @@
     "forceConsistentCasingInFileNames": true,
     "jsx": "react",
     "noUncheckedIndexedAccess": true
-  }
+  },
+  "exclude": ["node_modules", "**/source/scripts"]
 }

@@ -47,5 +47,5 @@ const getValidationErrorSpecifics = (
   api: GetValidationErrorSpecificsApi
 ): ContextEntry => {
   const { validationError } = api
-  return validationError.context[validationError.context.length - 1]
+  return validationError.context[validationError.context.length - 1]!
 }

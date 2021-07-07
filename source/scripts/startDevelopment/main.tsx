@@ -60,8 +60,8 @@ interface ServerState {
     [clientId: number]: {
       clientId: number
       clientRoute: string
-      pageModulePath: string
       clientWebSocket: WebSocket
+      pageModulePath: string
     }
   }
   pageModuleBundlerEventChannels: {
@@ -93,6 +93,11 @@ function serverReducer(
       return serverState
     case 'clientRegistered':
       return handleClientRegistered(serverState, someServerAction.actionPayload)
+    case 'clientUnregistered':
+      return handleClientUnregistered(
+        serverState,
+        someServerAction.actionPayload
+      )
     case 'pageModuleBundlerCreated':
       return handlePageModuleBundlerCreated(
         serverState,
@@ -123,6 +128,21 @@ function handleClientRegistered(
         ...actionPayload,
       },
     },
+  }
+}
+
+function handleClientUnregistered(
+  serverState: ServerState,
+  actionPayload: ClientUnregisteredAction['actionPayload']
+): ServerState {
+  const { clientId } = actionPayload
+  const nextRegisteredClients = {
+    ...serverState.registeredClients,
+  }
+  delete nextRegisteredClients[clientId]
+  return {
+    ...serverState,
+    registeredClients: nextRegisteredClients,
   }
 }
 
@@ -187,10 +207,15 @@ function main() {
   const pageModuleGlob = './source/pages/**/*.page.tsx'
   const jssThemeModulePath = './source/siteTheme.ts'
   const sagaMiddleware = createSagaMiddleware()
-  createStore<ServerState, ServerAction, { dispatch: unknown }, {}>(
-    serverReducer,
-    applyMiddleware(sagaMiddleware)
-  )
+  const serverStore = createStore<
+    ServerState,
+    ServerAction,
+    { dispatch: unknown },
+    {}
+  >(serverReducer, applyMiddleware(sagaMiddleware))
+  serverStore.subscribe(() => {
+    console.log(serverStore.getState()['registeredClients'])
+  })
   sagaMiddleware.run(developmentServer, {
     currentWorkingDirectoryAbsolutePath,
     pageModuleGlob,
@@ -353,7 +378,7 @@ async function mapPageRouteToPageModulePath(
     })
   )
   const pageRouteToPageModulePathMap = adjustedPageModules.reduce<{
-    [pageRoute: string]: { pageModulePath: string } | undefined
+    [pageRoute: string]: { pageModulePath: string }
   }>((result, someAdjustedPageModule) => {
     result[someAdjustedPageModule.pageRoute] = {
       pageModulePath: someAdjustedPageModule.pageModulePath,
@@ -370,7 +395,7 @@ async function mapPageRouteToPageModulePath(
 
 interface GetClientEventChannelApi extends Pick<ClientSagaApi, 'serverPort'> {}
 
-type ClientEvent = ClientRequestEvent | ClientMessageEvent
+type ClientEvent = ClientRequestEvent | ClientMessageEvent | ClientClosedEvent
 
 interface ClientRequestEvent
   extends EventBase<
@@ -385,18 +410,23 @@ interface ClientMessageEvent
   extends EventBase<
     'clientMessage',
     {
+      clientId: number
       clientWebSocket: WebSocket
       clientMessage: ClientMessage
     }
   > {}
 
-type ClientMessage = MessageBase<
-  'registerClient',
-  {
-    clientId: string
-    clientRoute: string
-  }
->
+interface ClientClosedEvent
+  extends EventBase<'clientClosed', { clientId: number }> {}
+
+interface ClientMessage
+  extends MessageBase<
+    'registerClient',
+    {
+      clientId: string
+      clientRoute: string
+    }
+  > {}
 
 function getClientEventChannel(api: GetClientEventChannelApi) {
   const { serverPort } = api
@@ -417,10 +447,20 @@ function getClientEventChannel(api: GetClientEventChannelApi) {
       server: httpServer,
     })
     webSocketServer.on('connection', (clientWebSocket) => {
+      const clientId = Math.random()
+      clientWebSocket.on('close', () => {
+        emitClientEvent({
+          eventType: 'clientClosed',
+          eventPayload: {
+            clientId,
+          },
+        })
+      })
       clientWebSocket.on('message', (clientMessage: string) => {
         emitClientEvent({
           eventType: 'clientMessage',
           eventPayload: {
+            clientId,
             clientWebSocket,
             clientMessage: JSON.parse(clientMessage),
           },
@@ -428,7 +468,7 @@ function getClientEventChannel(api: GetClientEventChannelApi) {
       })
     })
     httpServer.listen(serverPort, () => {
-      console.log('ready...')
+      console.log('server ready...')
     })
     return () => {}
   }, SagaBuffer.expanding(1))
@@ -455,6 +495,11 @@ function* clientEventHandler(api: ClientEventHandlerApi) {
       case 'clientMessage':
         yield* clientMessageHandler({
           pageRouteToPageModulePathMap,
+          ...clientEvent.eventPayload,
+        })
+        break
+      case 'clientClosed':
+        yield* clientClosedHandler({
           ...clientEvent.eventPayload,
         })
         break
@@ -491,9 +536,6 @@ function* clientRequestHandler(api: ClientRequestHandlerApi) {
             <meta charSet={'utf-8'} />
           </head>
           <body>
-            <div id={'clientId'} style={{ display: 'none' }}>
-              {Math.random()}
-            </div>
             <script
               dangerouslySetInnerHTML={{
                 __html: clientBundle,
@@ -524,20 +566,25 @@ interface ClientMessageHandlerApi
     Child<ClientMessageEvent, 'eventPayload'> {}
 
 function* clientMessageHandler(api: ClientMessageHandlerApi) {
-  const { clientMessage, pageRouteToPageModulePathMap, clientWebSocket } = api
+  const {
+    clientMessage,
+    pageRouteToPageModulePathMap,
+    clientId,
+    clientWebSocket,
+  } = api
   switch (clientMessage.messageType) {
     case 'registerClient':
-      const { clientId, clientRoute } = clientMessage.messagePayload
+      const { clientRoute } = clientMessage.messagePayload
       const pageModulePath =
         pageRouteToPageModulePathMap[clientRoute]?.pageModulePath
       if (pageModulePath) {
         yield put<ClientRegisteredAction>({
           type: 'clientRegistered',
           actionPayload: {
+            clientId,
             clientWebSocket,
             clientRoute,
             pageModulePath,
-            clientId: Number(clientId),
           },
         })
       } else {
@@ -545,6 +592,19 @@ function* clientMessageHandler(api: ClientMessageHandlerApi) {
       }
       break
   }
+}
+
+interface ClientClosedHandlerApi
+  extends Child<ClientClosedEvent, 'eventPayload'> {}
+
+function* clientClosedHandler(api: ClientClosedHandlerApi) {
+  const { clientId } = api
+  yield put<ClientUnregisteredAction>({
+    type: 'clientUnregistered',
+    actionPayload: {
+      clientId,
+    },
+  })
 }
 
 interface ClientRegisteredHandlerApi
@@ -573,13 +633,8 @@ function* clientRegisteredHandler(api: ClientRegisteredHandlerApi) {
             targetPageModule,
           })
       clientWebSocket.send(loadPageContentServerMessage)
-    } else {
-      // first client
     }
-    //
-    // else {
-    //   throw new Error(`wtf? activePageModules[${pageModulePath}]`)
-    // }
+    // else first client
   }
 }
 
@@ -893,6 +948,7 @@ async function renderPagePdf(api: RenderPagePdfApi) {
 type ServerAction =
   | ClientBundleServedAction
   | ClientRegisteredAction
+  | ClientUnregisteredAction
   | PageModuleBundlerCreatedAction
   | PageModuleUpdatedAction
   | PagePdfRenderedAction
@@ -913,6 +969,14 @@ interface ClientRegisteredAction
       clientRoute: string
       clientWebSocket: WebSocket
       pageModulePath: string
+    }
+  > {}
+
+interface ClientUnregisteredAction
+  extends ActionBase<
+    'clientUnregistered',
+    {
+      clientId: number
     }
   > {}
 

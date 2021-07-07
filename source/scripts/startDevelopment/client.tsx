@@ -15,7 +15,6 @@ function DevelopmentApp() {
         JSON.stringify({
           messageType: 'registerClient',
           messagePayload: {
-            clientId: document.getElementById('clientId')?.innerText,
             clientRoute: window.location.pathname,
           },
         })

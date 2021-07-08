@@ -31,7 +31,7 @@
     "ws": "^7.5.1"
   },
   "scripts": {
-    "develop": "ts-node --transpile-only ./source/scripts/startDevelopment/main.tsx",
+    "develop": "ts-node --transpile-only ./source/scripts/startDevelopment/main.ts",
     "build": "ts-node ./source/scripts/generateSiteAssets/main.ts",
     "deploy": "firebase deploy --token $FIREBASE_TOKEN",
     "serve": "http-server -c-1 -p 3000 ./public"

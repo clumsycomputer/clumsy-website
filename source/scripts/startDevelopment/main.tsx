@@ -11,7 +11,6 @@ import { SheetsRegistry } from 'react-jss'
 import { Action, applyMiddleware, createStore } from 'redux'
 import createSagaMiddleware, {
   buffers as SagaBuffer,
-  EventChannel,
   eventChannel,
   TakeableChannel,
 } from 'redux-saga'
@@ -34,6 +33,28 @@ import {
 import { importLocalModule } from '../helpers/importLocalModule'
 import { JssThemeModule, JssThemeModuleCodec } from '../helpers/JssThemeModule'
 import { PageModule, PageModuleCodec } from '../helpers/PageModule'
+import {
+  BrandedReturnType,
+  ChildValue,
+  ClientBundleServedAction,
+  ClientClosedEvent,
+  ClientEvent,
+  ClientMessageCodec,
+  ClientMessageEvent,
+  ClientRegisteredAction,
+  ClientRequestEvent,
+  ClientUnregisteredAction,
+  EventBase,
+  LoadPageHtmlContentMessage,
+  LoadPagePdfContentMessage,
+  PageModuleBundlerCreatedAction,
+  PageModuleBundlerEvent,
+  PageModuleUpdatedAction,
+  PagePdfRenderedAction,
+  PickChild,
+  ServerAction,
+  ServerState,
+} from './helpers/types'
 ;(global as any)['react'] = React
 ;(global as any)['react-jss'] = ReactJss
 
@@ -54,26 +75,6 @@ const memoizedGeneratePagePdfContent = memoizeSaga({
     currentArgs: [currentApi],
   }) => previousApi.targetPageModule !== currentApi.targetPageModule,
 })
-
-interface ServerState {
-  registeredClients: {
-    [clientId: number]: {
-      clientId: number
-      clientRoute: string
-      clientWebSocket: WebSocket
-      pageModulePath: string
-    }
-  }
-  pageModuleBundlerEventChannels: {
-    [pageModulePath: string]: EventChannel<PageModuleBundlerEvent>
-  }
-  activePageModules: {
-    [pageModulePath: string]: PageModule
-  }
-  pagePdfBuffers: {
-    [tempPdfRoute: string]: Buffer
-  }
-}
 
 function serverReducer(
   serverState = {
@@ -188,6 +189,7 @@ function handlePagePdfRendered(
 main()
 
 function main() {
+  console.log('starting server...')
   const currentWorkingDirectoryAbsolutePath = process.cwd()
   Dotenv.config({
     path: Path.join(
@@ -308,12 +310,19 @@ function bundleClient() {
     const clientBundler = createBundler({
       mode: 'development',
       devtool: false,
-      entry: Path.resolve(__dirname, './client.tsx'),
+      entry: Path.resolve(__dirname, './client/App.tsx'),
       module: {
         rules: [
           {
             test: /\.tsx?$/,
-            use: 'ts-loader',
+            use: [
+              {
+                loader: 'ts-loader',
+                options: {
+                  configFile: Path.resolve(__dirname, './client/tsconfig.json'),
+                },
+              },
+            ],
             exclude: /node_modules/,
           },
         ],
@@ -382,39 +391,6 @@ async function mapPageRouteToPageModulePath(
 
 interface GetClientEventChannelApi extends Pick<ClientSagaApi, 'serverPort'> {}
 
-type ClientEvent = ClientRequestEvent | ClientMessageEvent | ClientClosedEvent
-
-interface ClientRequestEvent
-  extends EventBase<
-    'clientRequest',
-    {
-      requestRoute: string
-      requestResponse: Http.ServerResponse
-    }
-  > {}
-
-interface ClientMessageEvent
-  extends EventBase<
-    'clientMessage',
-    {
-      clientId: number
-      clientWebSocket: WebSocket
-      clientMessage: ClientMessage
-    }
-  > {}
-
-interface ClientClosedEvent
-  extends EventBase<'clientClosed', { clientId: number }> {}
-
-interface ClientMessage
-  extends MessageBase<
-    'registerClient',
-    {
-      clientId: string
-      clientRoute: string
-    }
-  > {}
-
 function getClientEventChannel(api: GetClientEventChannelApi) {
   const { serverPort } = api
   const clientEventChannel = eventChannel<ClientEvent>((emitClientEvent) => {
@@ -443,13 +419,17 @@ function getClientEventChannel(api: GetClientEventChannelApi) {
           },
         })
       })
-      clientWebSocket.on('message', (clientMessage: string) => {
+      clientWebSocket.on('message', async (clientMessageData: string) => {
+        const clientMessage = await decodeData({
+          inputData: JSON.parse(clientMessageData),
+          targetCodec: ClientMessageCodec,
+        })
         emitClientEvent({
           eventType: 'clientMessage',
           eventPayload: {
             clientId,
             clientWebSocket,
-            clientMessage: JSON.parse(clientMessage),
+            clientMessage,
           },
         })
       })
@@ -499,7 +479,7 @@ interface ClientRequestHandlerApi
       ClientEventHandlerApi,
       'clientBundle' | 'pageRouteToPageModulePathMap'
     >,
-    Child<ClientRequestEvent, 'eventPayload'> {}
+    PickChild<ClientRequestEvent, 'eventPayload'> {}
 
 function* clientRequestHandler(api: ClientRequestHandlerApi) {
   const {
@@ -549,7 +529,7 @@ function* clientRequestHandler(api: ClientRequestHandlerApi) {
 
 interface ClientMessageHandlerApi
   extends Pick<ClientEventHandlerApi, 'pageRouteToPageModulePathMap'>,
-    Child<ClientMessageEvent, 'eventPayload'> {}
+    PickChild<ClientMessageEvent, 'eventPayload'> {}
 
 function* clientMessageHandler(api: ClientMessageHandlerApi) {
   const {
@@ -580,7 +560,7 @@ function* clientMessageHandler(api: ClientMessageHandlerApi) {
 }
 
 interface ClientClosedHandlerApi
-  extends Child<ClientClosedEvent, 'eventPayload'> {}
+  extends PickChild<ClientClosedEvent, 'eventPayload'> {}
 
 function* clientClosedHandler(api: ClientClosedHandlerApi) {
   const { clientId } = api
@@ -618,7 +598,6 @@ function* clientRegisteredHandler(api: ClientRegisteredHandlerApi) {
           })
       clientWebSocket.send(loadPageContentServerMessage)
     }
-    // else first client
   }
 }
 
@@ -661,11 +640,6 @@ function* pageBundlerSaga(api: PageBundlerSagaApi) {
 interface GetPageModuleBundlerEventChannelApi {
   pageModulePath: string
 }
-
-type PageModuleBundlerEvent = EventBase<
-  `pageModuleBundled@${string}`,
-  { pageModuleBundle: string }
->
 
 function getPageModuleBundlerEventChannel(
   api: GetPageModuleBundlerEventChannelApi
@@ -747,7 +721,10 @@ interface PageModuleUpdateHandlerApi
   extends BrandedReturnType<typeof importJssThemeModule>,
     BrandedReturnType<typeof initializePlaywright>,
     BrandedReturnType<typeof getPageModuleBundlerEventChannel>,
-    Pick<Child<ClientBundleServedAction, 'actionPayload'>, 'pageModulePath'> {}
+    Pick<
+      PickChild<ClientBundleServedAction, 'actionPayload'>,
+      'pageModulePath'
+    > {}
 
 function* pageModuleUpdateHandler(api: PageModuleUpdateHandlerApi) {
   const {
@@ -800,7 +777,10 @@ function* pageModuleUpdateHandler(api: PageModuleUpdateHandlerApi) {
 
 interface DecodePageModuleApi
   extends Pick<PageModuleUpdateHandlerApi, 'pageModulePath'>,
-    Pick<Child<PageModuleBundlerEvent, 'eventPayload'>, 'pageModuleBundle'> {}
+    Pick<
+      PickChild<PageModuleBundlerEvent, 'eventPayload'>,
+      'pageModuleBundle'
+    > {}
 
 async function decodeTargetPageModule(api: DecodePageModuleApi) {
   const { pageModuleBundle, pageModulePath } = api
@@ -862,12 +842,12 @@ function* generatePageHtmlContent(api: GeneratePageHtmlContentApi) {
       jssTheme: jssThemeModule.default,
     })
   return JSON.stringify({
-    messageType: 'loadHtmlContent',
+    messageType: 'loadPageHtmlContent',
     messagePayload: {
       pageBodyInnerHtmlString,
       styleSheetString,
     },
-  })
+  } as LoadPageHtmlContentMessage)
 }
 
 interface GeneratePagePdfContentApi
@@ -901,11 +881,11 @@ function* generatePagePdfContent(api: GeneratePagePdfContentApi) {
     },
   })
   return JSON.stringify({
-    messageType: 'loadPdfContent',
+    messageType: 'loadPagePdfContent',
     messagePayload: {
       pagePdfRoute: newPagePdfRoute,
     },
-  })
+  } as LoadPagePdfContentMessage)
 }
 
 interface RenderPagePdfApi
@@ -928,98 +908,6 @@ async function renderPagePdf(api: RenderPagePdfApi) {
   })
   return { pagePdfBuffer }
 }
-
-type ServerAction =
-  | ClientBundleServedAction
-  | ClientRegisteredAction
-  | ClientUnregisteredAction
-  | PageModuleBundlerCreatedAction
-  | PageModuleUpdatedAction
-  | PagePdfRenderedAction
-
-interface ClientBundleServedAction
-  extends ActionBase<
-    'clientBundleServed',
-    {
-      pageModulePath: string
-    }
-  > {}
-
-interface ClientRegisteredAction
-  extends ActionBase<
-    'clientRegistered',
-    {
-      clientId: number
-      clientRoute: string
-      clientWebSocket: WebSocket
-      pageModulePath: string
-    }
-  > {}
-
-interface ClientUnregisteredAction
-  extends ActionBase<
-    'clientUnregistered',
-    {
-      clientId: number
-    }
-  > {}
-
-interface PageModuleBundlerCreatedAction
-  extends ActionBase<
-    'pageModuleBundlerCreated',
-    {
-      pageModulePath: string
-      pageModuleBundlerEventChannel: EventChannel<PageModuleBundlerEvent>
-    }
-  > {}
-
-interface PageModuleUpdatedAction
-  extends ActionBase<
-    'pageModuleUpdated',
-    {
-      pageModulePath: string
-      updatedPageModule: PageModule
-    }
-  > {}
-
-interface PagePdfRenderedAction
-  extends ActionBase<
-    'pagePdfRendered',
-    {
-      pagePdfBuffer: Buffer
-      pagePdfRoute: string
-    }
-  > {}
-
-interface ActionBase<ActionType extends string, ActionPayload extends object>
-  extends Action<ActionType> {
-  actionPayload: ActionPayload
-}
-
-interface EventBase<EventType extends string, EventPayload extends object> {
-  eventType: EventType
-  eventPayload: EventPayload
-}
-
-interface MessageBase<
-  MessageType extends string,
-  MessagePayload extends object
-> {
-  messageType: MessageType
-  messagePayload: MessagePayload
-}
-
-type Child<
-  SomeObject extends object,
-  SomeKey extends keyof SomeObject
-> = SomeObject[SomeKey]
-
-type BrandedReturnType<
-  SomeFunction extends (...args: any[]) => object,
-  SomeReturnKey extends keyof SagaReturnType<SomeFunction> = keyof SagaReturnType<SomeFunction>
-> = Pick<SagaReturnType<SomeFunction>, SomeReturnKey>
-
-type ChildValue<SomeObject extends object> = SomeObject[keyof SomeObject]
 
 type GetTypedEffectsApi = void
 
@@ -1090,5 +978,5 @@ function memoizeSaga<SomeSaga extends (...args: any[]) => Generator>(
     } else {
       return previousState.previousResult
     }
-  }
+  } as SomeSaga
 }

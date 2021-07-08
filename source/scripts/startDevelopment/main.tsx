@@ -68,14 +68,10 @@ interface ServerState {
     [pageModulePath: string]: EventChannel<PageModuleBundlerEvent>
   }
   activePageModules: {
-    [pageModulePath: string]: {
-      pageModule: PageModule
-    }
+    [pageModulePath: string]: PageModule
   }
-  tempPdfRoutes: {
-    [tempPdfRoute: string]: {
-      pagePdfBuffer: Buffer
-    }
+  pagePdfBuffers: {
+    [tempPdfRoute: string]: Buffer
   }
 }
 
@@ -84,7 +80,7 @@ function serverReducer(
     registeredClients: {},
     pageModuleBundlerEventChannels: {},
     activePageModules: {},
-    tempPdfRoutes: {},
+    pagePdfBuffers: {},
   },
   someServerAction: ServerAction
 ): ServerState {
@@ -170,9 +166,7 @@ function handlePageModuleUpdated(
     ...serverState,
     activePageModules: {
       ...serverState.activePageModules,
-      [pageModulePath]: {
-        pageModule: updatedPageModule,
-      },
+      [pageModulePath]: updatedPageModule,
     },
   }
 }
@@ -184,9 +178,9 @@ function handlePagePdfRendered(
   const { pagePdfRoute, pagePdfBuffer } = actionPayload
   return {
     ...serverState,
-    tempPdfRoutes: {
-      ...serverState.tempPdfRoutes,
-      [pagePdfRoute]: { pagePdfBuffer },
+    pagePdfBuffers: {
+      ...serverState.pagePdfBuffers,
+      [pagePdfRoute]: pagePdfBuffer,
     },
   }
 }
@@ -207,15 +201,10 @@ function main() {
   const pageModuleGlob = './source/pages/**/*.page.tsx'
   const jssThemeModulePath = './source/siteTheme.ts'
   const sagaMiddleware = createSagaMiddleware()
-  const serverStore = createStore<
-    ServerState,
-    ServerAction,
-    { dispatch: unknown },
-    {}
-  >(serverReducer, applyMiddleware(sagaMiddleware))
-  serverStore.subscribe(() => {
-    console.log(serverStore.getState()['registeredClients'])
-  })
+  createStore<ServerState, ServerAction, { dispatch: unknown }, {}>(
+    serverReducer,
+    applyMiddleware(sagaMiddleware)
+  )
   sagaMiddleware.run(developmentServer, {
     currentWorkingDirectoryAbsolutePath,
     pageModuleGlob,
@@ -378,15 +367,13 @@ async function mapPageRouteToPageModulePath(
     })
   )
   const pageRouteToPageModulePathMap = adjustedPageModules.reduce<{
-    [pageRoute: string]: { pageModulePath: string }
+    [pageRoute: string]: string
   }>((result, someAdjustedPageModule) => {
-    result[someAdjustedPageModule.pageRoute] = {
-      pageModulePath: someAdjustedPageModule.pageModulePath,
-    }
+    result[someAdjustedPageModule.pageRoute] =
+      someAdjustedPageModule.pageModulePath
     if (someAdjustedPageModule.generatePdf) {
-      result[`/${someAdjustedPageModule.pdfFileName}.pdf`] = {
-        pageModulePath: someAdjustedPageModule.pageModulePath,
-      }
+      result[`/${someAdjustedPageModule.pdfFileName}.pdf`] =
+        someAdjustedPageModule.pageModulePath
     }
     return result
   }, {})
@@ -521,10 +508,9 @@ function* clientRequestHandler(api: ClientRequestHandlerApi) {
     requestResponse,
     clientBundle,
   } = api
-  const pageModulePath =
-    pageRouteToPageModulePathMap[requestRoute]?.pageModulePath
+  const pageModulePath = pageRouteToPageModulePathMap[requestRoute]
   const pagePdfBuffer = yield* Effect.select(
-    (serverState) => serverState['tempPdfRoutes'][requestRoute]?.pagePdfBuffer
+    (serverState) => serverState['pagePdfBuffers'][requestRoute]
   )
   if (pageModulePath) {
     requestResponse.statusCode = 200
@@ -575,8 +561,7 @@ function* clientMessageHandler(api: ClientMessageHandlerApi) {
   switch (clientMessage.messageType) {
     case 'registerClient':
       const { clientRoute } = clientMessage.messagePayload
-      const pageModulePath =
-        pageRouteToPageModulePathMap[clientRoute]?.pageModulePath
+      const pageModulePath = pageRouteToPageModulePathMap[clientRoute]
       if (pageModulePath) {
         yield put<ClientRegisteredAction>({
           type: 'clientRegistered',
@@ -618,8 +603,7 @@ function* clientRegisteredHandler(api: ClientRegisteredHandlerApi) {
     const { pageModulePath, clientRoute, clientWebSocket } =
       clientRegisteredAction.actionPayload
     const targetPageModule = yield* Effect.select(
-      (serverState) =>
-        serverState['activePageModules'][pageModulePath]?.pageModule
+      (serverState) => serverState['activePageModules'][pageModulePath]
     )
     if (targetPageModule) {
       const loadPageContentServerMessage = yield* clientRoute.endsWith('.pdf')

@@ -7,7 +7,7 @@ document.body.append(appContainer)
 ReactDOM.render(<DevelopmentApp />, appContainer)
 
 function DevelopmentApp() {
-  const [pageContent, setPageContent] = useState<any>({})
+  const [pageContent, setPageContent] = useState<JSX.Element | null>(null)
   useEffect(() => {
     const webSocket = new WebSocket('ws://localhost:3000')
     webSocket.addEventListener('open', () => {
@@ -25,16 +25,38 @@ function DevelopmentApp() {
         const serverMessage = JSON.parse(messageEvent.data)
         switch (serverMessage.messageType) {
           case 'loadHtmlContent':
-            setPageContent({
-              contentType: 'text/html',
-              contentData: serverMessage.messagePayload,
-            })
+            const { styleSheetString, pageBodyInnerHtmlString } =
+              serverMessage.messagePayload
+            setPageContent(
+              <>
+                <style
+                  dangerouslySetInnerHTML={{
+                    __html: styleSheetString,
+                  }}
+                />
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html: pageBodyInnerHtmlString,
+                  }}
+                />
+              </>
+            )
             break
           case 'loadPdfContent':
-            setPageContent({
-              contentType: 'application/pdf',
-              contentData: serverMessage.messagePayload,
-            })
+            const { pagePdfRoute } = serverMessage.messagePayload
+            setPageContent(
+              <object
+                style={{
+                  position: 'absolute',
+                  left: 0,
+                  top: 0,
+                  width: '100vw',
+                  height: '100vh',
+                }}
+                type={'application/pdf'}
+                data={pagePdfRoute}
+              />
+            )
             break
         }
       } catch (jsonParseError) {
@@ -42,34 +64,5 @@ function DevelopmentApp() {
       }
     })
   }, [])
-  return (
-    <div>
-      {pageContent.contentType === 'text/html' ? (
-        <>
-          <style
-            dangerouslySetInnerHTML={{
-              __html: pageContent.contentData.styleSheetString,
-            }}
-          />
-          <div
-            dangerouslySetInnerHTML={{
-              __html: pageContent.contentData.pageBodyInnerHtmlString,
-            }}
-          />
-        </>
-      ) : pageContent.contentType === 'application/pdf' ? (
-        <object
-          style={{
-            position: 'absolute',
-            left: 0,
-            top: 0,
-            width: '100vw',
-            height: '100vh',
-          }}
-          type={'application/pdf'}
-          data={pageContent.contentData.pagePdfRoute}
-        />
-      ) : null}
-    </div>
-  )
+  return pageContent
 }

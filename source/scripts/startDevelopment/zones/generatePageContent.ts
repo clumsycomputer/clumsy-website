@@ -1,11 +1,11 @@
 import { SheetsRegistry } from 'react-jss'
-import { put, SagaReturnType } from 'redux-saga/effects'
+import { SagaReturnType } from 'redux-saga/effects'
 import {
   getPageBodyInnerHtmlStringAndStyleSheetString,
   getPageHtmlStringWithInlineStyles,
 } from '../../helpers/getPageHtmlStringWithInlineStyles'
 import { PageModule } from '../../helpers/PageModule'
-import { call } from '../helpers/typedEffects'
+import { call, put } from '../helpers/typedEffects'
 import { BrandedReturnType } from '../helpers/types'
 import { PagePdfRenderedAction } from '../models/ServerAction'
 import {
@@ -77,7 +77,7 @@ function* generatePagePdfContent(api: GeneratePagePdfContentApi) {
     pageHtmlString,
   })
   const newPagePdfRoute = `/tempPdf/${pdfFileName}.${Math.random()}.pdf`
-  yield put<PagePdfRenderedAction>({
+  yield* put<PagePdfRenderedAction>({
     type: 'pagePdfRendered',
     actionPayload: {
       pagePdfBuffer,

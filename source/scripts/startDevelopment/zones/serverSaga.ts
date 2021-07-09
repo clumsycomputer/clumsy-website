@@ -1,11 +1,11 @@
 import Playwright from 'playwright'
-import { fork } from 'redux-saga/effects'
+import { Task } from 'redux-saga'
 import { importLocalModule } from '../../helpers/importLocalModule'
 import {
   JssThemeModule,
   JssThemeModuleCodec,
 } from '../../helpers/JssThemeModule'
-import { call } from '../helpers/typedEffects'
+import { call, fork } from '../helpers/typedEffects'
 import { clientSaga } from './clientSaga'
 import { pageBundlerSaga } from './pageBundlerSaga'
 import { StartDevelopmentApi } from './startDevelopment'
@@ -19,7 +19,9 @@ export interface ServerSagaApi
     | 'jssThemeModulePath'
   > {}
 
-export function* serverSaga(api: ServerSagaApi) {
+export function* serverSaga(
+  api: ServerSagaApi
+): Generator<unknown, void, Task | any> {
   const {
     currentWorkingDirectoryAbsolutePath,
     pageModuleGlob,
@@ -31,14 +33,14 @@ export function* serverSaga(api: ServerSagaApi) {
     jssThemeModulePath,
   })
   const { playwrightBrowserContext } = yield* call(initializePlaywright)
-  yield fork(clientSaga, {
+  yield* fork(clientSaga, {
     currentWorkingDirectoryAbsolutePath,
     pageModuleGlob,
     serverPort,
     jssThemeModule,
     playwrightBrowserContext,
   })
-  yield fork(pageBundlerSaga, {
+  yield* fork(pageBundlerSaga, {
     jssThemeModule,
     playwrightBrowserContext,
   })

@@ -4,13 +4,19 @@ import MemoryFileSystem from 'memory-fs'
 import React from 'react'
 import ReactDomServer from 'react-dom/server'
 import { buffers as SagaBuffer, eventChannel } from 'redux-saga'
-import { fork, put } from 'redux-saga/effects'
 import createBundler from 'webpack'
 import WebSocket from 'ws'
 import { decodeData } from '../../helpers/decodeData'
 import { importLocalModule } from '../../helpers/importLocalModule'
 import { PageModule, PageModuleCodec } from '../../helpers/PageModule'
-import { call, select, takeAction, takeEvent } from '../helpers/typedEffects'
+import {
+  call,
+  fork,
+  put,
+  select,
+  takeAction,
+  takeEvent,
+} from '../helpers/typedEffects'
 import { BrandedReturnType, PickChild } from '../helpers/types'
 import {
   ClientClosedEvent,
@@ -60,12 +66,12 @@ export function* clientSaga(api: ClientSagaApi) {
     }
   )
   const { clientEventChannel } = getClientEventChannel({ serverPort })
-  yield fork(clientEventHandler, {
+  yield* fork(clientEventHandler, {
     clientBundle,
     pageRouteToPageModulePathMap,
     clientEventChannel,
   })
-  yield fork(clientRegisteredHandler, {
+  yield* fork(clientRegisteredHandler, {
     jssThemeModule,
     playwrightBrowserContext,
   })
@@ -83,7 +89,7 @@ function bundleClient() {
           if (clientBundle) {
             resolve({ clientBundle })
           } else {
-            throw new Error('wtf? clientBundle')
+            throw new Error('wtf? clientBundler')
           }
         }
       )
@@ -250,7 +256,7 @@ function* clientRequestHandler(api: ClientRequestHandlerApi) {
         </html>
       )
     )
-    yield put<ClientBundleServedAction>({
+    yield* put<ClientBundleServedAction>({
       type: 'clientBundleServed',
       actionPayload: {
         pageModulePath,
@@ -282,7 +288,7 @@ function* clientMessageHandler(api: ClientMessageHandlerApi) {
       const { clientRoute } = clientMessage.messagePayload
       const pageModulePath = pageRouteToPageModulePathMap[clientRoute]
       if (pageModulePath) {
-        yield put<ClientRegisteredAction>({
+        yield* put<ClientRegisteredAction>({
           type: 'clientRegistered',
           actionPayload: {
             clientId,
@@ -303,7 +309,7 @@ interface ClientClosedHandlerApi
 
 function* clientClosedHandler(api: ClientClosedHandlerApi) {
   const { clientId } = api
-  yield put<ClientUnregisteredAction>({
+  yield* put<ClientUnregisteredAction>({
     type: 'clientUnregistered',
     actionPayload: {
       clientId,

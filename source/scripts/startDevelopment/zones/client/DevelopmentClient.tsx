@@ -4,11 +4,11 @@ import { decodeData } from '../../../helpers/decodeData'
 import { RegisterClientMessage } from '../../models/ClientMessage'
 import { ServerMessage, ServerMessageCodec } from '../../models/ServerMessage'
 
-const appContainer = document.createElement('div')
-document.body.append(appContainer)
-ReactDOM.render(<DevelopmentApp />, appContainer)
+const clientContainer = document.createElement('div')
+document.body.append(clientContainer)
+ReactDOM.render(<DevelopmentClient />, clientContainer)
 
-function DevelopmentApp() {
+function DevelopmentClient() {
   const [pageContent, setPageContent] = useState<JSX.Element | null>(null)
   useEffect(() => {
     const webSocket = new WebSocket(`ws://${window.location.host}`)

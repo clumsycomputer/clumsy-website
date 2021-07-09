@@ -2,11 +2,17 @@ import MemoryFileSystem from 'memory-fs'
 import React from 'react'
 import * as ReactJss from 'react-jss'
 import { buffers as SagaBuffer, eventChannel } from 'redux-saga'
-import { fork, put } from 'redux-saga/effects'
 import createBundler, { Configuration } from 'webpack'
 import { decodeData } from '../../helpers/decodeData'
 import { PageModule, PageModuleCodec } from '../../helpers/PageModule'
-import { call, select, takeAction, takeEvent } from '../helpers/typedEffects'
+import {
+  call,
+  fork,
+  put,
+  select,
+  takeAction,
+  takeEvent,
+} from '../helpers/typedEffects'
 import {
   BrandedReturnType,
   ChildValue,
@@ -18,7 +24,7 @@ import {
   PageModuleBundlerCreatedAction,
   PageModuleUpdatedAction,
 } from '../models/ServerAction'
-import { ServerState } from './startDevelopment'
+import { ServerState } from '../models/ServerState'
 import {
   memoizedGeneratePageHtmlContent,
   memoizedGeneratePagePdfContent,
@@ -45,14 +51,14 @@ export function* pageBundlerSaga(api: PageBundlerSagaApi) {
         getPageModuleBundlerEventChannel({
           pageModulePath,
         })
-      yield put<PageModuleBundlerCreatedAction>({
+      yield* put<PageModuleBundlerCreatedAction>({
         type: 'pageModuleBundlerCreated',
         actionPayload: {
           pageModulePath,
           pageModuleBundlerEventChannel,
         },
       })
-      yield fork(pageModuleUpdateHandler, {
+      yield* fork(pageModuleUpdateHandler, {
         jssThemeModule,
         playwrightBrowserContext,
         pageModulePath,
@@ -183,7 +189,7 @@ function* pageModuleUpdateHandler(api: PageModuleUpdateHandlerApi) {
       pageModulePath,
       pageModuleBundle,
     })
-    yield put<PageModuleUpdatedAction>({
+    yield* put<PageModuleUpdatedAction>({
       type: 'pageModuleUpdated',
       actionPayload: {
         pageModulePath,
@@ -287,14 +293,14 @@ function getTargetClients(api: GetTargetClientsApi) {
     >
   }>(
     (result, someRegisteredClient) => {
-      const registeredClientIsActive =
+      const registeredClientMatches =
         pageModulePath === someRegisteredClient.pageModulePath
-      const activeClientWantsPdf =
-        registeredClientIsActive &&
+      const matchedClientWantsPdf =
+        registeredClientMatches &&
         someRegisteredClient.clientRoute.endsWith('.pdf')
-      if (activeClientWantsPdf) {
+      if (matchedClientWantsPdf) {
         result.pdfClients.push(someRegisteredClient)
-      } else if (registeredClientIsActive) {
+      } else if (registeredClientMatches) {
         result.htmlClients.push(someRegisteredClient)
       }
       return result

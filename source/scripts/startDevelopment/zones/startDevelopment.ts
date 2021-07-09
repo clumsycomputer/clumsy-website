@@ -1,7 +1,5 @@
 import { applyMiddleware, createStore } from 'redux'
-import createSagaMiddleware, { EventChannel } from 'redux-saga'
-import WebSocket from 'ws'
-import { PageModule } from '../../helpers/PageModule'
+import createSagaMiddleware from 'redux-saga'
 import {
   ClientRegisteredAction,
   ClientUnregisteredAction,
@@ -10,7 +8,7 @@ import {
   PagePdfRenderedAction,
   ServerAction,
 } from '../models/ServerAction'
-import { PageModuleBundlerEvent } from './pageBundlerSaga'
+import { ServerState } from '../models/ServerState'
 import { serverSaga } from './serverSaga'
 
 export interface StartDevelopmentApi {
@@ -38,26 +36,6 @@ export function startDevelopment(api: StartDevelopmentApi) {
     pageModuleGlob,
     jssThemeModulePath,
   })
-}
-
-export interface ServerState {
-  registeredClients: {
-    [clientId: number]: {
-      clientId: number
-      clientRoute: string
-      clientWebSocket: WebSocket
-      pageModulePath: string
-    }
-  }
-  pageModuleBundlerEventChannels: {
-    [pageModulePath: string]: EventChannel<PageModuleBundlerEvent>
-  }
-  activePageModules: {
-    [pageModulePath: string]: PageModule
-  }
-  pagePdfBuffers: {
-    [tempPdfRoute: string]: Buffer
-  }
 }
 
 export function serverReducer(

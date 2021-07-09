@@ -1,3 +1,7 @@
+import { applyMiddleware, createStore } from 'redux'
+import createSagaMiddleware, { EventChannel } from 'redux-saga'
+import WebSocket from 'ws'
+import { PageModule } from '../../helpers/PageModule'
 import {
   ClientRegisteredAction,
   ClientUnregisteredAction,
@@ -5,8 +9,56 @@ import {
   PageModuleUpdatedAction,
   PagePdfRenderedAction,
   ServerAction,
-  ServerState,
-} from './types'
+} from '../models/ServerAction'
+import { PageModuleBundlerEvent } from './pageBundlerSaga'
+import { serverSaga } from './serverSaga'
+
+export interface StartDevelopmentApi {
+  currentWorkingDirectoryAbsolutePath: string
+  serverPort: number
+  pageModuleGlob: string
+  jssThemeModulePath: string
+}
+
+export function startDevelopment(api: StartDevelopmentApi) {
+  const {
+    currentWorkingDirectoryAbsolutePath,
+    serverPort,
+    pageModuleGlob,
+    jssThemeModulePath,
+  } = api
+  const sagaMiddleware = createSagaMiddleware()
+  createStore<ServerState, ServerAction, { dispatch: unknown }, {}>(
+    serverReducer,
+    applyMiddleware(sagaMiddleware)
+  )
+  sagaMiddleware.run(serverSaga, {
+    currentWorkingDirectoryAbsolutePath,
+    serverPort,
+    pageModuleGlob,
+    jssThemeModulePath,
+  })
+}
+
+export interface ServerState {
+  registeredClients: {
+    [clientId: number]: {
+      clientId: number
+      clientRoute: string
+      clientWebSocket: WebSocket
+      pageModulePath: string
+    }
+  }
+  pageModuleBundlerEventChannels: {
+    [pageModulePath: string]: EventChannel<PageModuleBundlerEvent>
+  }
+  activePageModules: {
+    [pageModulePath: string]: PageModule
+  }
+  pagePdfBuffers: {
+    [tempPdfRoute: string]: Buffer
+  }
+}
 
 export function serverReducer(
   serverState = {

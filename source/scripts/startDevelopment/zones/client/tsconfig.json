@@ -11,6 +11,6 @@
     "jsx": "react",
     "noUncheckedIndexedAccess": true
   },
-  "include": ["**/App.tsx"],
+  "include": ["**/DevelopmentClient.tsx"],
   "exclude": ["node_modules"]
 }

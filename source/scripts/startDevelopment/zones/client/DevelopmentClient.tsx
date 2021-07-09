@@ -1,7 +1,8 @@
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import ReactDOM from 'react-dom'
-import { decodeData } from '../../helpers/decodeData'
-import { RegisterClientMessage, ServerMessageCodec } from '../helpers/types'
+import { decodeData } from '../../../helpers/decodeData'
+import { RegisterClientMessage } from '../../models/ClientMessage'
+import { ServerMessage, ServerMessageCodec } from '../../models/ServerMessage'
 
 const appContainer = document.createElement('div')
 document.body.append(appContainer)
@@ -37,7 +38,7 @@ function getServerMessageHandler(api: GetServerMessageHandlerApi) {
   const { setPageContent } = api
   return async (messageEvent: MessageEvent<any>) => {
     try {
-      const serverMessage = await decodeData({
+      const serverMessage = await decodeData<ServerMessage>({
         inputData: JSON.parse(messageEvent.data),
         targetCodec: ServerMessageCodec,
       })
@@ -78,7 +79,7 @@ function getServerMessageHandler(api: GetServerMessageHandlerApi) {
           break
       }
     } catch (jsonParseError) {
-      // todo
+      throw new Error('wtf? parsing server message')
     }
   }
 }

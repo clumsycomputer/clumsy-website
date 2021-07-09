@@ -10,7 +10,21 @@ import WebSocket from 'ws'
 import { decodeData } from '../../helpers/decodeData'
 import { importLocalModule } from '../../helpers/importLocalModule'
 import { PageModule, PageModuleCodec } from '../../helpers/PageModule'
-import { clientWebpackConfig } from '../client/webpack.config'
+import { call, select, takeAction, takeEvent } from '../helpers/typedEffects'
+import { BrandedReturnType, PickChild } from '../helpers/types'
+import {
+  ClientClosedEvent,
+  ClientEvent,
+  ClientMessageEvent,
+  ClientRequestEvent,
+} from '../models/ClientEvent'
+import { ClientMessageCodec } from '../models/ClientMessage'
+import {
+  ClientBundleServedAction,
+  ClientRegisteredAction,
+  ClientUnregisteredAction,
+} from '../models/ServerAction'
+import { clientWebpackConfig } from './client/webpack.config'
 import {
   memoizedGeneratePageHtmlContent,
   memoizedGeneratePagePdfContent,
@@ -20,19 +34,6 @@ import {
   initializePlaywright,
   ServerSagaApi,
 } from './serverSaga'
-import { call, select, takeAction, takeEvent } from './typedEffects'
-import {
-  BrandedReturnType,
-  ClientBundleServedAction,
-  ClientClosedEvent,
-  ClientEvent,
-  ClientMessageCodec,
-  ClientMessageEvent,
-  ClientRegisteredAction,
-  ClientRequestEvent,
-  ClientUnregisteredAction,
-  PickChild,
-} from './types'
 
 export interface ClientSagaApi
   extends Pick<

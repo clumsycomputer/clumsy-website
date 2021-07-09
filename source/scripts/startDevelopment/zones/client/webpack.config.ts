@@ -4,7 +4,7 @@ import { Configuration } from 'webpack'
 export const clientWebpackConfig = {
   mode: 'development',
   devtool: false,
-  entry: Path.resolve(__dirname, './App.tsx'),
+  entry: Path.resolve(__dirname, './DevelopmentClient.tsx'),
   module: {
     rules: [
       {

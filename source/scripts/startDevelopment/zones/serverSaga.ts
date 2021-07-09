@@ -5,16 +5,19 @@ import {
   JssThemeModule,
   JssThemeModuleCodec,
 } from '../../helpers/JssThemeModule'
+import { call } from '../helpers/typedEffects'
 import { clientSaga } from './clientSaga'
 import { pageBundlerSaga } from './pageBundlerSaga'
-import { call } from './typedEffects'
+import { StartDevelopmentApi } from './startDevelopment'
 
-export interface ServerSagaApi {
-  currentWorkingDirectoryAbsolutePath: string
-  pageModuleGlob: string
-  serverPort: number
-  jssThemeModulePath: string
-}
+export interface ServerSagaApi
+  extends Pick<
+    StartDevelopmentApi,
+    | 'currentWorkingDirectoryAbsolutePath'
+    | 'pageModuleGlob'
+    | 'serverPort'
+    | 'jssThemeModulePath'
+  > {}
 
 export function* serverSaga(api: ServerSagaApi) {
   const {

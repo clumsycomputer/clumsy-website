@@ -6,22 +6,24 @@ import { fork, put } from 'redux-saga/effects'
 import createBundler, { Configuration } from 'webpack'
 import { decodeData } from '../../helpers/decodeData'
 import { PageModule, PageModuleCodec } from '../../helpers/PageModule'
+import { call, select, takeAction, takeEvent } from '../helpers/typedEffects'
+import {
+  BrandedReturnType,
+  ChildValue,
+  EventBase,
+  PickChild,
+} from '../helpers/types'
+import {
+  ClientBundleServedAction,
+  PageModuleBundlerCreatedAction,
+  PageModuleUpdatedAction,
+} from '../models/ServerAction'
+import { ServerState } from '../serverReducer'
 import {
   memoizedGeneratePageHtmlContent,
   memoizedGeneratePagePdfContent,
 } from './generatePageContent'
 import { importJssThemeModule, initializePlaywright } from './serverSaga'
-import { call, select, takeAction, takeEvent } from './typedEffects'
-import {
-  BrandedReturnType,
-  ChildValue,
-  ClientBundleServedAction,
-  PageModuleBundlerCreatedAction,
-  PageModuleBundlerEvent,
-  PageModuleUpdatedAction,
-  PickChild,
-  ServerState,
-} from './types'
 ;(global as any)['react'] = React
 ;(global as any)['react-jss'] = ReactJss
 
@@ -61,6 +63,11 @@ export function* pageBundlerSaga(api: PageBundlerSagaApi) {
     }
   }
 }
+
+export type PageModuleBundlerEvent = EventBase<
+  `pageModuleBundled@${string}`,
+  { pageModuleBundle: string }
+>
 
 interface GetPageModuleBundlerEventChannelApi {
   pageModulePath: string

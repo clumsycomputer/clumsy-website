@@ -61,7 +61,7 @@ export interface ServerState {
 }
 
 export function serverReducer(
-  serverState = {
+  serverState: ServerState = {
     registeredClients: {},
     pageModuleBundlerEventChannels: {},
     activePageModules: {},

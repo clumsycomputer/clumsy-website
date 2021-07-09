@@ -18,14 +18,12 @@ import {
   PageModuleBundlerCreatedAction,
   PageModuleUpdatedAction,
 } from '../models/ServerAction'
-import { ServerState } from '../serverReducer'
+import { ServerState } from './startDevelopment'
 import {
   memoizedGeneratePageHtmlContent,
   memoizedGeneratePagePdfContent,
 } from './generatePageContent'
 import { importJssThemeModule, initializePlaywright } from './serverSaga'
-;(global as any)['react'] = React
-;(global as any)['react-jss'] = ReactJss
 
 export interface PageBundlerSagaApi
   extends BrandedReturnType<typeof importJssThemeModule>,
@@ -227,12 +225,49 @@ interface DecodePageModuleApi
 
 async function decodeTargetPageModule(api: DecodePageModuleApi) {
   const { pageModuleBundle, pageModulePath } = api
-  ;(() => eval(pageModuleBundle))()
+  const { evaluatedPageModule } = evaluatePageModuleBundle({
+    pageModuleBundle,
+    pageModulePath,
+    externalDependencies: {
+      react: React,
+      'react-jss': ReactJss,
+    },
+  })
   const targetPageModule = await decodeData<PageModule>({
     targetCodec: PageModuleCodec,
-    inputData: (global as any)[`pageModule@${pageModulePath}`],
+    inputData: evaluatedPageModule,
   })
   return { targetPageModule }
+}
+
+interface EvaluatePageModuleBundleApi {
+  pageModuleBundle: string
+  pageModulePath: string
+  externalDependencies: {
+    [importName: string]: any
+  }
+}
+
+function evaluatePageModuleBundle(api: EvaluatePageModuleBundleApi) {
+  const { externalDependencies, pageModuleBundle, pageModulePath } = api
+  Object.entries(externalDependencies).forEach(
+    ([someImportName, someExternalDependency]) => {
+      if (!(global as any)[someImportName]) {
+        ;(global as any)[someImportName] = someExternalDependency
+      } else {
+        throw new Error('wtf? page module external dependency already declared')
+      }
+    }
+  )
+  eval(pageModuleBundle)
+  const evaluatedPageModule = (global as any)[
+    `pageModule@${pageModulePath}`
+  ] as unknown
+  Object.entries(externalDependencies).forEach(([someImportName]) => {
+    delete (global as any)[someImportName]
+  })
+  delete (global as any)[`pageModule@${pageModulePath}`]
+  return { evaluatedPageModule }
 }
 
 interface GetTargetClientsApi

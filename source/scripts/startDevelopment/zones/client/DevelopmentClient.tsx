@@ -11,7 +11,7 @@ ReactDOM.render(<DevelopmentApp />, appContainer)
 function DevelopmentApp() {
   const [pageContent, setPageContent] = useState<JSX.Element | null>(null)
   useEffect(() => {
-    const webSocket = new WebSocket('ws://localhost:3000')
+    const webSocket = new WebSocket(`ws://${window.location.host}`)
     webSocket.addEventListener('open', () => {
       webSocket.send(
         JSON.stringify({

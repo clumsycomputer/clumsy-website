@@ -1,5 +1,5 @@
 import { applyMiddleware, createStore } from 'redux'
-import createSagaMiddleware from 'redux-saga'
+import createSagaMiddleware, { Task } from 'redux-saga'
 import {
   ClientRegisteredAction,
   ClientUnregisteredAction,
@@ -9,7 +9,7 @@ import {
   ServerAction,
 } from '../models/ServerAction'
 import { ServerState } from '../models/ServerState'
-import { serverSaga } from './serverSaga'
+import { serverSaga, ServerSagaApi } from './serverSaga'
 
 export interface StartDevelopmentApi {
   currentWorkingDirectoryAbsolutePath: string
@@ -30,12 +30,15 @@ export function startDevelopment(api: StartDevelopmentApi) {
     serverReducer,
     applyMiddleware(sagaMiddleware)
   )
-  sagaMiddleware.run(serverSaga, {
-    currentWorkingDirectoryAbsolutePath,
-    serverPort,
-    pageModuleGlob,
-    jssThemeModulePath,
-  })
+  sagaMiddleware.run(
+    serverSaga as (api: ServerSagaApi) => Generator<unknown, void, Task | any>,
+    {
+      currentWorkingDirectoryAbsolutePath,
+      serverPort,
+      pageModuleGlob,
+      jssThemeModulePath,
+    }
+  )
 }
 
 export function serverReducer(

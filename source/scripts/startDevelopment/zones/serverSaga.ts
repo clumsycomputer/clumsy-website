@@ -1,5 +1,4 @@
 import Playwright from 'playwright'
-import { Task } from 'redux-saga'
 import { importLocalModule } from '../../helpers/importLocalModule'
 import {
   JssThemeModule,
@@ -19,9 +18,7 @@ export interface ServerSagaApi
     | 'jssThemeModulePath'
   > {}
 
-export function* serverSaga(
-  api: ServerSagaApi
-): Generator<unknown, void, Task | any> {
+export function* serverSaga(api: ServerSagaApi) {
   const {
     currentWorkingDirectoryAbsolutePath,
     pageModuleGlob,

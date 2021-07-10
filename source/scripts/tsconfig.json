@@ -11,5 +11,5 @@
     "jsx": "react",
     "noUncheckedIndexedAccess": true
   },
-  "exclude": ["node_modules", "**/source/scripts"]
+  "exclude": ["node_modules"]
 }

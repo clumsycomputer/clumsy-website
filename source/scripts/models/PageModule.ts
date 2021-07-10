@@ -1,18 +1,16 @@
 import { ReactElement } from 'react'
 import * as IO from 'io-ts'
+import { LocalModule } from './LocalModule'
 
-export interface PageModule {
-  default: PageModuleExports
-}
-
-export interface PageModuleExports {
-  pageRoute: string
-  PageContent: () => ReactElement
-  htmlTitle: string
-  htmlDescription: string
-  pdfFileName: string
-  generatePdf: boolean
-}
+export interface PageModule
+  extends LocalModule<{
+    pageRoute: string
+    PageContent: () => ReactElement
+    htmlTitle: string
+    htmlDescription: string
+    pdfFileName: string
+    generatePdf: boolean
+  }> {}
 
 export const PageModuleCodec = IO.exact(
   IO.type({

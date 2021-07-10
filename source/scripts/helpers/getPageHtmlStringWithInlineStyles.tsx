@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDomServer from 'react-dom/server'
 import { JssProvider, SheetsRegistry, ThemeProvider } from 'react-jss'
-import { PageModule } from './PageModule'
+import { PageModule } from '../models/PageModule'
 
 export interface GetPageHtmlStringWithInlineStylesApi
   extends Pick<

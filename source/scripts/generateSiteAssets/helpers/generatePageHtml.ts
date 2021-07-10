@@ -1,7 +1,7 @@
 import FileSystem from 'fs/promises'
 import Path from 'path'
 import { getPageHtmlStringWithInlineStyles } from '../../helpers/getPageHtmlStringWithInlineStyles'
-import { PageModule } from '../../helpers/PageModule'
+import { PageModule } from '../../models/PageModule'
 import { GeneratePageAssetsApi } from './generatePageAssets'
 
 export interface GeneratePageHtmlApi

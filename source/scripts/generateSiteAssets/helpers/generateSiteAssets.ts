@@ -6,8 +6,8 @@ import { importLocalModule } from '../../helpers/importLocalModule'
 import {
   JssThemeModule,
   JssThemeModuleCodec,
-} from '../../helpers/JssThemeModule'
-import { LocalScript } from '../../helpers/LocalScript'
+} from '../../models/JssThemeModule'
+import { LocalScript } from '../../models/LocalScript'
 import { generatePageAssets } from './generatePageAssets'
 
 export interface GenerateSiteAssetsApi extends LocalScript {

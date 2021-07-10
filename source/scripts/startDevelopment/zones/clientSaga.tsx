@@ -8,7 +8,7 @@ import createBundler from 'webpack'
 import WebSocket from 'ws'
 import { decodeData } from '../../helpers/decodeData'
 import { importLocalModule } from '../../helpers/importLocalModule'
-import { PageModule, PageModuleCodec } from '../../helpers/PageModule'
+import { PageModule, PageModuleCodec } from '../../models/PageModule'
 import {
   call,
   fork,
@@ -34,7 +34,7 @@ import { clientWebpackConfig } from './client/webpack.config'
 import {
   memoizedGeneratePageHtmlContent,
   memoizedGeneratePagePdfContent,
-} from './generatePageContent'
+} from '../helpers/generatePageContent'
 import {
   importJssThemeModule,
   initializePlaywright,

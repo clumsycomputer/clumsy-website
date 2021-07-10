@@ -1,7 +1,7 @@
 import Path from 'path'
 import { decodeData, DecodeDataApi } from './decodeData'
-import { LocalModule } from './LocalModule'
-import { LocalScript } from './LocalScript'
+import { LocalModule } from '../models/LocalModule'
+import { LocalScript } from '../models/LocalScript'
 
 export interface ImportLocalModuleApi<SomeLocalModule extends LocalModule>
   extends Pick<LocalScript, 'currentWorkingDirectoryAbsolutePath'>,

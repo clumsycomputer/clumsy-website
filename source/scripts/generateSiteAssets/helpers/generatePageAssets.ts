@@ -1,6 +1,6 @@
 import Path from 'path'
 import { importLocalModule } from '../../helpers/importLocalModule'
-import { PageModule, PageModuleCodec } from '../../helpers/PageModule'
+import { PageModule, PageModuleCodec } from '../../models/PageModule'
 import { generatePageHtml } from './generatePageHtml'
 import { generatePagePdf } from './generatePagePdf'
 import { GenerateSiteAssetsApi } from './generateSiteAssets'

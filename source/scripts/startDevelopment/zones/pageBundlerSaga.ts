@@ -4,7 +4,7 @@ import * as ReactJss from 'react-jss'
 import { buffers as SagaBuffer, eventChannel } from 'redux-saga'
 import createBundler, { Configuration } from 'webpack'
 import { decodeData } from '../../helpers/decodeData'
-import { PageModule, PageModuleCodec } from '../../helpers/PageModule'
+import { PageModule, PageModuleCodec } from '../../models/PageModule'
 import {
   call,
   fork,
@@ -28,7 +28,7 @@ import { ServerState } from '../models/ServerState'
 import {
   memoizedGeneratePageHtmlContent,
   memoizedGeneratePagePdfContent,
-} from './generatePageContent'
+} from '../helpers/generatePageContent'
 import { importJssThemeModule, initializePlaywright } from './serverSaga'
 
 export interface PageBundlerSagaApi

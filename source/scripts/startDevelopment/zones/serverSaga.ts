@@ -3,7 +3,7 @@ import { importLocalModule } from '../../helpers/importLocalModule'
 import {
   JssThemeModule,
   JssThemeModuleCodec,
-} from '../../helpers/JssThemeModule'
+} from '../../models/JssThemeModule'
 import { call, fork } from '../helpers/typedEffects'
 import { clientSaga } from './clientSaga'
 import { pageBundlerSaga } from './pageBundlerSaga'

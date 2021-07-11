@@ -28,41 +28,77 @@ function Foo() {
   })
   return (
     <svg
-      style={{ position: 'absolute', left: 0, top: 0 }}
+      style={{
+        position: 'absolute',
+        left: 0,
+        top: 0,
+        width: '100vw',
+        height: '100vh',
+      }}
       viewBox={'0 0 100 100'}
     >
-      {baseWave.map((cellValue, cellIndex) => {
+      {baseWave.reduce<JSX.Element[]>((result, cellValue, cellIndex) => {
         const circleAngle = ((2 * Math.PI) / baseWave.length) * cellIndex
-        return (
-          <circle
-            cx={
-              50 *
-                (cellValue / baseWave.length) *
-                Math.cos(circleAngle - Math.PI / 2) +
-              50
-            }
-            cy={
-              25 *
-                (cellValue / baseWave.length) *
-                Math.sin(circleAngle - Math.PI / 2) +
-              50
-            }
-            r={0.5}
-            stroke={'black'}
-            strokeWidth={0.25}
-            fill={'none'}
-          />
-        )
-      })}
+        const subPattern = baseWave.map((patternCellValue, patternIndex) => {
+          const patternAngle = ((2 * Math.PI) / baseWave.length) * patternIndex
+          const patternMag = patternCellValue
+          return (
+            <>
+              <circle
+                cx={
+                  50 *
+                    (cellValue / baseWave.length) *
+                    Math.cos(circleAngle - Math.PI / 2 + patternAngle) +
+                  50
+                }
+                cy={
+                  50 *
+                    (cellValue / baseWave.length) *
+                    Math.sin(circleAngle - Math.PI / 2 + patternAngle) +
+                  50
+                }
+                r={cellValue / patternMag / 1.5}
+                stroke={'black'}
+                strokeWidth={0.05 * cellValue}
+                fill={'none'}
+              />
+              <circle
+                cx={
+                  50 *
+                    (cellValue / baseWave.length) *
+                    Math.cos(
+                      circleAngle - Math.PI / 2 + patternAngle + Math.PI
+                    ) +
+                  50
+                }
+                cy={
+                  50 *
+                    (cellValue / baseWave.length) *
+                    Math.sin(
+                      circleAngle - Math.PI / 2 + patternAngle + Math.PI
+                    ) +
+                  50
+                }
+                r={cellValue / patternMag / 2}
+                stroke={'black'}
+                strokeWidth={0.05 * cellValue}
+                fill={'none'}
+              />
+            </>
+          )
+        })
+        result.push(...subPattern)
+        return result
+      }, [])}
     </svg>
   )
 }
 
 interface GetFilteredRhythmApi {
-  rhythmSequence: Rhythm[]
+  rhythmSequence: DiscreteRhythm[]
 }
 
-function getFilteredRhythm(api: GetFilteredRhythmApi): Rhythm {
+function getFilteredRhythm(api: GetFilteredRhythmApi): DiscreteRhythm {
   const { rhythmSequence } = api
   const baseRhythmLength = rhythmSequence[0]?.length
   if (baseRhythmLength) {
@@ -80,10 +116,13 @@ function getFilteredRhythm(api: GetFilteredRhythmApi): Rhythm {
         .fill(undefined)
         .map((_, cellIndex) => cellIndex)
     )
-    return baseRhythmAnchors.reduce<Rhythm>((result, someRhythmAnchor) => {
-      result[someRhythmAnchor] = true
-      return result
-    }, new Array(baseRhythmLength).fill(false))
+    return baseRhythmAnchors.reduce<DiscreteRhythm>(
+      (result, someRhythmAnchor) => {
+        result[someRhythmAnchor] = true
+        return result
+      },
+      new Array(baseRhythmLength).fill(false)
+    )
   } else {
     throw new Error('wtf? getFilteredRhythm')
   }
@@ -96,7 +135,7 @@ interface GetElementIndicesApi<Element extends any> {
 
 function getElementIndices<Element extends any>(
   api: GetElementIndicesApi<Element>
-) {
+): number[] {
   const { someSpace, targetValue } = api
   return someSpace.reduce<number[]>((result, someCellValue, cellIndex) => {
     if (someCellValue === targetValue) {
@@ -107,16 +146,16 @@ function getElementIndices<Element extends any>(
 }
 
 interface GetCommonalityWaveApi {
-  baseRhythm: Rhythm
+  baseRhythm: DiscreteRhythm
 }
 
-function getCommonalityWave(api: GetCommonalityWaveApi) {
+function getCommonalityWave(api: GetCommonalityWaveApi): DiscreteWave {
   const { baseRhythm } = api
   const rhythmAnchors = getElementIndices({
     someSpace: baseRhythm,
     targetValue: true,
   })
-  return getDiscreteWave({
+  return getAccumulatedWave({
     rhythmParts: rhythmAnchors.map((someRhythmAnchor) =>
       getPhasedSpace({
         baseSpace: baseRhythm,
@@ -132,7 +171,7 @@ interface GetNaturalRhythmApi {
   rhythmPhase: number
 }
 
-function getNaturalRhythm(api: GetNaturalRhythmApi): Rhythm {
+function getNaturalRhythm(api: GetNaturalRhythmApi): DiscreteRhythm {
   const { rhythmDensity, rhythmResolution, rhythmPhase } = api
   return getPhasedSpace({
     baseSpace: getEuclideanRhythm({
@@ -145,11 +184,9 @@ function getNaturalRhythm(api: GetNaturalRhythmApi): Rhythm {
   })
 }
 
-type Space = Wave | Rhythm
+type DiscreteWave = number[]
 
-type Wave = number[]
-
-type Rhythm = boolean[]
+type DiscreteRhythm = boolean[]
 
 interface GetPhasedSpaceApi<Element extends any> {
   baseSpace: Element[]
@@ -167,11 +204,11 @@ function getPhasedSpace<Element extends any>(
   )
 }
 
-interface GetDiscreteWaveApi {
-  rhythmParts: Rhythm[]
+interface GetAccumulatedWaveApi {
+  rhythmParts: DiscreteRhythm[]
 }
 
-function getDiscreteWave(api: GetDiscreteWaveApi) {
+function getAccumulatedWave(api: GetAccumulatedWaveApi): DiscreteWave {
   const { rhythmParts } = api
   const waveLength = rhythmParts[0]?.length
   if (waveLength) {
@@ -184,13 +221,13 @@ function getDiscreteWave(api: GetDiscreteWaveApi) {
       return result
     }, new Array(waveLength).fill(0))
   } else {
-    throw new Error('wtf? getDiscreteWave')
+    throw new Error('wtf? getAccumulatedWave')
   }
 }
 
 interface GetEuclideanRhythmApi extends GetEuclideanRhythmBaseApi {}
 
-function getEuclideanRhythm(api: GetEuclideanRhythmApi): Rhythm {
+function getEuclideanRhythm(api: GetEuclideanRhythmApi): DiscreteRhythm {
   const { lhsCount, rhsCount } = api
   const baseEuclideanRhythm = getEuclideanRhythmBase(api)
   const targetSize = lhsCount + rhsCount
@@ -200,12 +237,14 @@ function getEuclideanRhythm(api: GetEuclideanRhythmApi): Rhythm {
 
 interface GetEuclideanRhythmBaseApi {
   lhsCount: number
-  lhsRhythm: Rhythm
+  lhsRhythm: DiscreteRhythm
   rhsCount: number
-  rhsRhythm: Rhythm
+  rhsRhythm: DiscreteRhythm
 }
 
-function getEuclideanRhythmBase(api: GetEuclideanRhythmBaseApi): Rhythm {
+function getEuclideanRhythmBase(
+  api: GetEuclideanRhythmBaseApi
+): DiscreteRhythm {
   const { rhsCount, lhsRhythm, lhsCount, rhsRhythm } = api
   if (rhsCount === 0) {
     return lhsRhythm

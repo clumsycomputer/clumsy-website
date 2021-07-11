@@ -2,7 +2,7 @@ import Path from 'path'
 import { Configuration } from 'webpack'
 
 export const clientWebpackConfig = {
-  mode: 'development',
+  mode: 'production',
   devtool: false,
   entry: Path.resolve(__dirname, './DevelopmentClient.tsx'),
   module: {

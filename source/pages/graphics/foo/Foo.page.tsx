@@ -64,12 +64,17 @@ function Foo() {
         top: 0,
         width: '100vw',
         height: '100vh',
-        backgroundColor: 'black',
       }}
       viewBox={'-10 -10 120 120'}
       imageRendering={'optimizeQuality'}
     >
-      <rect x={-10} y={-10} width={120} height={120} fill={'black'} />
+      <rect
+        x={-10}
+        y={-10}
+        width={120}
+        height={120}
+        fill={'rgb(238,238,255)'}
+      />
       {waveA.map((cellValue, cellIndex) => {
         const cellAngle =
           ((2 * Math.PI) / waveA.length) * cellIndex + Math.PI / 2
@@ -112,11 +117,10 @@ function Foo() {
                   polyBaseCenterB.x - baseCircleA.center.x
                 ) +
                 Math.PI / 2
-
               return (
                 <polygon
                   points={getRotatedLoopPoints({
-                    sampleCount: cellValue * 2,
+                    sampleCount: 256,
                     someRotatedLoop: {
                       baseLoop: {
                         baseCircle: {
@@ -136,10 +140,10 @@ function Foo() {
                   })
                     .map((somePoint) => `${somePoint.x},${somePoint.y}`)
                     .join(' ')}
-                  stroke={`rgb(${255 - (255 / waveB.length) * cellBValue}, ${
-                    (255 / waveA.length) * cellValue
-                  }, ${(255 / waveB.length) * cellBValue})`}
-                  strokeWidth={0.125}
+                  stroke={`rgb(${(255 / waveA.length) * cellValue},${
+                    (128 / waveB.length) * cellBValue
+                  },${(211 / waveB.length) * cellBValue})`}
+                  strokeWidth={0.15}
                   fill={'none'}
                 />
               )

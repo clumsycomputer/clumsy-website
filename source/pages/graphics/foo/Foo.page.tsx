@@ -28,18 +28,29 @@ function Foo() {
         getNaturalRhythm({
           rhythmResolution: 11,
           rhythmDensity: 7,
+          rhythmPhase: 4,
+        }),
+      ],
+    }),
+  })
+  const waveB = getCommonalityWave({
+    baseRhythm: getFilteredRhythm({
+      rhythmSequence: [
+        getNaturalRhythm({
+          rhythmResolution: 12,
+          rhythmDensity: 11,
           rhythmPhase: 0,
         }),
         getNaturalRhythm({
-          rhythmResolution: 7,
+          rhythmResolution: 11,
           rhythmDensity: 5,
-          rhythmPhase: 0,
+          rhythmPhase: 2,
         }),
       ],
     }),
   })
   const baseCircleA: Circle = {
-    radius: 45,
+    radius: 66,
     center: {
       x: 50,
       y: 50,
@@ -53,19 +64,21 @@ function Foo() {
         top: 0,
         width: '100vw',
         height: '100vh',
+        backgroundColor: 'black',
       }}
       viewBox={'-10 -10 120 120'}
       imageRendering={'optimizeQuality'}
     >
+      <rect x={-10} y={-10} width={120} height={120} fill={'black'} />
       {waveA.map((cellValue, cellIndex) => {
         const cellAngle =
           ((2 * Math.PI) / waveA.length) * cellIndex + Math.PI / 2
         const polyBaseCenter = {
           x:
-            (baseCircleA.radius / cellValue) * Math.cos(cellAngle) +
+            (baseCircleA.radius / 12) * cellValue * Math.cos(cellAngle) +
             baseCircleA.center.x,
           y:
-            (baseCircleA.radius / cellValue) * Math.sin(cellAngle) +
+            (baseCircleA.radius / 12) * cellValue * Math.sin(cellAngle) +
             baseCircleA.center.y,
         }
         const relativeAngleFromCenter =
@@ -74,50 +87,63 @@ function Foo() {
             polyBaseCenter.x - baseCircleA.center.x
           ) -
           Math.PI / 2
-        const phaseAdjuster =
-          polyBaseCenter.y < 50 ? Math.PI : Math.PI * (cellIndex % 2)
         return (
           <Fragment>
-            {getElementIndices({
-              someSpace: getNaturalRhythm({
-                rhythmResolution: 2 * cellValue,
-                rhythmDensity: cellValue + 1,
-                rhythmPhase: 0,
-              }),
-              targetValue: true,
-            }).map((nestIndex, indexIndex) => (
-              <polygon
-                points={getRotatedLoopPoints({
-                  sampleCount: 256,
-                  someRotatedLoop: {
-                    baseLoop: {
-                      baseCircle: {
-                        center: polyBaseCenter,
-                        radius:
-                          indexIndex !== 4
-                            ? 2 * cellValue - nestIndex / 1.125 - cellValue / 3
-                            : 0,
+            {waveB.map((cellBValue, indexB) => {
+              const polyAngleB =
+                ((2 * Math.PI) / waveB.length) * indexB + Math.PI / 2
+              const polyBaseCenterB = {
+                x:
+                  (cellValue / cellBValue) * Math.cos(polyAngleB) +
+                  polyBaseCenter.x,
+                y:
+                  (cellValue / cellBValue) * Math.sin(polyAngleB) +
+                  polyBaseCenter.y,
+              }
+              const relativeAngleFromCenterB =
+                Math.atan2(
+                  polyBaseCenterB.y - polyBaseCenter.y,
+                  polyBaseCenterB.x - polyBaseCenter.x
+                ) -
+                Math.PI / 2
+              const relativeAngleFromCenterC =
+                Math.atan2(
+                  polyBaseCenterB.y - baseCircleA.center.y,
+                  polyBaseCenterB.x - baseCircleA.center.x
+                ) +
+                Math.PI / 2
+
+              return (
+                <polygon
+                  points={getRotatedLoopPoints({
+                    sampleCount: cellValue * 2,
+                    someRotatedLoop: {
+                      baseLoop: {
+                        baseCircle: {
+                          center: polyBaseCenterB,
+                          radius: cellValue,
+                        },
+                        childCircle: {
+                          relativeRadius:
+                            (5 / (cellValue + 1) + 5 / (cellBValue + 1)) / 2,
+                          relativeDepth: 1,
+                          phaseAngle: relativeAngleFromCenterB,
+                        },
                       },
-                      childCircle: {
-                        relativeRadius: 0.9 / ((nestIndex + 1) / 2),
-                        relativeDepth: 0.5 / ((nestIndex + 1) / 2),
-                        phaseAngle: relativeAngleFromCenter - phaseAdjuster,
-                      },
+                      rotationAnchor: 'base',
+                      rotationAngle: Math.PI / 2 - relativeAngleFromCenterC,
                     },
-                    rotationAnchor: 'base',
-                    rotationAngle:
-                      Math.PI / 2 -
-                      relativeAngleFromCenter -
-                      (polyBaseCenter.y < 35 ? Math.PI : 0),
-                  },
-                })
-                  .map((somePoint) => `${somePoint.x},${somePoint.y}`)
-                  .join(' ')}
-                stroke={'black'}
-                strokeWidth={0.25}
-                fill={'none'}
-              />
-            ))}
+                  })
+                    .map((somePoint) => `${somePoint.x},${somePoint.y}`)
+                    .join(' ')}
+                  stroke={`rgb(${255 - (255 / waveB.length) * cellBValue}, ${
+                    (255 / waveA.length) * cellValue
+                  }, ${(255 / waveB.length) * cellBValue})`}
+                  strokeWidth={0.125}
+                  fill={'none'}
+                />
+              )
+            })}
           </Fragment>
         )
       })}

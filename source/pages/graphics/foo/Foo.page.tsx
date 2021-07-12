@@ -109,7 +109,7 @@ function Foo() {
                 Math.atan2(
                   polyBaseCenterB.y - polyBaseCenter.y,
                   polyBaseCenterB.x - polyBaseCenter.x
-                ) -
+                ) +
                 Math.PI / 2
               const relativeAngleFromCenterC =
                 Math.atan2(

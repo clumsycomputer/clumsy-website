@@ -59,13 +59,13 @@ export function getRotatedLoopPoint(api: GetRotatedLoopPointApi) {
   })
 }
 
-interface GetRotatedPointApi {
+export interface GetRotatedPointApi {
   basePoint: Point
   anchorPoint: Point
   rotationAngle: number
 }
 
-function getRotatedPoint(api: GetRotatedPointApi) {
+export function getRotatedPoint(api: GetRotatedPointApi) {
   const { basePoint, anchorPoint, rotationAngle } = api
   const originCenteredPoint = {
     x: basePoint.x - anchorPoint.x,
@@ -83,12 +83,12 @@ function getRotatedPoint(api: GetRotatedPointApi) {
   }
 }
 
-interface GetLoopPointApi {
+export interface GetLoopPointApi {
   someLoop: Loop
   sampleAngle: number
 }
 
-function getLoopPoint(api: GetLoopPointApi) {
+export function getLoopPoint(api: GetLoopPointApi) {
   const { someLoop, sampleAngle } = api
   const baseIntersection = getLoopBaseIntersection({
     someLoop,
@@ -104,11 +104,11 @@ function getLoopPoint(api: GetLoopPointApi) {
   }
 }
 
-interface GetRotatedLoopChildCircleApi {
+export interface GetRotatedLoopChildCircleApi {
   someRotatedLoop: RotatedLoop
 }
 
-function getRotatedLoopChildCircle(api: GetRotatedLoopChildCircleApi) {
+export function getRotatedLoopChildCircle(api: GetRotatedLoopChildCircleApi) {
   const { someRotatedLoop } = api
   const unrotatedCircle = getLoopChildCircle({
     someLoop: someRotatedLoop,
@@ -126,11 +126,11 @@ function getRotatedLoopChildCircle(api: GetRotatedLoopChildCircleApi) {
   }
 }
 
-interface GetLoopChildCircleApi {
+export interface GetLoopChildCircleApi {
   someLoop: Loop
 }
 
-function getLoopChildCircle(api: GetLoopChildCircleApi) {
+export function getLoopChildCircle(api: GetLoopChildCircleApi) {
   const { someLoop } = api
   const childCircleRadius =
     someLoop.baseCircle.radius * someLoop.childCircle.relativeRadius

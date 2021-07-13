@@ -1,9 +1,13 @@
 import { SvgAttributes } from 'csstype'
-import React, { Fragment } from 'react'
+import React, { Fragment, SVGProps } from 'react'
 import {
   Circle,
+  getLoopChildCircle,
+  getLoopPoint,
   getRotatedLoopPoint,
   getRotatedLoopPoints,
+  getRotatedPoint,
+  Point,
   RotatedLoop,
 } from './circleStuff'
 import {
@@ -86,74 +90,161 @@ function Foo() {
       y: 50,
     },
   }
-  const corePattern = waveA.map<RotatedLoop>((cellA, indexA) => {
-    const angleA = ((2 * Math.PI) / waveA.length) * indexA + Math.PI / 2
-    const perimeterPoint = {
-      x: baseCircleA.radius * Math.cos(angleA) + baseCircleA.center.x,
-      y: baseCircleA.radius * Math.sin(angleA) + baseCircleA.center.y,
-    }
-    const polyCenterPoint = {
-      x:
-        -cellA * (baseCircleA.radius / waveA.length) * Math.cos(angleA) +
-        perimeterPoint.x,
-      y:
-        -cellA * (baseCircleA.radius / waveA.length) * Math.sin(angleA) +
-        perimeterPoint.y,
-    }
-    const polyBaseRelativeAngle = Math.atan2(
-      polyCenterPoint.x - baseCircleA.center.x,
-      polyCenterPoint.y - baseCircleA.center.y
-    )
-    const polyRotationAngle = polyBaseRelativeAngle + Math.PI / 2
-    return {
-      baseCircle: {
-        radius: (baseCircleA.radius / waveA.length / 3) * cellA,
-        center: polyCenterPoint,
-      },
-      childCircle: {
-        relativeRadius: 0.675,
-        relativeDepth: 0.375,
-        phaseAngle: polyBaseRelativeAngle,
-      },
-      rotationAnchor: 'base',
-      rotationAngle: polyRotationAngle,
-    }
-  })
-  const rimPattern = waveB.map<RotatedLoop>((cellA, indexA) => {
-    const angleA = ((2 * Math.PI) / waveB.length) * indexA + Math.PI / 2
-    const perimeterPoint = {
-      x: baseCircleA.radius * Math.cos(angleA) + baseCircleA.center.x,
-      y: baseCircleA.radius * Math.sin(angleA) + baseCircleA.center.y,
-    }
-    const polyCenterPoint = {
-      x:
-        (-cellA * (baseCircleA.radius / waveB.length) + cellA) *
-          Math.cos(angleA) +
-        perimeterPoint.x,
-      y:
-        (-cellA * (baseCircleA.radius / waveB.length) + cellA) *
-          Math.sin(angleA) +
-        perimeterPoint.y,
-    }
-    const polyBaseRelativeAngle = Math.atan2(
-      polyCenterPoint.x - baseCircleA.center.x,
-      polyCenterPoint.y - baseCircleA.center.y
-    )
-    const polyRotationAngle = polyBaseRelativeAngle + Math.PI / 2 + Math.PI
-    return {
-      baseCircle: {
-        radius: (baseCircleA.radius / waveB.length / 3) * cellA,
-        center: polyCenterPoint,
-      },
-      childCircle: {
-        relativeRadius: 7 / 8,
-        relativeDepth: 3 / 8,
-        phaseAngle: polyBaseRelativeAngle,
-      },
-      rotationAnchor: 'base',
-      rotationAngle: polyRotationAngle,
-    }
-  })
+  const corePattern = waveA
+    .map((cellA, indexA) => {
+      const angleA = ((2 * Math.PI) / waveA.length) * indexA + Math.PI / 2
+      const perimeterPoint = {
+        x: baseCircleA.radius * Math.cos(angleA) + baseCircleA.center.x,
+        y: baseCircleA.radius * Math.sin(angleA) + baseCircleA.center.y,
+      }
+      const polyCenterPoint = {
+        x:
+          -cellA * (baseCircleA.radius / waveA.length) * Math.cos(angleA) +
+          perimeterPoint.x,
+        y:
+          -cellA * (baseCircleA.radius / waveA.length) * Math.sin(angleA) +
+          perimeterPoint.y,
+      }
+      const polyBaseRelativeAngle = Math.atan2(
+        polyCenterPoint.x - baseCircleA.center.x,
+        polyCenterPoint.y - baseCircleA.center.y
+      )
+      const polyRotationAngle = polyBaseRelativeAngle + Math.PI / 2
+      const someRotatedLoop: RotatedLoop = {
+        baseCircle: {
+          radius: (baseCircleA.radius / waveA.length / 3) * cellA,
+          center: polyCenterPoint,
+        },
+        childCircle: {
+          relativeRadius: 0.675,
+          relativeDepth: 0.375,
+          phaseAngle: polyBaseRelativeAngle,
+        },
+        rotationAnchor: 'base',
+        rotationAngle: polyRotationAngle,
+      }
+      return getElementIndices({
+        targetValue: true,
+        someSpace: getFilteredRhythm({
+          rhythmSequence: [
+            getNaturalRhythm({
+              rhythmResolution: 24,
+              rhythmDensity: 23,
+              rhythmPhase: 0,
+            }),
+            getNaturalRhythm({
+              rhythmResolution: 23,
+              rhythmDensity: 13,
+              rhythmPhase: 0,
+            }),
+            getNaturalRhythm({
+              rhythmResolution: 13,
+              rhythmDensity: cellA + 1,
+              rhythmPhase: cellA,
+            }),
+          ],
+        }),
+      }).map((rhythmIndex, matchIndex) => {
+        return getUpdatedData({
+          baseData: someRotatedLoop,
+          dataUpdates: {
+            'baseCircle.radius':
+              someRotatedLoop.baseCircle.radius -
+              (someRotatedLoop.baseCircle.radius / 24) * rhythmIndex,
+            // 'baseCircle.center': {
+            //   x:
+            //     someRotateLoop.baseCircle.center.x +
+            //     (rhythmIndex * someRotateLoop.baseCircle.radius) / 128,
+            //   y:
+            //     someRotateLoop.baseCircle.center.y -
+            //     (rhythmIndex * someRotateLoop.baseCircle.radius) / 128,
+            // },
+          },
+        })
+      })
+    })
+    .flat()
+  const rimPattern = waveB
+    .map<RotatedLoop[]>((cellA, indexA) => {
+      const angleA = ((2 * Math.PI) / waveB.length) * indexA + Math.PI / 2
+      const perimeterPoint = {
+        x: baseCircleA.radius * Math.cos(angleA) + baseCircleA.center.x,
+        y: baseCircleA.radius * Math.sin(angleA) + baseCircleA.center.y,
+      }
+      const polyCenterPoint = {
+        x:
+          (-cellA * (baseCircleA.radius / waveB.length) + cellA) *
+            Math.cos(angleA) +
+          perimeterPoint.x,
+        y:
+          (-cellA * (baseCircleA.radius / waveB.length) + cellA) *
+            Math.sin(angleA) +
+          perimeterPoint.y,
+      }
+      const polyBaseRelativeAngle = Math.atan2(
+        polyCenterPoint.x - baseCircleA.center.x,
+        polyCenterPoint.y - baseCircleA.center.y
+      )
+      const polyRotationAngle = polyBaseRelativeAngle + Math.PI / 2 + Math.PI
+      const someRotatedLoop: RotatedLoop = {
+        baseCircle: {
+          radius: (baseCircleA.radius / waveB.length / 3) * cellA,
+          center: polyCenterPoint,
+        },
+        childCircle: {
+          relativeRadius: 7 / 8,
+          relativeDepth: 3 / 8,
+          phaseAngle: polyBaseRelativeAngle,
+        },
+        rotationAnchor: 'base',
+        rotationAngle: polyRotationAngle,
+      }
+      return getElementIndices({
+        targetValue: true,
+        someSpace: getFilteredRhythm({
+          rhythmSequence: [
+            getNaturalRhythm({
+              rhythmResolution: 24,
+              rhythmDensity: 23,
+              rhythmPhase: 0,
+            }),
+            getNaturalRhythm({
+              rhythmResolution: 23,
+              rhythmDensity: 13,
+              rhythmPhase: 0,
+            }),
+            getNaturalRhythm({
+              rhythmResolution: 11,
+              rhythmDensity: cellA + 1,
+              rhythmPhase: cellA,
+            }),
+            // getNaturalRhythm({
+            //   rhythmResolution: 7,
+            //   rhythmDensity: 5,
+            //   rhythmPhase: cellA,
+            // }),
+          ],
+        }),
+      }).map((rhythmIndex, matchIndex) => {
+        return getUpdatedData({
+          baseData: someRotatedLoop,
+          dataUpdates: {
+            'baseCircle.radius':
+              someRotatedLoop.baseCircle.radius -
+              (someRotatedLoop.baseCircle.radius / 24) * rhythmIndex,
+            // 'baseCircle.center': {
+            //   x:
+            //     someRotateLoop.baseCircle.center.x +
+            //     (rhythmIndex * someRotateLoop.baseCircle.radius) / 128,
+            //   y:
+            //     someRotateLoop.baseCircle.center.y -
+            //     (rhythmIndex * someRotateLoop.baseCircle.radius) / 128,
+            // },
+          },
+        })
+      })
+    })
+    .flat()
   const centerBaseLoop: RotatedLoop = {
     baseCircle: {
       radius: 7,
@@ -289,14 +380,327 @@ function Foo() {
     },
   })
   const centerPattern = [
-    centerTopLoop,
-    centerRightTopLoop,
-    centerLeftTopLoop,
-    centerRightBottomLoop,
-    centerLeftBottomLoop,
-    centerRightMidLoop,
-    centerLeftMidLoop,
-  ]
+    getElementIndices({
+      targetValue: true,
+      someSpace: getFilteredRhythm({
+        rhythmSequence: [
+          getNaturalRhythm({
+            rhythmResolution: 24,
+            rhythmDensity: 23,
+            rhythmPhase: 0,
+          }),
+          getNaturalRhythm({
+            rhythmResolution: 23,
+            rhythmDensity: 11,
+            rhythmPhase: 6,
+          }),
+          getNaturalRhythm({
+            rhythmResolution: 11,
+            rhythmDensity: 7,
+            rhythmPhase: 3,
+          }),
+          getNaturalRhythm({
+            rhythmResolution: 7,
+            rhythmDensity: 5,
+            rhythmPhase: 2,
+          }),
+        ],
+      }),
+    }).map((rhythmIndex, matchIndex) => {
+      return getUpdatedData({
+        baseData: centerTopLoop,
+        dataUpdates: {
+          'baseCircle.radius':
+            centerTopLoop.baseCircle.radius -
+            (centerTopLoop.baseCircle.radius / 24) * rhythmIndex,
+        },
+      })
+    }),
+    getElementIndices({
+      targetValue: true,
+      someSpace: getFilteredRhythm({
+        rhythmSequence: [
+          getNaturalRhythm({
+            rhythmResolution: 24,
+            rhythmDensity: 23,
+            rhythmPhase: 0,
+          }),
+          getNaturalRhythm({
+            rhythmResolution: 23,
+            rhythmDensity: 11,
+            rhythmPhase: 0,
+          }),
+          getNaturalRhythm({
+            rhythmResolution: 11,
+            rhythmDensity: 7,
+            rhythmPhase: 4,
+          }),
+          getNaturalRhythm({
+            rhythmResolution: 7,
+            rhythmDensity: 4,
+            rhythmPhase: 1,
+          }),
+        ],
+      }),
+    }).map((rhythmIndex, matchIndex) => {
+      return getUpdatedData({
+        baseData: centerRightTopLoop,
+        dataUpdates: {
+          'baseCircle.radius':
+            centerRightTopLoop.baseCircle.radius -
+            (centerRightTopLoop.baseCircle.radius / 24) * rhythmIndex,
+          'baseCircle.center': {
+            x:
+              centerRightTopLoop.baseCircle.center.x +
+              (rhythmIndex * centerRightTopLoop.baseCircle.radius) / 128,
+            y:
+              centerRightTopLoop.baseCircle.center.y +
+              (rhythmIndex * centerRightTopLoop.baseCircle.radius) / 128,
+          },
+        },
+      })
+    }),
+    getElementIndices({
+      targetValue: true,
+      someSpace: getFilteredRhythm({
+        rhythmSequence: [
+          getNaturalRhythm({
+            rhythmResolution: 24,
+            rhythmDensity: 23,
+            rhythmPhase: 0,
+          }),
+          getNaturalRhythm({
+            rhythmResolution: 23,
+            rhythmDensity: 11,
+            rhythmPhase: 0,
+          }),
+          getNaturalRhythm({
+            rhythmResolution: 11,
+            rhythmDensity: 7,
+            rhythmPhase: 4,
+          }),
+          getNaturalRhythm({
+            rhythmResolution: 7,
+            rhythmDensity: 4,
+            rhythmPhase: 1,
+          }),
+        ],
+      }),
+    }).map((rhythmIndex, matchIndex) => {
+      return getUpdatedData({
+        baseData: centerLeftTopLoop,
+        dataUpdates: {
+          'baseCircle.radius':
+            centerLeftTopLoop.baseCircle.radius -
+            (centerLeftTopLoop.baseCircle.radius / 24) * rhythmIndex,
+          'baseCircle.center': {
+            x:
+              centerLeftTopLoop.baseCircle.center.x -
+              (rhythmIndex * centerLeftTopLoop.baseCircle.radius) / 128,
+            y:
+              centerLeftTopLoop.baseCircle.center.y +
+              (rhythmIndex * centerLeftTopLoop.baseCircle.radius) / 128,
+          },
+        },
+      })
+    }),
+    getElementIndices({
+      targetValue: true,
+      someSpace: getFilteredRhythm({
+        rhythmSequence: [
+          getNaturalRhythm({
+            rhythmResolution: 24,
+            rhythmDensity: 23,
+            rhythmPhase: 0,
+          }),
+          getNaturalRhythm({
+            rhythmResolution: 23,
+            rhythmDensity: 11,
+            rhythmPhase: 0,
+          }),
+          getNaturalRhythm({
+            rhythmResolution: 11,
+            rhythmDensity: 7,
+            rhythmPhase: 1,
+          }),
+          getNaturalRhythm({
+            rhythmResolution: 7,
+            rhythmDensity: 4,
+            rhythmPhase: 1,
+          }),
+          // getNaturalRhythm({
+          //   rhythmResolution: 5,
+          //   rhythmDensity: 3,
+          //   rhythmPhase: 3,
+          // }),
+        ],
+      }),
+    }).map((rhythmIndex, matchIndex) => {
+      return getUpdatedData({
+        baseData: centerRightBottomLoop,
+        dataUpdates: {
+          'baseCircle.radius':
+            centerRightBottomLoop.baseCircle.radius -
+            (centerRightBottomLoop.baseCircle.radius / 24) * rhythmIndex,
+          'baseCircle.center': {
+            x:
+              centerRightBottomLoop.baseCircle.center.x +
+              (rhythmIndex * centerRightBottomLoop.baseCircle.radius) / 1028,
+            y:
+              centerRightBottomLoop.baseCircle.center.y -
+              (rhythmIndex * centerRightBottomLoop.baseCircle.radius) / 64,
+          },
+        },
+      })
+    }),
+    getElementIndices({
+      targetValue: true,
+      someSpace: getFilteredRhythm({
+        rhythmSequence: [
+          getNaturalRhythm({
+            rhythmResolution: 24,
+            rhythmDensity: 23,
+            rhythmPhase: 0,
+          }),
+          getNaturalRhythm({
+            rhythmResolution: 23,
+            rhythmDensity: 11,
+            rhythmPhase: 0,
+          }),
+          getNaturalRhythm({
+            rhythmResolution: 11,
+            rhythmDensity: 7,
+            rhythmPhase: 1,
+          }),
+          getNaturalRhythm({
+            rhythmResolution: 7,
+            rhythmDensity: 4,
+            rhythmPhase: 1,
+          }),
+          // getNaturalRhythm({
+          //   rhythmResolution: 5,
+          //   rhythmDensity: 3,
+          //   rhythmPhase: 3,
+          // }),
+        ],
+      }),
+    }).map((rhythmIndex, matchIndex) => {
+      return getUpdatedData({
+        baseData: centerLeftBottomLoop,
+        dataUpdates: {
+          'baseCircle.radius':
+            centerLeftBottomLoop.baseCircle.radius -
+            (centerLeftBottomLoop.baseCircle.radius / 24) * rhythmIndex,
+          'baseCircle.center': {
+            x:
+              centerLeftBottomLoop.baseCircle.center.x -
+              (rhythmIndex * centerLeftBottomLoop.baseCircle.radius) / 1028,
+            y:
+              centerLeftBottomLoop.baseCircle.center.y -
+              (rhythmIndex * centerLeftBottomLoop.baseCircle.radius) / 64,
+          },
+        },
+      })
+    }),
+    getElementIndices({
+      targetValue: true,
+      someSpace: getFilteredRhythm({
+        rhythmSequence: [
+          getNaturalRhythm({
+            rhythmResolution: 24,
+            rhythmDensity: 23,
+            rhythmPhase: 0,
+          }),
+          getNaturalRhythm({
+            rhythmResolution: 23,
+            rhythmDensity: 11,
+            rhythmPhase: 0,
+          }),
+          getNaturalRhythm({
+            rhythmResolution: 11,
+            rhythmDensity: 7,
+            rhythmPhase: 2,
+          }),
+          getNaturalRhythm({
+            rhythmResolution: 7,
+            rhythmDensity: 4,
+            rhythmPhase: 1,
+          }),
+          //   getNaturalRhythm({
+          //     rhythmResolution: 3,
+          //     rhythmDensity: 2,
+          //     rhythmPhase: 0,
+          //   }),
+        ],
+      }),
+    }).map((rhythmIndex, matchIndex) => {
+      return getUpdatedData({
+        baseData: centerRightMidLoop,
+        dataUpdates: {
+          'baseCircle.radius':
+            centerRightMidLoop.baseCircle.radius -
+            (centerRightMidLoop.baseCircle.radius / 24) * rhythmIndex,
+          'baseCircle.center': {
+            x:
+              centerRightMidLoop.baseCircle.center.x +
+              (rhythmIndex * centerRightMidLoop.baseCircle.radius) / 1028,
+            y:
+              centerRightMidLoop.baseCircle.center.y +
+              (rhythmIndex * centerRightMidLoop.baseCircle.radius) / 88,
+          },
+        },
+      })
+    }),
+    getElementIndices({
+      targetValue: true,
+      someSpace: getFilteredRhythm({
+        rhythmSequence: [
+          getNaturalRhythm({
+            rhythmResolution: 24,
+            rhythmDensity: 23,
+            rhythmPhase: 0,
+          }),
+          getNaturalRhythm({
+            rhythmResolution: 23,
+            rhythmDensity: 11,
+            rhythmPhase: 0,
+          }),
+          getNaturalRhythm({
+            rhythmResolution: 11,
+            rhythmDensity: 7,
+            rhythmPhase: 2,
+          }),
+          getNaturalRhythm({
+            rhythmResolution: 7,
+            rhythmDensity: 4,
+            rhythmPhase: 1,
+          }),
+          // getNaturalRhythm({
+          //   rhythmResolution: 3,
+          //   rhythmDensity: 2,
+          //   rhythmPhase: 0,
+          // }),
+        ],
+      }),
+    }).map((rhythmIndex, matchIndex) => {
+      return getUpdatedData({
+        baseData: centerLeftMidLoop,
+        dataUpdates: {
+          'baseCircle.radius':
+            centerLeftMidLoop.baseCircle.radius -
+            (centerLeftMidLoop.baseCircle.radius / 24) * rhythmIndex,
+          'baseCircle.center': {
+            x:
+              centerLeftMidLoop.baseCircle.center.x -
+              (rhythmIndex * centerLeftMidLoop.baseCircle.radius) / 1028,
+            y:
+              centerLeftMidLoop.baseCircle.center.y +
+              (rhythmIndex * centerLeftMidLoop.baseCircle.radius) / 88,
+          },
+        },
+      })
+    }),
+  ].flat()
   return (
     <svg
       style={{
@@ -311,18 +715,51 @@ function Foo() {
     >
       <rect x={-10} y={-10} width={120} height={120} fill={'lightgrey'} />
       <g>
-        {corePattern.map((rotatedLoop) => (
-          <RotatedLoopPolygon rotatedLoop={rotatedLoop} />
+        {corePattern.map((rotatedLoop, fooIndex) => (
+          <Polygon
+            points={getOscillatedRotatedLoopPoints({
+              sampleCount: 256,
+              oscillatedRotatedLoop: {
+                ...rotatedLoop,
+                getRelativeOscillation: () => Math.random() / 4.9,
+              },
+            })}
+            fill={'none'}
+            stroke={'black'}
+            strokeWidth={0.15}
+          />
         ))}
       </g>
       <g>
-        {rimPattern.map((rotatedLoop) => (
-          <RotatedLoopPolygon rotatedLoop={rotatedLoop} />
+        {rimPattern.map((rotatedLoop, fooIndex) => (
+          <Polygon
+            points={getOscillatedRotatedLoopPoints({
+              sampleCount: 256,
+              oscillatedRotatedLoop: {
+                ...rotatedLoop,
+                getRelativeOscillation: () => Math.random() / 4.4,
+              },
+            })}
+            fill={'none'}
+            stroke={'black'}
+            strokeWidth={0.08}
+          />
         ))}
       </g>
       <g>
-        {centerPattern.map((rotatedLoop) => (
-          <RotatedLoopPolygon rotatedLoop={rotatedLoop} />
+        {centerPattern.map((rotatedLoop, fooIndex) => (
+          <Polygon
+            points={getOscillatedRotatedLoopPoints({
+              sampleCount: 256,
+              oscillatedRotatedLoop: {
+                ...rotatedLoop,
+                getRelativeOscillation: () => Math.random() / 2.7,
+              },
+            })}
+            fill={'none'}
+            stroke={'black'}
+            strokeWidth={0.1}
+          />
         ))}
       </g>
     </svg>
@@ -379,23 +816,91 @@ function updateData(api: UpdateDataApi): any {
   }
 }
 
-interface RotatedLoopPolygonProps {
-  rotatedLoop: RotatedLoop
+interface PolygonPolygonProps
+  extends Pick<SVGProps<SVGPolygonElement>, 'fill' | 'stroke' | 'strokeWidth'> {
+  points: Point[]
 }
 
-function RotatedLoopPolygon(props: RotatedLoopPolygonProps) {
-  const { rotatedLoop } = props
+function Polygon(props: PolygonPolygonProps) {
+  const { points, ...polygonProps } = props
   return (
     <polygon
-      points={getRotatedLoopPoints({
-        someRotatedLoop: rotatedLoop,
-        sampleCount: 256,
-      })
-        .map((loopPoint) => `${loopPoint.x},${loopPoint.y}`)
+      {...polygonProps}
+      points={points
+        .map((polygonPoint) => `${polygonPoint.x},${polygonPoint.y}`)
         .join(' ')}
-      fill={'none'}
-      stroke={'black'}
-      strokeWidth={0.25}
     />
   )
+}
+
+interface OscillatedRotatedLoop extends RotatedLoop {
+  getRelativeOscillation: (sampleAngle: number) => number
+}
+
+interface GetOscillatedRotatedLoopPointsApi {
+  sampleCount: number
+  oscillatedRotatedLoop: OscillatedRotatedLoop
+}
+
+function getOscillatedRotatedLoopPoints(
+  api: GetOscillatedRotatedLoopPointsApi
+) {
+  const { sampleCount, oscillatedRotatedLoop } = api
+  return new Array(sampleCount).fill(undefined).map((_, sampleIndex) =>
+    getOscillatedRotatedLoopPoint({
+      oscillatedRotatedLoop,
+      sampleAngle: ((2 * Math.PI) / sampleCount) * sampleIndex,
+    })
+  )
+}
+
+interface GetOscillatedRotatedLoopPointApi {
+  oscillatedRotatedLoop: OscillatedRotatedLoop
+  sampleAngle: number
+}
+
+function getOscillatedRotatedLoopPoint(api: GetOscillatedRotatedLoopPointApi) {
+  const { sampleAngle, oscillatedRotatedLoop } = api
+  return getRotatedPoint({
+    basePoint: getOscillatedPoint({
+      originPoint: getLoopChildCircle({
+        someLoop: oscillatedRotatedLoop,
+      }).center,
+      basePoint: getLoopPoint({
+        sampleAngle,
+        someLoop: oscillatedRotatedLoop,
+      }),
+      relativeOscillation:
+        oscillatedRotatedLoop.getRelativeOscillation(sampleAngle),
+    }),
+    rotationAngle: oscillatedRotatedLoop.rotationAngle,
+    anchorPoint:
+      oscillatedRotatedLoop.rotationAnchor === 'base'
+        ? oscillatedRotatedLoop.baseCircle.center
+        : getLoopChildCircle({
+            someLoop: oscillatedRotatedLoop,
+          }).center,
+  })
+}
+
+interface GetOscillatedPointApi {
+  originPoint: Point
+  basePoint: Point
+  relativeOscillation: number
+}
+
+function getOscillatedPoint(api: GetOscillatedPointApi): Point {
+  const { basePoint, originPoint, relativeOscillation } = api
+  const deltaX = basePoint.x - originPoint.x
+  const deltaY = basePoint.y - originPoint.y
+  const relativeAngle = Math.atan2(deltaX, deltaY) - Math.PI / 2
+  const relativeBaseLength = Math.sqrt(
+    Math.pow(deltaX, 2) + Math.pow(deltaY, 2)
+  )
+  const nextLength =
+    relativeOscillation * relativeBaseLength + relativeBaseLength
+  return {
+    x: nextLength * Math.cos(-relativeAngle) + originPoint.x,
+    y: nextLength * Math.sin(-relativeAngle) + originPoint.y,
+  }
 }

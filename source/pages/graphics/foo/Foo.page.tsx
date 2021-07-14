@@ -27,8 +27,8 @@ export default {
 }
 
 const Color = {
-  yellow: '#ceaf12',
-  orange: '#d26a0f',
+  yellow: '#BC9F10',
+  orange: '#E57310',
   green: '#101915',
   red: '#a43d42',
 }

@@ -26,23 +26,11 @@ export default {
   pdfFileName: 'foo',
 }
 
-type ElementGraphNode = GroupGraphNode | RotatedLoopGraphNode
-
-interface GroupGraphNode
-  extends ElementGraphNodeBase<
-    'group',
-    { [nodeKey: string]: ElementGraphNode }
-  > {}
-
-interface RotatedLoopGraphNode
-  extends ElementGraphNodeBase<'rotatedLoop', RotatedLoop> {}
-
-interface ElementGraphNodeBase<
-  NodeType extends string,
-  GeometryType extends object
-> {
-  type: NodeType
-  geometry: GeometryType
+const Color = {
+  yellow: '#ceaf12',
+  orange: '#d26a0f',
+  green: '#101915',
+  red: '#a43d42',
 }
 
 function Foo() {
@@ -145,27 +133,35 @@ function Foo() {
           ],
         }),
       }).map((rhythmIndex, matchIndex) => {
-        return getUpdatedData({
-          baseData: someRotatedLoop,
-          dataUpdates: {
-            'baseCircle.radius':
-              someRotatedLoop.baseCircle.radius -
-              (someRotatedLoop.baseCircle.radius / 24) * rhythmIndex,
-            // 'baseCircle.center': {
-            //   x:
-            //     someRotateLoop.baseCircle.center.x +
-            //     (rhythmIndex * someRotateLoop.baseCircle.radius) / 128,
-            //   y:
-            //     someRotateLoop.baseCircle.center.y -
-            //     (rhythmIndex * someRotateLoop.baseCircle.radius) / 128,
-            // },
-          },
-        })
+        return {
+          rotatedLoop: getUpdatedData({
+            baseData: someRotatedLoop,
+            dataUpdates: {
+              'baseCircle.radius':
+                someRotatedLoop.baseCircle.radius -
+                (someRotatedLoop.baseCircle.radius / 24) * rhythmIndex,
+              // 'baseCircle.center': {
+              //   x:
+              //     someRotateLoop.baseCircle.center.x +
+              //     (rhythmIndex * someRotateLoop.baseCircle.radius) / 128,
+              //   y:
+              //     someRotateLoop.baseCircle.center.y -
+              //     (rhythmIndex * someRotateLoop.baseCircle.radius) / 128,
+              // },
+            },
+          }),
+          strokeColor:
+            (matchIndex + cellA) % 3 !== 0
+              ? (matchIndex + cellA) % 3 !== 1
+                ? Color['orange']
+                : Color['yellow']
+              : Color['red'],
+        }
       })
     })
     .flat()
   const rimPattern = waveB
-    .map<RotatedLoop[]>((cellA, indexA) => {
+    .map((cellA, indexA) => {
       const angleA = ((2 * Math.PI) / waveB.length) * indexA + Math.PI / 2
       const perimeterPoint = {
         x: baseCircleA.radius * Math.cos(angleA) + baseCircleA.center.x,
@@ -226,22 +222,30 @@ function Foo() {
           ],
         }),
       }).map((rhythmIndex, matchIndex) => {
-        return getUpdatedData({
-          baseData: someRotatedLoop,
-          dataUpdates: {
-            'baseCircle.radius':
-              someRotatedLoop.baseCircle.radius -
-              (someRotatedLoop.baseCircle.radius / 24) * rhythmIndex,
-            // 'baseCircle.center': {
-            //   x:
-            //     someRotateLoop.baseCircle.center.x +
-            //     (rhythmIndex * someRotateLoop.baseCircle.radius) / 128,
-            //   y:
-            //     someRotateLoop.baseCircle.center.y -
-            //     (rhythmIndex * someRotateLoop.baseCircle.radius) / 128,
-            // },
-          },
-        })
+        return {
+          rotatedLoop: getUpdatedData({
+            baseData: someRotatedLoop,
+            dataUpdates: {
+              'baseCircle.radius':
+                someRotatedLoop.baseCircle.radius -
+                (someRotatedLoop.baseCircle.radius / 24) * rhythmIndex,
+              // 'baseCircle.center': {
+              //   x:
+              //     someRotateLoop.baseCircle.center.x +
+              //     (rhythmIndex * someRotateLoop.baseCircle.radius) / 128,
+              //   y:
+              //     someRotateLoop.baseCircle.center.y -
+              //     (rhythmIndex * someRotateLoop.baseCircle.radius) / 128,
+              // },
+            },
+          }),
+          strokeColor:
+            (matchIndex + cellA + 2) % 3 !== 0
+              ? (matchIndex + cellA + 2) % 3 !== 1
+                ? Color['orange']
+                : Color['yellow']
+              : Color['red'],
+        }
       })
     })
     .flat()
@@ -407,14 +411,22 @@ function Foo() {
         ],
       }),
     }).map((rhythmIndex, matchIndex) => {
-      return getUpdatedData({
-        baseData: centerTopLoop,
-        dataUpdates: {
-          'baseCircle.radius':
-            centerTopLoop.baseCircle.radius -
-            (centerTopLoop.baseCircle.radius / 24) * rhythmIndex,
-        },
-      })
+      return {
+        rotatedLoop: getUpdatedData({
+          baseData: centerTopLoop,
+          dataUpdates: {
+            'baseCircle.radius':
+              centerTopLoop.baseCircle.radius -
+              (centerTopLoop.baseCircle.radius / 24) * rhythmIndex,
+          },
+        }),
+        strokeColor:
+          (matchIndex + 0) % 3 !== 0
+            ? (matchIndex + 0) % 3 !== 1
+              ? Color['yellow']
+              : Color['red']
+            : Color['orange'],
+      }
     }),
     getElementIndices({
       targetValue: true,
@@ -443,22 +455,30 @@ function Foo() {
         ],
       }),
     }).map((rhythmIndex, matchIndex) => {
-      return getUpdatedData({
-        baseData: centerRightTopLoop,
-        dataUpdates: {
-          'baseCircle.radius':
-            centerRightTopLoop.baseCircle.radius -
-            (centerRightTopLoop.baseCircle.radius / 24) * rhythmIndex,
-          'baseCircle.center': {
-            x:
-              centerRightTopLoop.baseCircle.center.x +
-              (rhythmIndex * centerRightTopLoop.baseCircle.radius) / 128,
-            y:
-              centerRightTopLoop.baseCircle.center.y +
-              (rhythmIndex * centerRightTopLoop.baseCircle.radius) / 128,
+      return {
+        rotatedLoop: getUpdatedData({
+          baseData: centerRightTopLoop,
+          dataUpdates: {
+            'baseCircle.radius':
+              centerRightTopLoop.baseCircle.radius -
+              (centerRightTopLoop.baseCircle.radius / 24) * rhythmIndex,
+            'baseCircle.center': {
+              x:
+                centerRightTopLoop.baseCircle.center.x +
+                (rhythmIndex * centerRightTopLoop.baseCircle.radius) / 128,
+              y:
+                centerRightTopLoop.baseCircle.center.y +
+                (rhythmIndex * centerRightTopLoop.baseCircle.radius) / 128,
+            },
           },
-        },
-      })
+        }),
+        strokeColor:
+          (matchIndex + 0) % 3 !== 0
+            ? (matchIndex + 0) % 3 !== 1
+              ? Color['yellow']
+              : Color['red']
+            : Color['yellow'],
+      }
     }),
     getElementIndices({
       targetValue: true,
@@ -487,22 +507,30 @@ function Foo() {
         ],
       }),
     }).map((rhythmIndex, matchIndex) => {
-      return getUpdatedData({
-        baseData: centerLeftTopLoop,
-        dataUpdates: {
-          'baseCircle.radius':
-            centerLeftTopLoop.baseCircle.radius -
-            (centerLeftTopLoop.baseCircle.radius / 24) * rhythmIndex,
-          'baseCircle.center': {
-            x:
-              centerLeftTopLoop.baseCircle.center.x -
-              (rhythmIndex * centerLeftTopLoop.baseCircle.radius) / 128,
-            y:
-              centerLeftTopLoop.baseCircle.center.y +
-              (rhythmIndex * centerLeftTopLoop.baseCircle.radius) / 128,
+      return {
+        rotatedLoop: getUpdatedData({
+          baseData: centerLeftTopLoop,
+          dataUpdates: {
+            'baseCircle.radius':
+              centerLeftTopLoop.baseCircle.radius -
+              (centerLeftTopLoop.baseCircle.radius / 24) * rhythmIndex,
+            'baseCircle.center': {
+              x:
+                centerLeftTopLoop.baseCircle.center.x -
+                (rhythmIndex * centerLeftTopLoop.baseCircle.radius) / 128,
+              y:
+                centerLeftTopLoop.baseCircle.center.y +
+                (rhythmIndex * centerLeftTopLoop.baseCircle.radius) / 128,
+            },
           },
-        },
-      })
+        }),
+        strokeColor:
+          (matchIndex + 0) % 3 !== 0
+            ? (matchIndex + 0) % 3 !== 1
+              ? Color['yellow']
+              : Color['red']
+            : Color['yellow'],
+      }
     }),
     getElementIndices({
       targetValue: true,
@@ -536,22 +564,30 @@ function Foo() {
         ],
       }),
     }).map((rhythmIndex, matchIndex) => {
-      return getUpdatedData({
-        baseData: centerRightBottomLoop,
-        dataUpdates: {
-          'baseCircle.radius':
-            centerRightBottomLoop.baseCircle.radius -
-            (centerRightBottomLoop.baseCircle.radius / 24) * rhythmIndex,
-          'baseCircle.center': {
-            x:
-              centerRightBottomLoop.baseCircle.center.x +
-              (rhythmIndex * centerRightBottomLoop.baseCircle.radius) / 1028,
-            y:
-              centerRightBottomLoop.baseCircle.center.y -
-              (rhythmIndex * centerRightBottomLoop.baseCircle.radius) / 64,
+      return {
+        rotatedLoop: getUpdatedData({
+          baseData: centerRightBottomLoop,
+          dataUpdates: {
+            'baseCircle.radius':
+              centerRightBottomLoop.baseCircle.radius -
+              (centerRightBottomLoop.baseCircle.radius / 24) * rhythmIndex,
+            'baseCircle.center': {
+              x:
+                centerRightBottomLoop.baseCircle.center.x +
+                (rhythmIndex * centerRightBottomLoop.baseCircle.radius) / 1028,
+              y:
+                centerRightBottomLoop.baseCircle.center.y -
+                (rhythmIndex * centerRightBottomLoop.baseCircle.radius) / 64,
+            },
           },
-        },
-      })
+        }),
+        strokeColor:
+          (matchIndex + 0) % 3 !== 0
+            ? (matchIndex + 0) % 3 !== 1
+              ? Color['orange']
+              : Color['orange']
+            : Color['yellow'],
+      }
     }),
     getElementIndices({
       targetValue: true,
@@ -585,22 +621,30 @@ function Foo() {
         ],
       }),
     }).map((rhythmIndex, matchIndex) => {
-      return getUpdatedData({
-        baseData: centerLeftBottomLoop,
-        dataUpdates: {
-          'baseCircle.radius':
-            centerLeftBottomLoop.baseCircle.radius -
-            (centerLeftBottomLoop.baseCircle.radius / 24) * rhythmIndex,
-          'baseCircle.center': {
-            x:
-              centerLeftBottomLoop.baseCircle.center.x -
-              (rhythmIndex * centerLeftBottomLoop.baseCircle.radius) / 1028,
-            y:
-              centerLeftBottomLoop.baseCircle.center.y -
-              (rhythmIndex * centerLeftBottomLoop.baseCircle.radius) / 64,
+      return {
+        rotatedLoop: getUpdatedData({
+          baseData: centerLeftBottomLoop,
+          dataUpdates: {
+            'baseCircle.radius':
+              centerLeftBottomLoop.baseCircle.radius -
+              (centerLeftBottomLoop.baseCircle.radius / 24) * rhythmIndex,
+            'baseCircle.center': {
+              x:
+                centerLeftBottomLoop.baseCircle.center.x -
+                (rhythmIndex * centerLeftBottomLoop.baseCircle.radius) / 1028,
+              y:
+                centerLeftBottomLoop.baseCircle.center.y -
+                (rhythmIndex * centerLeftBottomLoop.baseCircle.radius) / 64,
+            },
           },
-        },
-      })
+        }),
+        strokeColor:
+          (matchIndex + 0) % 3 !== 0
+            ? (matchIndex + 0) % 3 !== 1
+              ? Color['orange']
+              : Color['orange']
+            : Color['yellow'],
+      }
     }),
     getElementIndices({
       targetValue: true,
@@ -634,22 +678,30 @@ function Foo() {
         ],
       }),
     }).map((rhythmIndex, matchIndex) => {
-      return getUpdatedData({
-        baseData: centerRightMidLoop,
-        dataUpdates: {
-          'baseCircle.radius':
-            centerRightMidLoop.baseCircle.radius -
-            (centerRightMidLoop.baseCircle.radius / 24) * rhythmIndex,
-          'baseCircle.center': {
-            x:
-              centerRightMidLoop.baseCircle.center.x +
-              (rhythmIndex * centerRightMidLoop.baseCircle.radius) / 1028,
-            y:
-              centerRightMidLoop.baseCircle.center.y +
-              (rhythmIndex * centerRightMidLoop.baseCircle.radius) / 88,
+      return {
+        rotatedLoop: getUpdatedData({
+          baseData: centerRightMidLoop,
+          dataUpdates: {
+            'baseCircle.radius':
+              centerRightMidLoop.baseCircle.radius -
+              (centerRightMidLoop.baseCircle.radius / 24) * rhythmIndex,
+            'baseCircle.center': {
+              x:
+                centerRightMidLoop.baseCircle.center.x +
+                (rhythmIndex * centerRightMidLoop.baseCircle.radius) / 1028,
+              y:
+                centerRightMidLoop.baseCircle.center.y +
+                (rhythmIndex * centerRightMidLoop.baseCircle.radius) / 88,
+            },
           },
-        },
-      })
+        }),
+        strokeColor:
+          (matchIndex + 2) % 3 !== 0
+            ? (matchIndex + 2) % 3 !== 1
+              ? Color['yellow']
+              : Color['red']
+            : Color['orange'],
+      }
     }),
     getElementIndices({
       targetValue: true,
@@ -683,22 +735,30 @@ function Foo() {
         ],
       }),
     }).map((rhythmIndex, matchIndex) => {
-      return getUpdatedData({
-        baseData: centerLeftMidLoop,
-        dataUpdates: {
-          'baseCircle.radius':
-            centerLeftMidLoop.baseCircle.radius -
-            (centerLeftMidLoop.baseCircle.radius / 24) * rhythmIndex,
-          'baseCircle.center': {
-            x:
-              centerLeftMidLoop.baseCircle.center.x -
-              (rhythmIndex * centerLeftMidLoop.baseCircle.radius) / 1028,
-            y:
-              centerLeftMidLoop.baseCircle.center.y +
-              (rhythmIndex * centerLeftMidLoop.baseCircle.radius) / 88,
+      return {
+        rotatedLoop: getUpdatedData({
+          baseData: centerLeftMidLoop,
+          dataUpdates: {
+            'baseCircle.radius':
+              centerLeftMidLoop.baseCircle.radius -
+              (centerLeftMidLoop.baseCircle.radius / 24) * rhythmIndex,
+            'baseCircle.center': {
+              x:
+                centerLeftMidLoop.baseCircle.center.x -
+                (rhythmIndex * centerLeftMidLoop.baseCircle.radius) / 1028,
+              y:
+                centerLeftMidLoop.baseCircle.center.y +
+                (rhythmIndex * centerLeftMidLoop.baseCircle.radius) / 88,
+            },
           },
-        },
-      })
+        }),
+        strokeColor:
+          (matchIndex + 2) % 3 !== 0
+            ? (matchIndex + 2) % 3 !== 1
+              ? Color['yellow']
+              : Color['red']
+            : Color['orange'],
+      }
     }),
   ].flat()
   return (
@@ -713,9 +773,9 @@ function Foo() {
       viewBox={'-10 -10 120 120'}
       imageRendering={'optimizeQuality'}
     >
-      <rect x={-10} y={-10} width={120} height={120} fill={'lightgrey'} />
+      <rect x={-10} y={-10} width={120} height={120} fill={Color['green']} />
       <g>
-        {corePattern.map((rotatedLoop, fooIndex) => (
+        {corePattern.map(({ rotatedLoop, strokeColor }, fooIndex) => (
           <Polygon
             points={getOscillatedRotatedLoopPoints({
               sampleCount: 256,
@@ -725,13 +785,13 @@ function Foo() {
               },
             })}
             fill={'none'}
-            stroke={'black'}
-            strokeWidth={0.15}
+            stroke={strokeColor}
+            strokeWidth={0.2}
           />
         ))}
       </g>
       <g>
-        {rimPattern.map((rotatedLoop, fooIndex) => (
+        {rimPattern.map(({ rotatedLoop, strokeColor }, fooIndex) => (
           <Polygon
             points={getOscillatedRotatedLoopPoints({
               sampleCount: 256,
@@ -741,13 +801,13 @@ function Foo() {
               },
             })}
             fill={'none'}
-            stroke={'black'}
-            strokeWidth={0.08}
+            stroke={strokeColor}
+            strokeWidth={0.15}
           />
         ))}
       </g>
       <g>
-        {centerPattern.map((rotatedLoop, fooIndex) => (
+        {centerPattern.map(({ rotatedLoop, strokeColor }, fooIndex) => (
           <Polygon
             points={getOscillatedRotatedLoopPoints({
               sampleCount: 256,
@@ -757,8 +817,8 @@ function Foo() {
               },
             })}
             fill={'none'}
-            stroke={'black'}
-            strokeWidth={0.1}
+            stroke={strokeColor}
+            strokeWidth={0.15}
           />
         ))}
       </g>

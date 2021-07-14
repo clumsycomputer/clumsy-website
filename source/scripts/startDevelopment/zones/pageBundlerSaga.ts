@@ -6,6 +6,10 @@ import createBundler, { Configuration } from 'webpack'
 import { decodeData } from '../../helpers/decodeData'
 import { PageModule, PageModuleCodec } from '../../models/PageModule'
 import {
+  memoizedGeneratePageHtmlContent,
+  memoizedGeneratePagePdfContent,
+} from '../helpers/generatePageContent'
+import {
   call,
   fork,
   put,
@@ -25,10 +29,6 @@ import {
   PageModuleUpdatedAction,
 } from '../models/ServerAction'
 import { ServerState } from '../models/ServerState'
-import {
-  memoizedGeneratePageHtmlContent,
-  memoizedGeneratePagePdfContent,
-} from '../helpers/generatePageContent'
 import { importJssThemeModule, initializePlaywright } from './serverSaga'
 
 export interface PageBundlerSagaApi

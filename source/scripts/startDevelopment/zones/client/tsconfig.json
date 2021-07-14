@@ -1,15 +1,7 @@
 {
+  "extends": "../../../../../tsconfig.json",
   "compilerOptions": {
     "lib": ["es2020", "dom"],
-    "module": "commonjs",
-    "target": "es2020",
-    "strict": true,
-    "moduleResolution": "node",
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "jsx": "react",
-    "noUncheckedIndexedAccess": true
   },
   "include": ["**/DevelopmentClient.tsx"],
   "exclude": ["node_modules"]

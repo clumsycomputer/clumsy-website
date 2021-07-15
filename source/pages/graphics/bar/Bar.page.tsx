@@ -1,8 +1,8 @@
 import { getUpdatedData } from '../../../library/getUpdatedData'
 import React, { SVGProps } from 'react'
 import {
+  Circle,
   getLoopChildCircle,
-  getRotatedLoopChildCircle,
   getRotatedLoopPoints,
   getTracePoint,
   Point,
@@ -12,6 +12,7 @@ import {
   getElementIndices,
   getFilteredRhythm,
   getNaturalRhythm,
+  DiscreteRhythm,
 } from '../../../library/rhythmStuff'
 
 export default {
@@ -24,47 +25,13 @@ export default {
 }
 
 function Bar() {
-  const loopA: RotatedLoop = {
-    baseCircle: { center: { x: 0, y: 0 }, radius: 1 },
-    childCircle: {
-      relativeRadius: 3 / 8,
-      relativeDepth: 2 / 8,
-      phaseAngle: (2 * Math.PI) / 2,
+  const rootCircle: Circle = {
+    center: {
+      x: 50,
+      y: 50,
     },
-    rotationAnchor: 'base',
-    rotationAngle: (2 * Math.PI) / 1,
+    radius: 50,
   }
-  const childCircleA = getLoopChildCircle({
-    someLoop: loopA,
-  })
-  const loopPointsA = getRotatedLoopPoints({
-    sampleCount: 256,
-    someRotatedLoop: loopA,
-  })
-  const waveSamplesA = new Array(loopPointsA.length).fill(undefined).map(
-    (_, sampleIndex) =>
-      getTracePoint({
-        somePoints: loopPointsA,
-        traceAngle: ((2 * Math.PI) / loopPointsA.length) * sampleIndex,
-        originPoint: childCircleA.center,
-      }).y - childCircleA.center.y
-  )
-  const loopB: RotatedLoop = {
-    baseCircle: {
-      center: { x: 50, y: 50 },
-      radius: 6,
-    },
-    childCircle: {
-      relativeRadius: 5 / 8,
-      relativeDepth: 7 / 8,
-      phaseAngle: ((2 * Math.PI) / 8) * 1.75,
-    },
-    rotationAnchor: 'base',
-    rotationAngle: (2 * Math.PI) / 11,
-  }
-  const childCircleB = getRotatedLoopChildCircle({
-    someRotatedLoop: loopB,
-  })
   const rhythmA = getFilteredRhythm({
     rhythmSequence: [
       getNaturalRhythm({
@@ -78,10 +45,6 @@ function Bar() {
         rhythmPhase: 4,
       }),
     ],
-  })
-  const spacersA = getElementIndices({
-    targetValue: true,
-    someSpace: rhythmA,
   })
   const rhythmB = getFilteredRhythm({
     rhythmSequence: [
@@ -97,350 +60,116 @@ function Bar() {
       }),
     ],
   })
-  const spacersB = getElementIndices({
-    targetValue: true,
-    someSpace: rhythmB,
-  })
-  const centerPoints = spacersA
-    .map((someSpacer) => someSpacer / rhythmA.length)
-    .map((timePoint) => {
-      const waveSample =
-        getTracePoint({
-          somePoints: loopPointsA,
-          traceAngle: 2 * Math.PI * timePoint,
-          originPoint: childCircleA.center,
-        }).y - childCircleA.center.y
-      const currentRadius = 50
-      const polyBaseCenter = {
-        x:
-          currentRadius *
-            timePoint *
-            Math.cos(-Math.PI / 2.5 + (Math.PI / 2) * waveSample) +
-          50,
-        y:
-          currentRadius *
-            timePoint *
-            Math.sin(-Math.PI / 2.5 + (Math.PI / 3) * waveSample) +
-          50,
-      }
-      const polyBaseRelativeAngle = Math.atan2(
-        polyBaseCenter.x - 50,
-        polyBaseCenter.y - 50
-      )
-      return {
-        someRotatedLoop: {
-          baseCircle: {
-            radius: 5 * timePoint,
-            center: polyBaseCenter,
-          },
-          childCircle: {
-            relativeRadius: 7 / 8,
-            relativeDepth: 7 / 8,
-            phaseAngle: polyBaseRelativeAngle * timePoint,
-          },
-          rotationAnchor: 'base',
-          rotationAngle: polyBaseRelativeAngle * timePoint,
-        } as RotatedLoop,
-      }
-    })
-  const fooPoints = spacersB
-    .map((someSpacer) => someSpacer / rhythmB.length)
-    .map((timePoint) => {
-      const waveSample =
-        getTracePoint({
-          somePoints: loopPointsA,
-          traceAngle: 2 * Math.PI * (1 - timePoint),
-          originPoint: childCircleA.center,
-        }).y - childCircleA.center.y
-      const currentRadius = 50
-      const polyBaseCenter = {
-        x:
-          currentRadius *
-            (1 - timePoint) *
-            Math.cos(-Math.PI / 2.5 - (Math.PI / 2) * waveSample) +
-          50,
-        y:
-          currentRadius *
-            (1 - timePoint) *
-            Math.sin(-Math.PI / 2.5 - (Math.PI / 5) * waveSample) +
-          50,
-      }
-      const polyBaseRelativeAngle = Math.atan2(
-        polyBaseCenter.x - 50,
-        polyBaseCenter.y - 50
-      )
-      return {
-        someRotatedLoop: {
-          baseCircle: {
-            radius: 4 * (1 - timePoint),
-            center: polyBaseCenter,
-          },
-          childCircle: {
-            relativeRadius: 7 / 8,
-            relativeDepth: 7 / 8,
-            phaseAngle: polyBaseRelativeAngle * timePoint,
-          },
-          rotationAnchor: 'base',
-          rotationAngle: polyBaseRelativeAngle * timePoint,
-        } as RotatedLoop,
-      }
-    })
-  const barPoints = spacersB
-    .map((someSpacer) => someSpacer / rhythmB.length)
-    .map((timePoint) => {
-      const waveSample =
-        getTracePoint({
-          somePoints: loopPointsA,
-          traceAngle: 2 * Math.PI * (1 - timePoint),
-          originPoint: childCircleA.center,
-        }).y - childCircleA.center.y
-      const currentRadius = 50
-      const polyBaseCenter = {
-        x:
-          currentRadius *
-            (1 - timePoint) *
-            Math.cos(Math.PI / 2.5 + (Math.PI / 2) * waveSample) +
-          50,
-        y:
-          currentRadius *
-            (1 - timePoint) *
-            Math.sin(Math.PI / 2.5 + (Math.PI / 5) * waveSample) +
-          40,
-      }
-      const polyBaseRelativeAngle = Math.atan2(
-        polyBaseCenter.x - 50,
-        polyBaseCenter.y - 50
-      )
-      return {
-        someRotatedLoop: {
-          baseCircle: {
-            radius: 4 * (1 - timePoint),
-            center: polyBaseCenter,
-          },
-          childCircle: {
-            relativeRadius: 7 / 8,
-            relativeDepth: 7 / 8,
-            phaseAngle: polyBaseRelativeAngle * timePoint,
-          },
-          rotationAnchor: 'base',
-          rotationAngle: polyBaseRelativeAngle * timePoint,
-        } as RotatedLoop,
-      }
-    })
-  const marPoints = spacersA
-    .map((someSpacer) => someSpacer / rhythmA.length)
-    .map((timePoint) => {
-      const waveSample =
-        getTracePoint({
-          somePoints: loopPointsA,
-          traceAngle: 2 * Math.PI * timePoint,
-          originPoint: childCircleA.center,
-        }).y - childCircleA.center.y
-      const currentRadius = 50
-      const polyBaseCenter = {
-        x:
-          currentRadius *
-            timePoint *
-            Math.cos(Math.PI / 2.5 - (Math.PI / 2) * waveSample + Math.PI / 2) +
-          50,
-        y:
-          currentRadius *
-            timePoint *
-            Math.sin(Math.PI / 2.5 - (Math.PI / 3) * waveSample + Math.PI / 2) +
-          40,
-      }
-      const polyBaseRelativeAngle = Math.atan2(
-        polyBaseCenter.x - 50,
-        polyBaseCenter.y - 50
-      )
-      return {
-        someRotatedLoop: {
-          baseCircle: {
-            radius: 5 * timePoint,
-            center: polyBaseCenter,
-          },
-          childCircle: {
-            relativeRadius: 7 / 8,
-            relativeDepth: 7 / 8,
-            phaseAngle: polyBaseRelativeAngle * timePoint,
-          },
-          rotationAnchor: 'base',
-          rotationAngle: polyBaseRelativeAngle * timePoint,
-        } as RotatedLoop,
-      }
-    })
-  const ruePoints = spacersA
-    .map((someSpacer) => someSpacer / rhythmA.length)
-    .map((timePoint) => {
-      const waveSample =
-        getTracePoint({
-          somePoints: loopPointsA,
-          traceAngle: 2 * Math.PI * timePoint,
-          originPoint: childCircleA.center,
-        }).y - childCircleA.center.y
-      const currentRadius = 50
-      const polyBaseCenter = {
-        x:
-          currentRadius *
-            timePoint *
-            Math.cos(
-              -Math.PI / 2.5 + (Math.PI / 2) * waveSample + Math.PI / 2
-            ) +
-          50,
-        y:
-          currentRadius *
-            timePoint *
-            Math.sin(
-              -Math.PI / 2.5 + (Math.PI / 3) * waveSample + Math.PI / 2
-            ) +
-          40,
-      }
-      const polyBaseRelativeAngle = Math.atan2(
-        polyBaseCenter.x - 50,
-        polyBaseCenter.y - 50
-      )
-      return {
-        someRotatedLoop: {
-          baseCircle: {
-            radius: 5 * timePoint,
-            center: polyBaseCenter,
-          },
-          childCircle: {
-            relativeRadius: 7 / 8,
-            relativeDepth: 7 / 8,
-            phaseAngle: polyBaseRelativeAngle * timePoint,
-          },
-          rotationAnchor: 'base',
-          rotationAngle: polyBaseRelativeAngle * timePoint + Math.PI,
-        } as RotatedLoop,
-      }
-    })
-  const cuePoints = spacersB
-    .map((someSpacer) => someSpacer / rhythmB.length)
-    .map((timePoint) => {
-      const waveSample =
-        getTracePoint({
-          somePoints: loopPointsA,
-          traceAngle: 2 * Math.PI * (1 - timePoint),
-          originPoint: childCircleA.center,
-        }).y - childCircleA.center.y
-      const currentRadius = 50
-      const polyBaseCenter = {
-        x:
-          currentRadius *
-            (1 - timePoint) *
-            Math.cos(-Math.PI / 2.5 - (Math.PI / 2) * waveSample + Math.PI) +
-          50,
-        y:
-          currentRadius *
-            (1 - timePoint) *
-            Math.sin(-Math.PI / 2.5 - (Math.PI / 5) * waveSample + Math.PI) +
-          40,
-      }
-      const polyBaseRelativeAngle = Math.atan2(
-        polyBaseCenter.x - 50,
-        polyBaseCenter.y - 50
-      )
-      return {
-        someRotatedLoop: {
-          baseCircle: {
-            radius: 4 * (1 - timePoint),
-            center: polyBaseCenter,
-          },
-          childCircle: {
-            relativeRadius: 7 / 8,
-            relativeDepth: 7 / 8,
-            phaseAngle: polyBaseRelativeAngle * timePoint,
-          },
-          rotationAnchor: 'base',
-          rotationAngle: polyBaseRelativeAngle * timePoint + Math.PI,
-        } as RotatedLoop,
-      }
-    })
-  const shoePoints = spacersB
-    .map((someSpacer) => someSpacer / rhythmB.length)
-    .map((timePoint) => {
-      const waveSample =
-        getTracePoint({
-          somePoints: loopPointsA,
-          traceAngle: 2 * Math.PI * (1 - timePoint),
-          originPoint: childCircleA.center,
-        }).y - childCircleA.center.y
-      const currentRadius = 50
-      const polyBaseCenter = {
-        x:
-          currentRadius *
-            (1 - timePoint) *
-            Math.cos(Math.PI / 2.5 + (Math.PI / 2) * waveSample + Math.PI) +
-          50,
-        y:
-          currentRadius *
-            (1 - timePoint) *
-            Math.sin(Math.PI / 2.5 + (Math.PI / 5) * waveSample + Math.PI) +
-          50,
-      }
-      const polyBaseRelativeAngle = Math.atan2(
-        polyBaseCenter.x - 50,
-        polyBaseCenter.y - 50
-      )
-      return {
-        someRotatedLoop: {
-          baseCircle: {
-            radius: 4 * (1 - timePoint),
-            center: polyBaseCenter,
-          },
-          childCircle: {
-            relativeRadius: 7 / 8,
-            relativeDepth: 7 / 8,
-            phaseAngle: polyBaseRelativeAngle * timePoint,
-          },
-          rotationAnchor: 'base',
-          rotationAngle: polyBaseRelativeAngle * timePoint + Math.PI,
-        } as RotatedLoop,
-      }
-    })
-  const dooPoints = spacersA
-    .map((someSpacer) => someSpacer / rhythmA.length)
-    .map((timePoint) => {
-      const waveSample =
-        getTracePoint({
-          somePoints: loopPointsA,
-          traceAngle: 2 * Math.PI * timePoint,
-          originPoint: childCircleA.center,
-        }).y - childCircleA.center.y
-      const currentRadius = 50
-      const polyBaseCenter = {
-        x:
-          currentRadius *
-            timePoint *
-            Math.cos(Math.PI / 2.5 - (Math.PI / 2) * waveSample + Math.PI) +
-          50,
-        y:
-          currentRadius *
-            timePoint *
-            Math.sin(Math.PI / 2.5 - (Math.PI / 3) * waveSample + Math.PI) +
-          50,
-      }
-      const polyBaseRelativeAngle = Math.atan2(
-        polyBaseCenter.x - 50,
-        polyBaseCenter.y - 50
-      )
-      return {
-        someRotatedLoop: {
-          baseCircle: {
-            radius: 5 * timePoint,
-            center: polyBaseCenter,
-          },
-          childCircle: {
-            relativeRadius: 7 / 8,
-            relativeDepth: 7 / 8,
-            phaseAngle: polyBaseRelativeAngle * timePoint,
-          },
-          rotationAnchor: 'base',
-          rotationAngle: polyBaseRelativeAngle * timePoint + Math.PI,
-        } as RotatedLoop,
-      }
-    })
+  const waveLoopsSet = {
+    a: getWaveLoops({
+      rootCircle,
+      spacerRhythm: rhythmA,
+      baseCircleTranslation: rootCircle.center,
+      reverseRhythmDirection: false,
+      flipRotationAngle: false,
+      getBaseCircleCenterCosineAngle: (waveSample) =>
+        -Math.PI / 2.5 + (Math.PI / 2) * waveSample,
+      getBaseCircleSineAngle: (waveSample) =>
+        -Math.PI / 2.5 + (Math.PI / 3) * waveSample,
+      getBaseCircleRadius: (adjustedTimeSample) => 5 * adjustedTimeSample,
+    }),
+    b: getWaveLoops({
+      rootCircle,
+      spacerRhythm: rhythmB,
+      baseCircleTranslation: rootCircle.center,
+      reverseRhythmDirection: true,
+      flipRotationAngle: false,
+      getBaseCircleCenterCosineAngle: (waveSample) =>
+        -Math.PI / 2.5 - (Math.PI / 2) * waveSample,
+      getBaseCircleSineAngle: (waveSample) =>
+        -Math.PI / 2.5 - (Math.PI / 5) * waveSample,
+      getBaseCircleRadius: (adjustedTimeSample) => 4 * adjustedTimeSample,
+    }),
+    c: getWaveLoops({
+      rootCircle,
+      spacerRhythm: rhythmB,
+      baseCircleTranslation: rootCircle.center,
+      reverseRhythmDirection: true,
+      flipRotationAngle: true,
+      getBaseCircleCenterCosineAngle: (waveSample) =>
+        Math.PI / 2.5 + (Math.PI / 2) * waveSample + Math.PI,
+      getBaseCircleSineAngle: (waveSample) =>
+        Math.PI / 2.5 + (Math.PI / 5) * waveSample + Math.PI,
+      getBaseCircleRadius: (adjustedTimeSample) => 4 * adjustedTimeSample,
+    }),
+    d: getWaveLoops({
+      rootCircle,
+      spacerRhythm: rhythmB,
+      reverseRhythmDirection: true,
+      flipRotationAngle: false,
+      baseCircleTranslation: {
+        ...rootCircle.center,
+        y: rootCircle.center.y - 10,
+      },
+      getBaseCircleCenterCosineAngle: (waveSample) =>
+        Math.PI / 2.5 + (Math.PI / 2) * waveSample,
+      getBaseCircleSineAngle: (waveSample) =>
+        Math.PI / 2.5 + (Math.PI / 5) * waveSample,
+      getBaseCircleRadius: (adjustedTimeSample) => 4 * adjustedTimeSample,
+    }),
+    e: getWaveLoops({
+      rootCircle,
+      spacerRhythm: rhythmA,
+      reverseRhythmDirection: false,
+      flipRotationAngle: false,
+      baseCircleTranslation: {
+        ...rootCircle.center,
+        y: rootCircle.center.y - 10,
+      },
+      getBaseCircleCenterCosineAngle: (waveSample) =>
+        Math.PI / 2.5 - (Math.PI / 2) * waveSample + Math.PI / 2,
+      getBaseCircleSineAngle: (waveSample) =>
+        Math.PI / 2.5 - (Math.PI / 3) * waveSample + Math.PI / 2,
+      getBaseCircleRadius: (adjustedTimeSample) => 5 * adjustedTimeSample,
+    }),
+    f: getWaveLoops({
+      rootCircle,
+      spacerRhythm: rhythmA,
+      reverseRhythmDirection: false,
+      flipRotationAngle: true,
+      baseCircleTranslation: {
+        ...rootCircle.center,
+        y: rootCircle.center.y - 10,
+      },
+      getBaseCircleCenterCosineAngle: (waveSample) =>
+        -Math.PI / 2.5 + (Math.PI / 2) * waveSample + Math.PI / 2,
+      getBaseCircleSineAngle: (waveSample) =>
+        -Math.PI / 2.5 + (Math.PI / 3) * waveSample + Math.PI / 2,
+      getBaseCircleRadius: (adjustedTimeSample) => 5 * adjustedTimeSample,
+    }),
+    g: getWaveLoops({
+      rootCircle,
+      spacerRhythm: rhythmB,
+      reverseRhythmDirection: true,
+      flipRotationAngle: true,
+      baseCircleTranslation: {
+        ...rootCircle.center,
+        y: rootCircle.center.y - 10,
+      },
+      getBaseCircleCenterCosineAngle: (waveSample) =>
+        -Math.PI / 2.5 - (Math.PI / 2) * waveSample + Math.PI,
+      getBaseCircleSineAngle: (waveSample) =>
+        -Math.PI / 2.5 - (Math.PI / 5) * waveSample + Math.PI,
+      getBaseCircleRadius: (adjustedTimeSample) => 4 * adjustedTimeSample,
+    }),
+    h: getWaveLoops({
+      rootCircle,
+      spacerRhythm: rhythmA,
+      baseCircleTranslation: rootCircle.center,
+      reverseRhythmDirection: false,
+      flipRotationAngle: true,
+      getBaseCircleCenterCosineAngle: (waveSample) =>
+        Math.PI / 2.5 - (Math.PI / 2) * waveSample + Math.PI,
+      getBaseCircleSineAngle: (waveSample) =>
+        Math.PI / 2.5 - (Math.PI / 3) * waveSample + Math.PI,
+      getBaseCircleRadius: (adjustedTimeSample) => 5 * adjustedTimeSample,
+    }),
+  }
   const topLoopA: RotatedLoop = {
     baseCircle: {
       center: {
@@ -472,22 +201,6 @@ function Bar() {
     },
     rotationAnchor: 'base',
     rotationAngle: 0,
-  }
-  const centerLoop: RotatedLoop = {
-    baseCircle: {
-      center: {
-        x: 50,
-        y: 41,
-      },
-      radius: 1.25,
-    },
-    childCircle: {
-      relativeRadius: 1,
-      relativeDepth: 0,
-      phaseAngle: Math.PI / 2,
-    },
-    rotationAnchor: 'base',
-    rotationAngle: Math.PI,
   }
   const rightShoulderLoopA: RotatedLoop = {
     baseCircle: {
@@ -599,94 +312,19 @@ function Bar() {
     >
       <rect x={-10} y={-10} width={120} height={120} fill={'lightgrey'} />
       <g transform={'translate(0, 7)'}>
-        {centerPoints.map(({ someRotatedLoop }) => (
-          <Polygon
-            points={getRotatedLoopPoints({
-              sampleCount: 256,
-              someRotatedLoop: someRotatedLoop,
-            })}
-            fill={'none'}
-            stroke={'black'}
-            strokeWidth={0.125}
-          />
-        ))}
-        {fooPoints.map(({ someRotatedLoop }) => (
-          <Polygon
-            points={getRotatedLoopPoints({
-              sampleCount: 256,
-              someRotatedLoop: someRotatedLoop,
-            })}
-            fill={'none'}
-            stroke={'black'}
-            strokeWidth={0.125}
-          />
-        ))}
-        {barPoints.map(({ someRotatedLoop }) => (
-          <Polygon
-            points={getRotatedLoopPoints({
-              sampleCount: 256,
-              someRotatedLoop: someRotatedLoop,
-            })}
-            fill={'none'}
-            stroke={'black'}
-            strokeWidth={0.125}
-          />
-        ))}
-        {marPoints.map(({ someRotatedLoop }) => (
-          <Polygon
-            points={getRotatedLoopPoints({
-              sampleCount: 256,
-              someRotatedLoop: someRotatedLoop,
-            })}
-            fill={'none'}
-            stroke={'black'}
-            strokeWidth={0.125}
-          />
-        ))}
-        {ruePoints.map(({ someRotatedLoop }) => (
-          <Polygon
-            points={getRotatedLoopPoints({
-              sampleCount: 256,
-              someRotatedLoop: someRotatedLoop,
-            })}
-            fill={'none'}
-            stroke={'black'}
-            strokeWidth={0.125}
-          />
-        ))}
-        {cuePoints.map(({ someRotatedLoop }) => (
-          <Polygon
-            points={getRotatedLoopPoints({
-              sampleCount: 256,
-              someRotatedLoop: someRotatedLoop,
-            })}
-            fill={'none'}
-            stroke={'black'}
-            strokeWidth={0.125}
-          />
-        ))}
-        {shoePoints.map(({ someRotatedLoop }) => (
-          <Polygon
-            points={getRotatedLoopPoints({
-              sampleCount: 256,
-              someRotatedLoop: someRotatedLoop,
-            })}
-            fill={'none'}
-            stroke={'black'}
-            strokeWidth={0.125}
-          />
-        ))}
-        {dooPoints.map(({ someRotatedLoop }) => (
-          <Polygon
-            points={getRotatedLoopPoints({
-              sampleCount: 256,
-              someRotatedLoop: someRotatedLoop,
-            })}
-            fill={'none'}
-            stroke={'black'}
-            strokeWidth={0.125}
-          />
-        ))}
+        {Object.values(waveLoopsSet)
+          .flat()
+          .map(({ someRotatedLoop }) => (
+            <Polygon
+              points={getRotatedLoopPoints({
+                sampleCount: 256,
+                someRotatedLoop: someRotatedLoop,
+              })}
+              fill={'none'}
+              stroke={'black'}
+              strokeWidth={0.125}
+            />
+          ))}
         <Polygon
           points={getRotatedLoopPoints({
             sampleCount: 256,
@@ -705,15 +343,6 @@ function Bar() {
           stroke={'black'}
           strokeWidth={0.125}
         />
-        {/* <Polygon
-        points={getRotatedLoopPoints({
-          sampleCount: 256,
-          someRotatedLoop: centerLoop,
-        })}
-        fill={'none'}
-        stroke={'black'}
-        strokeWidth={0.125}
-      /> */}
         <Polygon
           points={getRotatedLoopPoints({
             sampleCount: 256,
@@ -807,4 +436,98 @@ function Polygon(props: PolygonPolygonProps) {
         .join(' ')}
     />
   )
+}
+
+interface GetWaveLoopsApi {
+  // getBaseWaveSample: (adjustedTimeSample: number) => number
+  getBaseCircleCenterCosineAngle: (waveSample: number) => number
+  getBaseCircleSineAngle: (waveSample: number) => number
+  getBaseCircleRadius: (adjustedTimeSample: number) => number
+  spacerRhythm: DiscreteRhythm
+  rootCircle: Circle
+  reverseRhythmDirection: boolean
+  flipRotationAngle: boolean
+  baseCircleTranslation: Point
+}
+
+function getWaveLoops(
+  api: GetWaveLoopsApi
+): { someRotatedLoop: RotatedLoop }[] {
+  const {
+    spacerRhythm,
+    rootCircle,
+    baseCircleTranslation,
+    reverseRhythmDirection,
+    getBaseCircleCenterCosineAngle,
+    getBaseCircleSineAngle,
+    getBaseCircleRadius,
+    flipRotationAngle,
+  } = api
+  const rhythmIndices = getElementIndices({
+    targetValue: true,
+    someSpace: spacerRhythm,
+  })
+  const loopA: RotatedLoop = {
+    baseCircle: { center: { x: 0, y: 0 }, radius: 1 },
+    childCircle: {
+      relativeRadius: 3 / 8,
+      relativeDepth: 2 / 8,
+      phaseAngle: (2 * Math.PI) / 2,
+    },
+    rotationAnchor: 'base',
+    rotationAngle: (2 * Math.PI) / 1,
+  }
+  const childCircleA = getLoopChildCircle({
+    someLoop: loopA,
+  })
+  const loopPointsA = getRotatedLoopPoints({
+    sampleCount: 256,
+    someRotatedLoop: loopA,
+  })
+  return rhythmIndices
+    .map((someRhythmIndex) => someRhythmIndex / spacerRhythm.length)
+    .map((timeSample) => {
+      const adjustedTimeSample = reverseRhythmDirection
+        ? 1 - timeSample
+        : timeSample
+      const waveSample =
+        getTracePoint({
+          somePoints: loopPointsA,
+          traceAngle: 2 * Math.PI * adjustedTimeSample,
+          originPoint: childCircleA.center,
+        }).y - childCircleA.center.y
+      const polyBaseCenter = {
+        x:
+          rootCircle.radius *
+            adjustedTimeSample *
+            Math.cos(getBaseCircleCenterCosineAngle(waveSample)) +
+          baseCircleTranslation.x,
+        y:
+          rootCircle.radius *
+            adjustedTimeSample *
+            Math.sin(getBaseCircleSineAngle(waveSample)) +
+          baseCircleTranslation.y,
+      }
+      const polyBaseRelativeAngle = Math.atan2(
+        polyBaseCenter.x - rootCircle.center.x,
+        polyBaseCenter.y - rootCircle.center.y
+      )
+      return {
+        someRotatedLoop: {
+          baseCircle: {
+            radius: getBaseCircleRadius(adjustedTimeSample),
+            center: polyBaseCenter,
+          },
+          childCircle: {
+            relativeRadius: 7 / 8,
+            relativeDepth: 7 / 8,
+            phaseAngle: polyBaseRelativeAngle * timeSample,
+          },
+          rotationAnchor: 'base',
+          rotationAngle:
+            polyBaseRelativeAngle * timeSample +
+            (flipRotationAngle ? Math.PI : 0),
+        },
+      }
+    })
 }

@@ -88,9 +88,9 @@ export function getNaturalRhythm(api: GetNaturalRhythmApi): DiscreteRhythm {
   })
 }
 
-type DiscreteWave = number[]
+export type DiscreteWave = number[]
 
-type DiscreteRhythm = boolean[]
+export type DiscreteRhythm = boolean[]
 
 export interface GetPhasedSpaceApi<Element extends any> {
   baseSpace: Element[]

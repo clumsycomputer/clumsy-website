@@ -5,6 +5,7 @@
   "private": true,
   "dependencies": {
     "csstype": "^3.0.8",
+    "line-intersect": "^3.0.0",
     "react": "^17.0.2",
     "react-jss": "^10.6.0",
     "typescript": "^4.2.4"

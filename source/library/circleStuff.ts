@@ -1,3 +1,4 @@
+import { checkIntersection } from 'line-intersect'
 export interface Point {
   x: number
   y: number
@@ -20,6 +21,78 @@ export interface Loop {
 export interface RotatedLoop extends Loop {
   rotationAnchor: 'base' | 'child'
   rotationAngle: number
+}
+
+export interface OscillatedRotatedLoop extends RotatedLoop {
+  getRelativeOscillation: (sampleAngle: number) => number
+}
+
+export interface GetOscillatedRotatedLoopPointsApi {
+  sampleCount: number
+  oscillatedRotatedLoop: OscillatedRotatedLoop
+}
+
+export function getOscillatedRotatedLoopPoints(
+  api: GetOscillatedRotatedLoopPointsApi
+) {
+  const { sampleCount, oscillatedRotatedLoop } = api
+  return new Array(sampleCount).fill(undefined).map((_, sampleIndex) =>
+    getOscillatedRotatedLoopPoint({
+      oscillatedRotatedLoop,
+      sampleAngle: ((2 * Math.PI) / sampleCount) * sampleIndex,
+    })
+  )
+}
+
+interface GetOscillatedRotatedLoopPointApi {
+  oscillatedRotatedLoop: OscillatedRotatedLoop
+  sampleAngle: number
+}
+
+function getOscillatedRotatedLoopPoint(api: GetOscillatedRotatedLoopPointApi) {
+  const { sampleAngle, oscillatedRotatedLoop } = api
+  return getRotatedPoint({
+    basePoint: getOscillatedPoint({
+      originPoint: getLoopChildCircle({
+        someLoop: oscillatedRotatedLoop,
+      }).center,
+      basePoint: getLoopPoint({
+        sampleAngle,
+        someLoop: oscillatedRotatedLoop,
+      }),
+      relativeOscillation:
+        oscillatedRotatedLoop.getRelativeOscillation(sampleAngle),
+    }),
+    rotationAngle: oscillatedRotatedLoop.rotationAngle,
+    anchorPoint:
+      oscillatedRotatedLoop.rotationAnchor === 'base'
+        ? oscillatedRotatedLoop.baseCircle.center
+        : getLoopChildCircle({
+            someLoop: oscillatedRotatedLoop,
+          }).center,
+  })
+}
+
+interface GetOscillatedPointApi {
+  originPoint: Point
+  basePoint: Point
+  relativeOscillation: number
+}
+
+function getOscillatedPoint(api: GetOscillatedPointApi): Point {
+  const { basePoint, originPoint, relativeOscillation } = api
+  const deltaX = basePoint.x - originPoint.x
+  const deltaY = basePoint.y - originPoint.y
+  const relativeAngle = Math.atan2(deltaX, deltaY) - Math.PI / 2
+  const relativeBaseLength = Math.sqrt(
+    Math.pow(deltaX, 2) + Math.pow(deltaY, 2)
+  )
+  const nextLength =
+    relativeOscillation * relativeBaseLength + relativeBaseLength
+  return {
+    x: nextLength * Math.cos(-relativeAngle) + originPoint.x,
+    y: nextLength * Math.sin(-relativeAngle) + originPoint.y,
+  }
 }
 
 export interface GetRotatedLoopPointsApi {
@@ -150,12 +223,12 @@ export function getLoopChildCircle(api: GetLoopChildCircleApi) {
   }
 }
 
-interface GetLoopBaseIntersectionApi {
+export interface GetLoopBaseIntersectionApi {
   someLoop: Loop
   sampleAngle: number
 }
 
-function getLoopBaseIntersection(api: GetLoopBaseIntersectionApi) {
+export function getLoopBaseIntersection(api: GetLoopBaseIntersectionApi) {
   const { someLoop, sampleAngle } = api
   const childCircle = getLoopChildCircle({ someLoop })
   const adjustedSampleAngle = getAdjustedSampleAngle({ sampleAngle })
@@ -187,12 +260,12 @@ function getLoopBaseIntersection(api: GetLoopBaseIntersectionApi) {
   }
 }
 
-interface GetLoopChildIntersectionApi {
+export interface GetLoopChildIntersectionApi {
   someLoop: Loop
   sampleAngle: number
 }
 
-function getLoopChildIntersection(api: GetLoopChildIntersectionApi) {
+export function getLoopChildIntersection(api: GetLoopChildIntersectionApi) {
   const { someLoop, sampleAngle } = api
   const childCircle = getLoopChildCircle({ someLoop })
   const adjustedSampleAngle = getAdjustedSampleAngle({ sampleAngle })
@@ -216,4 +289,46 @@ function getAdjustedSampleAngle(api: GetAdjustedSampleAngleApi) {
     positiveSampleAngle === ((2 * Math.PI) / 4) * 3
     ? positiveSampleAngle + 0.00000000000001
     : positiveSampleAngle
+}
+
+export interface GetTracePointApi {
+  somePoints: Point[]
+  originPoint: Point
+  traceAngle: number
+}
+
+export function getTracePoint(api: GetTracePointApi): Point {
+  const { somePoints, traceAngle, originPoint } = api
+  const targetPoint: Point = {
+    x: Number.MAX_SAFE_INTEGER * Math.cos(traceAngle) + originPoint.x,
+    y: Number.MAX_SAFE_INTEGER * Math.sin(traceAngle) + originPoint.y,
+  }
+  const tracePoint = somePoints.reduce<Point | null>(
+    (result, pointC, indexC) => {
+      if (result) return result
+      const pointD = somePoints[(indexC + 1) % somePoints.length]!
+      const intersectionResult = checkIntersection(
+        originPoint.x,
+        originPoint.y,
+        targetPoint.x,
+        targetPoint.y,
+        pointC.x,
+        pointC.y,
+        pointD.x,
+        pointD.y
+      )
+      if (intersectionResult.type === 'intersecting')
+        return intersectionResult.point
+      return null
+    },
+    null
+  )
+  // hacky workaround of failed checkIntersection result
+  return tracePoint
+    ? tracePoint
+    : getTracePoint({
+        somePoints,
+        originPoint,
+        traceAngle: traceAngle + 0.0000001 * Math.random(),
+      })
 }

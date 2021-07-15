@@ -1,10 +1,8 @@
 import React, { SVGProps } from 'react'
 import {
   Circle,
-  getLoopChildCircle,
-  getLoopPoint,
+  getOscillatedRotatedLoopPoints,
   getRotatedLoopPoint,
-  getRotatedPoint,
   Point,
   RotatedLoop,
 } from '../../../library/circleStuff'
@@ -14,6 +12,7 @@ import {
   getFilteredRhythm,
   getNaturalRhythm,
 } from '../../../library/rhythmStuff'
+import { getUpdatedData } from '../../../library/getUpdatedData'
 
 export default {
   pageRoute: '/graphics/foo',
@@ -780,82 +779,6 @@ function Foo() {
   )
 }
 
-interface GetUpdatedDataApi<SomeData extends object> {
-  baseData: SomeData
-  dataUpdates: Partial<ComputableUpdates<KeyPathDataMap<SomeData>, SomeData>>
-}
-
-function getUpdatedData<SomeData extends object>(
-  api: GetUpdatedDataApi<SomeData>
-) {
-  const { baseData, dataUpdates } = api
-  return Object.entries(dataUpdates).reduce<SomeData>(
-    (currentData, [targetDataPath, newData]) => {
-      const pathTokens = targetDataPath.split('.')
-      return updateData({
-        currentData,
-        newData,
-        pathTokens,
-        rootData: baseData,
-      })
-    },
-    baseData
-  )
-}
-
-type ComputableUpdates<SomeData extends object, RootData> = {
-  [Key in keyof SomeData]:
-    | SomeData[Key]
-    | ((propertyData: SomeData[Key], rootData: RootData) => SomeData[Key])
-}
-
-type KeyPathDataMap<
-  SomeData extends any,
-  KeyPathBase extends string = '',
-  Result extends object = {}
-> = {
-  [SomeKey in keyof SomeData]: SomeKey extends string
-    ? SomeData[SomeKey] extends object
-      ? KeyPathDataMap<
-          SomeData[SomeKey],
-          `${KeyPathBase}${SomeKey}.`,
-          Result & { [T in `${KeyPathBase}${SomeKey}`]: SomeData[SomeKey] }
-        >
-      : Result & { [T in `${KeyPathBase}${SomeKey}`]: SomeData[SomeKey] }
-    : never
-}[keyof SomeData]
-
-interface UpdateDataApi {
-  pathTokens: string[]
-  currentData: any
-  newData: any
-  rootData: any
-}
-
-function updateData(api: UpdateDataApi): any {
-  const { pathTokens, currentData, newData, rootData } = api
-  const pathKey = pathTokens.shift()!
-  if (pathTokens.length === 0) {
-    return {
-      ...currentData,
-      [pathKey]:
-        typeof newData === 'function'
-          ? newData(currentData[pathKey], rootData)
-          : newData,
-    }
-  } else {
-    return {
-      ...currentData,
-      [pathKey]: updateData({
-        pathTokens,
-        newData,
-        rootData,
-        currentData: currentData[pathKey]!,
-      }),
-    }
-  }
-}
-
 interface PolygonPolygonProps
   extends Pick<SVGProps<SVGPolygonElement>, 'fill' | 'stroke' | 'strokeWidth'> {
   points: Point[]
@@ -872,76 +795,4 @@ function Polygon(props: PolygonPolygonProps) {
         .join(' ')}
     />
   )
-}
-
-interface OscillatedRotatedLoop extends RotatedLoop {
-  getRelativeOscillation: (sampleAngle: number) => number
-}
-
-interface GetOscillatedRotatedLoopPointsApi {
-  sampleCount: number
-  oscillatedRotatedLoop: OscillatedRotatedLoop
-}
-
-function getOscillatedRotatedLoopPoints(
-  api: GetOscillatedRotatedLoopPointsApi
-) {
-  const { sampleCount, oscillatedRotatedLoop } = api
-  return new Array(sampleCount).fill(undefined).map((_, sampleIndex) =>
-    getOscillatedRotatedLoopPoint({
-      oscillatedRotatedLoop,
-      sampleAngle: ((2 * Math.PI) / sampleCount) * sampleIndex,
-    })
-  )
-}
-
-interface GetOscillatedRotatedLoopPointApi {
-  oscillatedRotatedLoop: OscillatedRotatedLoop
-  sampleAngle: number
-}
-
-function getOscillatedRotatedLoopPoint(api: GetOscillatedRotatedLoopPointApi) {
-  const { sampleAngle, oscillatedRotatedLoop } = api
-  return getRotatedPoint({
-    basePoint: getOscillatedPoint({
-      originPoint: getLoopChildCircle({
-        someLoop: oscillatedRotatedLoop,
-      }).center,
-      basePoint: getLoopPoint({
-        sampleAngle,
-        someLoop: oscillatedRotatedLoop,
-      }),
-      relativeOscillation:
-        oscillatedRotatedLoop.getRelativeOscillation(sampleAngle),
-    }),
-    rotationAngle: oscillatedRotatedLoop.rotationAngle,
-    anchorPoint:
-      oscillatedRotatedLoop.rotationAnchor === 'base'
-        ? oscillatedRotatedLoop.baseCircle.center
-        : getLoopChildCircle({
-            someLoop: oscillatedRotatedLoop,
-          }).center,
-  })
-}
-
-interface GetOscillatedPointApi {
-  originPoint: Point
-  basePoint: Point
-  relativeOscillation: number
-}
-
-function getOscillatedPoint(api: GetOscillatedPointApi): Point {
-  const { basePoint, originPoint, relativeOscillation } = api
-  const deltaX = basePoint.x - originPoint.x
-  const deltaY = basePoint.y - originPoint.y
-  const relativeAngle = Math.atan2(deltaX, deltaY) - Math.PI / 2
-  const relativeBaseLength = Math.sqrt(
-    Math.pow(deltaX, 2) + Math.pow(deltaY, 2)
-  )
-  const nextLength =
-    relativeOscillation * relativeBaseLength + relativeBaseLength
-  return {
-    x: nextLength * Math.cos(-relativeAngle) + originPoint.x,
-    y: nextLength * Math.sin(-relativeAngle) + originPoint.y,
-  }
 }

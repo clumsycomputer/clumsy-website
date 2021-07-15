@@ -3259,6 +3259,11 @@ levn@~0.3.0:
     prelude-ls "~1.1.2"
     type-check "~0.3.2"
 
+line-intersect@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/line-intersect/-/line-intersect-3.0.0.tgz#7e0808c80edda012586e125374af2db4dd62c987"
+  integrity sha512-MAkwgBwwpyJhTWZ9EppTTFD6JxzYgh3BZxgI41CA2vSlANu4s5CXyTEJxKU3LRHitcF2vObHvE/s/lHxvKl2Kw==
+
 listenercount@~1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/listenercount/-/listenercount-1.0.1.tgz#84c8a72ab59c4725321480c975e6508342e70937"

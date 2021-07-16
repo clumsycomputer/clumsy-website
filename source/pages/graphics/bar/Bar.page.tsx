@@ -28,6 +28,12 @@ export default {
 const backgroundcolor = '#071421'
 const colors = ['#BC9F10', '#E57310', '#a43d42']
 
+interface GetNestLoopsApi {
+  globalSide: 'left' | 'right'
+  rotatedLoop: RotatedLoop
+  rhythmIndex: number
+}
+
 function Bar() {
   const rootCircle: Circle = {
     center: {
@@ -64,110 +70,37 @@ function Bar() {
       }),
     ],
   })
-  const waveLoopsSet = {
-    a: getWaveLoops({
-      rootCircle,
-      spacerRhythm: rhythmA,
-      baseCircleTranslation: rootCircle.center,
-      reverseRhythmDirection: false,
-      flipRotationAngle: false,
-      getBaseCircleCenterCosineAngle: (waveSample) =>
-        -Math.PI / 2.5 + (Math.PI / 2) * waveSample,
-      getBaseCircleSineAngle: (waveSample) =>
-        -Math.PI / 2.5 + (Math.PI / 3) * waveSample,
-      getBaseCircleRadius: (adjustedTimeSample) => 5 * adjustedTimeSample,
-    })
-      .map(({ rotatedLoop, rhythmIndex }) => {
-        const nestRhythm = getFilteredRhythm({
-          rhythmSequence: [
-            getNaturalRhythm({
-              rhythmResolution: 24,
-              rhythmDensity: 13,
-              rhythmPhase: 0,
-            }),
-            getNaturalRhythm({
-              rhythmResolution: 13,
-              rhythmDensity: 7,
-              rhythmPhase: rhythmIndex,
-            }),
-          ],
-        })
-        const nestIndices = getElementIndices({
-          targetValue: true,
-          someSpace: nestRhythm,
-        })
-        return nestIndices.map((nestIndex, colorIndex) => {
-          return {
-            rotatedLoop: getUpdatedData({
-              baseData: rotatedLoop,
-              dataUpdates: {
-                'baseCircle.radius': (baseValue: number) =>
-                  baseValue * ((nestIndex + 1) / nestRhythm.length),
-              },
-            }),
-            strokeColor: colors[colorIndex % colors.length],
-          }
-        })
-      })
-      .flat(),
-    h: getWaveLoops({
-      rootCircle,
-      spacerRhythm: rhythmA,
-      baseCircleTranslation: rootCircle.center,
-      reverseRhythmDirection: false,
-      flipRotationAngle: true,
-      getBaseCircleCenterCosineAngle: (waveSample) =>
-        Math.PI / 2.5 - (Math.PI / 2) * waveSample + Math.PI,
-      getBaseCircleSineAngle: (waveSample) =>
-        Math.PI / 2.5 - (Math.PI / 3) * waveSample + Math.PI,
-      getBaseCircleRadius: (adjustedTimeSample) => 5 * adjustedTimeSample,
-    })
-      .map(({ rotatedLoop, rhythmIndex }) => {
-        const nestRhythm = getFilteredRhythm({
-          rhythmSequence: [
-            getNaturalRhythm({
-              rhythmResolution: 24,
-              rhythmDensity: 13,
-              rhythmPhase: 0,
-            }),
-            getNaturalRhythm({
-              rhythmResolution: 13,
-              rhythmDensity: 7,
-              rhythmPhase: rhythmIndex,
-            }),
-          ],
-        })
-        const nestIndices = getElementIndices({
-          targetValue: true,
-          someSpace: nestRhythm,
-        })
-        return nestIndices.map((nestIndex, colorIndex) => {
-          return {
-            rotatedLoop: getUpdatedData({
-              baseData: rotatedLoop,
-              dataUpdates: {
-                'baseCircle.radius': (baseValue: number) =>
-                  baseValue * ((nestIndex + 1) / nestRhythm.length),
-              },
-            }),
-            strokeColor: colors[colorIndex % colors.length],
-          }
-        })
-      })
-      .flat(),
-    b: getWaveLoops({
-      rootCircle,
-      spacerRhythm: rhythmB,
-      baseCircleTranslation: rootCircle.center,
-      reverseRhythmDirection: true,
-      flipRotationAngle: false,
-      getBaseCircleCenterCosineAngle: (waveSample) =>
-        -Math.PI / 2.5 - (Math.PI / 2) * waveSample,
-      getBaseCircleSineAngle: (waveSample) =>
-        -Math.PI / 2.5 - (Math.PI / 5) * waveSample,
-      getBaseCircleRadius: (adjustedTimeSample) => 4 * adjustedTimeSample,
-    })
-      .map(({ rotatedLoop, rhythmIndex }) => {
+  const waveGroups = {
+    neck: {
+      rightBaseLoops: getWaveLoops({
+        rootCircle,
+        spacerRhythm: rhythmA,
+        baseCircleTranslation: rootCircle.center,
+        reverseRhythmDirection: false,
+        flipRotationAngle: false,
+        getBaseCircleCenterCosineAngle: (waveSample) =>
+          -Math.PI / 2.5 + (Math.PI / 2) * waveSample,
+        getBaseCircleSineAngle: (waveSample) =>
+          -Math.PI / 2.5 + (Math.PI / 3) * waveSample,
+        getBaseCircleRadius: (adjustedTimeSample) => 5 * adjustedTimeSample,
+      }),
+      leftBaseLoops: getWaveLoops({
+        rootCircle,
+        spacerRhythm: rhythmA,
+        baseCircleTranslation: rootCircle.center,
+        reverseRhythmDirection: false,
+        flipRotationAngle: true,
+        getBaseCircleCenterCosineAngle: (waveSample) =>
+          Math.PI / 2.5 - (Math.PI / 2) * waveSample + Math.PI,
+        getBaseCircleSineAngle: (waveSample) =>
+          Math.PI / 2.5 - (Math.PI / 3) * waveSample + Math.PI,
+        getBaseCircleRadius: (adjustedTimeSample) => 5 * adjustedTimeSample,
+      }),
+      getNestLoops: ({
+        globalSide,
+        rotatedLoop,
+        rhythmIndex,
+      }: GetNestLoopsApi) => {
         const nestRhythm = getFilteredRhythm({
           rhythmSequence: [
             getNaturalRhythm({
@@ -194,75 +127,56 @@ function Bar() {
                 'baseCircle.radius': (baseValue: number) =>
                   (baseValue * (nestRhythm.length - nestIndex)) /
                   nestRhythm.length,
+                'baseCircle.center.x': (
+                  baseValue: number,
+                  rootValue: RotatedLoop
+                ) =>
+                  baseValue +
+                  (globalSide === 'left' ? -0.025 : 0.025) *
+                    rootValue.baseCircle.radius *
+                    nestIndex,
+                'baseCircle.center.y': (
+                  baseValue: number,
+                  rootValue: RotatedLoop
+                ) =>
+                  baseValue + -0.01 * rootValue.baseCircle.radius * nestIndex,
               },
             }),
             strokeColor: colors[colorIndex % colors.length],
           }
         })
-      })
-      .flat(),
-    c: getWaveLoops({
-      rootCircle,
-      spacerRhythm: rhythmB,
-      baseCircleTranslation: rootCircle.center,
-      reverseRhythmDirection: true,
-      flipRotationAngle: true,
-      getBaseCircleCenterCosineAngle: (waveSample) =>
-        Math.PI / 2.5 + (Math.PI / 2) * waveSample + Math.PI,
-      getBaseCircleSineAngle: (waveSample) =>
-        Math.PI / 2.5 + (Math.PI / 5) * waveSample + Math.PI,
-      getBaseCircleRadius: (adjustedTimeSample) => 4 * adjustedTimeSample,
-    })
-      .map(({ rotatedLoop, rhythmIndex }) => {
-        const nestRhythm = getFilteredRhythm({
-          rhythmSequence: [
-            getNaturalRhythm({
-              rhythmResolution: 24,
-              rhythmDensity: 13,
-              rhythmPhase: 0,
-            }),
-            getNaturalRhythm({
-              rhythmResolution: 13,
-              rhythmDensity: 7,
-              rhythmPhase: rhythmIndex,
-            }),
-          ],
-        })
-        const nestIndices = getElementIndices({
-          targetValue: true,
-          someSpace: nestRhythm,
-        })
-        return nestIndices.map((nestIndex, colorIndex) => {
-          return {
-            rotatedLoop: getUpdatedData({
-              baseData: rotatedLoop,
-              dataUpdates: {
-                'baseCircle.radius': (baseValue: number) =>
-                  (baseValue * (nestRhythm.length - nestIndex)) /
-                  nestRhythm.length,
-              },
-            }),
-            strokeColor: colors[colorIndex % colors.length],
-          }
-        })
-      })
-      .flat(),
-    d: getWaveLoops({
-      rootCircle,
-      spacerRhythm: rhythmB,
-      reverseRhythmDirection: true,
-      flipRotationAngle: false,
-      baseCircleTranslation: {
-        ...rootCircle.center,
-        y: rootCircle.center.y - 10,
       },
-      getBaseCircleCenterCosineAngle: (waveSample) =>
-        Math.PI / 2.5 + (Math.PI / 2) * waveSample,
-      getBaseCircleSineAngle: (waveSample) =>
-        Math.PI / 2.5 + (Math.PI / 5) * waveSample,
-      getBaseCircleRadius: (adjustedTimeSample) => 4 * adjustedTimeSample,
-    })
-      .map(({ rotatedLoop, rhythmIndex }) => {
+    },
+    arm: {
+      rightBaseLoops: getWaveLoops({
+        rootCircle,
+        spacerRhythm: rhythmB,
+        baseCircleTranslation: rootCircle.center,
+        reverseRhythmDirection: true,
+        flipRotationAngle: false,
+        getBaseCircleCenterCosineAngle: (waveSample) =>
+          -Math.PI / 2.5 - (Math.PI / 2) * waveSample,
+        getBaseCircleSineAngle: (waveSample) =>
+          -Math.PI / 2.5 - (Math.PI / 5) * waveSample,
+        getBaseCircleRadius: (adjustedTimeSample) => 4 * adjustedTimeSample,
+      }),
+      leftBaseLoops: getWaveLoops({
+        rootCircle,
+        spacerRhythm: rhythmB,
+        baseCircleTranslation: rootCircle.center,
+        reverseRhythmDirection: true,
+        flipRotationAngle: true,
+        getBaseCircleCenterCosineAngle: (waveSample) =>
+          Math.PI / 2.5 + (Math.PI / 2) * waveSample + Math.PI,
+        getBaseCircleSineAngle: (waveSample) =>
+          Math.PI / 2.5 + (Math.PI / 5) * waveSample + Math.PI,
+        getBaseCircleRadius: (adjustedTimeSample) => 4 * adjustedTimeSample,
+      }),
+      getNestLoops: ({
+        globalSide,
+        rotatedLoop,
+        rhythmIndex,
+      }: GetNestLoopsApi) => {
         const nestRhythm = getFilteredRhythm({
           rhythmSequence: [
             getNaturalRhythm({
@@ -289,29 +203,67 @@ function Bar() {
                 'baseCircle.radius': (baseValue: number) =>
                   (baseValue * (nestRhythm.length - nestIndex)) /
                   nestRhythm.length,
+                'baseCircle.center.x': (
+                  baseValue: number,
+                  rootValue: RotatedLoop
+                ) =>
+                  baseValue +
+                  (2 * (-rhythmIndex % 2) + 1) *
+                    (globalSide === 'left' ? -0.03 : 0.03) *
+                    rootValue.baseCircle.radius *
+                    nestIndex,
+                'baseCircle.center.y': (
+                  baseValue: number,
+                  rootValue: RotatedLoop
+                ) =>
+                  baseValue +
+                  (-2 * (rhythmIndex % 2) + 1) *
+                    -0.01 *
+                    rootValue.baseCircle.radius *
+                    nestIndex,
               },
             }),
             strokeColor: colors[colorIndex % colors.length],
           }
         })
-      })
-      .flat(),
-    g: getWaveLoops({
-      rootCircle,
-      spacerRhythm: rhythmB,
-      reverseRhythmDirection: true,
-      flipRotationAngle: true,
-      baseCircleTranslation: {
-        ...rootCircle.center,
-        y: rootCircle.center.y - 10,
       },
-      getBaseCircleCenterCosineAngle: (waveSample) =>
-        -Math.PI / 2.5 - (Math.PI / 2) * waveSample + Math.PI,
-      getBaseCircleSineAngle: (waveSample) =>
-        -Math.PI / 2.5 - (Math.PI / 5) * waveSample + Math.PI,
-      getBaseCircleRadius: (adjustedTimeSample) => 4 * adjustedTimeSample,
-    })
-      .map(({ rotatedLoop, rhythmIndex }) => {
+    },
+    hip: {
+      leftBaseLoops: getWaveLoops({
+        rootCircle,
+        spacerRhythm: rhythmA,
+        reverseRhythmDirection: false,
+        flipRotationAngle: false,
+        baseCircleTranslation: {
+          ...rootCircle.center,
+          y: rootCircle.center.y - 10,
+        },
+        getBaseCircleCenterCosineAngle: (waveSample) =>
+          Math.PI / 2.5 - (Math.PI / 2) * waveSample + Math.PI / 2,
+        getBaseCircleSineAngle: (waveSample) =>
+          Math.PI / 2.5 - (Math.PI / 3) * waveSample + Math.PI / 2,
+        getBaseCircleRadius: (adjustedTimeSample) => 5 * adjustedTimeSample,
+      }),
+      rightBaseLoops: getWaveLoops({
+        rootCircle,
+        spacerRhythm: rhythmA,
+        reverseRhythmDirection: false,
+        flipRotationAngle: true,
+        baseCircleTranslation: {
+          ...rootCircle.center,
+          y: rootCircle.center.y - 10,
+        },
+        getBaseCircleCenterCosineAngle: (waveSample) =>
+          -Math.PI / 2.5 + (Math.PI / 2) * waveSample + Math.PI / 2,
+        getBaseCircleSineAngle: (waveSample) =>
+          -Math.PI / 2.5 + (Math.PI / 3) * waveSample + Math.PI / 2,
+        getBaseCircleRadius: (adjustedTimeSample) => 5 * adjustedTimeSample,
+      }),
+      getNestLoops: ({
+        globalSide,
+        rotatedLoop,
+        rhythmIndex,
+      }: GetNestLoopsApi) => {
         const nestRhythm = getFilteredRhythm({
           rhythmSequence: [
             getNaturalRhythm({
@@ -338,29 +290,67 @@ function Bar() {
                 'baseCircle.radius': (baseValue: number) =>
                   (baseValue * (nestRhythm.length - nestIndex)) /
                   nestRhythm.length,
+                'baseCircle.center.x': (
+                  baseValue: number,
+                  rootValue: RotatedLoop
+                ) =>
+                  baseValue +
+                  (2 * (-rhythmIndex % 2) + 1) *
+                    (globalSide === 'left' ? -0.03 : 0.03) *
+                    rootValue.baseCircle.radius *
+                    nestIndex,
+                'baseCircle.center.y': (
+                  baseValue: number,
+                  rootValue: RotatedLoop
+                ) =>
+                  baseValue +
+                  (-2 * (rhythmIndex % 2) + 1) *
+                    -0.01 *
+                    rootValue.baseCircle.radius *
+                    nestIndex,
               },
             }),
             strokeColor: colors[colorIndex % colors.length],
           }
         })
-      })
-      .flat(),
-    e: getWaveLoops({
-      rootCircle,
-      spacerRhythm: rhythmA,
-      reverseRhythmDirection: false,
-      flipRotationAngle: false,
-      baseCircleTranslation: {
-        ...rootCircle.center,
-        y: rootCircle.center.y - 10,
       },
-      getBaseCircleCenterCosineAngle: (waveSample) =>
-        Math.PI / 2.5 - (Math.PI / 2) * waveSample + Math.PI / 2,
-      getBaseCircleSineAngle: (waveSample) =>
-        Math.PI / 2.5 - (Math.PI / 3) * waveSample + Math.PI / 2,
-      getBaseCircleRadius: (adjustedTimeSample) => 5 * adjustedTimeSample,
-    })
-      .map(({ rotatedLoop, rhythmIndex }) => {
+    },
+    leg: {
+      rightBaseLoops: getWaveLoops({
+        rootCircle,
+        spacerRhythm: rhythmB,
+        reverseRhythmDirection: true,
+        flipRotationAngle: false,
+        baseCircleTranslation: {
+          ...rootCircle.center,
+          y: rootCircle.center.y - 10,
+        },
+        getBaseCircleCenterCosineAngle: (waveSample) =>
+          Math.PI / 2.5 + (Math.PI / 2) * waveSample,
+        getBaseCircleSineAngle: (waveSample) =>
+          Math.PI / 2.5 + (Math.PI / 5) * waveSample,
+        getBaseCircleRadius: (adjustedTimeSample) => 4 * adjustedTimeSample,
+      }),
+      leftBaseLoops: getWaveLoops({
+        rootCircle,
+        spacerRhythm: rhythmB,
+        reverseRhythmDirection: true,
+        flipRotationAngle: true,
+        baseCircleTranslation: {
+          ...rootCircle.center,
+          y: rootCircle.center.y - 10,
+        },
+        getBaseCircleCenterCosineAngle: (waveSample) =>
+          -Math.PI / 2.5 - (Math.PI / 2) * waveSample + Math.PI,
+        getBaseCircleSineAngle: (waveSample) =>
+          -Math.PI / 2.5 - (Math.PI / 5) * waveSample + Math.PI,
+        getBaseCircleRadius: (adjustedTimeSample) => 4 * adjustedTimeSample,
+      }),
+      getNestLoops: ({
+        globalSide,
+        rotatedLoop,
+        rhythmIndex,
+      }: GetNestLoopsApi) => {
         const nestRhythm = getFilteredRhythm({
           rhythmSequence: [
             getNaturalRhythm({
@@ -387,62 +377,31 @@ function Bar() {
                 'baseCircle.radius': (baseValue: number) =>
                   (baseValue * (nestRhythm.length - nestIndex)) /
                   nestRhythm.length,
+                'baseCircle.center.x': (
+                  baseValue: number,
+                  rootValue: RotatedLoop
+                ) =>
+                  baseValue +
+                  (2 * (-rhythmIndex % 2) + 1) *
+                    (globalSide === 'left' ? -0.03 : 0.03) *
+                    rootValue.baseCircle.radius *
+                    nestIndex,
+                'baseCircle.center.y': (
+                  baseValue: number,
+                  rootValue: RotatedLoop
+                ) =>
+                  baseValue +
+                  (-2 * (rhythmIndex % 2) + 1) *
+                    -0.01 *
+                    rootValue.baseCircle.radius *
+                    nestIndex,
               },
             }),
             strokeColor: colors[colorIndex % colors.length],
           }
         })
-      })
-      .flat(),
-    f: getWaveLoops({
-      rootCircle,
-      spacerRhythm: rhythmA,
-      reverseRhythmDirection: false,
-      flipRotationAngle: true,
-      baseCircleTranslation: {
-        ...rootCircle.center,
-        y: rootCircle.center.y - 10,
       },
-      getBaseCircleCenterCosineAngle: (waveSample) =>
-        -Math.PI / 2.5 + (Math.PI / 2) * waveSample + Math.PI / 2,
-      getBaseCircleSineAngle: (waveSample) =>
-        -Math.PI / 2.5 + (Math.PI / 3) * waveSample + Math.PI / 2,
-      getBaseCircleRadius: (adjustedTimeSample) => 5 * adjustedTimeSample,
-    })
-      .map(({ rotatedLoop, rhythmIndex }) => {
-        const nestRhythm = getFilteredRhythm({
-          rhythmSequence: [
-            getNaturalRhythm({
-              rhythmResolution: 24,
-              rhythmDensity: 13,
-              rhythmPhase: 0,
-            }),
-            getNaturalRhythm({
-              rhythmResolution: 13,
-              rhythmDensity: 7,
-              rhythmPhase: rhythmIndex,
-            }),
-          ],
-        })
-        const nestIndices = getElementIndices({
-          targetValue: true,
-          someSpace: nestRhythm,
-        })
-        return nestIndices.map((nestIndex, colorIndex) => {
-          return {
-            rotatedLoop: getUpdatedData({
-              baseData: rotatedLoop,
-              dataUpdates: {
-                'baseCircle.radius': (baseValue: number) =>
-                  (baseValue * (nestRhythm.length - nestIndex)) /
-                  nestRhythm.length,
-              },
-            }),
-            strokeColor: colors[colorIndex % colors.length],
-          }
-        })
-      })
-      .flat(),
+    },
   }
   const topLoopA: RotatedLoop = {
     baseCircle: {
@@ -577,82 +536,204 @@ function Bar() {
     strokeColor: string | undefined
   }[] = [
     {
+      key: 'topTop',
       rotatedLoop: topLoopA,
-      nestTranslation: { x: 0, y: 0.02 },
     },
     {
+      key: 'midTop',
       rotatedLoop: topLoopB,
-      nestTranslation: { x: 0, y: 0.025 },
     },
     {
+      key: 'rightWing',
       rotatedLoop: rightWingLoopA,
-      nestTranslation: { x: -0.05, y: -0.15 },
     },
     {
-      rotatedLoop: rightShoulderLoopA,
-      nestTranslation: { x: 0, y: 0.05 },
-    },
-    {
-      rotatedLoop: rightKneeLoopA,
-      nestTranslation: { x: 0.025, y: 0.05 },
-    },
-    {
-      rotatedLoop: rightEarLoop,
-      nestTranslation: { x: 0.0, y: 0.1 },
-    },
-    {
+      key: 'leftWing',
       rotatedLoop: leftLoopA,
-      nestTranslation: { x: 0.05, y: -0.15 },
     },
     {
+      key: 'rightShoulder',
+      rotatedLoop: rightShoulderLoopA,
+    },
+    {
+      key: 'leftShoulder',
       rotatedLoop: leftShoulderLoopA,
-      nestTranslation: { x: 0, y: 0.05 },
     },
     {
+      key: 'rightKnee',
+      rotatedLoop: rightKneeLoopA,
+    },
+    {
+      key: 'leftKnee',
       rotatedLoop: leftKneeLoopA,
-      nestTranslation: { x: -0.025, y: 0.05 },
     },
     {
+      key: 'rightEar',
+      rotatedLoop: rightEarLoop,
+    },
+    {
+      key: 'leftEar',
       rotatedLoop: leftEarLoop,
-      nestTranslation: { x: -0.0, y: 0.1 },
     },
   ]
-    .map(({ rotatedLoop, nestTranslation }) => {
-      const nestRhythm = getFilteredRhythm({
-        rhythmSequence: [
-          getNaturalRhythm({
-            rhythmResolution: 24,
-            rhythmDensity: 13,
-            rhythmPhase: 0,
-          }),
-          getNaturalRhythm({
-            rhythmResolution: 13,
-            rhythmDensity: 7,
-            rhythmPhase: 4,
-          }),
-        ],
-      })
-      const nestIndices = getElementIndices({
-        targetValue: true,
-        someSpace: nestRhythm,
-      })
-      return nestIndices.map((nestIndex, fooIndex) => {
-        return {
-          rotatedLoop: getUpdatedData({
-            baseData: rotatedLoop,
-            dataUpdates: {
-              'baseCircle.center': (baseValue: Point) => ({
-                x: baseValue.x + nestTranslation.x * nestIndex,
-                y: baseValue.y + nestTranslation.y * nestIndex,
-              }),
-              'baseCircle.radius': (baseValue: number) =>
-                (baseValue * (nestRhythm.length - nestIndex)) /
-                nestRhythm.length,
-            },
-          }),
-          strokeColor: colors[fooIndex % colors.length],
-        }
-      })
+    .map(({ key, rotatedLoop }, someIndex) => {
+      const decorationIndex = Math.floor(someIndex / 2)
+      switch (key) {
+        case 'topTop':
+          return getDefaultDecorationNest({
+            rotatedLoop,
+            colorSequence: colors,
+            nestTranslation: { x: 0, y: 0.15 },
+            nestRhythm: getFilteredRhythm({
+              rhythmSequence: [
+                getNaturalRhythm({
+                  rhythmResolution: 24,
+                  rhythmDensity: 13,
+                  rhythmPhase: 0,
+                }),
+                getNaturalRhythm({
+                  rhythmResolution: 13,
+                  rhythmDensity: 8,
+                  rhythmPhase: 0,
+                }),
+              ],
+            }),
+          })
+        case 'midTop':
+          return getDefaultDecorationNest({
+            rotatedLoop,
+            colorSequence: colors,
+            nestTranslation: { x: -0.0, y: -0.025 },
+            nestRhythm: getFilteredRhythm({
+              rhythmSequence: [
+                getNaturalRhythm({
+                  rhythmResolution: 24,
+                  rhythmDensity: 13,
+                  rhythmPhase: 0,
+                }),
+                getNaturalRhythm({
+                  rhythmResolution: 13,
+                  rhythmDensity: 5,
+                  rhythmPhase: 0,
+                }),
+              ],
+            }),
+          })
+        case 'leftEar':
+        case 'rightEar':
+          return getDefaultDecorationNest({
+            rotatedLoop,
+            colorSequence: colors,
+            nestTranslation:
+              key === 'leftEar' ? { x: -0.1, y: 0.2 } : { x: 0.1, y: 0.2 },
+            nestRhythm: getFilteredRhythm({
+              rhythmSequence: [
+                getNaturalRhythm({
+                  rhythmResolution: 24,
+                  rhythmDensity: 13,
+                  rhythmPhase: 0,
+                }),
+                getNaturalRhythm({
+                  rhythmResolution: 13,
+                  rhythmDensity: 8,
+                  rhythmPhase: 0,
+                }),
+              ],
+            }),
+          })
+        case 'leftShoulder':
+        case 'rightShoulder':
+          return getDefaultDecorationNest({
+            rotatedLoop,
+            colorSequence: colors,
+            nestTranslation:
+              key === 'leftShoulder'
+                ? { x: -0.1, y: 0.075 }
+                : { x: -0.1, y: 0.075 },
+            nestRhythm: getFilteredRhythm({
+              rhythmSequence: [
+                getNaturalRhythm({
+                  rhythmResolution: 24,
+                  rhythmDensity: 13,
+                  rhythmPhase: 0,
+                }),
+                getNaturalRhythm({
+                  rhythmResolution: 13,
+                  rhythmDensity: 7,
+                  rhythmPhase: 0,
+                }),
+              ],
+            }),
+          })
+        case 'leftWing':
+        case 'rightWing':
+          return getDefaultDecorationNest({
+            rotatedLoop,
+            colorSequence: colors,
+            nestTranslation:
+              key === 'leftWing'
+                ? { x: 0.05, y: -0.25 }
+                : { x: -0.05, y: -0.25 },
+            nestRhythm: getFilteredRhythm({
+              rhythmSequence: [
+                getNaturalRhythm({
+                  rhythmResolution: 24,
+                  rhythmDensity: 13,
+                  rhythmPhase: 0,
+                }),
+                getNaturalRhythm({
+                  rhythmResolution: 13,
+                  rhythmDensity: 10,
+                  rhythmPhase: 0,
+                }),
+              ],
+            }),
+          })
+        case 'leftKnee':
+        case 'rightKnee':
+          return getDefaultDecorationNest({
+            rotatedLoop,
+            colorSequence: colors,
+            nestTranslation:
+              key === 'leftKnee'
+                ? { x: -0.025, y: -0.15 }
+                : { x: 0.025, y: -0.15 },
+            nestRhythm: getFilteredRhythm({
+              rhythmSequence: [
+                getNaturalRhythm({
+                  rhythmResolution: 24,
+                  rhythmDensity: 13,
+                  rhythmPhase: 0,
+                }),
+                getNaturalRhythm({
+                  rhythmResolution: 13,
+                  rhythmDensity: 9,
+                  rhythmPhase: 0,
+                }),
+              ],
+            }),
+          })
+        default:
+          return getDefaultDecorationNest({
+            rotatedLoop,
+            colorSequence: colors,
+            nestTranslation: { x: 0, y: 0 },
+            nestRhythm: getFilteredRhythm({
+              rhythmSequence: [
+                getNaturalRhythm({
+                  rhythmResolution: 24,
+                  rhythmDensity: 13,
+                  rhythmPhase: 0,
+                }),
+                getNaturalRhythm({
+                  rhythmResolution: 13,
+                  rhythmDensity: 11,
+                  rhythmPhase: decorationIndex,
+                }),
+              ],
+            }),
+          })
+      }
     })
     .flat()
   return (
@@ -677,7 +758,28 @@ function Bar() {
         strokeWidth={0.125}
       /> */}
       <g transform={'translate(0, 7)'}>
-        {Object.values(waveLoopsSet)
+        {Object.values(waveGroups)
+          .map((someWaveGroup) => {
+            return [
+              ...someWaveGroup.leftBaseLoops.map(
+                ({ rotatedLoop, rhythmIndex }) =>
+                  someWaveGroup.getNestLoops({
+                    rotatedLoop,
+                    rhythmIndex,
+                    globalSide: 'left',
+                  })
+              ),
+              ...someWaveGroup.rightBaseLoops.map(
+                ({ rotatedLoop, rhythmIndex }) =>
+                  someWaveGroup.getNestLoops({
+                    rotatedLoop,
+                    rhythmIndex,
+                    globalSide: 'right',
+                  })
+              ),
+            ]
+          })
+          .flat()
           .flat()
           .map(({ rotatedLoop, strokeColor }) => (
             <Polygon
@@ -685,7 +787,6 @@ function Bar() {
                 sampleCount: 256,
                 oscillatedRotatedLoop: {
                   ...rotatedLoop,
-                  // getRelativeOscillation: () => 0,
                   getRelativeOscillation: () => Math.random() / 3.5,
                 },
               })}
@@ -831,4 +932,35 @@ function getWaveLoops(api: GetWaveLoopsApi): {
         },
       }
     })
+}
+
+interface GetDefaultDecorationNestApi {
+  rotatedLoop: RotatedLoop
+  nestTranslation: Point
+  nestRhythm: DiscreteRhythm
+  colorSequence: string[]
+}
+
+function getDefaultDecorationNest(api: GetDefaultDecorationNestApi) {
+  const { nestRhythm, rotatedLoop, nestTranslation, colorSequence } = api
+  const nestIndices = getElementIndices({
+    targetValue: true,
+    someSpace: nestRhythm,
+  })
+  return nestIndices.map((nestIndex, sequenceIndex) => {
+    return {
+      rotatedLoop: getUpdatedData({
+        baseData: rotatedLoop,
+        dataUpdates: {
+          'baseCircle.center': (baseValue: Point) => ({
+            x: baseValue.x + nestTranslation.x * nestIndex,
+            y: baseValue.y + nestTranslation.y * nestIndex,
+          }),
+          'baseCircle.radius': (baseValue: number) =>
+            (baseValue * (nestRhythm.length - nestIndex)) / nestRhythm.length,
+        },
+      }),
+      strokeColor: colorSequence[sequenceIndex % colorSequence.length],
+    }
+  })
 }

@@ -177,6 +177,56 @@ function Bar() {
         rotatedLoop,
         rhythmIndex,
       }: GetNestLoopsApi) => {
+        const {
+          rhythmDensity,
+          rhythmPhase,
+          nestTranslation,
+          strokeWidth = 0.15,
+        } = rhythmIndex === 8
+          ? {
+              rhythmDensity: 5,
+              rhythmPhase: 0,
+              strokeWidth: 0.125,
+              nestTranslation: {
+                x: 0.015,
+                y: -0.03,
+              },
+            }
+          : rhythmIndex === 6
+          ? {
+              rhythmDensity: 7,
+              rhythmPhase: 0,
+              nestTranslation: {
+                x: 0.025,
+                y: 0.03,
+              },
+            }
+          : rhythmIndex === 3
+          ? {
+              rhythmDensity: 7,
+              rhythmPhase: 0,
+              nestTranslation: {
+                x: -0.0375,
+                y: 0.01,
+              },
+            }
+          : rhythmIndex === 1
+          ? {
+              rhythmDensity: 7,
+              rhythmPhase: 0,
+              nestTranslation: {
+                x: -0.03,
+                y: -0.025,
+              },
+            }
+          : {
+              rhythmDensity: 7,
+              rhythmPhase: 0,
+              nestTranslation: {
+                x: 0.03,
+                y: -0.03,
+              },
+            }
         const nestRhythm = getFilteredRhythm({
           rhythmSequence: [
             getNaturalRhythm({
@@ -185,9 +235,9 @@ function Bar() {
               rhythmPhase: 0,
             }),
             getNaturalRhythm({
+              rhythmDensity,
               rhythmResolution: 13,
-              rhythmDensity: 7,
-              rhythmPhase: rhythmIndex,
+              rhythmPhase: rhythmPhase,
             }),
           ],
         })
@@ -197,6 +247,7 @@ function Bar() {
         })
         return nestIndices.map((nestIndex, colorIndex) => {
           return {
+            strokeWidth,
             rotatedLoop: getUpdatedData({
               baseData: rotatedLoop,
               dataUpdates: {
@@ -209,7 +260,9 @@ function Bar() {
                 ) =>
                   baseValue +
                   (2 * (-rhythmIndex % 2) + 1) *
-                    (globalSide === 'left' ? -0.03 : 0.03) *
+                    (globalSide === 'left'
+                      ? -nestTranslation.x
+                      : nestTranslation.x) *
                     rootValue.baseCircle.radius *
                     nestIndex,
                 'baseCircle.center.y': (
@@ -218,12 +271,12 @@ function Bar() {
                 ) =>
                   baseValue +
                   (-2 * (rhythmIndex % 2) + 1) *
-                    -0.01 *
+                    nestTranslation.y *
                     rootValue.baseCircle.radius *
                     nestIndex,
               },
             }),
-            strokeColor: colors[colorIndex % colors.length],
+            strokeColor: colors[(colorIndex + rhythmIndex) % colors.length],
           }
         })
       },
@@ -264,6 +317,33 @@ function Bar() {
         rotatedLoop,
         rhythmIndex,
       }: GetNestLoopsApi) => {
+        const { rhythmDensity, rhythmPhase, nestTranslation } =
+          rhythmIndex === 9
+            ? {
+                // outerUpper
+                rhythmDensity: 7,
+                rhythmPhase: 0,
+                nestTranslation: {
+                  x: -0.02,
+                  y: -0.02,
+                },
+              }
+            : rhythmIndex === 5
+            ? {
+                // innerLower
+                rhythmDensity: 7,
+                rhythmPhase: 0,
+                nestTranslation: {
+                  x: -0.02,
+                  y: -0.02,
+                },
+              }
+            : {
+                // zero radius
+                rhythmDensity: 1,
+                rhythmPhase: 0,
+                nestTranslation: { x: 0, y: 0 },
+              }
         const nestRhythm = getFilteredRhythm({
           rhythmSequence: [
             getNaturalRhythm({
@@ -273,8 +353,8 @@ function Bar() {
             }),
             getNaturalRhythm({
               rhythmResolution: 13,
-              rhythmDensity: 7,
-              rhythmPhase: rhythmIndex,
+              rhythmDensity: rhythmDensity,
+              rhythmPhase: rhythmPhase,
             }),
           ],
         })
@@ -296,7 +376,9 @@ function Bar() {
                 ) =>
                   baseValue +
                   (2 * (-rhythmIndex % 2) + 1) *
-                    (globalSide === 'left' ? -0.03 : 0.03) *
+                    (globalSide === 'left'
+                      ? -nestTranslation.x
+                      : nestTranslation.x) *
                     rootValue.baseCircle.radius *
                     nestIndex,
                 'baseCircle.center.y': (
@@ -305,7 +387,7 @@ function Bar() {
                 ) =>
                   baseValue +
                   (-2 * (rhythmIndex % 2) + 1) *
-                    -0.01 *
+                    nestTranslation.y *
                     rootValue.baseCircle.radius *
                     nestIndex,
               },
@@ -351,6 +433,56 @@ function Bar() {
         rotatedLoop,
         rhythmIndex,
       }: GetNestLoopsApi) => {
+        const {
+          rhythmDensity,
+          rhythmPhase,
+          nestTranslation,
+          strokeWidth = 0.15,
+        } = rhythmIndex === 8
+          ? {
+              rhythmDensity: 5,
+              rhythmPhase: 0,
+              strokeWidth: 0.125,
+              nestTranslation: {
+                x: -0.015,
+                y: -0.02,
+              },
+            }
+          : rhythmIndex === 6
+          ? {
+              rhythmDensity: 7,
+              rhythmPhase: 0,
+              nestTranslation: {
+                x: -0.02,
+                y: -0.02,
+              },
+            }
+          : rhythmIndex === 3
+          ? {
+              rhythmDensity: 7,
+              rhythmPhase: 0,
+              nestTranslation: {
+                x: -0.0375,
+                y: -0.01,
+              },
+            }
+          : rhythmIndex === 1
+          ? {
+              rhythmDensity: 7,
+              rhythmPhase: 0,
+              nestTranslation: {
+                x: 0.03,
+                y: 0.015,
+              },
+            }
+          : {
+              rhythmDensity: 7,
+              rhythmPhase: 0,
+              nestTranslation: {
+                x: -0.03,
+                y: -0.02,
+              },
+            }
         const nestRhythm = getFilteredRhythm({
           rhythmSequence: [
             getNaturalRhythm({
@@ -360,8 +492,8 @@ function Bar() {
             }),
             getNaturalRhythm({
               rhythmResolution: 13,
-              rhythmDensity: 7,
-              rhythmPhase: rhythmIndex,
+              rhythmDensity: rhythmDensity,
+              rhythmPhase: rhythmPhase,
             }),
           ],
         })
@@ -371,6 +503,7 @@ function Bar() {
         })
         return nestIndices.map((nestIndex, colorIndex) => {
           return {
+            strokeWidth,
             rotatedLoop: getUpdatedData({
               baseData: rotatedLoop,
               dataUpdates: {
@@ -383,7 +516,9 @@ function Bar() {
                 ) =>
                   baseValue +
                   (2 * (-rhythmIndex % 2) + 1) *
-                    (globalSide === 'left' ? -0.03 : 0.03) *
+                    (globalSide === 'left'
+                      ? -nestTranslation.x
+                      : nestTranslation.x) *
                     rootValue.baseCircle.radius *
                     nestIndex,
                 'baseCircle.center.y': (
@@ -392,7 +527,7 @@ function Bar() {
                 ) =>
                   baseValue +
                   (-2 * (rhythmIndex % 2) + 1) *
-                    -0.01 *
+                    -nestTranslation.y *
                     rootValue.baseCircle.radius *
                     nestIndex,
               },
@@ -534,6 +669,7 @@ function Bar() {
   const decorationLoops: {
     rotatedLoop: RotatedLoop
     strokeColor: string | undefined
+    strokeWidth?: number | undefined
   }[] = [
     {
       key: 'topTop',
@@ -583,7 +719,7 @@ function Bar() {
           return getDefaultDecorationNest({
             rotatedLoop,
             colorSequence: colors,
-            nestTranslation: { x: 0, y: 0.15 },
+            nestTranslation: { x: 0, y: -0.15 },
             nestRhythm: getFilteredRhythm({
               rhythmSequence: [
                 getNaturalRhythm({
@@ -593,7 +729,7 @@ function Bar() {
                 }),
                 getNaturalRhythm({
                   rhythmResolution: 13,
-                  rhythmDensity: 8,
+                  rhythmDensity: 7,
                   rhythmPhase: 0,
                 }),
               ],
@@ -603,7 +739,7 @@ function Bar() {
           return getDefaultDecorationNest({
             rotatedLoop,
             colorSequence: colors,
-            nestTranslation: { x: -0.0, y: -0.025 },
+            nestTranslation: { x: -0.0, y: 0.06 },
             nestRhythm: getFilteredRhythm({
               rhythmSequence: [
                 getNaturalRhythm({
@@ -613,7 +749,7 @@ function Bar() {
                 }),
                 getNaturalRhythm({
                   rhythmResolution: 13,
-                  rhythmDensity: 5,
+                  rhythmDensity: 6,
                   rhythmPhase: 0,
                 }),
               ],
@@ -625,7 +761,9 @@ function Bar() {
             rotatedLoop,
             colorSequence: colors,
             nestTranslation:
-              key === 'leftEar' ? { x: -0.1, y: 0.2 } : { x: 0.1, y: 0.2 },
+              key === 'leftEar'
+                ? { x: -0.15, y: -0.15 }
+                : { x: 0.15, y: -0.15 },
             nestRhythm: getFilteredRhythm({
               rhythmSequence: [
                 getNaturalRhythm({
@@ -635,7 +773,7 @@ function Bar() {
                 }),
                 getNaturalRhythm({
                   rhythmResolution: 13,
-                  rhythmDensity: 8,
+                  rhythmDensity: 7,
                   rhythmPhase: 0,
                 }),
               ],
@@ -648,8 +786,8 @@ function Bar() {
             colorSequence: colors,
             nestTranslation:
               key === 'leftShoulder'
-                ? { x: -0.1, y: 0.075 }
-                : { x: -0.1, y: 0.075 },
+                ? { x: 0.125, y: 0.1 }
+                : { x: -0.125, y: 0.1 },
             nestRhythm: getFilteredRhythm({
               rhythmSequence: [
                 getNaturalRhythm({
@@ -672,8 +810,14 @@ function Bar() {
             colorSequence: colors,
             nestTranslation:
               key === 'leftWing'
-                ? { x: 0.05, y: -0.25 }
-                : { x: -0.05, y: -0.25 },
+                ? {
+                    x: 0.125,
+                    y: -0.175,
+                  }
+                : {
+                    x: -0.125,
+                    y: -0.175,
+                  },
             nestRhythm: getFilteredRhythm({
               rhythmSequence: [
                 getNaturalRhythm({
@@ -683,7 +827,7 @@ function Bar() {
                 }),
                 getNaturalRhythm({
                   rhythmResolution: 13,
-                  rhythmDensity: 10,
+                  rhythmDensity: 7,
                   rhythmPhase: 0,
                 }),
               ],
@@ -696,8 +840,8 @@ function Bar() {
             colorSequence: colors,
             nestTranslation:
               key === 'leftKnee'
-                ? { x: -0.025, y: -0.15 }
-                : { x: 0.025, y: -0.15 },
+                ? { x: -0.12, y: -0.125 }
+                : { x: 0.12, y: -0.125 },
             nestRhythm: getFilteredRhythm({
               rhythmSequence: [
                 getNaturalRhythm({
@@ -707,7 +851,7 @@ function Bar() {
                 }),
                 getNaturalRhythm({
                   rhythmResolution: 13,
-                  rhythmDensity: 9,
+                  rhythmDensity: 7,
                   rhythmPhase: 0,
                 }),
               ],
@@ -727,7 +871,7 @@ function Bar() {
                 }),
                 getNaturalRhythm({
                   rhythmResolution: 13,
-                  rhythmDensity: 11,
+                  rhythmDensity: 7,
                   rhythmPhase: decorationIndex,
                 }),
               ],
@@ -748,7 +892,7 @@ function Bar() {
       viewBox={'-10 -10 120 120'}
       imageRendering={'optimizeQuality'}
     >
-      <rect x={-10} y={-10} width={120} height={120} fill={'#101915'} />
+      <rect x={-10} y={-10} width={120} height={120} fill={'black'} />
       {/* <line
         x1={50}
         y1={0}
@@ -781,18 +925,19 @@ function Bar() {
           })
           .flat()
           .flat()
-          .map(({ rotatedLoop, strokeColor }) => (
+          .map(({ rotatedLoop, strokeColor, strokeWidth = 0.2 }: any) => (
             <Polygon
               points={getOscillatedRotatedLoopPoints({
                 sampleCount: 256,
                 oscillatedRotatedLoop: {
                   ...rotatedLoop,
-                  getRelativeOscillation: () => Math.random() / 3.5,
+                  getRelativeOscillation: () => 0,
+                  // getRelativeOscillation: () => Math.random() / 24,
                 },
               })}
               fill={'none'}
               stroke={strokeColor}
-              strokeWidth={0.125}
+              strokeWidth={0.2}
             />
           ))}
         {decorationLoops.map(({ rotatedLoop, strokeColor }) => (
@@ -801,13 +946,13 @@ function Bar() {
               sampleCount: 256,
               oscillatedRotatedLoop: {
                 ...rotatedLoop,
-                // getRelativeOscillation: () => 0,
-                getRelativeOscillation: () => Math.random() / 5,
+                getRelativeOscillation: () => 0,
+                // getRelativeOscillation: () => Math.random() / 24,
               },
             })}
             fill={'none'}
             stroke={strokeColor}
-            strokeWidth={0.15}
+            strokeWidth={0.2}
           />
         ))}
       </g>

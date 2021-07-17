@@ -190,7 +190,7 @@ function Bar() {
                   rootValue: RotatedLoop
                 ) =>
                   baseValue +
-                  (globalSide === 'left' ? -0.025 : 0.025) *
+                  (globalSide === 'left' ? -0.03 : 0.03) *
                     rootValue.baseCircle.radius *
                     nestIndex,
                 'baseCircle.center.y': (
@@ -541,8 +541,8 @@ function Bar() {
               rhythmDensity: 7,
               rhythmPhase: 0,
               nestTranslation: {
-                x: 0.02,
-                y: -0.02,
+                x: 0.03,
+                y: -0.025,
               },
             }
           : rhythmIndex === 3
@@ -559,8 +559,8 @@ function Bar() {
               rhythmDensity: 7,
               rhythmPhase: 0,
               nestTranslation: {
-                x: 0.03,
-                y: 0.015,
+                x: 0.035,
+                y: 0.0175,
               },
             }
           : {
@@ -872,7 +872,7 @@ function Bar() {
             rotatedLoop,
             strokeWidth: 0.2,
             colorSequence: colorsA,
-            nestTranslation: { x: 0, y: -0.125 },
+            nestTranslation: { x: 0, y: -0.25 },
             nestRhythm: getFilteredRhythm({
               rhythmSequence: [
                 getNaturalRhythm({
@@ -903,7 +903,7 @@ function Bar() {
             rotatedLoop,
             strokeWidth: 0.15,
             colorSequence: colorsB,
-            nestTranslation: { x: -0.0, y: -0.0675 },
+            nestTranslation: { x: -0.0, y: -0.0875 },
             nestRhythm: getFilteredRhythm({
               rhythmSequence: [
                 getNaturalRhythm({
@@ -1033,9 +1033,7 @@ function Bar() {
             rotatedLoop,
             colorSequence: reversedColorsA,
             nestTranslation:
-              key === 'leftEar'
-                ? { x: -0.15, y: -0.15 }
-                : { x: 0.15, y: -0.15 },
+              key === 'leftEar' ? { x: -0.0, y: -0.1 } : { x: 0.0, y: -0.1 },
             nestRhythm: getFilteredRhythm({
               rhythmSequence: [
                 getNaturalRhythm({
@@ -1068,8 +1066,8 @@ function Bar() {
             colorSequence: reversedColorsB,
             nestTranslation:
               key === 'leftShoulder'
-                ? { x: 0.02, y: 0.1875 }
-                : { x: -0.02, y: 0.1875 },
+                ? { x: -0.15, y: -0.025 }
+                : { x: 0.15, y: -0.025 },
             nestRhythm: getFilteredRhythm({
               rhythmSequence: [
                 getNaturalRhythm({
@@ -1103,12 +1101,12 @@ function Bar() {
             nestTranslation:
               key === 'leftWing'
                 ? {
-                    x: 0.29,
-                    y: -0.225,
+                    x: 0.15,
+                    y: -0.2875,
                   }
                 : {
-                    x: -0.29,
-                    y: -0.225,
+                    x: -0.15,
+                    y: -0.2875,
                   },
             nestRhythm: getFilteredRhythm({
               rhythmSequence: [
@@ -1142,8 +1140,8 @@ function Bar() {
             colorSequence: reversedColorsB,
             nestTranslation:
               key === 'leftKnee'
-                ? { x: -0.09, y: -0.17 }
-                : { x: 0.09, y: -0.17 },
+                ? { x: -0.02, y: -0.15 }
+                : { x: 0.02, y: -0.15 },
             nestRhythm: getFilteredRhythm({
               rhythmSequence: [
                 getNaturalRhythm({

@@ -25,7 +25,7 @@ export default {
   pdfFileName: 'bar',
 }
 
-const camouflage = true
+const camouflage = false
 
 const PaletteB = {
   primary: {
@@ -910,7 +910,7 @@ function Bar() {
         case 'rightShoulder':
           return getDefaultDecorationNest({
             rotatedLoop,
-            colorSequence: colorsB,
+            colorSequence: colorsA,
             nestTranslation:
               key === 'leftShoulder' ? { x: 0.1, y: 0.1 } : { x: -0.1, y: 0.1 },
             nestRhythm: getFilteredRhythm({

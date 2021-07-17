@@ -25,6 +25,8 @@ export default {
   pdfFileName: 'bar',
 }
 
+const camouflage = true
+
 const PaletteB = {
   primary: {
     main: '#f7752f',
@@ -1084,13 +1086,13 @@ function Bar() {
                 sampleCount: 256,
                 oscillatedRotatedLoop: {
                   ...rotatedLoop,
-                  // getRelativeOscillation: () => 0,
-                  getRelativeOscillation: () => Math.random() / 3,
+                  getRelativeOscillation: () =>
+                    camouflage ? Math.random() / 3 : 0,
                 },
               })}
               fill={'none'}
               stroke={strokeColor}
-              strokeWidth={strokeWidth}
+              strokeWidth={camouflage ? strokeWidth : strokeWidth * 2}
             />
           ))}
         {decorationLoops.map(
@@ -1100,13 +1102,13 @@ function Bar() {
                 sampleCount: 256,
                 oscillatedRotatedLoop: {
                   ...rotatedLoop,
-                  // getRelativeOscillation: () => 0,
-                  getRelativeOscillation: () => Math.random() / 4,
+                  getRelativeOscillation: () =>
+                    camouflage ? Math.random() / 3.5 : 0,
                 },
               })}
               fill={'none'}
               stroke={strokeColor}
-              strokeWidth={strokeWidth}
+              strokeWidth={camouflage ? strokeWidth : strokeWidth * 2}
             />
           )
         )}

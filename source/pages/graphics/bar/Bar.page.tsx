@@ -25,7 +25,7 @@ export default {
   pdfFileName: 'bar',
 }
 
-const camouflage = false
+const camouflage = true
 
 const PaletteB = {
   primary: {
@@ -175,7 +175,10 @@ function Bar() {
         })
         return nestIndices.map((nestIndex, colorIndex) => {
           return {
-            strokeWidth: rhythmIndex === 5 ? 0.1 : undefined,
+            strokeWidth:
+              rhythmIndex === 5
+                ? 0 // 0.1
+                : undefined,
             rotatedLoop: getUpdatedData({
               baseData: rotatedLoop,
               dataUpdates: {
@@ -249,7 +252,7 @@ function Bar() {
             }
           : rhythmIndex === 6
           ? {
-              strokeWidth: 0.1,
+              strokeWidth: 0, //0.1,
               rhythmDensity: 7,
               rhythmPhase: 0,
               nestTranslation: {
@@ -403,7 +406,7 @@ function Bar() {
           : rhythmIndex === 5
           ? {
               // innerLower
-              strokeWidth: 0.1,
+              strokeWidth: 0, //0.1,
               rhythmDensity: 7,
               rhythmPhase: 0,
               nestTranslation: {
@@ -476,7 +479,7 @@ function Bar() {
                     nestIndex,
               },
             }),
-            strokeColor: (rhythmIndex === 9 ? colorsA : colorsB)[colorIndex],
+            strokeColor: (rhythmIndex === 9 ? colorsA : colorsA)[colorIndex],
           }
         })
       },
@@ -526,7 +529,7 @@ function Bar() {
           ? {
               rhythmDensity: 7,
               rhythmPhase: 0,
-              strokeWidth: 0.0875,
+              strokeWidth: 0, //0.0875,
               nestTranslation: {
                 x: 0.015,
                 y: -0.02,
@@ -627,7 +630,9 @@ function Bar() {
                     nestIndex,
               },
             }),
-            strokeColor: (rhythmIndex === 8 ? colorsB : colorsA)[colorIndex],
+            strokeColor: (rhythmIndex === 8 ? ['reversedColorsB'] : colorsA)[
+              colorIndex
+            ],
           }
         })
       },
@@ -761,6 +766,30 @@ function Bar() {
       rotationAngle: Math.PI + Math.PI / 5,
     },
   })
+  const fooLoop: RotatedLoop = {
+    baseCircle: {
+      center: {
+        x: 60.5,
+        y: 50,
+      },
+      radius: 7,
+    },
+    childCircle: {
+      relativeRadius: 0.675,
+      relativeDepth: 1,
+      phaseAngle: Math.PI / 3,
+    },
+    rotationAnchor: 'base',
+    rotationAngle: Math.PI / 7,
+  }
+  const barLoop = getUpdatedData({
+    baseData: fooLoop,
+    dataUpdates: {
+      'baseCircle.center.x': (baseValue: number) => 50 + (50 - baseValue),
+      'childCircle.phaseAngle': -Math.PI / 3,
+      rotationAngle: Math.PI - Math.PI / 7,
+    },
+  })
   const decorationLoops: {
     rotatedLoop: RotatedLoop
     strokeColor: string | undefined
@@ -805,6 +834,14 @@ function Bar() {
     {
       key: 'leftEar',
       rotatedLoop: leftEarLoop,
+    },
+    {
+      key: 'fooLoop',
+      rotatedLoop: fooLoop,
+    },
+    {
+      key: 'barLoop',
+      rotatedLoop: barLoop,
     },
   ]
     .map<any>(({ key, rotatedLoop }, someIndex) => {
@@ -872,6 +909,51 @@ function Bar() {
               ],
             }),
           })
+        case 'fooLoop':
+        case 'barLoop':
+          return getDefaultDecorationNest({
+            rotatedLoop,
+            strokeWidth: 0.2,
+            colorSequence: reversedColorsA,
+            nestTranslation:
+              key === 'fooLoop'
+                ? { x: 0.22, y: 0.075 }
+                : { x: -0.22, y: 0.075 },
+            nestRhythm: getFilteredRhythm({
+              rhythmSequence: [
+                getNaturalRhythm({
+                  rhythmResolution: 24,
+                  rhythmDensity: 23,
+                  rhythmPhase: 0,
+                }),
+                getNaturalRhythm({
+                  rhythmResolution: 23,
+                  rhythmDensity: 19,
+                  rhythmPhase: 0,
+                }),
+                getNaturalRhythm({
+                  rhythmResolution: 19,
+                  rhythmDensity: 17,
+                  rhythmPhase: 0,
+                }),
+                getNaturalRhythm({
+                  rhythmResolution: 17,
+                  rhythmDensity: 13,
+                  rhythmPhase: 0,
+                }),
+                getNaturalRhythm({
+                  rhythmResolution: 13,
+                  rhythmDensity: 12,
+                  rhythmPhase: 0,
+                }),
+                getNaturalRhythm({
+                  rhythmResolution: 12,
+                  rhythmDensity: 7,
+                  rhythmPhase: 3,
+                }),
+              ],
+            }),
+          })
         case 'leftEar':
         case 'rightEar':
           return getDefaultDecorationNest({
@@ -912,7 +994,9 @@ function Bar() {
             rotatedLoop,
             colorSequence: reversedColorsB,
             nestTranslation:
-              key === 'leftShoulder' ? { x: 0.1, y: 0.1 } : { x: -0.1, y: 0.1 },
+              key === 'leftShoulder'
+                ? { x: -0.0, y: 0.15 }
+                : { x: 0.0, y: 0.15 },
             nestRhythm: getFilteredRhythm({
               rhythmSequence: [
                 getNaturalRhythm({
@@ -985,8 +1069,8 @@ function Bar() {
             colorSequence: reversedColorsB,
             nestTranslation:
               key === 'leftKnee'
-                ? { x: -0.12, y: -0.125 }
-                : { x: 0.12, y: -0.125 },
+                ? { x: -0.075, y: -0.125 }
+                : { x: 0.075, y: -0.125 },
             nestRhythm: getFilteredRhythm({
               rhythmSequence: [
                 getNaturalRhythm({
@@ -1053,6 +1137,14 @@ function Bar() {
         y1={0}
         x2={50}
         y2={100}
+        stroke={'white'}
+        strokeWidth={0.125}
+      />
+      <line
+        x1={0}
+        y1={50}
+        x2={100}
+        y2={50}
         stroke={'white'}
         strokeWidth={0.125}
       /> */}

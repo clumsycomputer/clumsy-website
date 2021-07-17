@@ -343,7 +343,7 @@ function Bar() {
               },
             }),
             strokeColor: (rhythmIndex === 1 || rhythmIndex === 3
-              ? reversedColorsA
+              ? reversedColorsB
               : colorsB)[colorIndex],
           }
         })
@@ -876,7 +876,7 @@ function Bar() {
         case 'rightEar':
           return getDefaultDecorationNest({
             rotatedLoop,
-            colorSequence: reversedColorsB,
+            colorSequence: reversedColorsA,
             nestTranslation:
               key === 'leftEar'
                 ? { x: -0.15, y: -0.15 }
@@ -910,7 +910,7 @@ function Bar() {
         case 'rightShoulder':
           return getDefaultDecorationNest({
             rotatedLoop,
-            colorSequence: colorsA,
+            colorSequence: reversedColorsB,
             nestTranslation:
               key === 'leftShoulder' ? { x: 0.1, y: 0.1 } : { x: -0.1, y: 0.1 },
             nestRhythm: getFilteredRhythm({

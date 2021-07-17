@@ -343,7 +343,7 @@ function Bar() {
               },
             }),
             strokeColor: (rhythmIndex === 1 || rhythmIndex === 3
-              ? reversedColorsB
+              ? reversedColorsA
               : colorsB)[colorIndex],
           }
         })

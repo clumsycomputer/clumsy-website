@@ -876,7 +876,7 @@ function Bar() {
         case 'rightEar':
           return getDefaultDecorationNest({
             rotatedLoop,
-            colorSequence: reversedColorsA,
+            colorSequence: reversedColorsB,
             nestTranslation:
               key === 'leftEar'
                 ? { x: -0.15, y: -0.15 }
@@ -910,7 +910,7 @@ function Bar() {
         case 'rightShoulder':
           return getDefaultDecorationNest({
             rotatedLoop,
-            colorSequence: reversedColorsB,
+            colorSequence: colorsB,
             nestTranslation:
               key === 'leftShoulder' ? { x: 0.1, y: 0.1 } : { x: -0.1, y: 0.1 },
             nestRhythm: getFilteredRhythm({

@@ -39,18 +39,141 @@ function Baz() {
     },
   }
   const loopA: RotatedLoop = {
-    baseCircle: {
-      radius: 10,
-      center: { x: 23, y: 23 },
-    },
+    baseCircle: rootCircle,
     childCircle: {
-      relativeRadius: 3 / 12,
-      relativeDepth: 11 / 12,
-      phaseAngle: Math.PI / 7,
+      relativeRadius: 11 / 13,
+      relativeDepth: 1,
+      phaseAngle: 0,
     },
     rotationAnchor: 'base',
-    rotationAngle: Math.PI / 7,
+    rotationAngle: -Math.PI / 2,
   }
+  const pointA = getRotatedLoopPoint({
+    someRotatedLoop: loopA,
+    sampleAngle: 0,
+  })
+  const pointB = getRotatedLoopPoint({
+    someRotatedLoop: loopA,
+    sampleAngle: (Math.PI / 3) * 2,
+  })
+  const pointC = getRotatedLoopPoint({
+    someRotatedLoop: loopA,
+    sampleAngle: -(Math.PI / 3) * 2,
+  })
+  const pointD = getRotatedLoopPoint({
+    someRotatedLoop: loopA,
+    sampleAngle: Math.PI,
+  })
+  const pointE = getRotatedLoopPoint({
+    someRotatedLoop: loopA,
+    sampleAngle: Math.PI / 3,
+  })
+  const pointF = getRotatedLoopPoint({
+    someRotatedLoop: loopA,
+    sampleAngle: -Math.PI / 3,
+  })
+  const pointG: Point = {
+    x: 50,
+    y: 44.2,
+  }
+  const pointH: Point = {
+    x: 50,
+    y: 24.4,
+  }
+  const pointI: Point = {
+    x: 50,
+    y: 66.3,
+  }
+  const pointJ: Point = {
+    x: 84.75,
+    y: 52.4,
+  }
+  const pointJB: Point = getMirroredPoint({
+    basePoint: pointJ,
+    originPoint: rootCircle.center,
+    mirrorAngle: Math.PI / 2,
+  })
+  const pointK: Point = {
+    x: 91.1,
+    y: 43.7,
+  }
+  const pointKB: Point = getMirroredPoint({
+    basePoint: pointK,
+    originPoint: rootCircle.center,
+    mirrorAngle: Math.PI / 2,
+  })
+  const pointL: Point = {
+    x: 85.1,
+    y: 40.2,
+  }
+  const pointLB: Point = getMirroredPoint({
+    basePoint: pointL,
+    originPoint: rootCircle.center,
+    mirrorAngle: Math.PI / 2,
+  })
+  const pointM: Point = {
+    x: 83.7,
+    y: 48.9,
+  }
+  const pointMB: Point = getMirroredPoint({
+    basePoint: pointM,
+    originPoint: rootCircle.center,
+    mirrorAngle: Math.PI / 2,
+  })
+  const waveformPointsA = getWaveformPointsAlongLine({
+    baseLine: [pointA, pointB],
+    waveformSamples: getWaveformSamples({
+      sampleCount: 256,
+      someWaveform: {
+        ...loopA,
+        ...loopA.childCircle,
+      },
+    }).reverse(),
+    sampleAmplifier: 13.75,
+  })
+  const waveformPointsB = waveformPointsA.map((somePoint) =>
+    getMirroredPoint({
+      basePoint: somePoint,
+      mirrorAngle: -Math.PI / 2,
+      originPoint: rootCircle.center,
+    })
+  )
+  const waveformPointsC = getWaveformPointsAlongLine({
+    baseLine: [pointD, pointE],
+    waveformSamples: getWaveformSamples({
+      sampleCount: 256,
+      someWaveform: {
+        ...loopA,
+        ...loopA.childCircle,
+      },
+    }),
+    sampleAmplifier: 17,
+  })
+  const waveformPointsD = waveformPointsC.map((somePoint) =>
+    getMirroredPoint({
+      basePoint: somePoint,
+      mirrorAngle: -Math.PI / 2,
+      originPoint: rootCircle.center,
+    })
+  )
+  const waveformPointsE = getWaveformPointsAlongLine({
+    baseLine: [pointB, pointF],
+    waveformSamples: getWaveformSamples({
+      sampleCount: 256,
+      someWaveform: {
+        ...loopA,
+        ...loopA.childCircle,
+      },
+    }).reverse(),
+    sampleAmplifier: 21,
+  })
+  const waveformPointsF = waveformPointsE.map((somePoint) =>
+    getMirroredPoint({
+      basePoint: somePoint,
+      mirrorAngle: -Math.PI / 2,
+      originPoint: rootCircle.center,
+    })
+  )
   return (
     <svg
       style={{
@@ -63,26 +186,164 @@ function Baz() {
       viewBox={'-10 -10 120 120'}
     >
       <rect x={-10} y={-10} width={120} height={120} fill={'lightgrey'} />
-      <Polygon
+      {/* <polyline
+        fill={'none'}
+        stroke={'black'}
+        strokeWidth={0.4}
+        points={waveformPointsA
+          .map((somePoint) => `${somePoint.x},${somePoint.y}`)
+          .join(' ')}
+      />
+      <polyline
+        fill={'none'}
+        stroke={'black'}
+        strokeWidth={0.4}
+        points={waveformPointsB
+          .map((somePoint) => `${somePoint.x},${somePoint.y}`)
+          .join(' ')}
+      />
+      <polyline
+        fill={'none'}
+        stroke={'black'}
+        strokeWidth={0.4}
+        points={waveformPointsC
+          .map((somePoint) => `${somePoint.x},${somePoint.y}`)
+          .join(' ')}
+      />
+      <polyline
+        fill={'none'}
+        stroke={'black'}
+        strokeWidth={0.4}
+        points={waveformPointsD
+          .map((somePoint) => `${somePoint.x},${somePoint.y}`)
+          .join(' ')}
+      />
+      <polyline
+        fill={'none'}
+        stroke={'black'}
+        strokeWidth={0.4}
+        points={waveformPointsE
+          .map((somePoint) => `${somePoint.x},${somePoint.y}`)
+          .join(' ')}
+      />
+      <polyline
+        fill={'none'}
+        stroke={'black'}
+        strokeWidth={0.4}
+        points={waveformPointsF
+          .map((somePoint) => `${somePoint.x},${somePoint.y}`)
+          .join(' ')}
+      /> */}
+      <Point
+        strokeColor={'black'}
+        strokeWidth={0.2}
+        pointRadius={0.25}
+        centerPoint={pointA}
+      />
+      <Point
+        strokeColor={'black'}
+        strokeWidth={0.2}
+        pointRadius={0.25}
+        centerPoint={pointB}
+      />
+      <Point
+        strokeColor={'black'}
+        strokeWidth={0.2}
+        pointRadius={0.25}
+        centerPoint={pointC}
+      />
+      <Point
+        strokeColor={'black'}
+        strokeWidth={0.2}
+        pointRadius={0.25}
+        centerPoint={pointD}
+      />
+      <Point
+        strokeColor={'black'}
+        strokeWidth={0.2}
+        pointRadius={0.25}
+        centerPoint={pointE}
+      />
+      <Point
+        strokeColor={'black'}
+        strokeWidth={0.2}
+        pointRadius={0.25}
+        centerPoint={pointF}
+      />
+      <Point
+        strokeColor={'black'}
+        strokeWidth={0.2}
+        pointRadius={0.25}
+        centerPoint={pointG}
+      />
+      <Point
+        strokeColor={'black'}
+        strokeWidth={0.2}
+        pointRadius={0.25}
+        centerPoint={pointH}
+      />
+      <Point
+        strokeColor={'black'}
+        strokeWidth={0.2}
+        pointRadius={0.25}
+        centerPoint={pointI}
+      />
+      <Point
+        strokeColor={'black'}
+        strokeWidth={0.2}
+        pointRadius={0.25}
+        centerPoint={pointJ}
+      />
+      <Point
+        strokeColor={'black'}
+        strokeWidth={0.2}
+        pointRadius={0.25}
+        centerPoint={pointJB}
+      />
+      <Point
+        strokeColor={'black'}
+        strokeWidth={0.2}
+        pointRadius={0.25}
+        centerPoint={pointK}
+      />
+      <Point
+        strokeColor={'black'}
+        strokeWidth={0.2}
+        pointRadius={0.25}
+        centerPoint={pointKB}
+      />
+      <Point
+        strokeColor={'black'}
+        strokeWidth={0.2}
+        pointRadius={0.25}
+        centerPoint={pointL}
+      />
+      <Point
+        strokeColor={'black'}
+        strokeWidth={0.2}
+        pointRadius={0.25}
+        centerPoint={pointLB}
+      />
+      <Point
+        strokeColor={'black'}
+        strokeWidth={0.2}
+        pointRadius={0.25}
+        centerPoint={pointM}
+      />
+      <Point
+        strokeColor={'black'}
+        strokeWidth={0.2}
+        pointRadius={0.25}
+        centerPoint={pointMB}
+      />
+      {/* <Polygon
         strokeColor={'black'}
         strokeWidth={0.4}
         polygonPoints={getRotatedLoopPoints({
           sampleCount: 256,
           someRotatedLoop: loopA,
         })}
-      />
-      <Polygon
-        strokeColor={'black'}
-        strokeWidth={0.4}
-        polygonPoints={getRotatedLoopPoints({
-          sampleCount: 256,
-          someRotatedLoop: getMirroredRotatedLoop({
-            baseLoop: loopA,
-            originPoint: rootCircle.center,
-            mirrorAngle: Math.PI / 12,
-          }),
-        })}
-      />
+      /> */}
     </svg>
   )
 }
@@ -198,6 +459,27 @@ function Polygon(props: PolygonProps) {
   )
 }
 
+interface PointProps {
+  strokeColor: NonNullable<SVGProps<SVGCircleElement>['stroke']>
+  strokeWidth: NonNullable<SVGProps<SVGCircleElement>['strokeWidth']>
+  pointRadius: NonNullable<SVGProps<SVGCircleElement>['r']>
+  centerPoint: Point
+}
+
+function Point(props: PointProps) {
+  const { strokeColor, strokeWidth, centerPoint, pointRadius } = props
+  return (
+    <circle
+      fill={'none'}
+      stroke={strokeColor}
+      strokeWidth={strokeWidth}
+      cx={centerPoint.x}
+      cy={centerPoint.y}
+      r={pointRadius}
+    />
+  )
+}
+
 interface GetMirroredRotatedLoopApi {
   baseLoop: RotatedLoop
   originPoint: Point
@@ -256,22 +538,38 @@ function getWaveformPointsAlongLine(
 ): Array<Point> {
   const { waveformSamples, baseLine, sampleAmplifier } = api
   const [pointA, pointB] = baseLine
+  const baselineDeltaY = pointB.y - pointA.y
+  const baselineDeltaX = pointB.x - pointA.x
+  const baseAngle = Math.atan2(baselineDeltaY, baselineDeltaX)
   const waveformSampleCount = waveformSamples.length
-  return waveformSamples.map((someWaveformSample, sampleIndex) => {
-    const baselineDeltaY = pointB.y - pointA.y
-    const baselineDeltaX = pointB.x - pointA.x
-    const stepResolution = waveformSampleCount - 1
-    const stepY = baselineDeltaY / stepResolution
-    const stepX = baselineDeltaX / stepResolution
-    const baseY = stepY * sampleIndex + pointA.y
-    const baseX = stepX * sampleIndex + pointA.x
-    const baseAngle = Math.atan2(baselineDeltaY, baselineDeltaX)
-    const waveformAngle = baseAngle - Math.PI / 2
-    return {
-      x: sampleAmplifier * someWaveformSample * Math.cos(waveformAngle) + baseX,
-      y: sampleAmplifier * someWaveformSample * Math.sin(waveformAngle) + baseY,
-    }
-  })
+  const stepResolution = waveformSampleCount - 1
+  const stepY = baselineDeltaY / stepResolution
+  const stepX = baselineDeltaX / stepResolution
+  return waveformSamples.map((someWaveformSample, sampleIndex) =>
+    getWaveformPoint({
+      baseAngle,
+      basePoint: {
+        x: stepX * sampleIndex + pointA.x,
+        y: stepY * sampleIndex + pointA.y,
+      },
+      waveformSample: sampleAmplifier * someWaveformSample,
+    })
+  )
+}
+
+interface GetWaveformPointApi {
+  basePoint: Point
+  baseAngle: number
+  waveformSample: number
+}
+
+function getWaveformPoint(api: GetWaveformPointApi): Point {
+  const { baseAngle, waveformSample, basePoint } = api
+  const waveformAngle = baseAngle - Math.PI / 2
+  return {
+    x: waveformSample * Math.cos(waveformAngle) + basePoint.x,
+    y: waveformSample * Math.sin(waveformAngle) + basePoint.y,
+  }
 }
 
 interface GetWaveformSamplesApi

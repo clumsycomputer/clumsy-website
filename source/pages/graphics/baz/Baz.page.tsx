@@ -56,10 +56,6 @@ function Baz() {
     someRotatedLoop: loopA,
     sampleAngle: (Math.PI / 3) * 2,
   })
-  const pointC = getRotatedLoopPoint({
-    someRotatedLoop: loopA,
-    sampleAngle: -(Math.PI / 3) * 2,
-  })
   const pointD = getRotatedLoopPoint({
     someRotatedLoop: loopA,
     sampleAngle: Math.PI,
@@ -71,54 +67,6 @@ function Baz() {
   const pointF = getRotatedLoopPoint({
     someRotatedLoop: loopA,
     sampleAngle: -Math.PI / 3,
-  })
-  const pointG: Point = {
-    x: 50,
-    y: 44.2,
-  }
-  const pointH: Point = {
-    x: 50,
-    y: 24.4,
-  }
-  const pointI: Point = {
-    x: 50,
-    y: 66.3,
-  }
-  const pointJ: Point = {
-    x: 84.75,
-    y: 52.4,
-  }
-  const pointJB: Point = getMirroredPoint({
-    basePoint: pointJ,
-    originPoint: rootCircle.center,
-    mirrorAngle: Math.PI / 2,
-  })
-  const pointK: Point = {
-    x: 91.1,
-    y: 43.7,
-  }
-  const pointKB: Point = getMirroredPoint({
-    basePoint: pointK,
-    originPoint: rootCircle.center,
-    mirrorAngle: Math.PI / 2,
-  })
-  const pointL: Point = {
-    x: 85.1,
-    y: 40.2,
-  }
-  const pointLB: Point = getMirroredPoint({
-    basePoint: pointL,
-    originPoint: rootCircle.center,
-    mirrorAngle: Math.PI / 2,
-  })
-  const pointM: Point = {
-    x: 83.7,
-    y: 48.9,
-  }
-  const pointMB: Point = getMirroredPoint({
-    basePoint: pointM,
-    originPoint: rootCircle.center,
-    mirrorAngle: Math.PI / 2,
   })
   const waveformPointsA = getWaveformPointsAlongLine({
     baseLine: [pointA, pointB],
@@ -186,164 +134,22 @@ function Baz() {
       viewBox={'-10 -10 120 120'}
     >
       <rect x={-10} y={-10} width={120} height={120} fill={'lightgrey'} />
-      {/* <polyline
-        fill={'none'}
+      <polygon
+        fill={'pink'}
         stroke={'black'}
-        strokeWidth={0.4}
-        points={waveformPointsA
+        strokeWidth={1}
+        strokeLinejoin={'round'}
+        points={[
+          ...waveformPointsF.reverse(),
+          ...waveformPointsB.reverse(),
+          ...waveformPointsA,
+          ...waveformPointsE,
+          ...waveformPointsD.reverse(),
+          ...waveformPointsC,
+        ]
           .map((somePoint) => `${somePoint.x},${somePoint.y}`)
           .join(' ')}
       />
-      <polyline
-        fill={'none'}
-        stroke={'black'}
-        strokeWidth={0.4}
-        points={waveformPointsB
-          .map((somePoint) => `${somePoint.x},${somePoint.y}`)
-          .join(' ')}
-      />
-      <polyline
-        fill={'none'}
-        stroke={'black'}
-        strokeWidth={0.4}
-        points={waveformPointsC
-          .map((somePoint) => `${somePoint.x},${somePoint.y}`)
-          .join(' ')}
-      />
-      <polyline
-        fill={'none'}
-        stroke={'black'}
-        strokeWidth={0.4}
-        points={waveformPointsD
-          .map((somePoint) => `${somePoint.x},${somePoint.y}`)
-          .join(' ')}
-      />
-      <polyline
-        fill={'none'}
-        stroke={'black'}
-        strokeWidth={0.4}
-        points={waveformPointsE
-          .map((somePoint) => `${somePoint.x},${somePoint.y}`)
-          .join(' ')}
-      />
-      <polyline
-        fill={'none'}
-        stroke={'black'}
-        strokeWidth={0.4}
-        points={waveformPointsF
-          .map((somePoint) => `${somePoint.x},${somePoint.y}`)
-          .join(' ')}
-      /> */}
-      <Point
-        strokeColor={'black'}
-        strokeWidth={0.2}
-        pointRadius={0.25}
-        centerPoint={pointA}
-      />
-      <Point
-        strokeColor={'black'}
-        strokeWidth={0.2}
-        pointRadius={0.25}
-        centerPoint={pointB}
-      />
-      <Point
-        strokeColor={'black'}
-        strokeWidth={0.2}
-        pointRadius={0.25}
-        centerPoint={pointC}
-      />
-      <Point
-        strokeColor={'black'}
-        strokeWidth={0.2}
-        pointRadius={0.25}
-        centerPoint={pointD}
-      />
-      <Point
-        strokeColor={'black'}
-        strokeWidth={0.2}
-        pointRadius={0.25}
-        centerPoint={pointE}
-      />
-      <Point
-        strokeColor={'black'}
-        strokeWidth={0.2}
-        pointRadius={0.25}
-        centerPoint={pointF}
-      />
-      <Point
-        strokeColor={'black'}
-        strokeWidth={0.2}
-        pointRadius={0.25}
-        centerPoint={pointG}
-      />
-      <Point
-        strokeColor={'black'}
-        strokeWidth={0.2}
-        pointRadius={0.25}
-        centerPoint={pointH}
-      />
-      <Point
-        strokeColor={'black'}
-        strokeWidth={0.2}
-        pointRadius={0.25}
-        centerPoint={pointI}
-      />
-      <Point
-        strokeColor={'black'}
-        strokeWidth={0.2}
-        pointRadius={0.25}
-        centerPoint={pointJ}
-      />
-      <Point
-        strokeColor={'black'}
-        strokeWidth={0.2}
-        pointRadius={0.25}
-        centerPoint={pointJB}
-      />
-      <Point
-        strokeColor={'black'}
-        strokeWidth={0.2}
-        pointRadius={0.25}
-        centerPoint={pointK}
-      />
-      <Point
-        strokeColor={'black'}
-        strokeWidth={0.2}
-        pointRadius={0.25}
-        centerPoint={pointKB}
-      />
-      <Point
-        strokeColor={'black'}
-        strokeWidth={0.2}
-        pointRadius={0.25}
-        centerPoint={pointL}
-      />
-      <Point
-        strokeColor={'black'}
-        strokeWidth={0.2}
-        pointRadius={0.25}
-        centerPoint={pointLB}
-      />
-      <Point
-        strokeColor={'black'}
-        strokeWidth={0.2}
-        pointRadius={0.25}
-        centerPoint={pointM}
-      />
-      <Point
-        strokeColor={'black'}
-        strokeWidth={0.2}
-        pointRadius={0.25}
-        centerPoint={pointMB}
-      />
-      {/* <Polygon
-        strokeColor={'black'}
-        strokeWidth={0.4}
-        polygonPoints={getRotatedLoopPoints({
-          sampleCount: 256,
-          someRotatedLoop: loopA,
-        })}
-      /> */}
     </svg>
   )
 }

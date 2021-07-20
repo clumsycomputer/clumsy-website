@@ -2,7 +2,10 @@ import React, { SVGProps } from 'react'
 import {
   Circle,
   getOscillatedRotatedLoopPoints,
+  getRotatedLoopChildCircle,
+  getRotatedLoopPoint,
   getRotatedLoopPoints,
+  getTracePoint,
   Loop,
   OscillatedRotatedLoop,
   Point,
@@ -27,37 +30,6 @@ export default {
   pdfFileName: 'baz',
 }
 
-// const PaletteB = {
-//   primary: {
-//     main: '#f7752f',
-//   },
-//   complementary: {
-//     main: '#2fb1f7',
-//   },
-//   analogousA: {
-//     main: '#f72f4d',
-//   },
-//   analogousB: {
-//     main: '#f7d92f',
-//   },
-//   triadicA: {
-//     main: '#b1f72f',
-//   },
-//   triadicB: {
-//     main: '#2ff775',
-//   },
-// }
-
-// const colorsA = [
-//   PaletteB.primary.main,
-//   PaletteB.analogousB.main,
-//   PaletteB.analogousA.main,
-//   PaletteB.complementary.main,
-//   PaletteB.analogousB.main,
-//   PaletteB.analogousA.main,
-//   PaletteB.complementary.main,
-// ]
-
 function Baz() {
   const rootCircle: Circle = {
     radius: 50,
@@ -66,29 +38,19 @@ function Baz() {
       y: 50,
     },
   }
-  const originPointA = rootCircle.center
-  const mirrorAngleA = Math.PI / 2
   const loopA: RotatedLoop = {
     baseCircle: {
-      center: {
-        x: 33,
-        y: 33,
-      },
       radius: 10,
+      center: { x: 23, y: 23 },
     },
     childCircle: {
-      relativeRadius: 7 / 12,
-      relativeDepth: 1,
-      phaseAngle: Math.PI / 2 / 3,
+      relativeRadius: 3 / 12,
+      relativeDepth: 11 / 12,
+      phaseAngle: Math.PI / 7,
     },
     rotationAnchor: 'base',
-    rotationAngle: -Math.PI / 5,
+    rotationAngle: Math.PI / 7,
   }
-  const loopB = getMirroredRotatedLoop({
-    baseLoop: loopA,
-    originPoint: originPointA,
-    mirrorAngle: mirrorAngleA,
-  })
   return (
     <svg
       style={{
@@ -114,7 +76,11 @@ function Baz() {
         strokeWidth={0.4}
         polygonPoints={getRotatedLoopPoints({
           sampleCount: 256,
-          someRotatedLoop: loopB,
+          someRotatedLoop: getMirroredRotatedLoop({
+            baseLoop: loopA,
+            originPoint: rootCircle.center,
+            mirrorAngle: Math.PI / 12,
+          }),
         })}
       />
     </svg>
@@ -265,8 +231,8 @@ interface GetMirroredPointApi {
 function getMirroredPoint(api: GetMirroredPointApi): Point {
   const { basePoint, originPoint, mirrorAngle } = api
   const baseAngle = Math.atan2(
-    basePoint.x - originPoint.x,
-    basePoint.y - originPoint.y
+    basePoint.y - originPoint.y,
+    basePoint.x - originPoint.x
   )
   const deltaAngle = baseAngle - mirrorAngle
   const deltaRadius = Math.sqrt(
@@ -277,4 +243,90 @@ function getMirroredPoint(api: GetMirroredPointApi): Point {
     x: deltaRadius * Math.cos(mirrorAngle - deltaAngle) + originPoint.x,
     y: deltaRadius * Math.sin(mirrorAngle - deltaAngle) + originPoint.y,
   }
+}
+
+interface GetWaveformPointsAlongLine {
+  baseLine: [Point, Point]
+  waveformSamples: number[]
+  sampleAmplifier: number
+}
+
+function getWaveformPointsAlongLine(
+  api: GetWaveformPointsAlongLine
+): Array<Point> {
+  const { waveformSamples, baseLine, sampleAmplifier } = api
+  const [pointA, pointB] = baseLine
+  const waveformSampleCount = waveformSamples.length
+  return waveformSamples.map((someWaveformSample, sampleIndex) => {
+    const baselineDeltaY = pointB.y - pointA.y
+    const baselineDeltaX = pointB.x - pointA.x
+    const stepResolution = waveformSampleCount - 1
+    const stepY = baselineDeltaY / stepResolution
+    const stepX = baselineDeltaX / stepResolution
+    const baseY = stepY * sampleIndex + pointA.y
+    const baseX = stepX * sampleIndex + pointA.x
+    const baseAngle = Math.atan2(baselineDeltaY, baselineDeltaX)
+    const waveformAngle = baseAngle - Math.PI / 2
+    return {
+      x: sampleAmplifier * someWaveformSample * Math.cos(waveformAngle) + baseX,
+      y: sampleAmplifier * someWaveformSample * Math.sin(waveformAngle) + baseY,
+    }
+  })
+}
+
+interface GetWaveformSamplesApi
+  extends Pick<GetWaveformSampleApi, 'someWaveform'> {
+  sampleCount: number
+}
+
+function getWaveformSamples(api: GetWaveformSamplesApi): number[] {
+  const { sampleCount, someWaveform } = api
+  return new Array(sampleCount).fill(undefined).map((_, sampleIndex) =>
+    getWaveformSample({
+      someWaveform,
+      sampleAngle: ((2 * Math.PI) / (sampleCount - 1)) * sampleIndex,
+    })
+  )
+}
+
+interface GetWaveformSampleApi {
+  someWaveform: Waveform
+  sampleAngle: number
+}
+
+interface Waveform
+  extends Pick<RotatedLoop, 'rotationAngle'>,
+    Pick<
+      RotatedLoop['childCircle'],
+      'relativeRadius' | 'relativeDepth' | 'phaseAngle'
+    > {}
+
+function getWaveformSample(api: GetWaveformSampleApi): number {
+  const { someWaveform, sampleAngle } = api
+  const waveformLoop: RotatedLoop = {
+    baseCircle: {
+      radius: 1,
+      center: { x: 0, y: 0 },
+    },
+    childCircle: {
+      relativeRadius: someWaveform.relativeRadius,
+      relativeDepth: someWaveform.relativeDepth,
+      phaseAngle: someWaveform.phaseAngle,
+    },
+    rotationAnchor: 'base',
+    rotationAngle: someWaveform.rotationAngle,
+  }
+  const waveformChildCircle = getRotatedLoopChildCircle({
+    someRotatedLoop: waveformLoop,
+  })
+  return (
+    getTracePoint({
+      traceAngle: sampleAngle,
+      somePoints: getRotatedLoopPoints({
+        sampleCount: 256,
+        someRotatedLoop: waveformLoop,
+      }),
+      originPoint: waveformChildCircle.center,
+    }).y - waveformChildCircle.center.y
+  )
 }

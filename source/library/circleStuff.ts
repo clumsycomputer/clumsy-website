@@ -1,4 +1,5 @@
 import { checkIntersection } from 'line-intersect'
+import { getUpdatedData } from './getUpdatedData'
 export interface Point {
   x: number
   y: number
@@ -25,6 +26,53 @@ export interface RotatedLoop extends Loop {
 
 export interface OscillatedRotatedLoop extends RotatedLoop {
   getRelativeOscillation: (sampleAngle: number) => number
+}
+
+export interface GetMirroredRotatedLoopApi {
+  baseLoop: RotatedLoop
+  originPoint: Point
+  mirrorAngle: number
+}
+
+export function getMirroredRotatedLoop(api: GetMirroredRotatedLoopApi) {
+  const { baseLoop, originPoint, mirrorAngle } = api
+  return getUpdatedData({
+    baseData: baseLoop,
+    dataUpdates: {
+      'baseCircle.center': (currentCenter: Point) =>
+        getMirroredPoint({
+          originPoint,
+          mirrorAngle,
+          basePoint: currentCenter,
+        }),
+      'childCircle.phaseAngle': (currentAngle: number) => -currentAngle,
+      rotationAngle: (currentAngle: number) =>
+        mirrorAngle - (currentAngle - mirrorAngle),
+    },
+  })
+}
+
+export interface GetMirroredPointApi {
+  basePoint: Point
+  originPoint: Point
+  mirrorAngle: number
+}
+
+export function getMirroredPoint(api: GetMirroredPointApi): Point {
+  const { basePoint, originPoint, mirrorAngle } = api
+  const baseAngle = Math.atan2(
+    basePoint.y - originPoint.y,
+    basePoint.x - originPoint.x
+  )
+  const deltaAngle = baseAngle - mirrorAngle
+  const deltaRadius = Math.sqrt(
+    Math.pow(basePoint.x - originPoint.x, 2) +
+      Math.pow(basePoint.y - originPoint.y, 2)
+  )
+  return {
+    x: deltaRadius * Math.cos(mirrorAngle - deltaAngle) + originPoint.x,
+    y: deltaRadius * Math.sin(mirrorAngle - deltaAngle) + originPoint.y,
+  }
 }
 
 export interface GetOscillatedRotatedLoopPointsApi {

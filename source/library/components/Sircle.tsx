@@ -1,13 +1,13 @@
 import React, { SVGProps } from 'react'
 import { Circle } from '../circleStuff'
 
-export interface CircleProps {
+export interface SircleProps {
   strokeColor: NonNullable<SVGProps<SVGCircleElement>['stroke']>
   strokeWidth: NonNullable<SVGProps<SVGCircleElement>['strokeWidth']>
   someCircle: Circle
 }
 
-export function Circle(props: CircleProps) {
+export function Sircle(props: SircleProps) {
   const { strokeColor, strokeWidth, someCircle } = props
   return (
     <circle

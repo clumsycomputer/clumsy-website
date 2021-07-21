@@ -2,8 +2,10 @@ import React from 'react'
 import {
   Circle,
   getMirroredRotatedLoop,
+  getRotatedLoopPoint,
   getRotatedLoopPoints,
   getTracePoint,
+  Point,
   RotatedLoop,
 } from '../../../library/circleStuff'
 import { Polygon } from '../../../library/components/Polygon'
@@ -30,20 +32,20 @@ function Qux() {
   const rootLoop: RotatedLoop = {
     baseCircle: rootCircle,
     childCircle: {
-      relativeRadius: 1,
+      relativeRadius: 12 / 13,
       relativeDepth: 1,
       phaseAngle: 0,
     },
     rotationAnchor: 'base',
     rotationAngle: -Math.PI / 2,
   }
-  const basePolyCenters = mapRhythmSequence<
+  const coreLoops = mapRhythmSequence<
     Array<{
       rotatedLoop: RotatedLoop
     }>
   >({
     baseRhythm: getNaturalCompositeRhythm({
-      rhythmResolution: 12,
+      rhythmResolution: 11,
       rhythmParts: [
         { rhythmDensity: 7, rhythmPhase: 1 },
         { rhythmDensity: 4, rhythmPhase: 0 },
@@ -70,12 +72,12 @@ function Qux() {
       })
       return mapRhythmSequence({
         baseRhythm: getNaturalCompositeRhythm({
-          rhythmResolution: 12,
+          rhythmResolution: 13,
           rhythmParts: [
             { rhythmDensity: 7, rhythmPhase: 1 },
             { rhythmDensity: 3, rhythmPhase: 1 },
           ],
-          rhythmPhase: 0, // 3
+          rhythmPhase: 2, // 3
         }),
         getCellResult: ({
           rhythmResolution,
@@ -87,44 +89,88 @@ function Qux() {
           const lineLength = Math.sqrt(
             Math.pow(pointB.x - pointA.x, 2) + Math.pow(pointB.y - pointA.y, 2)
           )
+          // const cellRadius =
+          //   lineLength - (lineLength / rhythmResolution) * rhythmIndex
           const cellRadius = (lineLength / rhythmResolution) * rhythmIndex
           const newBaseCircleCenter = {
             x: cellRadius * Math.cos(lineAngle) + pointA.x,
             y: cellRadius * Math.sin(lineAngle) + pointA.y,
           }
+          const distanceFromRootCenter = Math.sqrt(
+            Math.pow(newBaseCircleCenter.x - rootCircle.center.x, 2) +
+              Math.pow(newBaseCircleCenter.y - rootCircle.center.y, 2)
+          )
           const relativeAngleToCenter = Math.atan2(
             newBaseCircleCenter.y - rootCircle.center.y,
             newBaseCircleCenter.x - rootCircle.center.x
           )
           const openRhythmRatio =
             (rhythmResolution - rhythmDensity) / rhythmResolution
-          const ratioStep = openRhythmRatio / rhythmDensity
+          const nestRatioStep = openRhythmRatio / rhythmDensity
+          const rhythmRatioStep = openRhythmRatio / rhythmResolution
           return {
             rotatedLoop: {
               baseCircle: {
-                radius: 3,
+                radius: 1.25 * Math.log(distanceFromRootCenter),
+                // radius: 3,
                 center: newBaseCircleCenter,
               },
               childCircle: {
-                relativeRadius: 7 / 12 + ratioStep * nestIndex * (4 / 12),
-                relativeDepth: 1 - ratioStep * nestIndex * (4 / 12),
+                relativeRadius:
+                  7 / 12 + rhythmRatioStep * rhythmIndex * (5 / 12),
+                relativeDepth: 1 - nestRatioStep * nestIndex * (4 / 12),
                 phaseAngle: relativeAngleToCenter,
               },
               rotationAnchor: 'base',
-              rotationAngle: relativeAngleToCenter * Math.PI + Math.PI / 2,
+              rotationAngle:
+                (relativeAngleToCenter / 2) * Math.PI * Math.PI + Math.PI / 2,
             },
           }
         },
       })
     },
   }).flat()
-  // const rootWave = getCommonalityWave({
-  //   baseRhythm: getNaturalCompositeRhythm({
-  //     rhythmResolution: 12,
-  //     rhythmParts: [{ rhythmDensity: 7, rhythmPhase: 0 }],
-  //     rhythmPhase: 0,
-  //   }),
-  // })
+  const baseLoops = [
+    ...coreLoops,
+    ...coreLoops.map((somePolygonStruff) => ({
+      ...somePolygonStruff,
+      rotatedLoop: getMirroredRotatedLoop({
+        mirrorAngle: Math.PI / 2,
+        originPoint: rootCircle.center,
+        baseLoop: somePolygonStruff.rotatedLoop,
+      }),
+    })),
+  ]
+  const fooLoops = baseLoops.map(({ rotatedLoop }) => rotatedLoop)
+  const conflictingLoopGroups = fooLoops.reduce<Array<Array<RotatedLoop>>>(
+    (result, someLoop) => {
+      if (
+        result
+          .flat()
+          .findIndex(
+            (someConflictingLoop) => someConflictingLoop === someLoop
+          ) !== -1
+      )
+        return result
+      const currentConflictingLoops = getConflictingRotatedLoops({
+        currentLoop: someLoop,
+        remainingLoops: fooLoops.filter(
+          (someFooLoop) => someFooLoop !== someLoop
+        ),
+        conflictingLoops: [someLoop],
+      })
+      return currentConflictingLoops.length > 1
+        ? [...result, currentConflictingLoops]
+        : result
+    },
+    []
+  )
+  const singularLoops = baseLoops.filter(
+    ({ rotatedLoop }) =>
+      conflictingLoopGroups
+        .flat()
+        .findIndex((someLoop) => someLoop === rotatedLoop) === -1
+  )
   return (
     <svg
       style={{
@@ -145,7 +191,17 @@ function Qux() {
           someRotatedLoop: rootLoop,
         })}
       /> */}
-      {basePolyCenters.map(({ rotatedLoop }) => (
+      {conflictingLoopGroups.map((someLoopGroup) => (
+        <Polygon
+          strokeColor={'black'}
+          strokeWidth={0.2}
+          somePoints={getCompositeRotatedLoopPoints({
+            sampleCount: 256,
+            someRotatedLoops: someLoopGroup,
+          })}
+        />
+      ))}
+      {singularLoops.map(({ rotatedLoop }) => (
         <Polygon
           strokeColor={'black'}
           strokeWidth={0.2}
@@ -155,25 +211,6 @@ function Qux() {
           })}
         />
       ))}
-      {basePolyCenters
-        .map((somePolygonStruff) => ({
-          ...somePolygonStruff,
-          rotatedLoop: getMirroredRotatedLoop({
-            mirrorAngle: Math.PI / 2,
-            originPoint: rootCircle.center,
-            baseLoop: somePolygonStruff.rotatedLoop,
-          }),
-        }))
-        .map(({ rotatedLoop }) => (
-          <Polygon
-            strokeColor={'black'}
-            strokeWidth={0.2}
-            somePoints={getRotatedLoopPoints({
-              sampleCount: 256,
-              someRotatedLoop: rotatedLoop,
-            })}
-          />
-        ))}
     </svg>
   )
 }
@@ -206,4 +243,107 @@ function mapRhythmSequence<SomePropertyResult extends any>(
       nestIndex,
     })
   )
+}
+
+interface GetCompositeRotatedLoopPointsApi {
+  someRotatedLoops: Array<RotatedLoop>
+  sampleCount: number
+}
+
+function getCompositeRotatedLoopPoints(api: GetCompositeRotatedLoopPointsApi) {
+  const { sampleCount, someRotatedLoops } = api
+  return new Array(sampleCount).fill(undefined).map<Point>((_, sampleIndex) => {
+    const currentSampleAngle = ((2 * Math.PI) / sampleCount) * sampleIndex
+    const sampleSumPoint = someRotatedLoops.reduce<Point>(
+      (result, someLoop) => {
+        const newSamplePoint = getTracePoint({
+          traceAngle: currentSampleAngle,
+          somePoints: getRotatedLoopPoints({
+            sampleCount: 256,
+            someRotatedLoop: someLoop,
+          }),
+          originPoint: someLoop.baseCircle.center,
+        })
+        return {
+          x: newSamplePoint.x + result.x,
+          y: newSamplePoint.y + result.y,
+        }
+      },
+      { x: 0, y: 0 }
+    )
+    return {
+      x: sampleSumPoint.x / someRotatedLoops.length,
+      y: sampleSumPoint.y / someRotatedLoops.length,
+    }
+  })
+}
+
+interface GetConflictingRotatedLoopsApi {
+  currentLoop: RotatedLoop
+  remainingLoops: Array<RotatedLoop>
+  conflictingLoops: Array<RotatedLoop>
+}
+
+function getConflictingRotatedLoops(
+  api: GetConflictingRotatedLoopsApi
+): Array<RotatedLoop> {
+  const { currentLoop, remainingLoops, conflictingLoops } = api
+  const [loopUnderInspection, ...nextRemainingLoops] = remainingLoops
+  if (loopUnderInspection) {
+    const rotatedLoopsCollide = getRotatedLoopsCollide({
+      loopA: currentLoop,
+      loopB: loopUnderInspection,
+    })
+    if (rotatedLoopsCollide) {
+      const activeConflictChain = getConflictingRotatedLoops({
+        currentLoop: loopUnderInspection,
+        remainingLoops: nextRemainingLoops,
+        conflictingLoops: [...conflictingLoops, loopUnderInspection],
+      })
+      return getConflictingRotatedLoops({
+        currentLoop,
+        remainingLoops: nextRemainingLoops.filter(
+          (someLoop) =>
+            activeConflictChain.findIndex(
+              (someConflictLoop) => someConflictLoop === someLoop
+            ) === -1
+        ),
+        conflictingLoops: [...conflictingLoops, ...activeConflictChain],
+      })
+    } else {
+      return getConflictingRotatedLoops({
+        currentLoop,
+        remainingLoops: nextRemainingLoops,
+        conflictingLoops: conflictingLoops,
+      })
+    }
+  } else {
+    return conflictingLoops
+  }
+}
+
+interface GetRotatedLoopsCollideApi {
+  loopA: RotatedLoop
+  loopB: RotatedLoop
+}
+
+function getRotatedLoopsCollide(api: GetRotatedLoopsCollideApi): boolean {
+  const { loopA, loopB } = api
+  const distanceBetweenBaseCircleCenters = getDistanceBetweenPoints({
+    pointA: loopA.baseCircle.center,
+    pointB: loopB.baseCircle.center,
+  })
+  return loopA.baseCircle.radius >= distanceBetweenBaseCircleCenters
+}
+
+interface GetDistanceBetweenPointsApi {
+  pointA: Point
+  pointB: Point
+}
+
+function getDistanceBetweenPoints(api: GetDistanceBetweenPointsApi): number {
+  const { pointA, pointB } = api
+  const deltaX = pointB.x - pointA.x
+  const deltaY = pointB.y - pointA.y
+  return Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2))
 }

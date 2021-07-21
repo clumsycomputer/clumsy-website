@@ -75,9 +75,9 @@ function Qux() {
           rhythmResolution: 13,
           rhythmParts: [
             { rhythmDensity: 7, rhythmPhase: 1 },
-            { rhythmDensity: 3, rhythmPhase: 1 },
+            { rhythmDensity: 3, rhythmPhase: 2 },
           ],
-          rhythmPhase: 2, // 3
+          rhythmPhase: 0, // 3
         }),
         getCellResult: ({
           rhythmResolution,
@@ -183,34 +183,36 @@ function Qux() {
       viewBox={'-10 -10 120 120'}
     >
       <rect x={-10} y={-10} width={120} height={120} fill={'lightgrey'} />
-      {/* <Polygon
-        strokeColor={'black'}
-        strokeWidth={0.2}
-        somePoints={getRotatedLoopPoints({
-          sampleCount: 256,
-          someRotatedLoop: rootLoop,
-        })}
-      /> */}
-      {conflictingLoopGroups.map((someLoopGroup) => (
-        <Polygon
-          strokeColor={'black'}
-          strokeWidth={0.2}
-          somePoints={getCompositeRotatedLoopPoints({
-            sampleCount: 256,
-            someRotatedLoops: someLoopGroup,
-          })}
-        />
-      ))}
-      {singularLoops.map(({ rotatedLoop }) => (
-        <Polygon
+      <g transform={'translate(0,5)'}>
+        {/* <Polygon
           strokeColor={'black'}
           strokeWidth={0.2}
           somePoints={getRotatedLoopPoints({
             sampleCount: 256,
-            someRotatedLoop: rotatedLoop,
+            someRotatedLoop: rootLoop,
           })}
-        />
-      ))}
+        /> */}
+        {conflictingLoopGroups.map((someLoopGroup) => (
+          <Polygon
+            strokeColor={'black'}
+            strokeWidth={0.2}
+            somePoints={getCompositeRotatedLoopPoints({
+              sampleCount: 256,
+              someRotatedLoops: someLoopGroup,
+            })}
+          />
+        ))}
+        {singularLoops.map(({ rotatedLoop }) => (
+          <Polygon
+            strokeColor={'black'}
+            strokeWidth={0.2}
+            somePoints={getRotatedLoopPoints({
+              sampleCount: 256,
+              someRotatedLoop: rotatedLoop,
+            })}
+          />
+        ))}
+      </g>
     </svg>
   )
 }

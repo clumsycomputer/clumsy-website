@@ -1,7 +1,9 @@
 import React from 'react'
 import {
   Circle,
+  getMirroredPoint,
   getMirroredRotatedLoop,
+  getRotatedLoopChildCircle,
   getRotatedLoopPoint,
   getRotatedLoopPoints,
   getTracePoint,
@@ -9,6 +11,7 @@ import {
   RotatedLoop,
 } from '../../../library/circleStuff'
 import { Polygon } from '../../../library/components/Polygon'
+import { Sircle } from '../../../library/components/Sircle'
 import {
   DiscreteRhythm,
   getElementIndices,
@@ -112,7 +115,6 @@ function Qux() {
             rotatedLoop: {
               baseCircle: {
                 radius: 1.25 * Math.log(distanceFromRootCenter),
-                // radius: 3,
                 center: newBaseCircleCenter,
               },
               childCircle: {
@@ -130,46 +132,23 @@ function Qux() {
       })
     },
   }).flat()
+
   const baseLoops = [
     ...coreLoops,
-    ...coreLoops.map((somePolygonStruff) => ({
-      ...somePolygonStruff,
+    ...coreLoops.map(({ rotatedLoop }) => ({
       rotatedLoop: getMirroredRotatedLoop({
         mirrorAngle: Math.PI / 2,
         originPoint: rootCircle.center,
-        baseLoop: somePolygonStruff.rotatedLoop,
+        baseLoop: rotatedLoop,
       }),
     })),
   ]
-  const fooLoops = baseLoops.map(({ rotatedLoop }) => rotatedLoop)
-  const conflictingLoopGroups = fooLoops.reduce<Array<Array<RotatedLoop>>>(
-    (result, someLoop) => {
-      if (
-        result
-          .flat()
-          .findIndex(
-            (someConflictingLoop) => someConflictingLoop === someLoop
-          ) !== -1
-      )
-        return result
-      const currentConflictingLoops = getConflictingRotatedLoops({
-        currentLoop: someLoop,
-        remainingLoops: fooLoops.filter(
-          (someFooLoop) => someFooLoop !== someLoop
-        ),
-        conflictingLoops: [someLoop],
-      })
-      return currentConflictingLoops.length > 1
-        ? [...result, currentConflictingLoops]
-        : result
-    },
-    []
-  )
+  const loopGroups = getLoopGroups({
+    someLoops: baseLoops.map(({ rotatedLoop }) => rotatedLoop),
+  })
   const singularLoops = baseLoops.filter(
     ({ rotatedLoop }) =>
-      conflictingLoopGroups
-        .flat()
-        .findIndex((someLoop) => someLoop === rotatedLoop) === -1
+      loopGroups.flat().findIndex((someLoop) => someLoop === rotatedLoop) === -1
   )
   return (
     <svg
@@ -192,13 +171,38 @@ function Qux() {
             someRotatedLoop: rootLoop,
           })}
         /> */}
-        {conflictingLoopGroups.map((someLoopGroup) => (
+        {/* {baseLoops.map(({ rotatedLoop }, fooIndex) => (
+          <Polygon
+            strokeColor={'red'}
+            strokeWidth={0.1}
+            somePoints={getRotatedLoopPoints({
+              sampleCount: 256,
+              someRotatedLoop: rotatedLoop,
+            })}
+          />
+        ))} */}
+        {/* {baseLoops.map(({ rotatedLoop }) => (
+          <Sircle
+            strokeColor={'red'}
+            strokeWidth={0.1}
+            someCircle={rotatedLoop.baseCircle}
+          />
+        ))} */}
+        {/* <Polygon
+          strokeColor={'black'}
+          strokeWidth={0.2}
+          somePoints={getCompositeLoopPoints({
+            sampleCount: 256,
+            baseLoops: baseLoops.map(({ rotatedLoop }) => rotatedLoop),
+          })}
+        /> */}
+        {loopGroups.map((someLoopGroup) => (
           <Polygon
             strokeColor={'black'}
             strokeWidth={0.2}
-            somePoints={getCompositeRotatedLoopPoints({
+            somePoints={getCompositeLoopPoints({
               sampleCount: 256,
-              someRotatedLoops: someLoopGroup,
+              baseLoops: someLoopGroup,
             })}
           />
         ))}
@@ -247,40 +251,91 @@ function mapRhythmSequence<SomePropertyResult extends any>(
   )
 }
 
-interface GetCompositeRotatedLoopPointsApi {
-  someRotatedLoops: Array<RotatedLoop>
+interface GetCompositeLoopPointsApi {
   sampleCount: number
+  baseLoops: Array<RotatedLoop>
 }
 
-function getCompositeRotatedLoopPoints(api: GetCompositeRotatedLoopPointsApi) {
-  const { sampleCount, someRotatedLoops } = api
+function getCompositeLoopPoints(api: GetCompositeLoopPointsApi): Array<Point> {
+  const { baseLoops, sampleCount } = api
+  const childCircles = baseLoops.map((someLoop) =>
+    getRotatedLoopChildCircle({
+      someRotatedLoop: someLoop,
+    })
+  )
+  const compositeAccumulatedCenter = childCircles.reduce<Point>(
+    (result, someChildCircle) => {
+      return {
+        x: someChildCircle.center.x + result.x,
+        y: someChildCircle.center.y + result.y,
+      }
+    },
+    { x: 0, y: 0 }
+  )
+  const compositeCenter: Point = {
+    x: compositeAccumulatedCenter.x / baseLoops.length,
+    y: compositeAccumulatedCenter.y / baseLoops.length,
+  }
   return new Array(sampleCount).fill(undefined).map<Point>((_, sampleIndex) => {
-    const currentSampleAngle = ((2 * Math.PI) / sampleCount) * sampleIndex
-    const sampleSumPoint = someRotatedLoops.reduce<Point>(
-      (result, someLoop) => {
-        const newSamplePoint = getTracePoint({
-          traceAngle: currentSampleAngle,
+    const [accumulatedVectorX, accumulatedVectorY] = baseLoops.reduce<
+      [x: number, y: number]
+    >(
+      ([resultX, resultY], someLoop, loopIndex) => {
+        const loopChildCenter = childCircles[loopIndex]!.center
+        const loopPoint = getTracePoint({
+          originPoint: loopChildCenter,
           somePoints: getRotatedLoopPoints({
-            sampleCount: 256,
+            sampleCount,
             someRotatedLoop: someLoop,
           }),
-          originPoint: someLoop.baseCircle.center,
+          traceAngle: ((2 * Math.PI) / sampleCount) * sampleIndex,
         })
-        return {
-          x: newSamplePoint.x + result.x,
-          y: newSamplePoint.y + result.y,
-        }
+        const distanceX = loopPoint.x - loopChildCenter.x
+        const distanceY = loopPoint.y - loopChildCenter.y
+        return [distanceX + resultX, distanceY + resultY]
       },
-      { x: 0, y: 0 }
+      [0, 0]
     )
     return {
-      x: sampleSumPoint.x / someRotatedLoops.length,
-      y: sampleSumPoint.y / someRotatedLoops.length,
+      x: accumulatedVectorX / baseLoops.length + compositeCenter.x,
+      y: accumulatedVectorY / baseLoops.length + compositeCenter.y,
     }
   })
 }
 
+interface GetLoopGroupsApi {
+  someLoops: Array<RotatedLoop>
+}
+
+function getLoopGroups(api: GetLoopGroupsApi) {
+  const { someLoops } = api
+  return someLoops.reduce<Array<Array<RotatedLoop>>>(
+    (result, someLoop, loopIndex) => {
+      const remainingLoops = someLoops.filter(
+        (_, otherLoopIndex) =>
+          otherLoopIndex !== loopIndex &&
+          result.findIndex((someLoopGroup) =>
+            someLoopGroup.find(
+              (someConflictLoop) => someConflictLoop === someLoop
+            )
+          ) === -1
+      )
+      const conflictingLoops = getConflictingRotatedLoops({
+        remainingLoops,
+        rootLoops: remainingLoops,
+        currentLoop: someLoop,
+        conflictingLoops: [],
+      })
+      return conflictingLoops.length > 0
+        ? [...result, [...conflictingLoops, someLoop]]
+        : result
+    },
+    []
+  )
+}
+
 interface GetConflictingRotatedLoopsApi {
+  rootLoops: Array<RotatedLoop>
   currentLoop: RotatedLoop
   remainingLoops: Array<RotatedLoop>
   conflictingLoops: Array<RotatedLoop>
@@ -289,39 +344,42 @@ interface GetConflictingRotatedLoopsApi {
 function getConflictingRotatedLoops(
   api: GetConflictingRotatedLoopsApi
 ): Array<RotatedLoop> {
-  const { currentLoop, remainingLoops, conflictingLoops } = api
+  const { rootLoops, currentLoop, remainingLoops, conflictingLoops } = api
   const [loopUnderInspection, ...nextRemainingLoops] = remainingLoops
-  if (loopUnderInspection) {
-    const rotatedLoopsCollide = getRotatedLoopsCollide({
-      loopA: currentLoop,
-      loopB: loopUnderInspection,
-    })
-    if (rotatedLoopsCollide) {
-      const activeConflictChain = getConflictingRotatedLoops({
-        currentLoop: loopUnderInspection,
-        remainingLoops: nextRemainingLoops,
-        conflictingLoops: [...conflictingLoops, loopUnderInspection],
+  return loopUnderInspection
+    ? getRotatedLoopsCollide({
+        loopA: currentLoop,
+        loopB: loopUnderInspection,
       })
-      return getConflictingRotatedLoops({
-        currentLoop,
-        remainingLoops: nextRemainingLoops.filter(
-          (someLoop) =>
-            activeConflictChain.findIndex(
-              (someConflictLoop) => someConflictLoop === someLoop
-            ) === -1
-        ),
-        conflictingLoops: [...conflictingLoops, ...activeConflictChain],
-      })
-    } else {
-      return getConflictingRotatedLoops({
-        currentLoop,
-        remainingLoops: nextRemainingLoops,
-        conflictingLoops: conflictingLoops,
-      })
-    }
-  } else {
-    return conflictingLoops
-  }
+      ? getConflictingRotatedLoops({
+          rootLoops,
+          currentLoop,
+          remainingLoops: nextRemainingLoops,
+          conflictingLoops: [
+            loopUnderInspection,
+            ...conflictingLoops,
+            ...getConflictingRotatedLoops({
+              rootLoops,
+              currentLoop: loopUnderInspection,
+              remainingLoops: rootLoops.filter(
+                (someLoop) =>
+                  someLoop !== currentLoop &&
+                  someLoop !== loopUnderInspection &&
+                  conflictingLoops.findIndex(
+                    (someConflictLoop) => someConflictLoop === someLoop
+                  ) === -1
+              ),
+              conflictingLoops: [],
+            }),
+          ],
+        })
+      : getConflictingRotatedLoops({
+          rootLoops,
+          currentLoop,
+          conflictingLoops,
+          remainingLoops: nextRemainingLoops,
+        })
+    : conflictingLoops
 }
 
 interface GetRotatedLoopsCollideApi {
@@ -335,7 +393,10 @@ function getRotatedLoopsCollide(api: GetRotatedLoopsCollideApi): boolean {
     pointA: loopA.baseCircle.center,
     pointB: loopB.baseCircle.center,
   })
-  return loopA.baseCircle.radius >= distanceBetweenBaseCircleCenters
+  return (
+    loopA.baseCircle.radius + loopB.baseCircle.radius >=
+    distanceBetweenBaseCircleCenters
+  )
 }
 
 interface GetDistanceBetweenPointsApi {

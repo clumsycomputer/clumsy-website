@@ -26,9 +26,9 @@ function CompositeLoop() {
   const loopA: RotatedLoop = {
     baseCircle: rootCircle,
     childCircle: {
-      relativeRadius: 5 / 13,
+      relativeRadius: 7 / 13,
       relativeDepth: 1,
-      phaseAngle: Math.PI / 3,
+      phaseAngle: Math.PI / 5,
     },
     rotationAnchor: 'base',
     rotationAngle: Math.PI / 2,
@@ -38,10 +38,20 @@ function CompositeLoop() {
     childCircle: {
       relativeRadius: 5 / 13,
       relativeDepth: 1,
-      phaseAngle: -Math.PI / 3,
+      phaseAngle: -Math.PI / 7,
     },
     rotationAnchor: 'base',
-    rotationAngle: Math.PI / 2,
+    rotationAngle: -Math.PI / 4,
+  }
+  const loopC: RotatedLoop = {
+    baseCircle: rootCircle,
+    childCircle: {
+      relativeRadius: 5 / 13,
+      relativeDepth: 1,
+      phaseAngle: -Math.PI / 3.7,
+    },
+    rotationAnchor: 'base',
+    rotationAngle: Math.PI / 1.5,
   }
   return (
     <svg
@@ -55,9 +65,9 @@ function CompositeLoop() {
       viewBox={'-10 -10 120 120'}
     >
       <rect x={-10} y={-10} width={120} height={120} fill={'lightgrey'} />
-      {/* <Polygon
+      <Polygon
         strokeColor={'black'}
-        strokeWidth={0.3}
+        strokeWidth={0.1}
         somePoints={getRotatedLoopPoints({
           sampleCount: 256,
           someRotatedLoop: loopA,
@@ -65,18 +75,26 @@ function CompositeLoop() {
       />
       <Polygon
         strokeColor={'black'}
-        strokeWidth={0.3}
+        strokeWidth={0.1}
         somePoints={getRotatedLoopPoints({
           sampleCount: 256,
           someRotatedLoop: loopB,
         })}
-      /> */}
+      />
       <Polygon
         strokeColor={'black'}
+        strokeWidth={0.1}
+        somePoints={getRotatedLoopPoints({
+          sampleCount: 256,
+          someRotatedLoop: loopC,
+        })}
+      />
+      <Polygon
+        strokeColor={'red'}
         strokeWidth={0.3}
         somePoints={getCompositeLoopPoints({
-          sampleCount: 256,
-          baseLoops: [loopA, loopB],
+          sampleCount: 1028,
+          baseLoops: [loopA, loopB, loopC],
         })}
       />
     </svg>

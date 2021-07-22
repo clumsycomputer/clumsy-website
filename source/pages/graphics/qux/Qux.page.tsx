@@ -150,6 +150,34 @@ function Qux() {
     ({ rotatedLoop }) =>
       loopGroups.flat().findIndex((someLoop) => someLoop === rotatedLoop) === -1
   )
+  const fooLoops: Array<RotatedLoop> = [
+    {
+      baseCircle: {
+        radius: 12,
+        center: { x: 50, y: 50 },
+      },
+      childCircle: {
+        relativeRadius: 1 / 8,
+        relativeDepth: 0,
+        phaseAngle: Math.PI / 2,
+      },
+      rotationAnchor: 'base',
+      rotationAngle: Math.PI / 4,
+    },
+    {
+      baseCircle: {
+        radius: 12,
+        center: { x: 50, y: 50 },
+      },
+      childCircle: {
+        relativeRadius: 5 / 8,
+        relativeDepth: 1,
+        phaseAngle: Math.PI / 2,
+      },
+      rotationAnchor: 'base',
+      rotationAngle: -Math.PI / 4,
+    },
+  ]
   return (
     <svg
       style={{
@@ -163,43 +191,62 @@ function Qux() {
     >
       <rect x={-10} y={-10} width={120} height={120} fill={'lightgrey'} />
       <g transform={'translate(0,5)'}>
-        {/* <Polygon
-          strokeColor={'black'}
-          strokeWidth={0.2}
-          somePoints={getRotatedLoopPoints({
-            sampleCount: 256,
-            someRotatedLoop: rootLoop,
-          })}
-        /> */}
-        {/* {baseLoops.map(({ rotatedLoop }, fooIndex) => (
-          <Polygon
-            strokeColor={'red'}
-            strokeWidth={0.1}
-            somePoints={getRotatedLoopPoints({
-              sampleCount: 256,
-              someRotatedLoop: rotatedLoop,
-            })}
-          />
-        ))} */}
         {/* {baseLoops.map(({ rotatedLoop }) => (
-          <Sircle
-            strokeColor={'red'}
-            strokeWidth={0.1}
-            someCircle={rotatedLoop.baseCircle}
-          />
+          <>
+            <Sircle
+              strokeColor={'white'}
+              strokeWidth={1.25}
+              someCircle={rotatedLoop.baseCircle}
+            />
+            <Polygon
+              strokeColor={'white'}
+              strokeWidth={1.25}
+              somePoints={getRotatedLoopPoints({
+                sampleCount: 256,
+                someRotatedLoop: rotatedLoop,
+              })}
+            />
+          </>
         ))} */}
-        {/* <Polygon
-          strokeColor={'black'}
-          strokeWidth={0.2}
-          somePoints={getCompositeLoopPoints({
-            sampleCount: 256,
-            baseLoops: baseLoops.map(({ rotatedLoop }) => rotatedLoop),
-          })}
-        /> */}
+        {/* {loopGroups.map((someLoopGroup) => {
+          const groupColor = `rgb(${128 + 128 * Math.random()}, ${
+            128 + 128 * Math.random()
+          }, ${128 + 128 * Math.random()})`
+          return someLoopGroup.map((someRotatedLoop) => (
+            <>
+              <Sircle
+                strokeColor={'white'}
+                strokeWidth={1.25}
+                someCircle={someRotatedLoop.baseCircle}
+              />
+              <Polygon
+                strokeColor={'white'}
+                strokeWidth={1.25}
+                somePoints={getRotatedLoopPoints({
+                  sampleCount: 256,
+                  someRotatedLoop: someRotatedLoop,
+                })}
+              />
+              <Sircle
+                strokeColor={groupColor}
+                strokeWidth={1}
+                someCircle={someRotatedLoop.baseCircle}
+              />
+              <Polygon
+                strokeColor={groupColor}
+                strokeWidth={1}
+                somePoints={getRotatedLoopPoints({
+                  sampleCount: 256,
+                  someRotatedLoop: someRotatedLoop,
+                })}
+              />
+            </>
+          ))
+        })} */}
         {loopGroups.map((someLoopGroup) => (
           <Polygon
             strokeColor={'black'}
-            strokeWidth={0.2}
+            strokeWidth={0.3}
             somePoints={getCompositeLoopPoints({
               sampleCount: 256,
               baseLoops: someLoopGroup,
@@ -209,13 +256,27 @@ function Qux() {
         {singularLoops.map(({ rotatedLoop }) => (
           <Polygon
             strokeColor={'black'}
-            strokeWidth={0.2}
+            strokeWidth={0.3}
             somePoints={getRotatedLoopPoints({
               sampleCount: 256,
               someRotatedLoop: rotatedLoop,
             })}
           />
         ))}
+        <Polygon
+          strokeColor={'black'}
+          strokeWidth={0.3}
+          somePoints={getCompositeLoopPoints({
+            sampleCount: 256,
+            baseLoops: fooLoops,
+          }).map((somePoint) =>
+            getMirroredPoint({
+              basePoint: somePoint,
+              originPoint: rootCircle.center,
+              mirrorAngle: Math.PI / 8 + Math.PI / 4,
+            })
+          )}
+        />
       </g>
     </svg>
   )
@@ -363,11 +424,7 @@ function getConflictingRotatedLoops(
               currentLoop: loopUnderInspection,
               remainingLoops: rootLoops.filter(
                 (someLoop) =>
-                  someLoop !== currentLoop &&
-                  someLoop !== loopUnderInspection &&
-                  conflictingLoops.findIndex(
-                    (someConflictLoop) => someConflictLoop === someLoop
-                  ) === -1
+                  someLoop !== currentLoop && someLoop !== loopUnderInspection
               ),
               conflictingLoops: [],
             }),

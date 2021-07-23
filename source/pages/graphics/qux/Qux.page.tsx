@@ -87,7 +87,8 @@ function Qux() {
       ],
       rhythmPhase: 0,
     }),
-    getCellResult: ({ rhythmResolution, rhythmIndex }) => {
+    getCellResult: ({ rhythmResolution, rhythmIndex, nestIndex }) => {
+      const rootNestIndex = nestIndex
       const angleA = (Math.PI / rhythmResolution) * rhythmIndex - Math.PI / 2
       const pointA = getTracePoint({
         somePoints: getRotatedLoopPoints({
@@ -128,7 +129,10 @@ function Qux() {
           //   lineLength - (lineLength / rhythmResolution) * rhythmIndex
           const cellRadius = (lineLength / rhythmResolution) * rhythmIndex
           const newBaseCircleCenter = {
-            x: cellRadius * Math.cos(lineAngle) + pointA.x,
+            x:
+              cellRadius * Math.cos(lineAngle) +
+              pointA.x -
+              (rootNestIndex === 2 && nestIndex === 0 ? 5 : 0),
             y: cellRadius * Math.sin(lineAngle) + pointA.y,
           }
           const distanceFromRootCenter = Math.sqrt(
@@ -143,10 +147,12 @@ function Qux() {
             (rhythmResolution - rhythmDensity) / rhythmResolution
           const nestRatioStep = openRhythmRatio / rhythmDensity
           const rhythmRatioStep = openRhythmRatio / rhythmResolution
+          const baseRadiusScalar =
+            rootNestIndex === 2 && nestIndex === 0 ? 1.75 : 1.25
           return {
             rotatedLoop: {
               baseCircle: {
-                radius: 1.25 * Math.log(distanceFromRootCenter),
+                radius: baseRadiusScalar * Math.log(distanceFromRootCenter),
                 center: newBaseCircleCenter,
               },
               childCircle: {
@@ -178,7 +184,7 @@ function Qux() {
     someLoops: baseLoops.map(({ rotatedLoop }) => rotatedLoop),
   }).map((someLoopGroup, groupIndex) =>
     someLoopGroup
-      .map((someLoop, loopIndex) => {
+      .map((someLoop) => {
         return groupIndex === 0 // top
           ? [
               someLoop,
@@ -187,12 +193,14 @@ function Qux() {
                 baseData: someLoop,
                 dataUpdates: {
                   rotationAngle: (fooAngle: number) => -fooAngle / 2,
+                  'baseCircle.radius': () => 9,
                 },
               }),
               getUpdatedData({
                 baseData: someLoop,
                 dataUpdates: {
                   rotationAngle: (fooAngle: number) => fooAngle / 2,
+                  'baseCircle.radius': () => 9,
                 },
               }),
             ]
@@ -205,7 +213,7 @@ function Qux() {
                 dataUpdates: {
                   rotationAngle: (fooAngle: number) => -Math.PI / 3,
                   'childCircle.relativeRadius': (foo: number) => foo / 1.5,
-                  'baseCircle.radius': () => 5.5,
+                  'baseCircle.radius': () => 8,
                   'childCircle.phaseAngle': (foo: number) => -foo,
                 },
               }),
@@ -214,12 +222,21 @@ function Qux() {
                 dataUpdates: {
                   rotationAngle: (fooAngle: number) => Math.PI / 3,
                   'childCircle.relativeRadius': (foo: number) => foo / 1.5,
-                  'baseCircle.radius': () => 5.5,
+                  'baseCircle.radius': () => 8,
                   'childCircle.phaseAngle': (foo: number) => -foo,
                 },
               }),
             ]
-          : [someLoop]
+          : [
+              // mid
+              someLoop,
+              getUpdatedData({
+                baseData: someLoop,
+                dataUpdates: {
+                  'baseCircle.radius': () => 6,
+                },
+              }),
+            ]
       })
       .flat()
   )
@@ -266,6 +283,19 @@ function Qux() {
     rotationAnchor: 'base',
     rotationAngle: Math.PI / 2 + Math.PI / 23,
   }
+  const centerLoop: RotatedLoop = {
+    baseCircle: {
+      center: { x: 57, y: 46.5 },
+      radius: 8,
+    },
+    childCircle: {
+      relativeRadius: 5 / 11,
+      relativeDepth: 5 / 11,
+      phaseAngle: Math.PI / 2,
+    },
+    rotationAnchor: 'base',
+    rotationAngle: -Math.PI / 2 - Math.PI / 11,
+  }
   const coreDecorationLoops: Array<Array<RotatedLoop>> = [
     [
       rightEyeLoop,
@@ -275,7 +305,7 @@ function Qux() {
           'childCircle.relativeRadius': () => 2.5 / 8,
           rotationAngle: () => Math.PI / 4 + Math.PI,
           'childCircle.phaseAngle': () => -Math.PI / 3,
-          'baseCircle.radius': () => 4,
+          'baseCircle.radius': () => 7,
         },
       }),
     ],
@@ -286,7 +316,7 @@ function Qux() {
         dataUpdates: {
           'childCircle.relativeRadius': () => 3 / 8,
           rotationAngle: () => -Math.PI / 3,
-          'baseCircle.radius': () => 3,
+          'baseCircle.radius': () => 5,
         },
       }),
     ],
@@ -298,6 +328,16 @@ function Qux() {
           'childCircle.relativeRadius': () => 7 / 12,
           rotationAngle: () => 0,
           'baseCircle.radius': () => 6,
+        },
+      }),
+    ],
+    [
+      centerLoop,
+      getUpdatedData({
+        baseData: centerLoop,
+        dataUpdates: {
+          rotationAngle: () => Math.PI / 2 / 1.5,
+          'childCircle.relativeRadius': () => 1 / 4,
         },
       }),
     ],
@@ -329,7 +369,6 @@ function Qux() {
       )
     ),
   ]
-
   return (
     <svg
       style={{

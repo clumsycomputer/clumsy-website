@@ -12,6 +12,7 @@ import {
 } from '../../../library/circleStuff'
 import { Polygon } from '../../../library/components/Polygon'
 import { Sircle } from '../../../library/components/Sircle'
+import { getUpdatedData } from '../../../library/getUpdatedData'
 import {
   DiscreteRhythm,
   getElementIndices,
@@ -191,79 +192,163 @@ function Qux() {
     >
       <rect x={-10} y={-10} width={120} height={120} fill={'lightgrey'} />
       <g transform={'translate(0,5)'}>
-        {/* {baseLoops.map(({ rotatedLoop }) => (
-          <>
-            <Sircle
-              strokeColor={'white'}
-              strokeWidth={1.25}
-              someCircle={rotatedLoop.baseCircle}
-            />
+        {loopGroups.map((someLoopGroup) => {
+          const basePoints = getCompositeLoopPoints({
+            sampleCount: 256,
+            baseLoops: someLoopGroup,
+          })
+          const compositeCenter = getCompositeCenterPoint({
+            baseLoops: someLoopGroup,
+          })
+          return reduceRhythmSequence<{
+            parentPoints: Array<{
+              actualPoint: Point
+              pointCenter: Point
+              parentRadius: number
+            }>
+          }>({
+            baseRhythm: getNaturalCompositeRhythm({
+              rhythmResolution: 24,
+              rhythmParts: [
+                { rhythmDensity: 23, rhythmPhase: 0 },
+                { rhythmDensity: 19, rhythmPhase: 0 },
+                { rhythmDensity: 17, rhythmPhase: 0 },
+                { rhythmDensity: 13, rhythmPhase: 0 },
+                { rhythmDensity: 11, rhythmPhase: 0 },
+                { rhythmDensity: 7, rhythmPhase: 0 },
+                // { rhythmDensity: 5, rhythmPhase: 0 },
+                // { rhythmDensity: 3, rhythmPhase: 2 },
+                // { rhythmDensity: 2, rhythmPhase: 1 },
+              ],
+              rhythmPhase: 0,
+            }),
+            getCellResult: ({
+              rhythmResolution,
+              rhythmIndex,
+              nestIndex,
+              previousCellResults,
+            }) => {
+              const parentCellResult = previousCellResults[nestIndex - 1]
+              // const parentPoints = parentCellResult?.parentPoints
+              return {
+                parentPoints: basePoints.map((someBasePoint, pointIndex) => {
+                  // const parentPointData = parentPoints
+                  //   ? parentPoints[pointIndex]
+                  //   : null
+                  const maxRadius = getDistanceBetweenPoints({
+                    pointA: compositeCenter,
+                    pointB: someBasePoint,
+                  })
+                  const currentBaseRadius =
+                    maxRadius - (maxRadius / rhythmResolution) * rhythmIndex
+                  const currentAngle =
+                    ((2 * Math.PI) / basePoints.length) * pointIndex
+                  // const parentCenter = parentPointData
+                  //   ? parentPointData.pointCenter
+                  //   : compositeCenter
+                  const targetAngle = Math.atan2(
+                    compositeCenter.y - rootCircle.center.y,
+                    compositeCenter.x - rootCircle.center.x
+                  )
+                  const maxShift = (3.5 * rhythmIndex) / rhythmResolution
+                  const currentCenter: Point = {
+                    x: maxShift * Math.cos(targetAngle) + compositeCenter.x,
+                    y: maxShift * Math.sin(targetAngle) + compositeCenter.y,
+                  }
+                  return {
+                    pointCenter: currentCenter,
+                    parentRadius: currentBaseRadius,
+                    actualPoint: {
+                      x:
+                        currentBaseRadius * Math.cos(currentAngle) +
+                        currentCenter.x,
+                      y:
+                        currentBaseRadius * Math.sin(currentAngle) +
+                        currentCenter.y,
+                    },
+                  }
+                }),
+              }
+            },
+          }).map(({ parentPoints }) => (
             <Polygon
-              strokeColor={'white'}
-              strokeWidth={1.25}
+              fillColor={'lightgrey'}
+              strokeColor={'black'}
+              strokeWidth={0.1}
+              somePoints={parentPoints.map(({ actualPoint }) => actualPoint)}
+            />
+          ))
+        })}
+        {singularLoops.map(({ rotatedLoop }) => {
+          return reduceRhythmSequence<{ rotatedLoop: RotatedLoop }>({
+            baseRhythm: getNaturalCompositeRhythm({
+              rhythmResolution: 24,
+              rhythmParts: [
+                { rhythmDensity: 23, rhythmPhase: 0 },
+                { rhythmDensity: 19, rhythmPhase: 0 },
+                { rhythmDensity: 17, rhythmPhase: 0 },
+                { rhythmDensity: 13, rhythmPhase: 0 },
+                { rhythmDensity: 11, rhythmPhase: 0 },
+                { rhythmDensity: 7, rhythmPhase: 0 },
+                // { rhythmDensity: 5, rhythmPhase: 0 },
+                // { rhythmDensity: 3, rhythmPhase: 2 },
+                // { rhythmDensity: 2, rhythmPhase: 1 },
+              ],
+              rhythmPhase: 0,
+            }),
+            getCellResult: ({
+              rhythmIndex,
+              rhythmResolution,
+              nestIndex,
+              previousCellResults,
+            }) => {
+              const previousCellResult = previousCellResults[nestIndex - 1]
+              const parentLoop = !previousCellResult
+                ? rotatedLoop
+                : previousCellResult.rotatedLoop
+              const currentBaseCircleRadius =
+                rotatedLoop.baseCircle.radius -
+                (rotatedLoop.baseCircle.radius / rhythmResolution) * rhythmIndex
+              return {
+                rotatedLoop: getUpdatedData({
+                  baseData: rotatedLoop,
+                  dataUpdates: {
+                    'baseCircle.radius': () => currentBaseCircleRadius,
+                    'baseCircle.center': () => {
+                      const targetAngle = Math.atan2(
+                        parentLoop.baseCircle.center.y - rootCircle.center.y,
+                        parentLoop.baseCircle.center.x - rootCircle.center.x
+                      )
+                      const maxShift =
+                        (parentLoop.baseCircle.radius -
+                          currentBaseCircleRadius) /
+                        2
+                      return {
+                        x:
+                          maxShift * Math.cos(targetAngle) +
+                          parentLoop.baseCircle.center.x,
+                        y:
+                          maxShift * Math.sin(targetAngle) +
+                          parentLoop.baseCircle.center.y,
+                      }
+                    },
+                  },
+                }),
+              }
+            },
+          }).map(({ rotatedLoop }) => (
+            <Polygon
+              fillColor={'lightgrey'}
+              strokeColor={'black'}
+              strokeWidth={0.1}
               somePoints={getRotatedLoopPoints({
                 sampleCount: 256,
                 someRotatedLoop: rotatedLoop,
               })}
             />
-          </>
-        ))} */}
-        {/* {loopGroups.map((someLoopGroup) => {
-          const groupColor = `rgb(${128 + 128 * Math.random()}, ${
-            128 + 128 * Math.random()
-          }, ${128 + 128 * Math.random()})`
-          return someLoopGroup.map((someRotatedLoop) => (
-            <>
-              <Sircle
-                strokeColor={'white'}
-                strokeWidth={1.25}
-                someCircle={someRotatedLoop.baseCircle}
-              />
-              <Polygon
-                strokeColor={'white'}
-                strokeWidth={1.25}
-                somePoints={getRotatedLoopPoints({
-                  sampleCount: 256,
-                  someRotatedLoop: someRotatedLoop,
-                })}
-              />
-              <Sircle
-                strokeColor={groupColor}
-                strokeWidth={1}
-                someCircle={someRotatedLoop.baseCircle}
-              />
-              <Polygon
-                strokeColor={groupColor}
-                strokeWidth={1}
-                somePoints={getRotatedLoopPoints({
-                  sampleCount: 256,
-                  someRotatedLoop: someRotatedLoop,
-                })}
-              />
-            </>
           ))
-        })} */}
-        {loopGroups.map((someLoopGroup) => (
-          <Polygon
-            strokeColor={'black'}
-            strokeWidth={0.3}
-            somePoints={getCompositeLoopPoints({
-              sampleCount: 256,
-              baseLoops: someLoopGroup,
-            })}
-          />
-        ))}
-        {singularLoops.map(({ rotatedLoop }) => (
-          <Polygon
-            strokeColor={'black'}
-            strokeWidth={0.3}
-            somePoints={getRotatedLoopPoints({
-              sampleCount: 256,
-              someRotatedLoop: rotatedLoop,
-            })}
-          />
-        ))}
-        <Polygon
+        })}
+        {/* <Polygon
           strokeColor={'black'}
           strokeWidth={0.3}
           somePoints={getCompositeLoopPoints({
@@ -276,9 +361,45 @@ function Qux() {
               mirrorAngle: Math.PI / 8 + Math.PI / 4,
             })
           )}
-        />
+        /> */}
       </g>
     </svg>
+  )
+}
+
+interface ReduceRhythmSequenceApi<SomeCellResult extends any> {
+  baseRhythm: DiscreteRhythm
+  getCellResult: (api: {
+    rhythmResolution: number
+    rhythmDensity: number
+    rhythmIndex: number
+    nestIndex: number
+    previousCellResults: Array<SomeCellResult>
+  }) => SomeCellResult
+}
+
+function reduceRhythmSequence<SomeCellResult extends any>(
+  api: ReduceRhythmSequenceApi<SomeCellResult>
+): Array<SomeCellResult> {
+  const { baseRhythm, getCellResult } = api
+  const rhythmIndices = getElementIndices({
+    targetValue: true,
+    someSpace: baseRhythm,
+  })
+  const rhythmResolution = baseRhythm.length
+  const rhythmDensity = rhythmIndices.length
+  return rhythmIndices.reduce<Array<SomeCellResult>>(
+    (result, rhythmIndex, nestIndex) => [
+      ...result,
+      getCellResult({
+        rhythmResolution,
+        rhythmDensity,
+        rhythmIndex,
+        nestIndex,
+        previousCellResults: result,
+      }),
+    ],
+    []
   )
 }
 
@@ -319,24 +440,14 @@ interface GetCompositeLoopPointsApi {
 
 function getCompositeLoopPoints(api: GetCompositeLoopPointsApi): Array<Point> {
   const { baseLoops, sampleCount } = api
+  const compositeCenter = getCompositeCenterPoint({
+    baseLoops,
+  })
   const childCircles = baseLoops.map((someLoop) =>
     getRotatedLoopChildCircle({
       someRotatedLoop: someLoop,
     })
   )
-  const compositeAccumulatedCenter = childCircles.reduce<Point>(
-    (result, someChildCircle) => {
-      return {
-        x: someChildCircle.center.x + result.x,
-        y: someChildCircle.center.y + result.y,
-      }
-    },
-    { x: 0, y: 0 }
-  )
-  const compositeCenter: Point = {
-    x: compositeAccumulatedCenter.x / baseLoops.length,
-    y: compositeAccumulatedCenter.y / baseLoops.length,
-  }
   return new Array(sampleCount).fill(undefined).map<Point>((_, sampleIndex) => {
     const [accumulatedVectorX, accumulatedVectorY] = baseLoops.reduce<
       [x: number, y: number]
@@ -362,6 +473,32 @@ function getCompositeLoopPoints(api: GetCompositeLoopPointsApi): Array<Point> {
       y: accumulatedVectorY / baseLoops.length + compositeCenter.y,
     }
   })
+}
+
+interface GetCompositeCenterPointApi {
+  baseLoops: Array<RotatedLoop>
+}
+
+function getCompositeCenterPoint(api: GetCompositeCenterPointApi) {
+  const { baseLoops } = api
+  const childCircles = baseLoops.map((someLoop) =>
+    getRotatedLoopChildCircle({
+      someRotatedLoop: someLoop,
+    })
+  )
+  const compositeAccumulatedCenter = childCircles.reduce<Point>(
+    (result, someChildCircle) => {
+      return {
+        x: someChildCircle.center.x + result.x,
+        y: someChildCircle.center.y + result.y,
+      }
+    },
+    { x: 0, y: 0 }
+  )
+  return {
+    x: compositeAccumulatedCenter.x / baseLoops.length,
+    y: compositeAccumulatedCenter.y / baseLoops.length,
+  }
 }
 
 interface GetLoopGroupsApi {

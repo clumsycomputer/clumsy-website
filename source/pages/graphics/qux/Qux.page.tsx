@@ -133,7 +133,6 @@ function Qux() {
       })
     },
   }).flat()
-
   const baseLoops = [
     ...coreLoops,
     ...coreLoops.map(({ rotatedLoop }) => ({
@@ -151,34 +150,6 @@ function Qux() {
     ({ rotatedLoop }) =>
       loopGroups.flat().findIndex((someLoop) => someLoop === rotatedLoop) === -1
   )
-  const fooLoops: Array<RotatedLoop> = [
-    {
-      baseCircle: {
-        radius: 12,
-        center: { x: 50, y: 50 },
-      },
-      childCircle: {
-        relativeRadius: 1 / 8,
-        relativeDepth: 0,
-        phaseAngle: Math.PI / 2,
-      },
-      rotationAnchor: 'base',
-      rotationAngle: Math.PI / 4,
-    },
-    {
-      baseCircle: {
-        radius: 12,
-        center: { x: 50, y: 50 },
-      },
-      childCircle: {
-        relativeRadius: 5 / 8,
-        relativeDepth: 1,
-        phaseAngle: Math.PI / 2,
-      },
-      rotationAnchor: 'base',
-      rotationAngle: -Math.PI / 4,
-    },
-  ]
   return (
     <svg
       style={{
@@ -200,12 +171,22 @@ function Qux() {
           const compositeCenter = getCompositeCenterPoint({
             baseLoops: someLoopGroup,
           })
+          const shiftTargetAngle = Math.atan2(
+            compositeCenter.y - rootCircle.center.y,
+            compositeCenter.x - rootCircle.center.x
+          )
+          const maxShiftPoint: Point = getTracePoint({
+            somePoints: basePoints,
+            traceAngle: shiftTargetAngle,
+            originPoint: rootCircle.center,
+          })
+          const maxShiftRadius = getDistanceBetweenPoints({
+            pointA: compositeCenter,
+            pointB: maxShiftPoint,
+          })
           return reduceRhythmSequence<{
-            parentPoints: Array<{
-              actualPoint: Point
-              pointCenter: Point
-              parentRadius: number
-            }>
+            parentCenter: Point
+            parentPoints: Array<Point>
           }>({
             baseRhythm: getNaturalCompositeRhythm({
               rhythmResolution: 24,
@@ -216,25 +197,23 @@ function Qux() {
                 { rhythmDensity: 13, rhythmPhase: 0 },
                 { rhythmDensity: 11, rhythmPhase: 0 },
                 { rhythmDensity: 7, rhythmPhase: 0 },
-                // { rhythmDensity: 5, rhythmPhase: 0 },
-                // { rhythmDensity: 3, rhythmPhase: 2 },
-                // { rhythmDensity: 2, rhythmPhase: 1 },
               ],
               rhythmPhase: 0,
             }),
-            getCellResult: ({
-              rhythmResolution,
-              rhythmIndex,
-              nestIndex,
-              previousCellResults,
-            }) => {
-              const parentCellResult = previousCellResults[nestIndex - 1]
-              // const parentPoints = parentCellResult?.parentPoints
+            getCellResult: ({ rhythmResolution, rhythmIndex }) => {
+              const childShiftRadius =
+                ((maxShiftRadius / rhythmResolution) * rhythmIndex) / 1.75
+              const currentCenter: Point = {
+                x:
+                  childShiftRadius * Math.cos(shiftTargetAngle) +
+                  compositeCenter.x,
+                y:
+                  childShiftRadius * Math.sin(shiftTargetAngle) +
+                  compositeCenter.y,
+              }
               return {
+                parentCenter: currentCenter,
                 parentPoints: basePoints.map((someBasePoint, pointIndex) => {
-                  // const parentPointData = parentPoints
-                  //   ? parentPoints[pointIndex]
-                  //   : null
                   const maxRadius = getDistanceBetweenPoints({
                     pointA: compositeCenter,
                     pointB: someBasePoint,
@@ -243,29 +222,13 @@ function Qux() {
                     maxRadius - (maxRadius / rhythmResolution) * rhythmIndex
                   const currentAngle =
                     ((2 * Math.PI) / basePoints.length) * pointIndex
-                  // const parentCenter = parentPointData
-                  //   ? parentPointData.pointCenter
-                  //   : compositeCenter
-                  const targetAngle = Math.atan2(
-                    compositeCenter.y - rootCircle.center.y,
-                    compositeCenter.x - rootCircle.center.x
-                  )
-                  const maxShift = (3.5 * rhythmIndex) / rhythmResolution
-                  const currentCenter: Point = {
-                    x: maxShift * Math.cos(targetAngle) + compositeCenter.x,
-                    y: maxShift * Math.sin(targetAngle) + compositeCenter.y,
-                  }
                   return {
-                    pointCenter: currentCenter,
-                    parentRadius: currentBaseRadius,
-                    actualPoint: {
-                      x:
-                        currentBaseRadius * Math.cos(currentAngle) +
-                        currentCenter.x,
-                      y:
-                        currentBaseRadius * Math.sin(currentAngle) +
-                        currentCenter.y,
-                    },
+                    x:
+                      currentBaseRadius * Math.cos(currentAngle) +
+                      currentCenter.x,
+                    y:
+                      currentBaseRadius * Math.sin(currentAngle) +
+                      currentCenter.y,
                   }
                 }),
               }
@@ -275,7 +238,7 @@ function Qux() {
               fillColor={'lightgrey'}
               strokeColor={'black'}
               strokeWidth={0.1}
-              somePoints={parentPoints.map(({ actualPoint }) => actualPoint)}
+              somePoints={parentPoints.map((somePoint) => somePoint)}
             />
           ))
         })}
@@ -290,9 +253,6 @@ function Qux() {
                 { rhythmDensity: 13, rhythmPhase: 0 },
                 { rhythmDensity: 11, rhythmPhase: 0 },
                 { rhythmDensity: 7, rhythmPhase: 0 },
-                // { rhythmDensity: 5, rhythmPhase: 0 },
-                // { rhythmDensity: 3, rhythmPhase: 2 },
-                // { rhythmDensity: 2, rhythmPhase: 1 },
               ],
               rhythmPhase: 0,
             }),
@@ -348,20 +308,6 @@ function Qux() {
             />
           ))
         })}
-        {/* <Polygon
-          strokeColor={'black'}
-          strokeWidth={0.3}
-          somePoints={getCompositeLoopPoints({
-            sampleCount: 256,
-            baseLoops: fooLoops,
-          }).map((somePoint) =>
-            getMirroredPoint({
-              basePoint: somePoint,
-              originPoint: rootCircle.center,
-              mirrorAngle: Math.PI / 8 + Math.PI / 4,
-            })
-          )}
-        /> */}
       </g>
     </svg>
   )

@@ -28,6 +28,37 @@ export default {
   pdfFileName: 'qux',
 }
 
+const PaletteB = {
+  primary: {
+    main: '#e6784d',
+  },
+  complementary: {
+    main: '#4dbbe6',
+  },
+  analogousA: {
+    main: '#e64d6e',
+  },
+  analogousB: {
+    main: '#e6c54d',
+  },
+  triadicA: {
+    main: '#bbe64d',
+  },
+  triadicB: {
+    main: '#4de678',
+  },
+}
+
+const colorsA = [
+  PaletteB.primary.main,
+  PaletteB.triadicA.main,
+  PaletteB.triadicB.main,
+  PaletteB.complementary.main,
+  PaletteB.analogousA.main,
+  PaletteB.analogousB.main,
+  PaletteB.complementary.main,
+].reverse()
+
 function Qux() {
   const rootCircle: Circle = {
     radius: 50,
@@ -145,11 +176,160 @@ function Qux() {
   ]
   const loopGroups = getLoopGroups({
     someLoops: baseLoops.map(({ rotatedLoop }) => rotatedLoop),
-  })
+  }).map((someLoopGroup, groupIndex) =>
+    someLoopGroup
+      .map((someLoop, loopIndex) => {
+        return groupIndex === 0 // top
+          ? [
+              someLoop,
+              someLoop,
+              getUpdatedData({
+                baseData: someLoop,
+                dataUpdates: {
+                  rotationAngle: (fooAngle: number) => -fooAngle / 2,
+                },
+              }),
+              getUpdatedData({
+                baseData: someLoop,
+                dataUpdates: {
+                  rotationAngle: (fooAngle: number) => fooAngle / 2,
+                },
+              }),
+            ]
+          : groupIndex === 2 // bottom
+          ? [
+              someLoop,
+              someLoop,
+              getUpdatedData({
+                baseData: someLoop,
+                dataUpdates: {
+                  rotationAngle: (fooAngle: number) => -Math.PI / 3,
+                  'childCircle.relativeRadius': (foo: number) => foo / 1.5,
+                  'baseCircle.radius': () => 5.5,
+                  'childCircle.phaseAngle': (foo: number) => -foo,
+                },
+              }),
+              getUpdatedData({
+                baseData: someLoop,
+                dataUpdates: {
+                  rotationAngle: (fooAngle: number) => Math.PI / 3,
+                  'childCircle.relativeRadius': (foo: number) => foo / 1.5,
+                  'baseCircle.radius': () => 5.5,
+                  'childCircle.phaseAngle': (foo: number) => -foo,
+                },
+              }),
+            ]
+          : [someLoop]
+      })
+      .flat()
+  )
   const singularLoops = baseLoops.filter(
     ({ rotatedLoop }) =>
       loopGroups.flat().findIndex((someLoop) => someLoop === rotatedLoop) === -1
   )
+  const rightEyeLoop: RotatedLoop = {
+    baseCircle: {
+      center: { x: 60, y: 18 },
+      radius: 5,
+    },
+    childCircle: {
+      relativeRadius: 1,
+      relativeDepth: 1,
+      phaseAngle: 0,
+    },
+    rotationAnchor: 'base',
+    rotationAngle: 0,
+  }
+  const rightEarLoop: RotatedLoop = {
+    baseCircle: {
+      center: { x: 83, y: 23.5 },
+      radius: 5,
+    },
+    childCircle: {
+      relativeRadius: 7 / 8,
+      relativeDepth: 1,
+      phaseAngle: Math.PI / 2 / 2,
+    },
+    rotationAnchor: 'base',
+    rotationAngle: -Math.PI / 4,
+  }
+  const rightHipLoop: RotatedLoop = {
+    baseCircle: {
+      center: { x: 84, y: 63.5 },
+      radius: 10,
+    },
+    childCircle: {
+      relativeRadius: 4 / 12,
+      relativeDepth: 1,
+      phaseAngle: Math.PI / 2 / 2,
+    },
+    rotationAnchor: 'base',
+    rotationAngle: Math.PI / 2 + Math.PI / 23,
+  }
+  const coreDecorationLoops: Array<Array<RotatedLoop>> = [
+    [
+      rightEyeLoop,
+      getUpdatedData({
+        baseData: rightEyeLoop,
+        dataUpdates: {
+          'childCircle.relativeRadius': () => 2.5 / 8,
+          rotationAngle: () => Math.PI / 4 + Math.PI,
+          'childCircle.phaseAngle': () => -Math.PI / 3,
+          'baseCircle.radius': () => 4,
+        },
+      }),
+    ],
+    [
+      rightEarLoop,
+      getUpdatedData({
+        baseData: rightEarLoop,
+        dataUpdates: {
+          'childCircle.relativeRadius': () => 3 / 8,
+          rotationAngle: () => -Math.PI / 3,
+          'baseCircle.radius': () => 3,
+        },
+      }),
+    ],
+    [
+      rightHipLoop,
+      getUpdatedData({
+        baseData: rightHipLoop,
+        dataUpdates: {
+          'childCircle.relativeRadius': () => 7 / 12,
+          rotationAngle: () => 0,
+          'baseCircle.radius': () => 6,
+        },
+      }),
+    ],
+  ]
+  const fooLoopGroups = [
+    ...loopGroups,
+    ...singularLoops.map(({ rotatedLoop }) => [
+      rotatedLoop,
+      rotatedLoop,
+      rotatedLoop,
+      rotatedLoop,
+      getUpdatedData({
+        baseData: rotatedLoop,
+        dataUpdates: {
+          rotationAngle: (fooAngle: number) => -fooAngle,
+          'childCircle.relativeRadius': (foo: number) => foo / 1.5,
+          'childCircle.phaseAngle': (fooAngle: number) => -fooAngle,
+        },
+      }),
+    ]),
+    ...coreDecorationLoops,
+    ...coreDecorationLoops.map((someLoopGroup) =>
+      someLoopGroup.map((someLoop) =>
+        getMirroredRotatedLoop({
+          baseLoop: someLoop,
+          originPoint: rootCircle.center,
+          mirrorAngle: Math.PI / 2,
+        })
+      )
+    ),
+  ]
+
   return (
     <svg
       style={{
@@ -161,9 +341,9 @@ function Qux() {
       }}
       viewBox={'-10 -10 120 120'}
     >
-      <rect x={-10} y={-10} width={120} height={120} fill={'lightgrey'} />
+      <rect x={-10} y={-10} width={120} height={120} fill={'black'} />
       <g transform={'translate(0,5)'}>
-        {loopGroups.map((someLoopGroup) => {
+        {fooLoopGroups.map((someLoopGroup) => {
           const basePoints = getCompositeLoopPoints({
             sampleCount: 256,
             baseLoops: someLoopGroup,
@@ -202,7 +382,7 @@ function Qux() {
             }),
             getCellResult: ({ rhythmResolution, rhythmIndex }) => {
               const childShiftRadius =
-                ((maxShiftRadius / rhythmResolution) * rhythmIndex) / 1.75
+                ((maxShiftRadius / rhythmResolution) * rhythmIndex) / 1.5
               const currentCenter: Point = {
                 x:
                   childShiftRadius * Math.cos(shiftTargetAngle) +
@@ -233,78 +413,12 @@ function Qux() {
                 }),
               }
             },
-          }).map(({ parentPoints }) => (
+          }).map(({ parentPoints }, loopIndex) => (
             <Polygon
-              fillColor={'lightgrey'}
-              strokeColor={'black'}
-              strokeWidth={0.1}
+              fillColor={'none'}
+              strokeColor={colorsA[loopIndex]!}
+              strokeWidth={0.25}
               somePoints={parentPoints.map((somePoint) => somePoint)}
-            />
-          ))
-        })}
-        {singularLoops.map(({ rotatedLoop }) => {
-          return reduceRhythmSequence<{ rotatedLoop: RotatedLoop }>({
-            baseRhythm: getNaturalCompositeRhythm({
-              rhythmResolution: 24,
-              rhythmParts: [
-                { rhythmDensity: 23, rhythmPhase: 0 },
-                { rhythmDensity: 19, rhythmPhase: 0 },
-                { rhythmDensity: 17, rhythmPhase: 0 },
-                { rhythmDensity: 13, rhythmPhase: 0 },
-                { rhythmDensity: 11, rhythmPhase: 0 },
-                { rhythmDensity: 7, rhythmPhase: 0 },
-              ],
-              rhythmPhase: 0,
-            }),
-            getCellResult: ({
-              rhythmIndex,
-              rhythmResolution,
-              nestIndex,
-              previousCellResults,
-            }) => {
-              const previousCellResult = previousCellResults[nestIndex - 1]
-              const parentLoop = !previousCellResult
-                ? rotatedLoop
-                : previousCellResult.rotatedLoop
-              const currentBaseCircleRadius =
-                rotatedLoop.baseCircle.radius -
-                (rotatedLoop.baseCircle.radius / rhythmResolution) * rhythmIndex
-              return {
-                rotatedLoop: getUpdatedData({
-                  baseData: rotatedLoop,
-                  dataUpdates: {
-                    'baseCircle.radius': () => currentBaseCircleRadius,
-                    'baseCircle.center': () => {
-                      const targetAngle = Math.atan2(
-                        parentLoop.baseCircle.center.y - rootCircle.center.y,
-                        parentLoop.baseCircle.center.x - rootCircle.center.x
-                      )
-                      const maxShift =
-                        (parentLoop.baseCircle.radius -
-                          currentBaseCircleRadius) /
-                        2
-                      return {
-                        x:
-                          maxShift * Math.cos(targetAngle) +
-                          parentLoop.baseCircle.center.x,
-                        y:
-                          maxShift * Math.sin(targetAngle) +
-                          parentLoop.baseCircle.center.y,
-                      }
-                    },
-                  },
-                }),
-              }
-            },
-          }).map(({ rotatedLoop }) => (
-            <Polygon
-              fillColor={'lightgrey'}
-              strokeColor={'black'}
-              strokeWidth={0.1}
-              somePoints={getRotatedLoopPoints({
-                sampleCount: 256,
-                someRotatedLoop: rotatedLoop,
-              })}
             />
           ))
         })}

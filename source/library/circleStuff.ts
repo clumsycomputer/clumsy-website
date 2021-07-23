@@ -325,11 +325,11 @@ export function getLoopChildIntersection(api: GetLoopChildIntersectionApi) {
   }
 }
 
-interface GetAdjustedSampleAngleApi {
+export interface GetAdjustedSampleAngleApi {
   sampleAngle: number
 }
 
-function getAdjustedSampleAngle(api: GetAdjustedSampleAngleApi) {
+export function getAdjustedSampleAngle(api: GetAdjustedSampleAngleApi) {
   const { sampleAngle } = api
   const positiveSampleAngle =
     ((sampleAngle % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI)

@@ -25,7 +25,7 @@ export default {
   pdfFileName: 'bar',
 }
 
-const camouflage = false
+const camouflage = true
 
 const PaletteB = {
   primary: {
@@ -1246,7 +1246,7 @@ function Bar() {
           .map(({ rotatedLoop, strokeColor, strokeWidth = 0.175 }: any) => (
             <Polygon
               points={getOscillatedRotatedLoopPoints({
-                sampleCount: 256,
+                sampleCount: 1024,
                 oscillatedRotatedLoop: {
                   ...rotatedLoop,
                   getRelativeOscillation: () =>
@@ -1255,14 +1255,14 @@ function Bar() {
               })}
               fill={'none'}
               stroke={strokeColor}
-              strokeWidth={camouflage ? strokeWidth : strokeWidth * 2}
+              strokeWidth={(camouflage ? strokeWidth : strokeWidth * 2) / 3}
             />
           ))}
         {decorationLoops.map(
           ({ rotatedLoop, strokeColor, strokeWidth = 0.175 }) => (
             <Polygon
               points={getOscillatedRotatedLoopPoints({
-                sampleCount: 256,
+                sampleCount: 1024,
                 oscillatedRotatedLoop: {
                   ...rotatedLoop,
                   getRelativeOscillation: () =>
@@ -1271,7 +1271,7 @@ function Bar() {
               })}
               fill={'none'}
               stroke={strokeColor}
-              strokeWidth={camouflage ? strokeWidth : strokeWidth * 2}
+              strokeWidth={(camouflage ? strokeWidth : strokeWidth * 2) / 3}
             />
           )
         )}
@@ -1342,7 +1342,7 @@ function getWaveLoops(api: GetWaveLoopsApi): {
     someLoop: loopA,
   })
   const loopPointsA = getRotatedLoopPoints({
-    sampleCount: 256,
+    sampleCount: 1024,
     someRotatedLoop: loopA,
   })
   return rhythmIndices

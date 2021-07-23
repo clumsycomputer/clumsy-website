@@ -1,6 +1,7 @@
 import React from 'react'
 import {
   Circle,
+  getAdjustedSampleAngle,
   getMirroredPoint,
   getMirroredRotatedLoop,
   getRotatedLoopChildCircle,
@@ -54,10 +55,26 @@ const colorsA = [
   PaletteB.triadicA.main,
   PaletteB.triadicB.main,
   PaletteB.complementary.main,
+  PaletteB.analogousB.main,
   PaletteB.analogousA.main,
   PaletteB.analogousB.main,
   PaletteB.complementary.main,
-].reverse()
+]
+
+const reversedColorsA = [...colorsA].reverse()
+
+const colorsB = [
+  PaletteB.primary.main,
+  PaletteB.analogousB.main,
+  PaletteB.analogousA.main,
+  PaletteB.complementary.main,
+  PaletteB.triadicB.main,
+  PaletteB.triadicA.main,
+  PaletteB.triadicB.main,
+  PaletteB.complementary.main,
+]
+
+const reversedColorsB = [...colorsB].reverse()
 
 function Qux() {
   const rootCircle: Circle = {
@@ -92,7 +109,7 @@ function Qux() {
       const angleA = (Math.PI / rhythmResolution) * rhythmIndex - Math.PI / 2
       const pointA = getTracePoint({
         somePoints: getRotatedLoopPoints({
-          sampleCount: 256,
+          sampleCount: 1024,
           someRotatedLoop: rootLoop,
         }),
         originPoint: rootCircle.center,
@@ -100,7 +117,7 @@ function Qux() {
       })
       const pointB = getTracePoint({
         somePoints: getRotatedLoopPoints({
-          sampleCount: 256,
+          sampleCount: 1024,
           someRotatedLoop: rootLoop,
         }),
         originPoint: rootCircle.center,
@@ -384,7 +401,7 @@ function Qux() {
       <g transform={'translate(0,5)'}>
         {fooLoopGroups.map((someLoopGroup) => {
           const basePoints = getCompositeLoopPoints({
-            sampleCount: 256,
+            sampleCount: 1024,
             baseLoops: someLoopGroup,
           })
           const compositeCenter = getCompositeCenterPoint({
@@ -419,7 +436,7 @@ function Qux() {
               ],
               rhythmPhase: 0,
             }),
-            getCellResult: ({ rhythmResolution, rhythmIndex }) => {
+            getCellResult: ({ rhythmResolution, rhythmIndex, nestIndex }) => {
               const childShiftRadius =
                 ((maxShiftRadius / rhythmResolution) * rhythmIndex) / 1.5
               const currentCenter: Point = {
@@ -452,12 +469,26 @@ function Qux() {
                 }),
               }
             },
-          }).map(({ parentPoints }, loopIndex) => (
+          }).map(({ parentCenter, parentPoints }, loopIndex) => (
             <Polygon
               fillColor={'none'}
-              strokeColor={colorsA[loopIndex]!}
-              strokeWidth={0.25}
-              somePoints={parentPoints.map((somePoint) => somePoint)}
+              strokeColor={colorsB[loopIndex]!}
+              strokeWidth={0.05}
+              // somePoints={parentPoints}
+              somePoints={parentPoints.map((somePoint, pointIndex) => {
+                const baseRadius = getDistanceBetweenPoints({
+                  pointA: parentCenter,
+                  pointB: somePoint,
+                })
+                const pointAngle =
+                  ((2 * Math.PI) / parentPoints.length) * pointIndex
+                const pointRadius =
+                  baseRadius + Math.log(baseRadius) * Math.random() * 0.75
+                return {
+                  x: pointRadius * Math.cos(pointAngle) + parentCenter.x,
+                  y: pointRadius * Math.sin(pointAngle) + parentCenter.y,
+                }
+              })}
             />
           ))
         })}

@@ -25,11 +25,10 @@ export default {
   pdfFileName: 'qux',
 }
 
-const globalSampleCount = 128
-const camouflage = false
+const globalSampleCount = 1024
+const camouflage = true
 const camouflageStrokeScalar = 1 / 5
-
-interface GetColorSequenceApi {
+interface GetRootLoopDataApi {
   loopKey:
     | ReturnType<typeof getCoreLoopKey>
     | ReturnType<typeof getCenterLoopKey>
@@ -38,7 +37,7 @@ interface GetColorSequenceApi {
     | 'rightHip'
 }
 
-function getColorSequence(api: GetColorSequenceApi): string[] {
+function getColorSequence(api: GetRootLoopDataApi): string[] {
   const { loopKey } = api
   switch (loopKey) {
     case 'perimeterRight40':
@@ -70,17 +69,9 @@ function getColorSequence(api: GetColorSequenceApi): string[] {
     case 'rightEar':
       return colorsA
     case 'rightHip':
+    case 'default':
       return colorsA
   }
-}
-
-interface GetRootLoopDataApi {
-  loopKey:
-    | ReturnType<typeof getCoreLoopKey>
-    | ReturnType<typeof getCenterLoopKey>
-    | 'rightEye'
-    | 'rightEar'
-    | 'rightHip'
 }
 
 function getNestRhythmGetter(
@@ -103,6 +94,7 @@ function getNestRhythmGetter(
     case 'rightEye':
     case 'rightEar':
     case 'rightHip':
+    case 'default':
       return () =>
         getNaturalCompositeRhythm({
           rhythmResolution: 18,
@@ -122,6 +114,14 @@ function getShiftAngleGetter(
 ): RootLoopData['getShiftAngle'] {
   const { loopKey } = api
   switch (loopKey) {
+    case 'centerTop':
+    case 'centerMidTop':
+    case 'centerBottom':
+      return ({ baseCenter }) =>
+        getStoopShiftAngle({
+          baseCenter,
+          shiftAngle: 0,
+        })
     case 'perimeterRight40':
     case 'perimeterRight90':
     case 'perimeterRight150':
@@ -131,13 +131,15 @@ function getShiftAngleGetter(
     case 'midBottomOuterRight':
     case 'bottomUpperRight':
     case 'bottomLowerRight':
-    case 'centerTop':
-    case 'centerMidTop':
-    case 'centerBottom':
     case 'rightEye':
     case 'rightEar':
     case 'rightHip':
-      return () => 0
+    case 'default':
+      return ({ baseCenter }) =>
+        getStoopShiftAngle({
+          baseCenter,
+          shiftAngle: Math.PI / 2,
+        })
   }
 }
 
@@ -161,6 +163,7 @@ function getRelativeShiftScalarGetter(
     case 'rightEye':
     case 'rightEar':
     case 'rightHip':
+    case 'default':
       return () => 1
   }
 }
@@ -764,7 +767,7 @@ function getCoreLoopKey(api: any) {
   } else if (tangentIndex === 3 && orthogonalIndex === 2) {
     return 'centerOuterRight'
   } else {
-    throw Error('getCoreLoopKey')
+    return 'default'
   }
 }
 

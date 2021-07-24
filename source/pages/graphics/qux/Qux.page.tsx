@@ -313,78 +313,105 @@ function Qux() {
     rotationAnchor: 'base',
     rotationAngle: -Math.PI / 2 - Math.PI / 11,
   }
-  const coreDecorationLoops: Array<Array<RotatedLoop>> = [
-    [
-      rightEyeLoop,
-      getUpdatedData({
-        baseData: rightEyeLoop,
-        dataUpdates: {
-          'childCircle.relativeRadius': () => 2.5 / 8,
-          rotationAngle: () => Math.PI / 4 + Math.PI,
-          'childCircle.phaseAngle': () => -Math.PI / 3,
-          'baseCircle.radius': () => 7,
-        },
-      }),
-    ],
-    [
-      rightEarLoop,
-      getUpdatedData({
-        baseData: rightEarLoop,
-        dataUpdates: {
-          'childCircle.relativeRadius': () => 3 / 8,
-          rotationAngle: () => -Math.PI / 3,
-          'baseCircle.radius': () => 5,
-        },
-      }),
-    ],
-    [
-      rightHipLoop,
-      getUpdatedData({
-        baseData: rightHipLoop,
-        dataUpdates: {
-          'childCircle.relativeRadius': () => 7 / 12,
-          rotationAngle: () => 0,
-          'baseCircle.radius': () => 6,
-        },
-      }),
-    ],
-    [
-      centerLoop,
-      getUpdatedData({
-        baseData: centerLoop,
-        dataUpdates: {
-          rotationAngle: () => Math.PI / 2 / 1.5,
-          'childCircle.relativeRadius': () => 1 / 4,
-        },
-      }),
-    ],
+  const coreDecorationLoops: Array<RootLoopData> = [
+    {
+      rootLoop: [
+        rightEyeLoop,
+        getUpdatedData({
+          baseData: rightEyeLoop,
+          dataUpdates: {
+            'childCircle.relativeRadius': () => 2.5 / 8,
+            rotationAngle: () => Math.PI / 4 + Math.PI,
+            'childCircle.phaseAngle': () => -Math.PI / 3,
+            'baseCircle.radius': () => 7,
+          },
+        }),
+      ],
+      getStrokeWidth: () => 0.2,
+      getStrokeColor: ({ nestIndex }) => colorsB[nestIndex % colorsB.length]!,
+    },
+    {
+      rootLoop: [
+        rightEarLoop,
+        getUpdatedData({
+          baseData: rightEarLoop,
+          dataUpdates: {
+            'childCircle.relativeRadius': () => 3 / 8,
+            rotationAngle: () => -Math.PI / 3,
+            'baseCircle.radius': () => 5,
+          },
+        }),
+      ],
+      getStrokeWidth: () => 0.2,
+      getStrokeColor: ({ nestIndex }) => colorsB[nestIndex % colorsB.length]!,
+    },
+    {
+      rootLoop: [
+        rightHipLoop,
+        getUpdatedData({
+          baseData: rightHipLoop,
+          dataUpdates: {
+            'childCircle.relativeRadius': () => 7 / 12,
+            rotationAngle: () => 0,
+            'baseCircle.radius': () => 6,
+          },
+        }),
+      ],
+      getStrokeWidth: () => 0.2,
+      getStrokeColor: ({ nestIndex }) => colorsB[nestIndex % colorsB.length]!,
+    },
+    {
+      rootLoop: [
+        centerLoop,
+        getUpdatedData({
+          baseData: centerLoop,
+          dataUpdates: {
+            rotationAngle: () => Math.PI / 2 / 1.5,
+            'childCircle.relativeRadius': () => 1 / 4,
+          },
+        }),
+      ],
+      getStrokeWidth: () => 0.2,
+      getStrokeColor: ({ nestIndex }) => colorsB[nestIndex % colorsB.length]!,
+    },
   ]
-  const fooLoopGroups = [
-    ...loopGroups,
-    ...singularLoops.map(({ rotatedLoop }) => [
-      rotatedLoop,
-      rotatedLoop,
-      rotatedLoop,
-      rotatedLoop,
-      getUpdatedData({
-        baseData: rotatedLoop,
-        dataUpdates: {
-          rotationAngle: (fooAngle: number) => -fooAngle,
-          'childCircle.relativeRadius': (foo: number) => foo / 1.5,
-          'childCircle.phaseAngle': (fooAngle: number) => -fooAngle,
-        },
-      }),
-    ]),
+  const fooLoopGroups: Array<RootLoopData> = [
+    ...loopGroups.map((foo) => ({
+      rootLoop: foo,
+      getStrokeWidth: () => 0.2,
+      getStrokeColor: ({ nestIndex }: { nestIndex: number }) =>
+        colorsB[nestIndex % colorsB.length]!,
+    })),
+    ...singularLoops.map(({ rotatedLoop }) => ({
+      getStrokeWidth: () => 0.2,
+      getStrokeColor: ({ nestIndex }: { nestIndex: number }) =>
+        colorsB[nestIndex % colorsB.length]!,
+      rootLoop: [
+        rotatedLoop,
+        rotatedLoop,
+        rotatedLoop,
+        rotatedLoop,
+        getUpdatedData({
+          baseData: rotatedLoop,
+          dataUpdates: {
+            rotationAngle: (fooAngle: number) => -fooAngle,
+            'childCircle.relativeRadius': (foo: number) => foo / 1.5,
+            'childCircle.phaseAngle': (fooAngle: number) => -fooAngle,
+          },
+        }),
+      ],
+    })),
     ...coreDecorationLoops,
-    ...coreDecorationLoops.map((someLoopGroup) =>
-      someLoopGroup.map((someLoop) =>
+    ...coreDecorationLoops.map((someRootLoopData) => ({
+      ...someRootLoopData,
+      rootLoop: someRootLoopData.rootLoop.map((someLoop) =>
         getMirroredRotatedLoop({
           baseLoop: someLoop,
           originPoint: rootCircle.center,
           mirrorAngle: Math.PI / 2,
         })
-      )
-    ),
+      ),
+    })),
   ]
   return (
     <svg
@@ -399,13 +426,13 @@ function Qux() {
     >
       <rect x={-10} y={-10} width={120} height={120} fill={'black'} />
       <g transform={'translate(0,5)'}>
-        {fooLoopGroups.map((someLoopGroup) => {
+        {fooLoopGroups.map(({ rootLoop, getStrokeWidth, getStrokeColor }) => {
           const basePoints = getCompositeLoopPoints({
             sampleCount: 256,
-            baseLoops: someLoopGroup,
+            baseLoops: rootLoop,
           })
           const compositeCenter = getCompositeCenterPoint({
-            baseLoops: someLoopGroup,
+            baseLoops: rootLoop,
           })
           const shiftTargetAngle = Math.atan2(
             compositeCenter.y - rootCircle.center.y,
@@ -450,8 +477,8 @@ function Qux() {
                   compositeCenter.y,
               }
               return {
-                strokeWidth: 0.2,
-                strokeColor: colorsA[nestIndex]!,
+                strokeWidth: getStrokeWidth({ nestIndex }),
+                strokeColor: getStrokeColor({ nestIndex }),
                 parentCenter: currentCenter,
                 parentPoints: basePoints.map((someBasePoint, pointIndex) => {
                   const maxRadius = getDistanceBetweenPoints({
@@ -505,6 +532,12 @@ function Qux() {
       </g>
     </svg>
   )
+}
+
+interface RootLoopData {
+  getStrokeColor: (api: { nestIndex: number }) => string
+  getStrokeWidth: (api: { nestIndex: number }) => number
+  rootLoop: CompositeLoop
 }
 
 interface ReduceRhythmSequenceApi<SomeCellResult extends any> {
@@ -573,9 +606,11 @@ function mapRhythmSequence<SomePropertyResult extends any>(
   )
 }
 
+interface CompositeLoop extends Array<RotatedLoop> {}
+
 interface GetCompositeLoopPointsApi {
   sampleCount: number
-  baseLoops: Array<RotatedLoop>
+  baseLoops: CompositeLoop
 }
 
 function getCompositeLoopPoints(api: GetCompositeLoopPointsApi): Array<Point> {

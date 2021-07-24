@@ -109,7 +109,7 @@ function Qux() {
       const angleA = (Math.PI / rhythmResolution) * rhythmIndex - Math.PI / 2
       const pointA = getTracePoint({
         somePoints: getRotatedLoopPoints({
-          sampleCount: 1024,
+          sampleCount: 256,
           someRotatedLoop: rootLoop,
         }),
         originPoint: rootCircle.center,
@@ -117,7 +117,7 @@ function Qux() {
       })
       const pointB = getTracePoint({
         somePoints: getRotatedLoopPoints({
-          sampleCount: 1024,
+          sampleCount: 256,
           someRotatedLoop: rootLoop,
         }),
         originPoint: rootCircle.center,
@@ -401,7 +401,7 @@ function Qux() {
       <g transform={'translate(0,5)'}>
         {fooLoopGroups.map((someLoopGroup) => {
           const basePoints = getCompositeLoopPoints({
-            sampleCount: 1024,
+            sampleCount: 256,
             baseLoops: someLoopGroup,
           })
           const compositeCenter = getCompositeCenterPoint({
@@ -421,6 +421,8 @@ function Qux() {
             pointB: maxShiftPoint,
           })
           return reduceRhythmSequence<{
+            strokeWidth: number
+            strokeColor: string
             parentCenter: Point
             parentPoints: Array<Point>
           }>({
@@ -448,6 +450,8 @@ function Qux() {
                   compositeCenter.y,
               }
               return {
+                strokeWidth: 0.2,
+                strokeColor: colorsA[nestIndex]!,
                 parentCenter: currentCenter,
                 parentPoints: basePoints.map((someBasePoint, pointIndex) => {
                   const maxRadius = getDistanceBetweenPoints({
@@ -469,28 +473,34 @@ function Qux() {
                 }),
               }
             },
-          }).map(({ parentCenter, parentPoints }, loopIndex) => (
-            <Polygon
-              fillColor={'none'}
-              strokeColor={colorsB[loopIndex]!}
-              strokeWidth={0.05}
-              // somePoints={parentPoints}
-              somePoints={parentPoints.map((somePoint, pointIndex) => {
-                const baseRadius = getDistanceBetweenPoints({
-                  pointA: parentCenter,
-                  pointB: somePoint,
-                })
-                const pointAngle =
-                  ((2 * Math.PI) / parentPoints.length) * pointIndex
-                const pointRadius =
-                  baseRadius + Math.log(baseRadius) * Math.random() * 0.75
-                return {
-                  x: pointRadius * Math.cos(pointAngle) + parentCenter.x,
-                  y: pointRadius * Math.sin(pointAngle) + parentCenter.y,
-                }
-              })}
-            />
-          ))
+          }).map(
+            (
+              { strokeColor, strokeWidth, parentCenter, parentPoints },
+              loopIndex
+            ) => (
+              <Polygon
+                fillColor={'none'}
+                strokeColor={strokeColor}
+                strokeWidth={strokeWidth}
+                somePoints={parentPoints}
+                // strokeWidth={0.05}
+                // somePoints={parentPoints.map((somePoint, pointIndex) => {
+                //   const baseRadius = getDistanceBetweenPoints({
+                //     pointA: parentCenter,
+                //     pointB: somePoint,
+                //   })
+                //   const pointAngle =
+                //     ((2 * Math.PI) / parentPoints.length) * pointIndex
+                //   const pointRadius =
+                //     baseRadius + Math.log(baseRadius) * Math.random() * 0.75
+                //   return {
+                //     x: pointRadius * Math.cos(pointAngle) + parentCenter.x,
+                //     y: pointRadius * Math.sin(pointAngle) + parentCenter.y,
+                //   }
+                // })}
+              />
+            )
+          )
         })}
       </g>
     </svg>

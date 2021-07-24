@@ -374,12 +374,11 @@ export function getTracePoint(api: GetTracePointApi): Point {
     null
   )
   // hacky workaround of failed checkIntersection result
-  return tracePoint || { x: 50, y: 50 }
-  // return tracePoint
-  //   ? tracePoint
-  //   : getTracePoint({
-  //       somePoints,
-  //       originPoint,
-  //       traceAngle: traceAngle + 0.0000001 * Math.random(),
-  //     })
+  return tracePoint
+    ? tracePoint
+    : getTracePoint({
+        somePoints,
+        originPoint,
+        traceAngle: traceAngle + 0.0000001 * Math.random(),
+      })
 }

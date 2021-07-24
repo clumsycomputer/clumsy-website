@@ -27,7 +27,7 @@ export default {
 
 const globalSampleCount = 128
 const camouflage = false
-const camouflageStrokeScalar = 1
+const camouflageStrokeScalar = 1 / 4
 
 const PaletteB = {
   primary: {
@@ -50,31 +50,40 @@ const PaletteB = {
   },
 }
 
+const reversedColorsA = [
+  PaletteB.primary.main,
+  PaletteB.triadicA.main,
+  PaletteB.triadicB.main,
+  PaletteB.complementary.main,
+  PaletteB.analogousB.main,
+  PaletteB.analogousA.main,
+  PaletteB.complementary.main,
+]
+
+// const reversedColorsB = [...reversedColorsA].reverse()
+const reversedColorsB = [
+  PaletteB.primary.main,
+  PaletteB.analogousA.main,
+  PaletteB.triadicA.main,
+  // PaletteB.analogousB.main,
+  PaletteB.complementary.main,
+  PaletteB.analogousB.main,
+  PaletteB.triadicB.main,
+  // PaletteB.analogousB.main,
+  PaletteB.complementary.main,
+]
+
 const colorsA = [
   PaletteB.primary.main,
-  PaletteB.triadicA.main,
-  PaletteB.triadicB.main,
-  PaletteB.complementary.main,
-  PaletteB.analogousB.main,
-  PaletteB.analogousA.main,
-  PaletteB.analogousB.main,
-  PaletteB.complementary.main,
-]
-
-const reversedColorsA = [...colorsA].reverse()
-
-const colorsB = [
-  PaletteB.primary.main,
   PaletteB.analogousB.main,
   PaletteB.analogousA.main,
   PaletteB.complementary.main,
   PaletteB.triadicB.main,
   PaletteB.triadicA.main,
-  PaletteB.triadicB.main,
   PaletteB.complementary.main,
 ]
 
-const reversedColorsB = [...colorsB].reverse()
+const colorsB = [...colorsA].reverse()
 
 function Qux() {
   const rootCircle: Circle = {
@@ -95,6 +104,7 @@ function Qux() {
     Array<{
       getStrokeWidth: RootLoopData['getStrokeWidth']
       getStrokeColor: RootLoopData['getStrokeColor']
+      getNestRhythm: RootLoopData['getNestRhythm']
       rotatedLoop: RotatedLoop
     }>
   >({
@@ -107,7 +117,7 @@ function Qux() {
       rhythmPhase: 0,
     }),
     getCellResult: ({ rhythmResolution, rhythmIndex, nestIndex }) => {
-      const rootNestIndex = nestIndex
+      const tangentIndex = nestIndex
       const angleA = (Math.PI / rhythmResolution) * rhythmIndex - Math.PI / 2
       const pointA = getTracePoint({
         somePoints: getRotatedLoopPoints({
@@ -140,6 +150,7 @@ function Qux() {
           rhythmDensity,
           nestIndex,
         }) => {
+          const orthogonalIndex = nestIndex
           const lineAngle = Math.atan2(pointB.y - pointA.y, pointB.x - pointA.x)
           const lineLength = Math.sqrt(
             Math.pow(pointB.x - pointA.x, 2) + Math.pow(pointB.y - pointA.y, 2)
@@ -149,7 +160,7 @@ function Qux() {
             x:
               cellRadius * Math.cos(lineAngle) +
               pointA.x -
-              (rootNestIndex === 2 && nestIndex === 0 ? 5 : 0),
+              (tangentIndex === 2 && nestIndex === 0 ? 5 : 0),
             y: cellRadius * Math.sin(lineAngle) + pointA.y,
           }
           const distanceFromRootCenter = Math.sqrt(
@@ -165,11 +176,26 @@ function Qux() {
           const nestRatioStep = openRhythmRatio / rhythmDensity
           const rhythmRatioStep = openRhythmRatio / rhythmResolution
           const baseRadiusScalar =
-            rootNestIndex === 2 && nestIndex === 0 ? 1.75 : 1.25
+            tangentIndex === 2 && nestIndex === 0 ? 1.75 : 1.25
           return {
             getStrokeWidth: () => 0.2,
             getStrokeColor: ({ nestIndex }) =>
-              colorsB[nestIndex % colorsB.length]!,
+              getNestColorSequence({
+                coreLoopKey: getCoreLoopKey({ tangentIndex, orthogonalIndex }),
+              })[nestIndex]!,
+            getNestRhythm: () =>
+              getNaturalCompositeRhythm({
+                rhythmResolution: 24,
+                rhythmParts: [
+                  { rhythmDensity: 23, rhythmPhase: 0 },
+                  { rhythmDensity: 19, rhythmPhase: 0 },
+                  { rhythmDensity: 17, rhythmPhase: 0 },
+                  { rhythmDensity: 13, rhythmPhase: 0 },
+                  { rhythmDensity: 11, rhythmPhase: 0 },
+                  { rhythmDensity: 7, rhythmPhase: 0 },
+                ],
+                rhythmPhase: 0,
+              }),
             rotatedLoop: {
               baseCircle: {
                 radius: baseRadiusScalar * Math.log(distanceFromRootCenter),
@@ -334,13 +360,26 @@ function Qux() {
       getStrokeWidth: () => 0.2,
       getStrokeColor: ({ nestIndex }) =>
         reversedColorsB[nestIndex % reversedColorsB.length]!,
-      getShiftAngle: ({ baseCenter }) =>
-        getStoopShiftAngle({
-          baseCenter,
-          shiftAngle: Math.PI / 2,
+      getShiftAngle: ({ baseCenter, baseShiftAngle }) => baseShiftAngle,
+      // getStoopShiftAngle({
+      //   baseCenter,
+      //   shiftAngle: Math.PI / 2,
+      // }),
+      getRelativeShiftScalar: () => 0.675,
+      getNestRhythm: () =>
+        getNaturalCompositeRhythm({
+          rhythmResolution: 24,
+          rhythmParts: [
+            { rhythmDensity: 23, rhythmPhase: 0 },
+            { rhythmDensity: 19, rhythmPhase: 0 },
+            { rhythmDensity: 17, rhythmPhase: 0 },
+            { rhythmDensity: 13, rhythmPhase: 0 },
+            { rhythmDensity: 11, rhythmPhase: 6 },
+            { rhythmDensity: 7, rhythmPhase: 0 },
+            // { rhythmDensity: 5, rhythmPhase: 0 },
+          ],
+          rhythmPhase: 0,
         }),
-      getRelativeShiftScalar: () => 0.5,
-      getNestRhythm: ({ defaultRhythm }) => defaultRhythm,
     },
     {
       rootLoop: [
@@ -413,21 +452,23 @@ function Qux() {
       ],
       getStrokeWidth: () => 0.2,
       getStrokeColor: ({ nestIndex }) =>
-        reversedColorsB[nestIndex % reversedColorsA.length]!,
-      getShiftAngle: ({ baseCenter }) =>
-        getStoopShiftAngle({
-          baseCenter,
-          shiftAngle: Math.PI - Math.PI / 3,
-        }),
-      getRelativeShiftScalar: () => 0.5,
+        reversedColorsB[nestIndex % reversedColorsB.length]!,
+      getShiftAngle: ({ baseCenter, baseShiftAngle }) => baseShiftAngle,
+      // getStoopShiftAngle({
+      //   baseCenter,
+      //   shiftAngle: Math.PI - Math.PI / 5,
+      // }),
+      getRelativeShiftScalar: () => 0.675,
       getNestRhythm: () =>
         getNaturalCompositeRhythm({
-          rhythmResolution: 18,
+          rhythmResolution: 24,
           rhythmParts: [
+            { rhythmDensity: 23, rhythmPhase: 0 },
+            { rhythmDensity: 19, rhythmPhase: 0 },
             { rhythmDensity: 17, rhythmPhase: 0 },
             { rhythmDensity: 13, rhythmPhase: 0 },
-            { rhythmDensity: 11, rhythmPhase: 0 },
-            { rhythmDensity: 7, rhythmPhase: 1 },
+            { rhythmDensity: 11, rhythmPhase: 6 },
+            { rhythmDensity: 7, rhythmPhase: 0 },
             // { rhythmDensity: 5, rhythmPhase: 0 },
           ],
           rhythmPhase: 0,
@@ -435,16 +476,75 @@ function Qux() {
     },
   ]
   const fooLoopGroups: Array<RootLoopData> = [
-    ...loopGroups.map<RootLoopData>((someCompositeLoop) => ({
-      rootLoop: someCompositeLoop,
-      getStrokeWidth: () => 0.2,
-      getStrokeColor: ({ nestIndex }) => colorsB[nestIndex % colorsB.length]!,
-      getShiftAngle: ({ baseShiftAngle }) => baseShiftAngle,
-      getRelativeShiftScalar: () => 0.5,
-      getNestRhythm: ({ defaultRhythm }) => defaultRhythm,
-    })),
+    ...loopGroups.map<RootLoopData>((someCompositeLoop, groupIndex) => {
+      switch (groupIndex) {
+        case 0: // topCenter
+          return {
+            rootLoop: someCompositeLoop,
+            getStrokeWidth: () => 0.25,
+            getStrokeColor: ({ nestIndex }) =>
+              colorsB[nestIndex % colorsB.length]!,
+            getShiftAngle: ({ baseShiftAngle }) => baseShiftAngle,
+            getRelativeShiftScalar: () => 0.5,
+            getNestRhythm: () =>
+              getNaturalCompositeRhythm({
+                rhythmResolution: 24,
+                rhythmParts: [
+                  { rhythmDensity: 23, rhythmPhase: 0 },
+                  { rhythmDensity: 19, rhythmPhase: 0 },
+                  { rhythmDensity: 17, rhythmPhase: 0 },
+                  { rhythmDensity: 13, rhythmPhase: 0 },
+                  { rhythmDensity: 11, rhythmPhase: 0 },
+                  { rhythmDensity: 7, rhythmPhase: 0 },
+                ],
+                rhythmPhase: 0,
+              }),
+          }
+        case 1: // midCenter
+          return {
+            rootLoop: someCompositeLoop,
+            getStrokeWidth: () => 0.2,
+            getStrokeColor: ({ nestIndex }) =>
+              colorsB[nestIndex % colorsB.length]!,
+            getShiftAngle: ({ baseShiftAngle }) => baseShiftAngle,
+            getRelativeShiftScalar: () => 0.5,
+            getNestRhythm: () =>
+              getNaturalCompositeRhythm({
+                rhythmResolution: 18,
+                rhythmParts: [
+                  { rhythmDensity: 17, rhythmPhase: 0 },
+                  { rhythmDensity: 13, rhythmPhase: 0 },
+                  { rhythmDensity: 11, rhythmPhase: 0 },
+                  { rhythmDensity: 7, rhythmPhase: 0 },
+                ],
+                rhythmPhase: 0,
+              }),
+          }
+        default:
+          // bottomCenter
+          return {
+            rootLoop: someCompositeLoop,
+            getStrokeWidth: () => 0.2,
+            getStrokeColor: ({ nestIndex }) =>
+              reversedColorsA[nestIndex % reversedColorsA.length]!,
+            getShiftAngle: ({ baseShiftAngle }) => baseShiftAngle,
+            getRelativeShiftScalar: () => 0.5,
+            getNestRhythm: () =>
+              getNaturalCompositeRhythm({
+                rhythmResolution: 18,
+                rhythmParts: [
+                  { rhythmDensity: 17, rhythmPhase: 0 },
+                  { rhythmDensity: 13, rhythmPhase: 0 },
+                  { rhythmDensity: 11, rhythmPhase: 0 },
+                  { rhythmDensity: 7, rhythmPhase: 0 },
+                ],
+                rhythmPhase: 0,
+              }),
+          }
+      }
+    }),
     ...singularLoops.map<RootLoopData>(
-      ({ getStrokeWidth, getStrokeColor, rotatedLoop }) => {
+      ({ getStrokeWidth, getStrokeColor, getNestRhythm, rotatedLoop }) => {
         const rootLoop = [
           rotatedLoop,
           rotatedLoop,
@@ -462,10 +562,10 @@ function Qux() {
         return {
           getStrokeWidth,
           getStrokeColor,
+          getNestRhythm,
           rootLoop,
           getShiftAngle: ({ baseShiftAngle }) => baseShiftAngle,
           getRelativeShiftScalar: () => 0.5,
-          getNestRhythm: ({ defaultRhythm }) => defaultRhythm,
         }
       }
     ),
@@ -622,6 +722,61 @@ function Qux() {
       </g>
     </svg>
   )
+}
+
+function getCoreLoopKey(api: any) {
+  const { tangentIndex, orthogonalIndex } = api
+  if (tangentIndex === 1 && orthogonalIndex === 0) {
+    return 'perimeterRight40'
+  } else if (tangentIndex === 1 && orthogonalIndex === 1) {
+    return 'centerInnerRight'
+  } else if (tangentIndex === 1 && orthogonalIndex === 2) {
+    return 'bottomLowerRight'
+  } else if (tangentIndex === 2 && orthogonalIndex === 0) {
+    return 'perimeterRight90'
+  } else if (tangentIndex === 2 && orthogonalIndex === 1) {
+    return 'midBottomInnerRight'
+  } else if (tangentIndex === 2 && orthogonalIndex === 2) {
+    return 'midBottomOuterRight'
+  } else if (tangentIndex === 3 && orthogonalIndex === 0) {
+    return 'perimeterRight150'
+  } else if (tangentIndex === 3 && orthogonalIndex === 1) {
+    return 'bottomUpperRight'
+  } else if (tangentIndex === 3 && orthogonalIndex === 2) {
+    return 'centerOuterRight'
+  } else {
+    return 'default'
+  }
+}
+
+interface GetNestColorSequenceApi {
+  coreLoopKey: ReturnType<typeof getCoreLoopKey>
+}
+
+function getNestColorSequence(api: GetNestColorSequenceApi) {
+  const { coreLoopKey } = api
+  switch (coreLoopKey) {
+    case 'perimeterRight40':
+      return colorsA
+    case 'perimeterRight90':
+      return colorsA
+    case 'perimeterRight150':
+      return colorsA
+    case 'centerInnerRight':
+      return colorsA
+    case 'centerOuterRight':
+      return colorsB
+    case 'midBottomInnerRight':
+      return colorsB
+    case 'midBottomOuterRight':
+      return colorsA
+    case 'bottomUpperRight':
+      return colorsB
+    case 'bottomLowerRight':
+      return colorsA
+    case 'default':
+      return colorsB
+  }
 }
 
 function getStoopShiftAngle(api: any) {

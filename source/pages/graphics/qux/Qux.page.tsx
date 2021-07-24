@@ -27,7 +27,7 @@ export default {
 
 const globalSampleCount = 128
 const camouflage = false
-const camouflageStrokeScalar = 1 / 4
+const camouflageStrokeScalar = 1 / 5
 
 const PaletteB = {
   primary: {
@@ -50,29 +50,6 @@ const PaletteB = {
   },
 }
 
-const reversedColorsA = [
-  PaletteB.primary.main,
-  PaletteB.triadicA.main,
-  PaletteB.triadicB.main,
-  PaletteB.complementary.main,
-  PaletteB.analogousB.main,
-  PaletteB.analogousA.main,
-  PaletteB.complementary.main,
-]
-
-// const reversedColorsB = [...reversedColorsA].reverse()
-const reversedColorsB = [
-  PaletteB.primary.main,
-  PaletteB.analogousA.main,
-  PaletteB.triadicA.main,
-  // PaletteB.analogousB.main,
-  PaletteB.complementary.main,
-  PaletteB.analogousB.main,
-  PaletteB.triadicB.main,
-  // PaletteB.analogousB.main,
-  PaletteB.complementary.main,
-]
-
 const colorsA = [
   PaletteB.primary.main,
   PaletteB.analogousB.main,
@@ -82,8 +59,6 @@ const colorsA = [
   PaletteB.triadicA.main,
   PaletteB.complementary.main,
 ]
-
-const colorsB = [...colorsA].reverse()
 
 function Qux() {
   const rootCircle: Circle = {
@@ -358,14 +333,13 @@ function Qux() {
         }),
       ],
       getStrokeWidth: () => 0.2,
-      getStrokeColor: ({ nestIndex }) =>
-        reversedColorsB[nestIndex % reversedColorsB.length]!,
-      getShiftAngle: ({ baseCenter, baseShiftAngle }) => baseShiftAngle,
-      // getStoopShiftAngle({
-      //   baseCenter,
-      //   shiftAngle: Math.PI / 2,
-      // }),
-      getRelativeShiftScalar: () => 0.675,
+      getStrokeColor: ({ nestIndex }) => colorsA[nestIndex % colorsA.length]!,
+      getShiftAngle: ({ baseCenter }) =>
+        getStoopShiftAngle({
+          baseCenter,
+          shiftAngle: Math.PI / 3,
+        }),
+      getRelativeShiftScalar: () => 0.75,
       getNestRhythm: () =>
         getNaturalCompositeRhythm({
           rhythmResolution: 24,
@@ -374,7 +348,7 @@ function Qux() {
             { rhythmDensity: 19, rhythmPhase: 0 },
             { rhythmDensity: 17, rhythmPhase: 0 },
             { rhythmDensity: 13, rhythmPhase: 0 },
-            { rhythmDensity: 11, rhythmPhase: 6 },
+            { rhythmDensity: 11, rhythmPhase: 0 },
             { rhythmDensity: 7, rhythmPhase: 0 },
             // { rhythmDensity: 5, rhythmPhase: 0 },
           ],
@@ -394,10 +368,9 @@ function Qux() {
         }),
       ],
       getStrokeWidth: () => 0.2,
-      getStrokeColor: ({ nestIndex }) =>
-        reversedColorsA[nestIndex % colorsB.length]!,
+      getStrokeColor: ({ nestIndex }) => colorsA[nestIndex % colorsA.length]!,
       getShiftAngle: ({ baseShiftAngle }) => baseShiftAngle,
-      getRelativeShiftScalar: () => 0.5,
+      getRelativeShiftScalar: () => 0.75,
       getNestRhythm: () =>
         getNaturalCompositeRhythm({
           rhythmResolution: 18,
@@ -423,10 +396,9 @@ function Qux() {
         }),
       ],
       getStrokeWidth: () => 0.2,
-      getStrokeColor: ({ nestIndex }) =>
-        reversedColorsA[nestIndex % colorsB.length]!,
+      getStrokeColor: ({ nestIndex }) => colorsA[nestIndex % colorsA.length]!,
       getShiftAngle: ({ baseShiftAngle }) => baseShiftAngle,
-      getRelativeShiftScalar: () => 0.5,
+      getRelativeShiftScalar: () => 0.75,
       getNestRhythm: () =>
         getNaturalCompositeRhythm({
           rhythmResolution: 18,
@@ -439,41 +411,40 @@ function Qux() {
           rhythmPhase: 0,
         }),
     },
-    {
-      rootLoop: [
-        centerLoop,
-        getUpdatedData({
-          baseData: centerLoop,
-          dataUpdates: {
-            rotationAngle: () => Math.PI / 2 / 1.5,
-            'childCircle.relativeRadius': () => 1 / 4,
-          },
-        }),
-      ],
-      getStrokeWidth: () => 0.2,
-      getStrokeColor: ({ nestIndex }) =>
-        reversedColorsB[nestIndex % reversedColorsB.length]!,
-      getShiftAngle: ({ baseCenter, baseShiftAngle }) => baseShiftAngle,
-      // getStoopShiftAngle({
-      //   baseCenter,
-      //   shiftAngle: Math.PI - Math.PI / 5,
-      // }),
-      getRelativeShiftScalar: () => 0.675,
-      getNestRhythm: () =>
-        getNaturalCompositeRhythm({
-          rhythmResolution: 24,
-          rhythmParts: [
-            { rhythmDensity: 23, rhythmPhase: 0 },
-            { rhythmDensity: 19, rhythmPhase: 0 },
-            { rhythmDensity: 17, rhythmPhase: 0 },
-            { rhythmDensity: 13, rhythmPhase: 0 },
-            { rhythmDensity: 11, rhythmPhase: 6 },
-            { rhythmDensity: 7, rhythmPhase: 0 },
-            // { rhythmDensity: 5, rhythmPhase: 0 },
-          ],
-          rhythmPhase: 0,
-        }),
-    },
+    // {
+    //   rootLoop: [
+    //     centerLoop,
+    //     getUpdatedData({
+    //       baseData: centerLoop,
+    //       dataUpdates: {
+    //         rotationAngle: () => Math.PI / 2 / 1.5,
+    //         'childCircle.relativeRadius': () => 1 / 4,
+    //       },
+    //     }),
+    //   ],
+    //   getStrokeWidth: () => 0.2,
+    //   getStrokeColor: ({ nestIndex }) => colorsA[nestIndex % colorsA.length]!,
+    //   getShiftAngle: ({ baseCenter }) =>
+    //     getStoopShiftAngle({
+    //       baseCenter,
+    //       shiftAngle: -Math.PI / 2.5,
+    //     }),
+    //   getRelativeShiftScalar: () => 0.75,
+    //   getNestRhythm: () =>
+    //     getNaturalCompositeRhythm({
+    //       rhythmResolution: 24,
+    //       rhythmParts: [
+    //         { rhythmDensity: 23, rhythmPhase: 0 },
+    //         { rhythmDensity: 19, rhythmPhase: 0 },
+    //         { rhythmDensity: 17, rhythmPhase: 0 },
+    //         { rhythmDensity: 13, rhythmPhase: 0 },
+    //         { rhythmDensity: 11, rhythmPhase: 0 },
+    //         { rhythmDensity: 7, rhythmPhase: 0 },
+    //         // { rhythmDensity: 5, rhythmPhase: 0 },
+    //       ],
+    //       rhythmPhase: 0,
+    //     }),
+    // },
   ]
   const fooLoopGroups: Array<RootLoopData> = [
     ...loopGroups.map<RootLoopData>((someCompositeLoop, groupIndex) => {
@@ -481,10 +452,14 @@ function Qux() {
         case 0: // topCenter
           return {
             rootLoop: someCompositeLoop,
-            getStrokeWidth: () => 0.25,
+            getStrokeWidth: () => 0.3,
             getStrokeColor: ({ nestIndex }) =>
-              colorsB[nestIndex % colorsB.length]!,
-            getShiftAngle: ({ baseShiftAngle }) => baseShiftAngle,
+              colorsA[nestIndex % colorsA.length]!,
+            getShiftAngle: ({ baseCenter }) =>
+              getStoopShiftAngle({
+                baseCenter,
+                shiftAngle: 0,
+              }),
             getRelativeShiftScalar: () => 0.5,
             getNestRhythm: () =>
               getNaturalCompositeRhythm({
@@ -495,7 +470,7 @@ function Qux() {
                   { rhythmDensity: 17, rhythmPhase: 0 },
                   { rhythmDensity: 13, rhythmPhase: 0 },
                   { rhythmDensity: 11, rhythmPhase: 0 },
-                  { rhythmDensity: 7, rhythmPhase: 0 },
+                  { rhythmDensity: 7, rhythmPhase: 3 },
                 ],
                 rhythmPhase: 0,
               }),
@@ -505,17 +480,21 @@ function Qux() {
             rootLoop: someCompositeLoop,
             getStrokeWidth: () => 0.2,
             getStrokeColor: ({ nestIndex }) =>
-              colorsB[nestIndex % colorsB.length]!,
+              colorsA[nestIndex % colorsA.length]!,
             getShiftAngle: ({ baseShiftAngle }) => baseShiftAngle,
             getRelativeShiftScalar: () => 0.5,
             getNestRhythm: () =>
               getNaturalCompositeRhythm({
-                rhythmResolution: 18,
+                rhythmResolution: 24,
                 rhythmParts: [
+                  { rhythmDensity: 23, rhythmPhase: 0 },
+                  { rhythmDensity: 19, rhythmPhase: 0 },
+                  { rhythmDensity: 18, rhythmPhase: 0 },
                   { rhythmDensity: 17, rhythmPhase: 0 },
                   { rhythmDensity: 13, rhythmPhase: 0 },
+                  { rhythmDensity: 12, rhythmPhase: 0 },
                   { rhythmDensity: 11, rhythmPhase: 0 },
-                  { rhythmDensity: 7, rhythmPhase: 0 },
+                  { rhythmDensity: 7, rhythmPhase: 3 },
                 ],
                 rhythmPhase: 0,
               }),
@@ -526,7 +505,7 @@ function Qux() {
             rootLoop: someCompositeLoop,
             getStrokeWidth: () => 0.2,
             getStrokeColor: ({ nestIndex }) =>
-              reversedColorsA[nestIndex % reversedColorsA.length]!,
+              colorsA[nestIndex % colorsA.length]!,
             getShiftAngle: ({ baseShiftAngle }) => baseShiftAngle,
             getRelativeShiftScalar: () => 0.5,
             getNestRhythm: () =>
@@ -765,17 +744,17 @@ function getNestColorSequence(api: GetNestColorSequenceApi) {
     case 'centerInnerRight':
       return colorsA
     case 'centerOuterRight':
-      return colorsB
+      return colorsA
     case 'midBottomInnerRight':
-      return colorsB
+      return colorsA
     case 'midBottomOuterRight':
       return colorsA
     case 'bottomUpperRight':
-      return colorsB
+      return colorsA
     case 'bottomLowerRight':
       return colorsA
     case 'default':
-      return colorsB
+      return colorsA
   }
 }
 

@@ -1,18 +1,14 @@
 import React from 'react'
 import {
   Circle,
-  getAdjustedSampleAngle,
-  getMirroredPoint,
   getMirroredRotatedLoop,
   getRotatedLoopChildCircle,
-  getRotatedLoopPoint,
   getRotatedLoopPoints,
   getTracePoint,
   Point,
   RotatedLoop,
 } from '../../../library/circleStuff'
 import { Polygon } from '../../../library/components/Polygon'
-import { Sircle } from '../../../library/components/Sircle'
 import { getUpdatedData } from '../../../library/getUpdatedData'
 import {
   DiscreteRhythm,
@@ -28,6 +24,8 @@ export default {
   generatePdf: false,
   pdfFileName: 'qux',
 }
+
+const globalSampleCount = 128
 
 const PaletteB = {
   primary: {
@@ -111,7 +109,7 @@ function Qux() {
       const angleA = (Math.PI / rhythmResolution) * rhythmIndex - Math.PI / 2
       const pointA = getTracePoint({
         somePoints: getRotatedLoopPoints({
-          sampleCount: 256,
+          sampleCount: globalSampleCount,
           someRotatedLoop: rootLoop,
         }),
         originPoint: rootCircle.center,
@@ -119,7 +117,7 @@ function Qux() {
       })
       const pointB = getTracePoint({
         somePoints: getRotatedLoopPoints({
-          sampleCount: 256,
+          sampleCount: globalSampleCount,
           someRotatedLoop: rootLoop,
         }),
         originPoint: rootCircle.center,
@@ -334,6 +332,12 @@ function Qux() {
       getStrokeWidth: () => 0.2,
       getStrokeColor: ({ nestIndex }) =>
         reversedColorsB[nestIndex % reversedColorsB.length]!,
+      getShiftAngle: ({ baseCenter }) =>
+        getStoopShiftAngle({
+          baseCenter,
+          shiftAngle: Math.PI / 2,
+        }),
+      getRelativeShiftScalar: () => 0.5,
     },
     {
       rootLoop: [
@@ -349,6 +353,8 @@ function Qux() {
       ],
       getStrokeWidth: () => 0.2,
       getStrokeColor: ({ nestIndex }) => colorsB[nestIndex % colorsB.length]!,
+      getShiftAngle: ({ baseShiftAngle }) => baseShiftAngle,
+      getRelativeShiftScalar: () => 0.5,
     },
     {
       rootLoop: [
@@ -364,6 +370,8 @@ function Qux() {
       ],
       getStrokeWidth: () => 0.2,
       getStrokeColor: ({ nestIndex }) => colorsB[nestIndex % colorsB.length]!,
+      getShiftAngle: ({ baseShiftAngle }) => baseShiftAngle,
+      getRelativeShiftScalar: () => 0.5,
     },
     {
       rootLoop: [
@@ -378,6 +386,8 @@ function Qux() {
       ],
       getStrokeWidth: () => 0.2,
       getStrokeColor: ({ nestIndex }) => colorsB[nestIndex % colorsB.length]!,
+      getShiftAngle: ({ baseShiftAngle }) => baseShiftAngle,
+      getRelativeShiftScalar: () => 0.5,
     },
   ]
   const fooLoopGroups: Array<RootLoopData> = [
@@ -385,12 +395,12 @@ function Qux() {
       rootLoop: someCompositeLoop,
       getStrokeWidth: () => 0.2,
       getStrokeColor: ({ nestIndex }) => colorsB[nestIndex % colorsB.length]!,
+      getShiftAngle: ({ baseShiftAngle }) => baseShiftAngle,
+      getRelativeShiftScalar: () => 0.5,
     })),
     ...singularLoops.map<RootLoopData>(
-      ({ getStrokeWidth, getStrokeColor, rotatedLoop }) => ({
-        getStrokeWidth,
-        getStrokeColor,
-        rootLoop: [
+      ({ getStrokeWidth, getStrokeColor, rotatedLoop }) => {
+        const rootLoop = [
           rotatedLoop,
           rotatedLoop,
           rotatedLoop,
@@ -403,8 +413,15 @@ function Qux() {
               'childCircle.phaseAngle': (fooAngle: number) => -fooAngle,
             },
           }),
-        ],
-      })
+        ]
+        return {
+          getStrokeWidth,
+          getStrokeColor,
+          rootLoop,
+          getShiftAngle: ({ baseShiftAngle }) => baseShiftAngle,
+          getRelativeShiftScalar: () => 0.5,
+        }
+      }
     ),
     ...coreDecorationLoops,
     ...coreDecorationLoops.map((someRootLoopData) => ({
@@ -431,115 +448,137 @@ function Qux() {
     >
       <rect x={-10} y={-10} width={120} height={120} fill={'black'} />
       <g transform={'translate(0,5)'}>
-        {fooLoopGroups.map(({ rootLoop, getStrokeWidth, getStrokeColor }) => {
-          const basePoints = getCompositeLoopPoints({
-            sampleCount: 256,
-            baseLoops: rootLoop,
-          })
-          const compositeCenter = getCompositeCenterPoint({
-            baseLoops: rootLoop,
-          })
-          const shiftTargetAngle = Math.atan2(
-            compositeCenter.y - rootCircle.center.y,
-            compositeCenter.x - rootCircle.center.x
-          )
-          const maxShiftPoint: Point = getTracePoint({
-            somePoints: basePoints,
-            traceAngle: shiftTargetAngle,
-            originPoint: rootCircle.center,
-          })
-          const maxShiftRadius = getDistanceBetweenPoints({
-            pointA: compositeCenter,
-            pointB: maxShiftPoint,
-          })
-          return reduceRhythmSequence<{
-            strokeWidth: number
-            strokeColor: string
-            parentCenter: Point
-            parentPoints: Array<Point>
-          }>({
-            baseRhythm: getNaturalCompositeRhythm({
-              rhythmResolution: 24,
-              rhythmParts: [
-                { rhythmDensity: 23, rhythmPhase: 0 },
-                { rhythmDensity: 19, rhythmPhase: 0 },
-                { rhythmDensity: 17, rhythmPhase: 0 },
-                { rhythmDensity: 13, rhythmPhase: 0 },
-                { rhythmDensity: 11, rhythmPhase: 0 },
-                { rhythmDensity: 7, rhythmPhase: 0 },
-              ],
-              rhythmPhase: 0,
-            }),
-            getCellResult: ({ rhythmResolution, rhythmIndex, nestIndex }) => {
-              const childShiftRadius =
-                ((maxShiftRadius / rhythmResolution) * rhythmIndex) / 1.5
-              const currentCenter: Point = {
-                x:
-                  childShiftRadius * Math.cos(shiftTargetAngle) +
-                  compositeCenter.x,
-                y:
-                  childShiftRadius * Math.sin(shiftTargetAngle) +
-                  compositeCenter.y,
-              }
-              return {
-                strokeWidth: getStrokeWidth({ nestIndex }),
-                strokeColor: getStrokeColor({ nestIndex }),
-                parentCenter: currentCenter,
-                parentPoints: basePoints.map((someBasePoint, pointIndex) => {
-                  const maxRadius = getDistanceBetweenPoints({
-                    pointA: compositeCenter,
-                    pointB: someBasePoint,
-                  })
-                  const currentBaseRadius =
-                    maxRadius - (maxRadius / rhythmResolution) * rhythmIndex
-                  const currentAngle =
-                    ((2 * Math.PI) / basePoints.length) * pointIndex
-                  return {
-                    x:
-                      currentBaseRadius * Math.cos(currentAngle) +
-                      currentCenter.x,
-                    y:
-                      currentBaseRadius * Math.sin(currentAngle) +
-                      currentCenter.y,
-                  }
-                }),
-              }
-            },
-          }).map(
-            (
-              { strokeColor, strokeWidth, parentCenter, parentPoints },
-              loopIndex
-            ) => (
-              <Polygon
-                fillColor={'none'}
-                strokeColor={strokeColor}
-                strokeWidth={strokeWidth}
-                somePoints={parentPoints}
-                // strokeWidth={0.05}
-                // somePoints={parentPoints.map((somePoint, pointIndex) => {
-                //   const baseRadius = getDistanceBetweenPoints({
-                //     pointA: parentCenter,
-                //     pointB: somePoint,
-                //   })
-                //   const pointAngle =
-                //     ((2 * Math.PI) / parentPoints.length) * pointIndex
-                //   const pointRadius =
-                //     baseRadius + Math.log(baseRadius) * Math.random() * 0.75
-                //   return {
-                //     x: pointRadius * Math.cos(pointAngle) + parentCenter.x,
-                //     y: pointRadius * Math.sin(pointAngle) + parentCenter.y,
-                //   }
-                // })}
-              />
+        {fooLoopGroups.map(
+          ({
+            rootLoop,
+            getShiftAngle,
+            getRelativeShiftScalar,
+            getStrokeWidth,
+            getStrokeColor,
+          }) => {
+            const basePoints = getCompositeLoopPoints({
+              sampleCount: globalSampleCount,
+              baseLoops: rootLoop,
+            })
+            const compositeCenter = getCompositeCenterPoint({
+              baseLoops: rootLoop,
+            })
+            const baseShiftAngle = Math.atan2(
+              compositeCenter.y - rootCircle.center.y,
+              compositeCenter.x - rootCircle.center.x
             )
-          )
-        })}
+            const shiftAngle = getShiftAngle({
+              baseShiftAngle,
+              baseCenter: compositeCenter,
+            })
+            const maxShiftPoint: Point = getTracePoint({
+              somePoints: basePoints,
+              traceAngle: shiftAngle,
+              originPoint: compositeCenter,
+            })
+            const maxShiftRadius = getDistanceBetweenPoints({
+              pointA: compositeCenter,
+              pointB: maxShiftPoint,
+            })
+            const shiftScalar = getRelativeShiftScalar()
+            return reduceRhythmSequence<{
+              strokeWidth: number
+              strokeColor: string
+              parentCenter: Point
+              parentPoints: Array<Point>
+            }>({
+              baseRhythm: getNaturalCompositeRhythm({
+                rhythmResolution: 24,
+                rhythmParts: [
+                  { rhythmDensity: 23, rhythmPhase: 0 },
+                  { rhythmDensity: 19, rhythmPhase: 0 },
+                  { rhythmDensity: 17, rhythmPhase: 0 },
+                  { rhythmDensity: 13, rhythmPhase: 0 },
+                  { rhythmDensity: 11, rhythmPhase: 0 },
+                  { rhythmDensity: 7, rhythmPhase: 0 },
+                  // { rhythmDensity: 5, rhythmPhase: 0 },
+                ],
+                rhythmPhase: 0,
+              }),
+              getCellResult: ({ rhythmResolution, rhythmIndex, nestIndex }) => {
+                const childShiftRadius =
+                  shiftScalar *
+                  (maxShiftRadius / rhythmResolution) *
+                  rhythmIndex
+                const currentCenter: Point = {
+                  x:
+                    childShiftRadius * Math.cos(shiftAngle) + compositeCenter.x,
+                  y:
+                    childShiftRadius * Math.sin(shiftAngle) + compositeCenter.y,
+                }
+                return {
+                  strokeWidth: getStrokeWidth({ nestIndex }),
+                  strokeColor: getStrokeColor({ nestIndex }),
+                  parentCenter: currentCenter,
+                  parentPoints: basePoints.map((someBasePoint, pointIndex) => {
+                    const maxRadius = getDistanceBetweenPoints({
+                      pointA: compositeCenter,
+                      pointB: someBasePoint,
+                    })
+                    const currentBaseRadius =
+                      maxRadius - (maxRadius / rhythmResolution) * rhythmIndex
+                    const currentAngle =
+                      ((2 * Math.PI) / basePoints.length) * pointIndex
+                    return {
+                      x:
+                        currentBaseRadius * Math.cos(currentAngle) +
+                        currentCenter.x,
+                      y:
+                        currentBaseRadius * Math.sin(currentAngle) +
+                        currentCenter.y,
+                    }
+                  }),
+                }
+              },
+            }).map(
+              (
+                { strokeColor, strokeWidth, parentCenter, parentPoints },
+                loopIndex
+              ) => (
+                <Polygon
+                  fillColor={'none'}
+                  strokeColor={strokeColor}
+                  strokeWidth={strokeWidth}
+                  // somePoints={parentPoints}
+                  somePoints={parentPoints.map((somePoint, pointIndex) => {
+                    const baseRadius = getDistanceBetweenPoints({
+                      pointA: parentCenter,
+                      pointB: somePoint,
+                    })
+                    const pointAngle =
+                      ((2 * Math.PI) / parentPoints.length) * pointIndex
+                    const pointRadius =
+                      baseRadius + Math.log(baseRadius) * Math.random() * 0 // 0.75
+                    return {
+                      x: pointRadius * Math.cos(pointAngle) + parentCenter.x,
+                      y: pointRadius * Math.sin(pointAngle) + parentCenter.y,
+                    }
+                  })}
+                />
+              )
+            )
+          }
+        )}
       </g>
     </svg>
   )
 }
 
+function getStoopShiftAngle(api: any) {
+  const { baseCenter, shiftAngle } = api
+  return baseCenter.x < 50
+    ? -Math.PI / 2 - shiftAngle
+    : -Math.PI / 2 + shiftAngle
+}
+
 interface RootLoopData {
+  getShiftAngle: (api: { baseShiftAngle: number; baseCenter: Point }) => number
+  getRelativeShiftScalar: () => number
   getStrokeColor: (api: { nestIndex: number }) => string
   getStrokeWidth: (api: { nestIndex: number }) => number
   rootLoop: CompositeLoop

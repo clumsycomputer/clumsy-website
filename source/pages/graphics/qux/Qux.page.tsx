@@ -79,6 +79,21 @@ function getNestRhythmGetter(
 ): RootLoopData['getNestRhythm'] {
   const { loopKey } = api
   switch (loopKey) {
+    case 'centerTop':
+    case 'centerMidTop':
+    case 'centerBottom':
+      return () =>
+        getNaturalCompositeRhythm({
+          rhythmResolution: 23,
+          rhythmParts: [
+            { rhythmDensity: 19, rhythmPhase: 0 },
+            { rhythmDensity: 17, rhythmPhase: 0 },
+            { rhythmDensity: 13, rhythmPhase: 0 },
+            { rhythmDensity: 11, rhythmPhase: 0 },
+            { rhythmDensity: 7, rhythmPhase: 10 },
+          ],
+          rhythmPhase: 1,
+        })
     case 'perimeterRight40':
     case 'perimeterRight90':
     case 'perimeterRight150':
@@ -88,16 +103,13 @@ function getNestRhythmGetter(
     case 'midBottomOuterRight':
     case 'bottomUpperRight':
     case 'bottomLowerRight':
-    case 'centerTop':
-    case 'centerMidTop':
-    case 'centerBottom':
     case 'rightEye':
     case 'rightEar':
     case 'rightHip':
     case 'default':
       return () =>
         getNaturalCompositeRhythm({
-          rhythmResolution: 18,
+          rhythmResolution: 23,
           rhythmParts: [
             { rhythmDensity: 17, rhythmPhase: 0 },
             { rhythmDensity: 13, rhythmPhase: 0 },
@@ -115,31 +127,97 @@ function getShiftAngleGetter(
   const { loopKey } = api
   switch (loopKey) {
     case 'centerTop':
+      return ({ baseCenter }) =>
+        getStoopShiftAngle({
+          baseCenter,
+          shiftAngle: Math.PI,
+        })
     case 'centerMidTop':
-    case 'centerBottom':
       return ({ baseCenter }) =>
         getStoopShiftAngle({
           baseCenter,
           shiftAngle: 0,
         })
     case 'perimeterRight40':
-    case 'perimeterRight90':
-    case 'perimeterRight150':
-    case 'centerInnerRight':
-    case 'centerOuterRight':
-    case 'midBottomInnerRight':
-    case 'midBottomOuterRight':
-    case 'bottomUpperRight':
-    case 'bottomLowerRight':
-    case 'rightEye':
-    case 'rightEar':
-    case 'rightHip':
-    case 'default':
       return ({ baseCenter }) =>
         getStoopShiftAngle({
           baseCenter,
-          shiftAngle: Math.PI / 2,
+          shiftAngle: -Math.PI / 3,
         })
+    case 'perimeterRight90':
+      return ({ baseCenter }) =>
+        getStoopShiftAngle({
+          baseCenter,
+          shiftAngle: Math.PI / 6,
+        })
+    case 'midBottomOuterRight':
+      return ({ baseCenter }) =>
+        getStoopShiftAngle({
+          baseCenter,
+          shiftAngle: Math.PI / 3,
+        })
+    case 'bottomLowerRight':
+      return ({ baseCenter }) =>
+        getStoopShiftAngle({
+          baseCenter,
+          shiftAngle: Math.PI / 12,
+        })
+    case 'perimeterRight150':
+      return ({ baseCenter }) =>
+        getStoopShiftAngle({
+          baseCenter,
+          shiftAngle: -Math.PI / 3.5,
+        })
+    case 'rightEar':
+      return ({ baseCenter }) =>
+        getStoopShiftAngle({
+          baseCenter,
+          shiftAngle: -Math.PI / 2.25,
+        })
+    case 'rightHip':
+      return ({ baseCenter }) =>
+        getStoopShiftAngle({
+          baseCenter,
+          shiftAngle: Math.PI - Math.PI / 16,
+        })
+    case 'centerBottom':
+      return ({ baseCenter }) =>
+        getStoopShiftAngle({
+          baseCenter,
+          shiftAngle: Math.PI,
+        })
+    case 'bottomUpperRight':
+      return ({ baseCenter }) =>
+        getStoopShiftAngle({
+          baseCenter,
+          shiftAngle: Math.PI / 2 + Math.PI / 6,
+        })
+    case 'midBottomInnerRight':
+      return ({ baseCenter }) =>
+        getStoopShiftAngle({
+          baseCenter,
+          shiftAngle: Math.PI / 2 - Math.PI / 6,
+        })
+    case 'centerOuterRight':
+      return ({ baseCenter }) =>
+        getStoopShiftAngle({
+          baseCenter,
+          shiftAngle: Math.PI + Math.PI / 2.5,
+        })
+    case 'centerInnerRight':
+      return ({ baseCenter }) =>
+        getStoopShiftAngle({
+          baseCenter,
+          shiftAngle: Math.PI / 2 - Math.PI / 24,
+        })
+    case 'rightEye':
+      return ({ baseCenter }) =>
+        getStoopShiftAngle({
+          baseCenter,
+          shiftAngle: Math.PI / 3.5,
+        })
+    case 'default':
+      return ({ baseShiftAngle }) => baseShiftAngle
   }
 }
 

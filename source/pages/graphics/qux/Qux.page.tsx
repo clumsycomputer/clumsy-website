@@ -93,6 +93,8 @@ function Qux() {
   }
   const coreLoops = mapRhythmSequence<
     Array<{
+      getStrokeWidth: RootLoopData['getStrokeWidth']
+      getStrokeColor: RootLoopData['getStrokeColor']
       rotatedLoop: RotatedLoop
     }>
   >({
@@ -142,8 +144,6 @@ function Qux() {
           const lineLength = Math.sqrt(
             Math.pow(pointB.x - pointA.x, 2) + Math.pow(pointB.y - pointA.y, 2)
           )
-          // const cellRadius =
-          //   lineLength - (lineLength / rhythmResolution) * rhythmIndex
           const cellRadius = (lineLength / rhythmResolution) * rhythmIndex
           const newBaseCircleCenter = {
             x:
@@ -167,6 +167,9 @@ function Qux() {
           const baseRadiusScalar =
             rootNestIndex === 2 && nestIndex === 0 ? 1.75 : 1.25
           return {
+            getStrokeWidth: () => 0.2,
+            getStrokeColor: ({ nestIndex }) =>
+              colorsB[nestIndex % colorsB.length]!,
             rotatedLoop: {
               baseCircle: {
                 radius: baseRadiusScalar * Math.log(distanceFromRootCenter),
@@ -189,11 +192,12 @@ function Qux() {
   }).flat()
   const baseLoops = [
     ...coreLoops,
-    ...coreLoops.map(({ rotatedLoop }) => ({
+    ...coreLoops.map((someCoreLoopData) => ({
+      ...someCoreLoopData,
       rotatedLoop: getMirroredRotatedLoop({
         mirrorAngle: Math.PI / 2,
         originPoint: rootCircle.center,
-        baseLoop: rotatedLoop,
+        baseLoop: someCoreLoopData.rotatedLoop,
       }),
     })),
   ]
@@ -328,7 +332,8 @@ function Qux() {
         }),
       ],
       getStrokeWidth: () => 0.2,
-      getStrokeColor: ({ nestIndex }) => colorsB[nestIndex % colorsB.length]!,
+      getStrokeColor: ({ nestIndex }) =>
+        reversedColorsB[nestIndex % reversedColorsB.length]!,
     },
     {
       rootLoop: [
@@ -376,31 +381,31 @@ function Qux() {
     },
   ]
   const fooLoopGroups: Array<RootLoopData> = [
-    ...loopGroups.map((foo) => ({
-      rootLoop: foo,
+    ...loopGroups.map<RootLoopData>((someCompositeLoop) => ({
+      rootLoop: someCompositeLoop,
       getStrokeWidth: () => 0.2,
-      getStrokeColor: ({ nestIndex }: { nestIndex: number }) =>
-        colorsB[nestIndex % colorsB.length]!,
+      getStrokeColor: ({ nestIndex }) => colorsB[nestIndex % colorsB.length]!,
     })),
-    ...singularLoops.map(({ rotatedLoop }) => ({
-      getStrokeWidth: () => 0.2,
-      getStrokeColor: ({ nestIndex }: { nestIndex: number }) =>
-        colorsB[nestIndex % colorsB.length]!,
-      rootLoop: [
-        rotatedLoop,
-        rotatedLoop,
-        rotatedLoop,
-        rotatedLoop,
-        getUpdatedData({
-          baseData: rotatedLoop,
-          dataUpdates: {
-            rotationAngle: (fooAngle: number) => -fooAngle,
-            'childCircle.relativeRadius': (foo: number) => foo / 1.5,
-            'childCircle.phaseAngle': (fooAngle: number) => -fooAngle,
-          },
-        }),
-      ],
-    })),
+    ...singularLoops.map<RootLoopData>(
+      ({ getStrokeWidth, getStrokeColor, rotatedLoop }) => ({
+        getStrokeWidth,
+        getStrokeColor,
+        rootLoop: [
+          rotatedLoop,
+          rotatedLoop,
+          rotatedLoop,
+          rotatedLoop,
+          getUpdatedData({
+            baseData: rotatedLoop,
+            dataUpdates: {
+              rotationAngle: (fooAngle: number) => -fooAngle,
+              'childCircle.relativeRadius': (foo: number) => foo / 1.5,
+              'childCircle.phaseAngle': (fooAngle: number) => -fooAngle,
+            },
+          }),
+        ],
+      })
+    ),
     ...coreDecorationLoops,
     ...coreDecorationLoops.map((someRootLoopData) => ({
       ...someRootLoopData,

@@ -27,7 +27,7 @@ export default {
 
 const globalSampleCount = 2048
 const camouflage = true
-const camouflageStrokeScalar = 1 / 6
+const camouflageStrokeScalar = 1 / 7
 interface GetRootLoopDataApi {
   loopKey:
     | ReturnType<typeof getCoreLoopKey>
@@ -40,26 +40,27 @@ interface GetRootLoopDataApi {
 function getColorSequence(api: GetRootLoopDataApi): string[] {
   const { loopKey } = api
   switch (loopKey) {
-    case 'midBottomOuterRight':
-    case 'bottomLowerRight':
-    case 'perimeterRight40':
-    case 'perimeterRight90':
     case 'default':
-
+    case 'perimeterRight40':
     case 'rightEye':
     case 'centerMidTop':
     case 'centerOuterRight':
-    case 'perimeterRight150':
       return colorsB
+    case 'perimeterRight90':
+    case 'midBottomOuterRight':
+    case 'bottomLowerRight':
+    case 'perimeterRight150':
+      return colorsD
 
     case 'centerTop':
-    case 'rightEar':
     case 'centerInnerRight':
     case 'rightHip':
-    case 'centerBottom':
     case 'bottomUpperRight':
-    case 'midBottomInnerRight':
       return reversedColorsB
+    case 'rightEar':
+    case 'midBottomInnerRight':
+    case 'centerBottom':
+      return reversedColorsC
   }
 }
 
@@ -725,7 +726,7 @@ function Qux() {
     ...loopGroups.map<RootLoopData>((someCompositeLoop, groupIndex) => {
       switch (groupIndex) {
         case 0:
-        case 1: // midCenter
+        case 1:
         case 2:
           return {
             rootLoop: someCompositeLoop,

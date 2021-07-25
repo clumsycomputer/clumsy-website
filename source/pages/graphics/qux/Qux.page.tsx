@@ -25,9 +25,9 @@ export default {
   pdfFileName: 'qux',
 }
 
-const globalSampleCount = 1024
+const globalSampleCount = 2048
 const camouflage = true
-const camouflageStrokeScalar = 1 / 5
+const camouflageStrokeScalar = 1 / 6
 interface GetRootLoopDataApi {
   loopKey:
     | ReturnType<typeof getCoreLoopKey>
@@ -40,81 +40,231 @@ interface GetRootLoopDataApi {
 function getColorSequence(api: GetRootLoopDataApi): string[] {
   const { loopKey } = api
   switch (loopKey) {
-    case 'perimeterRight40':
-      return colorsA
-    case 'perimeterRight90':
-      return colorsA
-    case 'perimeterRight150':
-      return colorsA
-    case 'centerInnerRight':
-      return colorsA
-    case 'centerOuterRight':
-      return colorsA
-    case 'midBottomInnerRight':
-      return colorsA
     case 'midBottomOuterRight':
-      return colorsA
-    case 'bottomUpperRight':
-      return colorsA
     case 'bottomLowerRight':
-      return colorsA
-    case 'centerTop':
-      return colorsA
-    case 'centerMidTop':
-      return colorsA
-    case 'centerBottom':
-      return colorsA
-    case 'rightEye':
-      return colorsA
-    case 'rightEar':
-      return colorsA
-    case 'rightHip':
+    case 'perimeterRight40':
+    case 'perimeterRight90':
     case 'default':
-      return colorsA
+
+    case 'rightEye':
+    case 'centerMidTop':
+    case 'centerOuterRight':
+    case 'perimeterRight150':
+      return colorsB
+
+    case 'centerTop':
+    case 'rightEar':
+    case 'centerInnerRight':
+    case 'rightHip':
+    case 'centerBottom':
+    case 'bottomUpperRight':
+    case 'midBottomInnerRight':
+      return reversedColorsB
   }
 }
+
+const Palette = {
+  primary: {
+    main: '#e36331',
+  },
+  complementary: {
+    main: '#31b1e3',
+  },
+  analogousA: {
+    main: '#e33158',
+  },
+  analogousB: {
+    main: '#e3bc31',
+  },
+  triadicA: {
+    main: '#b1e331',
+  },
+  triadicB: {
+    main: '#31e363',
+  },
+}
+
+const colorsA = [
+  Palette.primary.main,
+  Palette.analogousB.main,
+  Palette.analogousA.main,
+  Palette.primary.main,
+  Palette.triadicA.main,
+  Palette.triadicB.main,
+  Palette.complementary.main,
+]
+
+const reversedColorsA = [...colorsA].reverse()
+
+// const switchedColorsA = [
+//   Palette.complementary.main,
+//   Palette.triadicB.main,
+//   Palette.triadicA.main,
+//   Palette.complementary.main,
+//   Palette.analogousA.main,
+//   Palette.analogousB.main,
+//   Palette.primary.main,
+// ]
+
+const colorsB = [
+  Palette.primary.main,
+  Palette.analogousA.main,
+  Palette.analogousB.main,
+  Palette.primary.main,
+  Palette.triadicA.main,
+  Palette.triadicB.main,
+  Palette.complementary.main,
+]
+
+const reversedColorsB = [...colorsB].reverse()
+
+const colorsC = [
+  Palette.primary.main,
+  Palette.analogousB.main,
+  Palette.analogousA.main,
+  Palette.primary.main,
+  Palette.triadicB.main,
+  Palette.triadicA.main,
+  Palette.complementary.main,
+]
+
+const reversedColorsC = [...colorsC].reverse()
+
+const colorsD = [
+  Palette.primary.main,
+  Palette.analogousA.main,
+  Palette.analogousB.main,
+  Palette.primary.main,
+  Palette.triadicB.main,
+  Palette.triadicA.main,
+  Palette.complementary.main,
+]
+
+const reversedColorsD = [...colorsD].reverse()
 
 function getNestRhythmGetter(
   api: GetRootLoopDataApi
 ): RootLoopData['getNestRhythm'] {
   const { loopKey } = api
   switch (loopKey) {
-    case 'centerTop':
-    case 'centerMidTop':
-    case 'centerBottom':
+    case 'default':
+    case 'perimeterRight40':
+    case 'bottomLowerRight':
       return () =>
         getNaturalCompositeRhythm({
-          rhythmResolution: 23,
+          rhythmResolution: 18,
           rhythmParts: [
-            { rhythmDensity: 19, rhythmPhase: 0 },
             { rhythmDensity: 17, rhythmPhase: 0 },
             { rhythmDensity: 13, rhythmPhase: 0 },
+            { rhythmDensity: 12, rhythmPhase: 0 },
             { rhythmDensity: 11, rhythmPhase: 0 },
-            { rhythmDensity: 7, rhythmPhase: 10 },
+            {
+              rhythmDensity: 7,
+              rhythmPhase: 1,
+            },
           ],
-          rhythmPhase: 1,
+          rhythmPhase: 0,
         })
-    case 'perimeterRight40':
     case 'perimeterRight90':
+    case 'midBottomOuterRight':
+      return () =>
+        getNaturalCompositeRhythm({
+          rhythmResolution: 18,
+          rhythmParts: [
+            { rhythmDensity: 17, rhythmPhase: 0 },
+            { rhythmDensity: 13, rhythmPhase: 0 },
+            { rhythmDensity: 12, rhythmPhase: 0 },
+            { rhythmDensity: 11, rhythmPhase: 0 },
+            {
+              rhythmDensity: 7,
+              rhythmPhase: 4,
+            },
+          ],
+          rhythmPhase: 0,
+        })
     case 'perimeterRight150':
     case 'centerInnerRight':
-    case 'centerOuterRight':
-    case 'midBottomInnerRight':
-    case 'midBottomOuterRight':
-    case 'bottomUpperRight':
-    case 'bottomLowerRight':
-    case 'rightEye':
-    case 'rightEar':
-    case 'rightHip':
-    case 'default':
       return () =>
         getNaturalCompositeRhythm({
-          rhythmResolution: 23,
+          rhythmResolution: 18,
           rhythmParts: [
             { rhythmDensity: 17, rhythmPhase: 0 },
             { rhythmDensity: 13, rhythmPhase: 0 },
+            { rhythmDensity: 12, rhythmPhase: 0 },
             { rhythmDensity: 11, rhythmPhase: 0 },
-            { rhythmDensity: 7, rhythmPhase: 0 },
+            {
+              rhythmDensity: 7,
+              rhythmPhase: 7,
+            },
+          ],
+          rhythmPhase: 0,
+        })
+    case 'centerBottom':
+    case 'rightEye':
+      return () =>
+        getNaturalCompositeRhythm({
+          rhythmResolution: 18,
+          rhythmParts: [
+            { rhythmDensity: 17, rhythmPhase: 0 },
+            { rhythmDensity: 13, rhythmPhase: 0 },
+            { rhythmDensity: 12, rhythmPhase: 0 },
+            { rhythmDensity: 11, rhythmPhase: 0 },
+            {
+              rhythmDensity: 7,
+              rhythmPhase: 9,
+            },
+          ],
+          rhythmPhase: 0,
+        })
+    case 'rightHip':
+    case 'bottomUpperRight':
+      return () =>
+        getNaturalCompositeRhythm({
+          rhythmResolution: 18,
+          rhythmParts: [
+            { rhythmDensity: 17, rhythmPhase: 0 },
+            { rhythmDensity: 13, rhythmPhase: 0 },
+            { rhythmDensity: 12, rhythmPhase: 0 },
+            { rhythmDensity: 11, rhythmPhase: 0 },
+            {
+              rhythmDensity: 7,
+              rhythmPhase: 3,
+            },
+          ],
+          rhythmPhase: 0,
+        })
+    case 'rightEar':
+    case 'midBottomInnerRight':
+    case 'centerMidTop':
+      return () =>
+        getNaturalCompositeRhythm({
+          rhythmResolution: 18,
+          rhythmParts: [
+            { rhythmDensity: 17, rhythmPhase: 0 },
+            { rhythmDensity: 13, rhythmPhase: 0 },
+            { rhythmDensity: 12, rhythmPhase: 0 },
+            { rhythmDensity: 11, rhythmPhase: 0 },
+            {
+              rhythmDensity: 7,
+              rhythmPhase: 6,
+            },
+          ],
+          rhythmPhase: 0,
+        })
+    case 'centerTop':
+    case 'centerOuterRight':
+      return () =>
+        getNaturalCompositeRhythm({
+          rhythmResolution: 18,
+          rhythmParts: [
+            { rhythmDensity: 17, rhythmPhase: 0 },
+            { rhythmDensity: 13, rhythmPhase: 0 },
+            { rhythmDensity: 12, rhythmPhase: 0 },
+            { rhythmDensity: 11, rhythmPhase: 0 },
+            {
+              rhythmDensity: 7,
+              rhythmPhase: 0,
+            },
           ],
           rhythmPhase: 0,
         })
@@ -130,7 +280,7 @@ function getShiftAngleGetter(
       return ({ baseCenter }) =>
         getStoopShiftAngle({
           baseCenter,
-          shiftAngle: Math.PI,
+          shiftAngle: 0,
         })
     case 'centerMidTop':
       return ({ baseCenter }) =>
@@ -160,7 +310,7 @@ function getShiftAngleGetter(
       return ({ baseCenter }) =>
         getStoopShiftAngle({
           baseCenter,
-          shiftAngle: Math.PI / 12,
+          shiftAngle: Math.PI / 7.5,
         })
     case 'perimeterRight150':
       return ({ baseCenter }) =>
@@ -190,13 +340,13 @@ function getShiftAngleGetter(
       return ({ baseCenter }) =>
         getStoopShiftAngle({
           baseCenter,
-          shiftAngle: Math.PI / 2 + Math.PI / 6,
+          shiftAngle: -Math.PI / 7,
         })
     case 'midBottomInnerRight':
       return ({ baseCenter }) =>
         getStoopShiftAngle({
           baseCenter,
-          shiftAngle: Math.PI / 2 - Math.PI / 6,
+          shiftAngle: Math.PI + Math.PI / 4.5,
         })
     case 'centerOuterRight':
       return ({ baseCenter }) =>
@@ -214,7 +364,7 @@ function getShiftAngleGetter(
       return ({ baseCenter }) =>
         getStoopShiftAngle({
           baseCenter,
-          shiftAngle: Math.PI / 3.5,
+          shiftAngle: Math.PI / 3.25,
         })
     case 'default':
       return ({ baseShiftAngle }) => baseShiftAngle
@@ -238,44 +388,14 @@ function getRelativeShiftScalarGetter(
     case 'centerTop':
     case 'centerMidTop':
     case 'centerBottom':
-    case 'rightEye':
     case 'rightEar':
     case 'rightHip':
     case 'default':
+      return () => 0.75
+    case 'rightEye':
       return () => 1
   }
 }
-
-const PaletteB = {
-  primary: {
-    main: '#e6784d',
-  },
-  complementary: {
-    main: '#4dbbe6',
-  },
-  analogousA: {
-    main: '#e64d6e',
-  },
-  analogousB: {
-    main: '#e6c54d',
-  },
-  triadicA: {
-    main: '#bbe64d',
-  },
-  triadicB: {
-    main: '#4de678',
-  },
-}
-
-const colorsA = [
-  PaletteB.primary.main,
-  PaletteB.analogousB.main,
-  PaletteB.analogousA.main,
-  PaletteB.complementary.main,
-  PaletteB.triadicB.main,
-  PaletteB.triadicA.main,
-  PaletteB.complementary.main,
-]
 
 function Qux() {
   const rootCircle: Circle = {

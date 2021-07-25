@@ -29,22 +29,22 @@ const camouflage = true
 
 const PaletteB = {
   primary: {
-    main: '#f7752f',
+    main: '#0037ff',
   },
   complementary: {
-    main: '#2fb1f7',
+    main: '#ffc800',
   },
   analogousA: {
-    main: '#f72f4d',
+    main: '#00b7ff',
   },
   analogousB: {
-    main: '#f7d92f',
+    main: '#4800ff',
   },
   triadicA: {
-    main: '#b1f72f',
+    main: '#c800ff',
   },
   triadicB: {
-    main: '#2ff775',
+    main: '#ff0037',
   },
 }
 
@@ -52,9 +52,9 @@ const colorsA = [
   PaletteB.primary.main,
   PaletteB.analogousB.main,
   PaletteB.analogousA.main,
-  PaletteB.complementary.main,
-  PaletteB.analogousB.main,
-  PaletteB.analogousA.main,
+  PaletteB.primary.main,
+  PaletteB.triadicA.main,
+  PaletteB.triadicB.main,
   PaletteB.complementary.main,
 ]
 
@@ -62,11 +62,11 @@ const reversedColorsA = [...colorsA].reverse()
 
 const colorsB = [
   PaletteB.primary.main,
-  PaletteB.analogousA.main,
   PaletteB.analogousB.main,
-  PaletteB.complementary.main,
   PaletteB.analogousA.main,
-  PaletteB.analogousB.main,
+  PaletteB.primary.main,
+  PaletteB.triadicB.main,
+  PaletteB.triadicA.main,
   PaletteB.complementary.main,
 ]
 

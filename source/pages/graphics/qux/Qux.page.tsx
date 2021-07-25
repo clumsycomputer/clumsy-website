@@ -66,22 +66,22 @@ function getColorSequence(api: GetRootLoopDataApi): string[] {
 
 const Palette = {
   primary: {
-    main: '#e36331',
+    main: '#ff2e00',
   },
   complementary: {
-    main: '#31b1e3',
+    main: '#00d0ff',
   },
   analogousA: {
-    main: '#e33158',
+    main: '#ff0051',
   },
   analogousB: {
-    main: '#e3bc31',
+    main: '#ffae00',
   },
   triadicA: {
-    main: '#b1e331',
+    main: '#d0ff00',
   },
   triadicB: {
-    main: '#31e363',
+    main: '#00ff2f',
   },
 }
 

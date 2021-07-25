@@ -29,22 +29,22 @@ const camouflage = true
 
 const PaletteB = {
   primary: {
-    main: '#0037ff',
+    main: '#4000ff',
   },
   complementary: {
-    main: '#ffc800',
+    main: '#bfff00',
   },
   analogousA: {
-    main: '#00b7ff',
+    main: '#0040ff',
   },
   analogousB: {
-    main: '#4800ff',
+    main: '#bf00ff',
   },
   triadicA: {
-    main: '#c800ff',
+    main: '#ff00bf',
   },
   triadicB: {
-    main: '#ff0037',
+    main: '#ff4000',
   },
 }
 

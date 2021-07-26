@@ -9,7 +9,11 @@ import {
   reduceRhythmSequence,
   ReduceRhythmSequenceApi,
 } from '../../../library/helperStuff'
-import { DiscreteRhythm, DiscreteWave } from '../../../library/rhythmStuff'
+import {
+  DiscreteRhythm,
+  DiscreteWave,
+  getCommonalityWave,
+} from '../../../library/rhythmStuff'
 
 export interface GetStupidPatternApi<PatternId extends string>
   extends GetLoopPatternApi<PatternId> {}
@@ -92,14 +96,14 @@ export function getLoopContractingPattern<PatternId extends string>(
 export interface GetLoopPatternApi<PatternId extends string>
   extends Pick<
     GetLoopPatternBaseApi<PatternId>,
-    'patternId' | 'baseLoop' | 'baseRhythm' | 'baseWave'
+    'patternId' | 'baseLoop' | 'spacerRhythm' | 'waveRhythm'
   > {}
 
 export interface GetLoopPatternBaseApi<PatternId extends string> {
   patternId: PatternId
   baseLoop: RotatedLoop
-  baseRhythm: DiscreteRhythm
-  baseWave: DiscreteWave
+  spacerRhythm: DiscreteRhythm // needs to be same resolution as waveRhythm
+  waveRhythm: DiscreteRhythm // needs to be same resolution as spacerRhythm
   getOriginPoint: (api: { originAngle: number; baseLoop: RotatedLoop }) => Point
   getTargetPoint: (api: { originAngle: number; baseLoop: RotatedLoop }) => Point
   getCellScalar: (
@@ -137,16 +141,19 @@ export function getLoopPatternBase<PatternId extends string>(
   api: GetLoopPatternBaseApi<PatternId>
 ) {
   const {
-    baseRhythm,
+    spacerRhythm,
     patternId,
     baseLoop,
     getOriginPoint,
     getTargetPoint,
     getCellScalar,
-    baseWave,
+    waveRhythm,
   } = api
+  const baseWave = getCommonalityWave({
+    baseRhythm: waveRhythm,
+  })
   return reduceRhythmSequence<PatternCell<PatternId>>({
-    baseRhythm,
+    baseRhythm: spacerRhythm,
     getCellResult: (someCellStuff) => {
       const cellKey: CellKey<PatternId> = `${patternId}-${someCellStuff.rhythmResolution}-${someCellStuff.rhythmDensity}-${someCellStuff.rhythmIndex}-${someCellStuff.nestIndex}`
       const originAngle =

@@ -1,9 +1,7 @@
 import React, { Fragment } from 'react'
 import {
   Circle,
-  getMirroredPoint,
   getMirroredRotatedLoop,
-  getRotatedLoopChildCircle,
   getRotatedLoopPoint,
   GetRotatedLoopPointApi,
   getRotatedLoopPoints,
@@ -11,18 +9,8 @@ import {
   RotatedLoop,
 } from '../../../library/circleStuff'
 import { Polygon } from '../../../library/components/Polygon'
-import {
-  getDistanceBetweenPoints,
-  reduceRhythmSequence,
-  ReduceRhythmSequenceApi,
-} from '../../../library/helperStuff'
-import {
-  DiscreteRhythm,
-  DiscreteWave,
-  getCommonalityWave,
-  getNaturalCompositeRhythm,
-} from '../../../library/rhythmStuff'
-import { getLoopExpandingPattern, getStupidPattern } from './helpers'
+import { getNaturalCompositeRhythm } from '../../../library/rhythmStuff'
+import { getLoopRayPattern } from './helpers'
 
 export default {
   pageRoute: '/graphics/waldo',
@@ -49,21 +37,20 @@ function Waldo() {
     rotationAngle: 0,
   }
   const rhythmA = getNaturalCompositeRhythm({
-    rhythmResolution: 12,
+    rhythmResolution: 18,
     rhythmParts: [
+      // { rhythmDensity: 13, rhythmPhase: 0 },
+      { rhythmDensity: 12, rhythmPhase: 0 },
       { rhythmDensity: 11, rhythmPhase: 0 },
       { rhythmDensity: 7, rhythmPhase: 0 },
     ],
     rhythmPhase: 0,
   })
-  const waveA = getCommonalityWave({
-    baseRhythm: rhythmA,
-  })
-  const rayPatternA = getLoopExpandingPattern({
+  const rayPatternA = getLoopRayPattern({
     patternId: 'A',
     baseLoop: rootLoop,
-    baseRhythm: rhythmA,
-    baseWave: waveA,
+    spacerRhythm: rhythmA,
+    waveRhythm: rhythmA,
   })
   return (
     <svg
@@ -90,21 +77,16 @@ function Waldo() {
         const cellLoop: RotatedLoop = {
           baseCircle: {
             center: somePatternCell.cellPoint,
-            radius: somePatternCell.cellWeight,
+            radius: 5,
           },
           childCircle: {
-            relativeRadius: 7 / 11,
-            relativeDepth: 7 / 13,
-            phaseAngle:
-              2 *
-              Math.PI *
-              (somePatternCell.cellWeight / somePatternCell.rhythmDensity),
+            relativeRadius: 3 / 4,
+            relativeDepth:
+              somePatternCell.cellWeight / somePatternCell.rhythmDensity,
+            phaseAngle: somePatternCell.cellAngle,
           },
           rotationAnchor: 'base',
-          rotationAngle: Math.atan2(
-            somePatternCell.cellOriginPoint.y - rootCircle.center.y,
-            somePatternCell.cellOriginPoint.x - rootCircle.center.x
-          ),
+          rotationAngle: somePatternCell.cellAngle,
         }
         return (
           <Fragment>

@@ -2,13 +2,27 @@ import React, { Fragment } from 'react'
 import {
   Circle,
   getMirroredPoint,
+  getMirroredRotatedLoop,
+  getRotatedLoopChildCircle,
   getRotatedLoopPoint,
   GetRotatedLoopPointApi,
+  getRotatedLoopPoints,
   Point,
   RotatedLoop,
 } from '../../../library/circleStuff'
-import { reduceRhythmSequence } from '../../../library/helperStuff'
-import { getNaturalCompositeRhythm } from '../../../library/rhythmStuff'
+import { Polygon } from '../../../library/components/Polygon'
+import {
+  getDistanceBetweenPoints,
+  reduceRhythmSequence,
+  ReduceRhythmSequenceApi,
+} from '../../../library/helperStuff'
+import {
+  DiscreteRhythm,
+  DiscreteWave,
+  getCommonalityWave,
+  getNaturalCompositeRhythm,
+} from '../../../library/rhythmStuff'
+import { getLoopExpandingPattern, getStupidPattern } from './helpers'
 
 export default {
   pageRoute: '/graphics/waldo',
@@ -19,14 +33,38 @@ export default {
   pdfFileName: 'waldo',
 }
 
-const globalSampleCount = 512
-
 function Waldo() {
   const rootCircle: Circle = {
     radius: 50,
     center: { x: 50, y: 50 },
   }
-  const cellLength = 1 / 2 / 2
+  const rootLoop: RotatedLoop = {
+    baseCircle: rootCircle,
+    childCircle: {
+      relativeRadius: 1,
+      relativeDepth: 1,
+      phaseAngle: 0,
+    },
+    rotationAnchor: 'base',
+    rotationAngle: 0,
+  }
+  const rhythmA = getNaturalCompositeRhythm({
+    rhythmResolution: 12,
+    rhythmParts: [
+      { rhythmDensity: 11, rhythmPhase: 0 },
+      { rhythmDensity: 7, rhythmPhase: 0 },
+    ],
+    rhythmPhase: 0,
+  })
+  const waveA = getCommonalityWave({
+    baseRhythm: rhythmA,
+  })
+  const rayPatternA = getLoopExpandingPattern({
+    patternId: 'A',
+    baseLoop: rootLoop,
+    baseRhythm: rhythmA,
+    baseWave: waveA,
+  })
   return (
     <svg
       style={{
@@ -40,94 +78,55 @@ function Waldo() {
       imageRendering={'optimizeQuality'}
     >
       <rect x={-10} y={-10} width={120} height={120} fill={'black'} />
-      {getOscillatedLoopPoints({
-        sampleCount: globalSampleCount,
-        someRotatedLoop: {
+      {/* <Polygon
+        strokeColor={'white'}
+        strokeWidth={0.3}
+        somePoints={getRotatedLoopPoints({
+          sampleCount: 256,
+          someRotatedLoop: rootLoop,
+        })}
+      /> */}
+      {rayPatternA.map((somePatternCell) => {
+        const cellLoop: RotatedLoop = {
           baseCircle: {
-            ...rootCircle,
-            radius: 12,
+            center: somePatternCell.cellPoint,
+            radius: somePatternCell.cellWeight,
           },
           childCircle: {
-            relativeRadius: 7 / 12,
-            relativeDepth: 1,
-            phaseAngle: 2 * Math.PI * (5 / 12),
+            relativeRadius: 7 / 11,
+            relativeDepth: 7 / 13,
+            phaseAngle:
+              2 *
+              Math.PI *
+              (somePatternCell.cellWeight / somePatternCell.rhythmDensity),
           },
           rotationAnchor: 'base',
-          rotationAngle: 2 * Math.PI * (5 / 12),
-        },
-        oscillationRadius: 0.4,
-        oscillationFrequency: getWaveFrequency({
-          originNote: 211,
-          scaleResolution: 18,
-          noteIndex: -2,
-        }),
-      }).map((somePoint) => {
-        const mirroredPoint = getMirroredPoint({
-          mirrorAngle: Math.PI / 2,
-          basePoint: somePoint,
-          originPoint: rootCircle.center,
-        })
+          rotationAngle: Math.atan2(
+            somePatternCell.cellOriginPoint.y - rootCircle.center.y,
+            somePatternCell.cellOriginPoint.x - rootCircle.center.x
+          ),
+        }
         return (
           <Fragment>
-            <rect
-              fill={'#ff2e00'}
-              x={somePoint.x - cellLength / 2}
-              y={somePoint.y - cellLength / 2}
-              width={cellLength}
-              height={cellLength}
+            <Polygon
+              strokeColor={'white'}
+              strokeWidth={0.3}
+              somePoints={getRotatedLoopPoints({
+                sampleCount: 256,
+                someRotatedLoop: cellLoop,
+              })}
             />
-            <rect
-              fill={'#ff2e00'}
-              x={mirroredPoint.x - cellLength / 2}
-              y={mirroredPoint.y - cellLength / 2}
-              width={cellLength}
-              height={cellLength}
-            />
-          </Fragment>
-        )
-      })}
-      {getOscillatedLoopPoints({
-        sampleCount: globalSampleCount,
-        someRotatedLoop: {
-          baseCircle: {
-            ...rootCircle,
-            radius: 12,
-          },
-          childCircle: {
-            relativeRadius: 7 / 12,
-            relativeDepth: 1,
-            phaseAngle: 2 * Math.PI * (5 / 12),
-          },
-          rotationAnchor: 'base',
-          rotationAngle: 2 * Math.PI * (5 / 12),
-        },
-        oscillationRadius: 0.4,
-        oscillationFrequency: getWaveFrequency({
-          originNote: 211,
-          scaleResolution: 18,
-          noteIndex: -0,
-        }),
-      }).map((somePoint) => {
-        const mirroredPoint = getMirroredPoint({
-          mirrorAngle: Math.PI / 2,
-          basePoint: somePoint,
-          originPoint: rootCircle.center,
-        })
-        return (
-          <Fragment>
-            <rect
-              fill={'black'}
-              x={somePoint.x - cellLength / 2}
-              y={somePoint.y - cellLength / 2}
-              width={cellLength}
-              height={cellLength}
-            />
-            <rect
-              fill={'black'}
-              x={mirroredPoint.x - cellLength / 2}
-              y={mirroredPoint.y - cellLength / 2}
-              width={cellLength}
-              height={cellLength}
+            <Polygon
+              strokeColor={'white'}
+              strokeWidth={0.3}
+              somePoints={getRotatedLoopPoints({
+                sampleCount: 256,
+                someRotatedLoop: getMirroredRotatedLoop({
+                  baseLoop: cellLoop,
+                  mirrorAngle: Math.PI / 2,
+                  originPoint: rootCircle.center,
+                }),
+              })}
             />
           </Fragment>
         )

@@ -56,7 +56,7 @@ function Waldo() {
     baseLoop: getUpdatedData({
       baseData: rootLoop,
       dataUpdates: {
-        'childCircle.relativeRadius': () => 8.5 / 12,
+        'childCircle.relativeRadius': () => 8.75 / 12,
       },
     }),
     spacerRhythm: rhythmA,
@@ -70,7 +70,7 @@ function Waldo() {
         radius:
           (somePatternCell.baseLoop.baseCircle.radius /
             somePatternCell.rhythmResolution) *
-          1.25,
+          1.125,
       },
       childCircle: {
         relativeRadius: 3 / 4,
@@ -82,18 +82,47 @@ function Waldo() {
       rotationAngle: somePatternCell.cellAngle,
     } as RotatedLoop,
   }))
+  const patternPointsA = patternLoopsA.map((someCellStuff) => {
+    const loopSampleCount = 256
+    const cellOscillationRadius = 1 / 3
+    const cellRootBase = cellOscillationRadius / 4
+    return {
+      ...someCellStuff,
+      cellRootBase,
+      cellRootOverlay: cellRootBase,
+      cellPointsBase: getOscillatedLoopPoints({
+        someRotatedLoop: someCellStuff.cellLoop,
+        sampleCount: loopSampleCount,
+        oscillationRadius: cellOscillationRadius,
+        oscillationFrequency: getWaveFrequency({
+          baseFrequency: 211,
+          scaleResolution: someCellStuff.rhythmResolution,
+          frequencyIndex: 0,
+        }),
+      }),
+      cellPointsOverlay: getOscillatedLoopPoints({
+        someRotatedLoop: someCellStuff.cellLoop,
+        sampleCount: loopSampleCount,
+        oscillationRadius: cellOscillationRadius,
+        oscillationFrequency: getWaveFrequency({
+          baseFrequency: 211,
+          scaleResolution: someCellStuff.rhythmResolution,
+          frequencyIndex: 1,
+        }),
+      }),
+    }
+  })
   const rhythmB = getNaturalCompositeRhythm({
     rhythmResolution: 17,
     rhythmParts: [
       { rhythmDensity: 13, rhythmPhase: 0 },
       { rhythmDensity: 11, rhythmPhase: 0 },
       { rhythmDensity: 7, rhythmPhase: 0 },
-      // { rhythmDensity: 5, rhythmPhase: 0 },
     ],
     rhythmPhase: 12,
   })
   const patternB = getLoopContractingPattern({
-    patternId: 'A',
+    patternId: 'B',
     baseLoop: getUpdatedData({
       baseData: rootLoop,
       dataUpdates: {
@@ -111,7 +140,7 @@ function Waldo() {
         radius:
           (somePatternCell.baseLoop.baseCircle.radius /
             somePatternCell.rhythmResolution) *
-          1.25,
+          1.125,
       },
       childCircle: {
         relativeRadius: 3 / 4,
@@ -123,6 +152,36 @@ function Waldo() {
       rotationAngle: somePatternCell.cellAngle,
     } as RotatedLoop,
   }))
+  const patternPointsB = patternLoopsB.map((someCellStuff) => {
+    const loopSampleCount = 256
+    const cellOscillationRadius = 1 / 3
+    const cellRootBase = cellOscillationRadius / 4
+    return {
+      ...someCellStuff,
+      cellRootBase,
+      cellRootOverlay: cellRootBase,
+      cellPointsBase: getOscillatedLoopPoints({
+        someRotatedLoop: someCellStuff.cellLoop,
+        sampleCount: loopSampleCount,
+        oscillationRadius: cellOscillationRadius,
+        oscillationFrequency: getWaveFrequency({
+          baseFrequency: 211,
+          scaleResolution: someCellStuff.rhythmResolution,
+          frequencyIndex: 0,
+        }),
+      }),
+      cellPointsOverlay: getOscillatedLoopPoints({
+        someRotatedLoop: someCellStuff.cellLoop,
+        sampleCount: loopSampleCount,
+        oscillationRadius: cellOscillationRadius,
+        oscillationFrequency: getWaveFrequency({
+          baseFrequency: 211,
+          scaleResolution: someCellStuff.rhythmResolution,
+          frequencyIndex: 1,
+        }),
+      }),
+    }
+  })
   return (
     <svg
       style={{
@@ -136,54 +195,64 @@ function Waldo() {
       imageRendering={'optimizeQuality'}
     >
       <rect x={-10} y={-10} width={120} height={120} fill={'black'} />
-      {patternLoopsA.map((somePatternStuff) => {
+      {patternPointsA.map((somePatternStuff) => {
+        const maskId = somePatternStuff.cellKey
         return (
           <Fragment>
-            <Polygon
-              strokeColor={'white'}
-              strokeWidth={0.3}
-              somePoints={getRotatedLoopPoints({
-                sampleCount: 256,
-                someRotatedLoop: somePatternStuff.cellLoop,
-              })}
-            />
-            <Polygon
-              strokeColor={'white'}
-              strokeWidth={0.3}
-              somePoints={getRotatedLoopPoints({
-                sampleCount: 256,
-                someRotatedLoop: getMirroredRotatedLoop({
-                  mirrorAngle: Math.PI / 2,
-                  originPoint: somePatternStuff.baseLoop.baseCircle.center,
-                  baseLoop: somePatternStuff.cellLoop,
-                }),
-              })}
+            <mask id={maskId}>
+              <MirroredPointSquares
+                fillColor={'white'}
+                mirrorAngle={Math.PI / 2}
+                mirrorOriginPoint={somePatternStuff.baseLoop.baseCircle.center}
+                squareRootLength={somePatternStuff.cellRootBase}
+                somePoints={somePatternStuff.cellPointsBase}
+              />
+              <MirroredPointSquares
+                fillColor={'black'}
+                mirrorAngle={Math.PI / 2}
+                mirrorOriginPoint={somePatternStuff.baseLoop.baseCircle.center}
+                squareRootLength={somePatternStuff.cellRootOverlay}
+                somePoints={somePatternStuff.cellPointsOverlay}
+              />
+            </mask>
+            <rect
+              fill={'white'}
+              mask={`url(#${maskId})`}
+              x={-10}
+              y={-10}
+              width={120}
+              height={120}
             />
           </Fragment>
         )
       })}
-      {patternLoopsB.map((somePatternStuff) => {
+      {patternPointsB.map((somePatternStuff) => {
+        const maskId = somePatternStuff.cellKey
         return (
           <Fragment>
-            <Polygon
-              strokeColor={'white'}
-              strokeWidth={0.3}
-              somePoints={getRotatedLoopPoints({
-                sampleCount: 256,
-                someRotatedLoop: somePatternStuff.cellLoop,
-              })}
-            />
-            <Polygon
-              strokeColor={'white'}
-              strokeWidth={0.3}
-              somePoints={getRotatedLoopPoints({
-                sampleCount: 256,
-                someRotatedLoop: getMirroredRotatedLoop({
-                  mirrorAngle: Math.PI / 2,
-                  originPoint: somePatternStuff.baseLoop.baseCircle.center,
-                  baseLoop: somePatternStuff.cellLoop,
-                }),
-              })}
+            <mask id={maskId}>
+              <MirroredPointSquares
+                fillColor={'white'}
+                mirrorAngle={Math.PI / 2}
+                mirrorOriginPoint={somePatternStuff.baseLoop.baseCircle.center}
+                squareRootLength={somePatternStuff.cellRootBase}
+                somePoints={somePatternStuff.cellPointsBase}
+              />
+              <MirroredPointSquares
+                fillColor={'black'}
+                mirrorAngle={Math.PI / 2}
+                mirrorOriginPoint={somePatternStuff.baseLoop.baseCircle.center}
+                squareRootLength={somePatternStuff.cellRootOverlay}
+                somePoints={somePatternStuff.cellPointsOverlay}
+              />
+            </mask>
+            <rect
+              fill={'white'}
+              mask={`url(#${maskId})`}
+              x={-10}
+              y={-10}
+              width={120}
+              height={120}
             />
           </Fragment>
         )
@@ -240,34 +309,34 @@ function MirroredPointSquares(props: MirroredPointSquaresProps) {
 }
 
 // function foo() {
-//   const patternPointsA = patternLoopsA.map((someCellStuff) => {
-//     const loopSampleCount = 256
-//     const cellOscillationRadius = 1 / 3
-//     const cellRootBase = cellOscillationRadius / 4
-//     return {
-//       ...someCellStuff,
-//       cellRootBase,
-//       cellRootOverlay: cellRootBase,
-//       cellPointsBase: getOscillatedLoopPoints({
-//         someRotatedLoop: someCellStuff.cellLoop,
-//         sampleCount: loopSampleCount,
-//         oscillationRadius: cellOscillationRadius,
-//         oscillationFrequency: getWaveFrequency({
-//           baseFrequency: 211,
-//           scaleResolution: someCellStuff.rhythmResolution,
-//           frequencyIndex: 0,
-//         }),
+// const patternPointsA = patternLoopsA.map((someCellStuff) => {
+//   const loopSampleCount = 256
+//   const cellOscillationRadius = 1 / 3
+//   const cellRootBase = cellOscillationRadius / 4
+//   return {
+//     ...someCellStuff,
+//     cellRootBase,
+//     cellRootOverlay: cellRootBase,
+//     cellPointsBase: getOscillatedLoopPoints({
+//       someRotatedLoop: someCellStuff.cellLoop,
+//       sampleCount: loopSampleCount,
+//       oscillationRadius: cellOscillationRadius,
+//       oscillationFrequency: getWaveFrequency({
+//         baseFrequency: 211,
+//         scaleResolution: someCellStuff.rhythmResolution,
+//         frequencyIndex: 0,
 //       }),
-//       cellPointsOverlay: getOscillatedLoopPoints({
-//         someRotatedLoop: someCellStuff.cellLoop,
-//         sampleCount: loopSampleCount,
-//         oscillationRadius: cellOscillationRadius,
-//         oscillationFrequency: getWaveFrequency({
-//           baseFrequency: 211,
-//           scaleResolution: someCellStuff.rhythmResolution,
-//           frequencyIndex: 1,
-//         }),
+//     }),
+//     cellPointsOverlay: getOscillatedLoopPoints({
+//       someRotatedLoop: someCellStuff.cellLoop,
+//       sampleCount: loopSampleCount,
+//       oscillationRadius: cellOscillationRadius,
+//       oscillationFrequency: getWaveFrequency({
+//         baseFrequency: 211,
+//         scaleResolution: someCellStuff.rhythmResolution,
+//         frequencyIndex: 1,
 //       }),
-//     }
-//   })
+//     }),
+//   }
+// })
 // }

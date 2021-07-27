@@ -1,6 +1,7 @@
 import {
   getRotatedLoopChildCircle,
   getRotatedLoopPoint,
+  GetRotatedLoopPointApi,
   Point,
   RotatedLoop,
 } from '../../../library/circleStuff'
@@ -11,7 +12,6 @@ import {
 } from '../../../library/helperStuff'
 import {
   DiscreteRhythm,
-  DiscreteWave,
   getCommonalityWave,
 } from '../../../library/rhythmStuff'
 
@@ -120,6 +120,7 @@ export type PatternCell<PatternId extends string> = PatternCellBase<PatternId> &
   Parameters<ReduceRhythmSequenceApi<unknown>['getCellResult']>[0]
 
 export interface PatternCellBase<PatternId extends string> {
+  baseLoop: RotatedLoop
   cellKey: CellKey<PatternId>
   cellOriginPoint: Point
   cellTargetPoint: Point
@@ -187,6 +188,7 @@ export function getLoopPatternBase<PatternId extends string>(
       }
       return {
         ...someCellStuff,
+        baseLoop,
         cellKey,
         cellOriginPoint,
         cellTargetPoint,
@@ -197,4 +199,48 @@ export function getLoopPatternBase<PatternId extends string>(
       }
     },
   })
+}
+
+export interface GetOscillatedLoopPointsApi
+  extends Pick<GetRotatedLoopPointApi, 'someRotatedLoop'> {
+  sampleCount: number
+  oscillationRadius: number
+  oscillationFrequency: number
+}
+
+export function getOscillatedLoopPoints(api: GetOscillatedLoopPointsApi) {
+  const {
+    sampleCount,
+    someRotatedLoop,
+    oscillationRadius,
+    oscillationFrequency,
+  } = api
+  return new Array(sampleCount).fill(undefined).map<Point>((_, sampleIndex) => {
+    const currentSampleAngle = ((2 * Math.PI) / sampleCount) * sampleIndex
+    const basePoint = getRotatedLoopPoint({
+      someRotatedLoop,
+      sampleAngle: currentSampleAngle,
+    })
+    return {
+      x:
+        oscillationRadius *
+          Math.cos(oscillationFrequency * currentSampleAngle) +
+        basePoint.x,
+      y:
+        oscillationRadius *
+          Math.sin(oscillationFrequency * currentSampleAngle) +
+        basePoint.y,
+    }
+  })
+}
+
+export interface GetWaveFrequencyApi {
+  baseFrequency: number
+  scaleResolution: number
+  frequencyIndex: number
+}
+
+export function getWaveFrequency(api: GetWaveFrequencyApi) {
+  const { baseFrequency, frequencyIndex, scaleResolution } = api
+  return baseFrequency * Math.pow(2, frequencyIndex / scaleResolution)
 }

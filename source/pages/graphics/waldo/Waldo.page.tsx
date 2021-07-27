@@ -1,16 +1,16 @@
 import React, { Fragment } from 'react'
 import {
   Circle,
-  getMirroredRotatedLoop,
-  getRotatedLoopPoint,
-  GetRotatedLoopPointApi,
-  getRotatedLoopPoints,
+  getMirroredPoint,
   Point,
   RotatedLoop,
 } from '../../../library/circleStuff'
-import { Polygon } from '../../../library/components/Polygon'
 import { getNaturalCompositeRhythm } from '../../../library/rhythmStuff'
-import { getLoopRayPattern } from './helpers'
+import {
+  getOscillatedLoopPoints,
+  getStupidPattern,
+  getWaveFrequency,
+} from './helpers'
 
 export default {
   pageRoute: '/graphics/waldo',
@@ -20,6 +20,37 @@ export default {
   generatePdf: false,
   pdfFileName: 'waldo',
 }
+
+const Palette = {
+  primary: {
+    main: '#ff2e00',
+  },
+  complementary: {
+    main: '#00d0ff',
+  },
+  analogousA: {
+    main: '#ff0051',
+  },
+  analogousB: {
+    main: '#ffae00',
+  },
+  triadicA: {
+    main: '#d0ff00',
+  },
+  triadicB: {
+    main: '#00ff2f',
+  },
+}
+
+const colorsB = [
+  Palette.primary.main,
+  Palette.analogousA.main,
+  Palette.analogousB.main,
+  Palette.primary.main,
+  Palette.triadicA.main,
+  Palette.triadicB.main,
+  Palette.complementary.main,
+]
 
 function Waldo() {
   const rootCircle: Circle = {
@@ -38,19 +69,61 @@ function Waldo() {
   }
   const rhythmA = getNaturalCompositeRhythm({
     rhythmResolution: 18,
-    rhythmParts: [
-      // { rhythmDensity: 13, rhythmPhase: 0 },
-      { rhythmDensity: 12, rhythmPhase: 0 },
-      { rhythmDensity: 11, rhythmPhase: 0 },
-      { rhythmDensity: 7, rhythmPhase: 0 },
-    ],
-    rhythmPhase: 0,
+    rhythmParts: [{ rhythmDensity: 13, rhythmPhase: 0 }],
+    rhythmPhase: 1,
   })
-  const rayPatternA = getLoopRayPattern({
+  const patternA = getStupidPattern({
     patternId: 'A',
     baseLoop: rootLoop,
     spacerRhythm: rhythmA,
     waveRhythm: rhythmA,
+  })
+  const patternLoopsA = patternA.map((somePatternCell) => ({
+    ...somePatternCell,
+    cellLoop: {
+      baseCircle: {
+        center: somePatternCell.cellPoint,
+        radius:
+          somePatternCell.baseLoop.baseCircle.radius /
+          somePatternCell.rhythmResolution,
+      },
+      childCircle: {
+        relativeRadius: 3 / 4,
+        relativeDepth:
+          somePatternCell.cellWeight / somePatternCell.rhythmDensity,
+        phaseAngle: somePatternCell.cellAngle,
+      },
+      rotationAnchor: 'base',
+      rotationAngle: somePatternCell.cellAngle,
+    } as RotatedLoop,
+  }))
+  const patternPointsA = patternLoopsA.map((someCellStuff) => {
+    const cellOscillationRadius = someCellStuff.cellLoop.baseCircle.radius / 4
+    return {
+      ...someCellStuff,
+      cellPointsBase: getOscillatedLoopPoints({
+        someRotatedLoop: someCellStuff.cellLoop,
+        sampleCount: 256,
+        oscillationRadius: cellOscillationRadius,
+        oscillationFrequency: getWaveFrequency({
+          baseFrequency: 211,
+          scaleResolution: someCellStuff.rhythmResolution,
+          frequencyIndex: someCellStuff.rhythmIndex,
+        }),
+      }),
+      cellRootBase: cellOscillationRadius / 3,
+      cellPointsOverlay: getOscillatedLoopPoints({
+        someRotatedLoop: someCellStuff.cellLoop,
+        sampleCount: 256,
+        oscillationRadius: cellOscillationRadius,
+        oscillationFrequency: getWaveFrequency({
+          baseFrequency: 211.075,
+          scaleResolution: someCellStuff.rhythmResolution,
+          frequencyIndex: someCellStuff.rhythmIndex,
+        }),
+      }),
+      cellRootOverlay: cellOscillationRadius / 4,
+    }
   })
   return (
     <svg
@@ -65,98 +138,71 @@ function Waldo() {
       imageRendering={'optimizeQuality'}
     >
       <rect x={-10} y={-10} width={120} height={120} fill={'black'} />
-      {/* <Polygon
-        strokeColor={'white'}
-        strokeWidth={0.3}
-        somePoints={getRotatedLoopPoints({
-          sampleCount: 256,
-          someRotatedLoop: rootLoop,
-        })}
-      /> */}
-      {rayPatternA.map((somePatternCell) => {
-        const cellLoop: RotatedLoop = {
-          baseCircle: {
-            center: somePatternCell.cellPoint,
-            radius: 5,
-          },
-          childCircle: {
-            relativeRadius: 3 / 4,
-            relativeDepth:
-              somePatternCell.cellWeight / somePatternCell.rhythmDensity,
-            phaseAngle: somePatternCell.cellAngle,
-          },
-          rotationAnchor: 'base',
-          rotationAngle: somePatternCell.cellAngle,
-        }
-        return (
-          <Fragment>
-            <Polygon
-              strokeColor={'white'}
-              strokeWidth={0.3}
-              somePoints={getRotatedLoopPoints({
-                sampleCount: 256,
-                someRotatedLoop: cellLoop,
-              })}
-            />
-            <Polygon
-              strokeColor={'white'}
-              strokeWidth={0.3}
-              somePoints={getRotatedLoopPoints({
-                sampleCount: 256,
-                someRotatedLoop: getMirroredRotatedLoop({
-                  baseLoop: cellLoop,
-                  mirrorAngle: Math.PI / 2,
-                  originPoint: rootCircle.center,
-                }),
-              })}
-            />
-          </Fragment>
-        )
-      })}
+      {patternPointsA.map((someStuff) => (
+        <MirroredPointSquares
+          fillColor={colorsB[0]!}
+          mirrorAngle={Math.PI / 2}
+          somePoints={someStuff.cellPointsBase}
+          mirrorOriginPoint={someStuff.baseLoop.baseCircle.center}
+          squareRootLength={someStuff.cellRootBase}
+        />
+      ))}
+      {patternPointsA.map((someStuff) => (
+        <MirroredPointSquares
+          fillColor={'black'}
+          mirrorAngle={Math.PI / 2}
+          somePoints={someStuff.cellPointsOverlay}
+          mirrorOriginPoint={someStuff.baseLoop.baseCircle.center}
+          squareRootLength={someStuff.cellRootOverlay}
+        />
+      ))}
     </svg>
   )
 }
 
-interface GetOscillatedLoopPointsApi
-  extends Pick<GetRotatedLoopPointApi, 'someRotatedLoop'> {
-  sampleCount: number
-  oscillationRadius: number
-  oscillationFrequency: number
+interface MirroredPointSquaresProps {
+  somePoints: Array<Point>
+  mirrorOriginPoint: Point
+  mirrorAngle: number
+  squareRootLength: number
+  fillColor: string
 }
 
-function getOscillatedLoopPoints(api: GetOscillatedLoopPointsApi) {
+function MirroredPointSquares(props: MirroredPointSquaresProps) {
   const {
-    sampleCount,
-    someRotatedLoop,
-    oscillationRadius,
-    oscillationFrequency,
-  } = api
-  return new Array(sampleCount).fill(undefined).map<Point>((_, sampleIndex) => {
-    const currentSampleAngle = ((2 * Math.PI) / sampleCount) * sampleIndex
-    const basePoint = getRotatedLoopPoint({
-      someRotatedLoop,
-      sampleAngle: currentSampleAngle,
-    })
-    return {
-      x:
-        oscillationRadius *
-          Math.cos(oscillationFrequency * currentSampleAngle) +
-        basePoint.x,
-      y:
-        oscillationRadius *
-          Math.sin(oscillationFrequency * currentSampleAngle) +
-        basePoint.y,
-    }
-  })
-}
-
-interface GetWaveFrequencyApi {
-  originNote: number
-  scaleResolution: number
-  noteIndex: number
-}
-
-function getWaveFrequency(api: GetWaveFrequencyApi) {
-  const { originNote, scaleResolution, noteIndex } = api
-  return originNote * Math.pow(2, noteIndex / scaleResolution)
+    somePoints,
+    mirrorOriginPoint,
+    mirrorAngle,
+    squareRootLength,
+    fillColor,
+  } = props
+  return (
+    <Fragment>
+      {somePoints.map((somePoint) => {
+        const mirroredPoint = getMirroredPoint({
+          originPoint: mirrorOriginPoint,
+          mirrorAngle: mirrorAngle,
+          basePoint: somePoint,
+        })
+        return (
+          <Fragment>
+            <rect
+              fill={fillColor}
+              x={somePoint.x - squareRootLength}
+              y={somePoint.y - squareRootLength}
+              width={2 * squareRootLength}
+              height={2 * squareRootLength}
+            />
+            <rect
+              fill={fillColor}
+              x={mirroredPoint.x - squareRootLength}
+              y={mirroredPoint.y - squareRootLength}
+              width={2 * squareRootLength}
+              height={2 * squareRootLength}
+            />
+          </Fragment>
+        )
+      })}
+    </Fragment>
+  )
 }

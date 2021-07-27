@@ -5,8 +5,11 @@ import {
   Point,
   RotatedLoop,
 } from '../../../library/circleStuff'
+import { getUpdatedData } from '../../../library/getUpdatedData'
+import { reduceRhythmSequence } from '../../../library/helperStuff'
 import { getNaturalCompositeRhythm } from '../../../library/rhythmStuff'
 import {
+  getLoopExpandingPattern,
   getOscillatedLoopPoints,
   getStupidPattern,
   getWaveFrequency,
@@ -21,46 +24,15 @@ export default {
   pdfFileName: 'waldo',
 }
 
-const Palette = {
-  primary: {
-    main: '#ff2e00',
-  },
-  complementary: {
-    main: '#00d0ff',
-  },
-  analogousA: {
-    main: '#ff0051',
-  },
-  analogousB: {
-    main: '#ffae00',
-  },
-  triadicA: {
-    main: '#d0ff00',
-  },
-  triadicB: {
-    main: '#00ff2f',
-  },
-}
-
-const colorsB = [
-  Palette.primary.main,
-  Palette.analogousA.main,
-  Palette.analogousB.main,
-  Palette.primary.main,
-  Palette.triadicA.main,
-  Palette.triadicB.main,
-  Palette.complementary.main,
-]
-
 function Waldo() {
   const rootCircle: Circle = {
-    radius: 50,
+    radius: 65,
     center: { x: 50, y: 50 },
   }
   const rootLoop: RotatedLoop = {
     baseCircle: rootCircle,
     childCircle: {
-      relativeRadius: 1,
+      relativeRadius: 11 / 12,
       relativeDepth: 1,
       phaseAngle: 0,
     },
@@ -68,11 +40,11 @@ function Waldo() {
     rotationAngle: 0,
   }
   const rhythmA = getNaturalCompositeRhythm({
-    rhythmResolution: 18,
-    rhythmParts: [{ rhythmDensity: 13, rhythmPhase: 0 }],
-    rhythmPhase: 1,
+    rhythmResolution: 23,
+    rhythmParts: [{ rhythmDensity: 12, rhythmPhase: 0 }],
+    rhythmPhase: 0,
   })
-  const patternA = getStupidPattern({
+  const patternA = getLoopExpandingPattern({
     patternId: 'A',
     baseLoop: rootLoop,
     spacerRhythm: rhythmA,
@@ -84,8 +56,9 @@ function Waldo() {
       baseCircle: {
         center: somePatternCell.cellPoint,
         radius:
-          somePatternCell.baseLoop.baseCircle.radius /
-          somePatternCell.rhythmResolution,
+          (somePatternCell.baseLoop.baseCircle.radius /
+            somePatternCell.rhythmResolution) *
+          2,
       },
       childCircle: {
         relativeRadius: 3 / 4,
@@ -98,31 +71,33 @@ function Waldo() {
     } as RotatedLoop,
   }))
   const patternPointsA = patternLoopsA.map((someCellStuff) => {
-    const cellOscillationRadius = someCellStuff.cellLoop.baseCircle.radius / 4
+    const loopSampleCount = 256
+    const cellOscillationRadius = 1 / 3
+    const cellRootBase = cellOscillationRadius / 4
     return {
       ...someCellStuff,
+      cellRootBase,
+      cellRootOverlay: cellRootBase,
       cellPointsBase: getOscillatedLoopPoints({
         someRotatedLoop: someCellStuff.cellLoop,
-        sampleCount: 256,
+        sampleCount: loopSampleCount,
         oscillationRadius: cellOscillationRadius,
         oscillationFrequency: getWaveFrequency({
           baseFrequency: 211,
           scaleResolution: someCellStuff.rhythmResolution,
-          frequencyIndex: someCellStuff.rhythmIndex,
+          frequencyIndex: 0,
         }),
       }),
-      cellRootBase: cellOscillationRadius / 3,
       cellPointsOverlay: getOscillatedLoopPoints({
         someRotatedLoop: someCellStuff.cellLoop,
-        sampleCount: 256,
+        sampleCount: loopSampleCount,
         oscillationRadius: cellOscillationRadius,
         oscillationFrequency: getWaveFrequency({
-          baseFrequency: 211.075,
+          baseFrequency: 211,
           scaleResolution: someCellStuff.rhythmResolution,
-          frequencyIndex: someCellStuff.rhythmIndex,
+          frequencyIndex: 1,
         }),
       }),
-      cellRootOverlay: cellOscillationRadius / 4,
     }
   })
   return (
@@ -138,24 +113,39 @@ function Waldo() {
       imageRendering={'optimizeQuality'}
     >
       <rect x={-10} y={-10} width={120} height={120} fill={'black'} />
-      {patternPointsA.map((someStuff) => (
-        <MirroredPointSquares
-          fillColor={colorsB[0]!}
-          mirrorAngle={Math.PI / 2}
-          somePoints={someStuff.cellPointsBase}
-          mirrorOriginPoint={someStuff.baseLoop.baseCircle.center}
-          squareRootLength={someStuff.cellRootBase}
+
+      <mask id={'foo'}>
+        {patternPointsA.map((somePatternStuff) => (
+          <MirroredPointSquares
+            fillColor={'white'}
+            mirrorAngle={Math.PI / 2}
+            somePoints={somePatternStuff.cellPointsBase}
+            mirrorOriginPoint={somePatternStuff.baseLoop.baseCircle.center}
+            squareRootLength={somePatternStuff.cellRootBase}
+          />
+        ))}
+        {patternPointsA.map((somePatternStuff) => (
+          <MirroredPointSquares
+            fillColor={'black'}
+            mirrorAngle={Math.PI / 2}
+            somePoints={somePatternStuff.cellPointsOverlay}
+            mirrorOriginPoint={somePatternStuff.baseLoop.baseCircle.center}
+            squareRootLength={somePatternStuff.cellRootOverlay}
+          />
+        ))}
+      </mask>
+      <g mask={`url(#foo)`}>
+        {/* <rect x={0} y={0} width={100} height={100} fill={'orange'} /> */}
+        <image
+          x={0}
+          y={0}
+          width={100}
+          height={100}
+          href={
+            'https://cdn.pixabay.com/photo/2021/06/29/06/14/water-drops-6373296__340.jpg'
+          }
         />
-      ))}
-      {patternPointsA.map((someStuff) => (
-        <MirroredPointSquares
-          fillColor={'black'}
-          mirrorAngle={Math.PI / 2}
-          somePoints={someStuff.cellPointsOverlay}
-          mirrorOriginPoint={someStuff.baseLoop.baseCircle.center}
-          squareRootLength={someStuff.cellRootOverlay}
-        />
-      ))}
+      </g>
     </svg>
   )
 }

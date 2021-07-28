@@ -185,22 +185,22 @@ function Waldo() {
       const oscillationRadius =
         somePatternCell.cellLoopBase.baseCircle.radius / 8
       const oscillationBaseBaseLength = oscillationRadius / 24
-      const oscillationBaseOverlayLength = oscillationBaseBaseLength / 2
+      const oscillationBaseOverlayLength = oscillationBaseBaseLength
       return {
         ...somePatternCell,
         oscillationRadius,
         oscillationBaseBaseLength,
         oscillationBaseOverlayLength,
-        oscillationSampleCount: 2048,
+        oscillationSampleCount: 2048 + 1024,
         oscillationBaseFrequency: getWaveFrequency({
           baseFrequency: 211,
           scaleResolution: somePatternCell.rhythmResolution,
           frequencyIndex: 0,
         }),
         oscillationOverlayFrequency: getWaveFrequency({
-          baseFrequency: 211,
+          baseFrequency: 211 / 2,
           scaleResolution: somePatternCell.rhythmResolution,
-          frequencyIndex: 0,
+          frequencyIndex: 9,
         }),
       }
     })
@@ -275,7 +275,7 @@ function Waldo() {
                       sampleCount: someCellStuff.oscillationSampleCount,
                       oscillationRadius: someCellStuff.oscillationRadius,
                       oscillationFrequency:
-                        someCellStuff.oscillationBaseFrequency,
+                        someCellStuff.oscillationOverlayFrequency,
                     })}
                   />
                 )

@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react'
-import { SectionBase } from './SectionBase'
+import { SectionBase } from '../../components/SectionBase'
 import { SectionContent } from './SectionContent'
 
 export interface HeaderSectionProps {

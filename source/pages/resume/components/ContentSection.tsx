@@ -1,7 +1,7 @@
 import React from 'react'
 import { createUseStyles } from 'react-jss'
 import { SiteTheme } from '../../../siteTheme'
-import { SectionBase, SectionBaseProps } from './SectionBase'
+import { SectionBase, SectionBaseProps } from '../../components/SectionBase'
 import { SectionContent, SectionContentProps } from './SectionContent'
 
 export interface ContentsSectionProps

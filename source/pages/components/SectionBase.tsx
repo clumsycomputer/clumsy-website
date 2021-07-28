@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react'
 import { createUseStyles } from 'react-jss'
-import { SiteTheme } from '../../../siteTheme'
+import { SiteTheme } from '../../siteTheme'
 
 export interface SectionBaseProps {
   sectionDivider: ReactNode
@@ -10,12 +10,8 @@ export interface SectionBaseProps {
 }
 
 export function SectionBase(props: SectionBaseProps) {
-  const {
-    sectionDivider,
-    accessibilityLabel,
-    headerLabels,
-    bodyContent,
-  } = props
+  const { sectionDivider, accessibilityLabel, headerLabels, bodyContent } =
+    props
   const styles = useSectionBaseStyles()
   return (
     <div role={'none'} className={styles.sectionContainer}>

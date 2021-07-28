@@ -7,6 +7,9 @@ import {
   RotatedLoop,
 } from '../../../library/circleStuff'
 import {
+  CompositeLoop,
+  getCompositeCenterPoint,
+  getCompositeLoopPoints,
   getDistanceBetweenPoints,
   reduceRhythmSequence,
   ReduceRhythmSequenceApi,
@@ -247,4 +250,69 @@ export interface GetWaveFrequencyApi {
 export function getWaveFrequency(api: GetWaveFrequencyApi) {
   const { baseFrequency, frequencyIndex, scaleResolution } = api
   return baseFrequency * Math.pow(2, frequencyIndex / scaleResolution)
+}
+
+export interface GetNestCompositeLoopsPointsApi {
+  baseLoop: CompositeLoop
+  sampleCount: number
+  shiftAngle: number
+  shiftScalar: number
+  nestRhythm: DiscreteRhythm
+}
+
+export function getNestCompositeLoopsPoints(
+  api: GetNestCompositeLoopsPointsApi
+) {
+  const { sampleCount, baseLoop, shiftAngle, nestRhythm, shiftScalar } = api
+  const cellLoopBasePoints = getCompositeLoopPoints({
+    sampleCount,
+    baseLoops: baseLoop,
+  })
+  const compositeCenter = getCompositeCenterPoint({
+    baseLoops: baseLoop,
+  })
+  const maxShiftPoint: Point = getTracePoint({
+    somePoints: cellLoopBasePoints,
+    traceAngle: shiftAngle,
+    originPoint: compositeCenter,
+  })
+  const maxShiftRadius = getDistanceBetweenPoints({
+    pointA: compositeCenter,
+    pointB: maxShiftPoint,
+  })
+  return reduceRhythmSequence<{
+    loopCenter: Point
+    loopPoints: Array<Point>
+  }>({
+    baseRhythm: nestRhythm,
+    getCellResult: (someNestStuff) => {
+      const childShiftRadius =
+        shiftScalar *
+        (maxShiftRadius / someNestStuff.rhythmResolution) *
+        someNestStuff.rhythmIndex
+      const currentCenter: Point = {
+        x: childShiftRadius * Math.cos(shiftAngle) + compositeCenter.x,
+        y: childShiftRadius * Math.sin(shiftAngle) + compositeCenter.y,
+      }
+      return {
+        loopCenter: currentCenter,
+        loopPoints: cellLoopBasePoints.map((someBasePoint, pointIndex) => {
+          const maxRadius = getDistanceBetweenPoints({
+            pointA: compositeCenter,
+            pointB: someBasePoint,
+          })
+          const currentBaseRadius =
+            maxRadius -
+            (maxRadius / someNestStuff.rhythmResolution) *
+              someNestStuff.rhythmIndex
+          const currentAngle =
+            ((2 * Math.PI) / cellLoopBasePoints.length) * pointIndex
+          return {
+            x: currentBaseRadius * Math.cos(currentAngle) + currentCenter.x,
+            y: currentBaseRadius * Math.sin(currentAngle) + currentCenter.y,
+          }
+        }),
+      }
+    },
+  })
 }

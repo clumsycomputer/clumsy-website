@@ -25,6 +25,7 @@ import {
   getLoopContractingPattern,
   getLoopExpandingPattern,
   getLoopRayPattern,
+  getNestCompositeLoopsPoints,
   getOscillatedLoopPoints,
   getWaveFrequency,
 } from './helpers'
@@ -40,22 +41,22 @@ export default {
 
 const Palette = {
   primary: {
-    main: '#8000ff',
+    main: '#ff0092',
   },
   complementary: {
-    main: '#80ff00',
+    main: '#00ff6e',
   },
   analogousA: {
-    main: '#0000ff',
+    main: '#ee00ff',
   },
   analogousB: {
-    main: '#ff00ff',
+    main: '#ff0011',
   },
   triadicA: {
-    main: '#ff0080',
+    main: '#ff6f00',
   },
   triadicB: {
-    main: '#ff8000',
+    main: '#91ff00',
   },
 }
 
@@ -91,7 +92,7 @@ function Waldo() {
       { rhythmDensity: 11, rhythmPhase: 0 },
       { rhythmDensity: 7, rhythmPhase: 0 },
     ],
-    rhythmPhase: 1,
+    rhythmPhase: 9,
   })
   const rhythmB = getNaturalCompositeRhythm({
     rhythmResolution: 17,
@@ -100,7 +101,7 @@ function Waldo() {
       { rhythmDensity: 11, rhythmPhase: 0 },
       { rhythmDensity: 7, rhythmPhase: 0 },
     ],
-    rhythmPhase: 12,
+    rhythmPhase: 1,
   })
   const patternLoops = [
     ...getLoopRayPattern({
@@ -174,7 +175,7 @@ function Waldo() {
             { rhythmDensity: 17, rhythmPhase: 0 },
             { rhythmDensity: 13, rhythmPhase: 0 },
             { rhythmDensity: 11, rhythmPhase: 0 },
-            { rhythmDensity: 7, rhythmPhase: 3 },
+            { rhythmDensity: 7, rhythmPhase: 0 },
             // { rhythmDensity: 5, rhythmPhase: 4 },
           ],
           rhythmPhase: 0,
@@ -184,14 +185,14 @@ function Waldo() {
     .map((somePatternCell) => {
       const oscillationRadius =
         somePatternCell.cellLoopBase.baseCircle.radius / 8
-      const oscillationBaseBaseLength = oscillationRadius / 24
+      const oscillationBaseBaseLength = oscillationRadius / 14
       const oscillationBaseOverlayLength = oscillationBaseBaseLength
       return {
         ...somePatternCell,
         oscillationRadius,
         oscillationBaseBaseLength,
         oscillationBaseOverlayLength,
-        oscillationSampleCount: 2048 + 1024,
+        oscillationSampleCount: 2048 * 2,
         oscillationBaseFrequency: getWaveFrequency({
           baseFrequency: 211,
           scaleResolution: somePatternCell.rhythmResolution,
@@ -295,69 +296,6 @@ function Waldo() {
       )
     </svg>
   )
-}
-
-interface GetNestCompositeLoopsPointsApi {
-  baseLoop: CompositeLoop
-  sampleCount: number
-  shiftAngle: number
-  shiftScalar: number
-  nestRhythm: DiscreteRhythm
-}
-
-function getNestCompositeLoopsPoints(api: GetNestCompositeLoopsPointsApi) {
-  const { sampleCount, baseLoop, shiftAngle, nestRhythm, shiftScalar } = api
-  const cellLoopBasePoints = getCompositeLoopPoints({
-    sampleCount,
-    baseLoops: baseLoop,
-  })
-  const compositeCenter = getCompositeCenterPoint({
-    baseLoops: baseLoop,
-  })
-  const maxShiftPoint: Point = getTracePoint({
-    somePoints: cellLoopBasePoints,
-    traceAngle: shiftAngle,
-    originPoint: compositeCenter,
-  })
-  const maxShiftRadius = getDistanceBetweenPoints({
-    pointA: compositeCenter,
-    pointB: maxShiftPoint,
-  })
-  return reduceRhythmSequence<{
-    loopCenter: Point
-    loopPoints: Array<Point>
-  }>({
-    baseRhythm: nestRhythm,
-    getCellResult: (someNestStuff) => {
-      const childShiftRadius =
-        shiftScalar *
-        (maxShiftRadius / someNestStuff.rhythmResolution) *
-        someNestStuff.rhythmIndex
-      const currentCenter: Point = {
-        x: childShiftRadius * Math.cos(shiftAngle) + compositeCenter.x,
-        y: childShiftRadius * Math.sin(shiftAngle) + compositeCenter.y,
-      }
-      return {
-        loopCenter: currentCenter,
-        loopPoints: cellLoopBasePoints.map((someBasePoint, pointIndex) => {
-          const maxRadius = getDistanceBetweenPoints({
-            pointA: compositeCenter,
-            pointB: someBasePoint,
-          })
-          const currentBaseRadius =
-            maxRadius -
-            (maxRadius / someNestStuff.rhythmResolution) *
-              someNestStuff.rhythmIndex
-          const currentAngle =
-            ((2 * Math.PI) / cellLoopBasePoints.length) * pointIndex
-          return {
-            x: currentBaseRadius * Math.cos(currentAngle) + currentCenter.x,
-            y: currentBaseRadius * Math.sin(currentAngle) + currentCenter.y,
-          }
-        }),
-      }
-    },
-  })
 }
 
 interface MirroredPointSquaresProps {

@@ -2,6 +2,7 @@ import {
   getRotatedLoopChildCircle,
   getRotatedLoopPoint,
   GetRotatedLoopPointApi,
+  getTracePoint,
   Point,
   RotatedLoop,
 } from '../../../library/circleStuff'
@@ -201,8 +202,9 @@ export function getLoopPatternBase<PatternId extends string>(
   })
 }
 
-export interface GetOscillatedLoopPointsApi
-  extends Pick<GetRotatedLoopPointApi, 'someRotatedLoop'> {
+export interface GetOscillatedLoopPointsApi {
+  loopPoints: Array<Point>
+  loopCenter: Point
   sampleCount: number
   oscillationRadius: number
   oscillationFrequency: number
@@ -211,15 +213,17 @@ export interface GetOscillatedLoopPointsApi
 export function getOscillatedLoopPoints(api: GetOscillatedLoopPointsApi) {
   const {
     sampleCount,
-    someRotatedLoop,
+    loopPoints,
+    loopCenter,
     oscillationRadius,
     oscillationFrequency,
   } = api
   return new Array(sampleCount).fill(undefined).map<Point>((_, sampleIndex) => {
     const currentSampleAngle = ((2 * Math.PI) / sampleCount) * sampleIndex
-    const basePoint = getRotatedLoopPoint({
-      someRotatedLoop,
-      sampleAngle: currentSampleAngle,
+    const basePoint = getTracePoint({
+      somePoints: loopPoints,
+      originPoint: loopCenter,
+      traceAngle: currentSampleAngle,
     })
     return {
       x:

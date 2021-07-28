@@ -38,6 +38,37 @@ export default {
   pdfFileName: 'waldo',
 }
 
+const Palette = {
+  primary: {
+    main: '#8000ff',
+  },
+  complementary: {
+    main: '#80ff00',
+  },
+  analogousA: {
+    main: '#0000ff',
+  },
+  analogousB: {
+    main: '#ff00ff',
+  },
+  triadicA: {
+    main: '#ff0080',
+  },
+  triadicB: {
+    main: '#ff8000',
+  },
+}
+
+const colors = [
+  Palette.primary.main,
+  Palette.analogousA.main,
+  Palette.analogousB.main,
+  Palette.primary.main,
+  Palette.triadicA.main,
+  Palette.triadicB.main,
+  Palette.complementary.main,
+]
+
 function Waldo() {
   const rootCircle: Circle = {
     radius: 50,
@@ -142,11 +173,30 @@ function Waldo() {
           rhythmParts: [
             { rhythmDensity: 17, rhythmPhase: 0 },
             { rhythmDensity: 13, rhythmPhase: 0 },
-            { rhythmDensity: 12, rhythmPhase: 0 },
-            { rhythmDensity: 7, rhythmPhase: 0 },
-            { rhythmDensity: 5, rhythmPhase: 0 },
+            { rhythmDensity: 11, rhythmPhase: 0 },
+            { rhythmDensity: 7, rhythmPhase: 3 },
+            // { rhythmDensity: 5, rhythmPhase: 4 },
           ],
           rhythmPhase: 0,
+        }),
+      }
+    })
+    .map((somePatternCell) => {
+      const oscillationRadius = 1 / 5
+      return {
+        ...somePatternCell,
+        oscillationRadius,
+        oscillationSampleCount: 256,
+        oscillationSampleBaseLength: oscillationRadius / 4,
+        oscillationBaseFrequency: getWaveFrequency({
+          baseFrequency: 211,
+          scaleResolution: somePatternCell.rhythmResolution,
+          frequencyIndex: 0,
+        }),
+        oscillationOverlayFrequency: getWaveFrequency({
+          baseFrequency: 211,
+          scaleResolution: somePatternCell.rhythmResolution,
+          frequencyIndex: 1,
         }),
       }
     })
@@ -170,25 +220,55 @@ function Waldo() {
           shiftAngle: somePatternStuff.nestShiftAngle,
           shiftScalar: somePatternStuff.nestShiftScalar,
           nestRhythm: somePatternStuff.nestRhythm,
-        }).map((somePolygonPoints) => {
-          const mirroredCellLoopPoints = somePolygonPoints.map((somePoint) =>
-            getMirroredPoint({
-              mirrorAngle: Math.PI / 2,
-              originPoint: somePatternStuff.baseLoop.baseCircle.center,
-              basePoint: somePoint,
-            })
-          )
+        }).map(({ loopCenter, loopPoints }, nestIndex) => {
+          const maskId = `${somePatternStuff.cellKey}-${nestIndex}`
           return (
             <Fragment>
-              <Polygon
-                strokeColor={'white'}
-                strokeWidth={0.2}
-                somePoints={somePolygonPoints}
-              />
-              <Polygon
-                strokeColor={'white'}
-                strokeWidth={0.2}
-                somePoints={mirroredCellLoopPoints}
+              <mask id={maskId}>
+                <MirroredPointSquares
+                  fillColor={'white'}
+                  mirrorAngle={Math.PI / 2}
+                  mirrorOriginPoint={
+                    somePatternStuff.baseLoop.baseCircle.center
+                  }
+                  squareRootLength={
+                    somePatternStuff.oscillationSampleBaseLength
+                  }
+                  somePoints={getOscillatedLoopPoints({
+                    loopCenter,
+                    loopPoints,
+                    sampleCount: somePatternStuff.oscillationSampleCount,
+                    oscillationFrequency:
+                      somePatternStuff.oscillationBaseFrequency,
+                    oscillationRadius: somePatternStuff.oscillationRadius,
+                  })}
+                />
+                <MirroredPointSquares
+                  fillColor={'black'}
+                  mirrorAngle={Math.PI / 2}
+                  mirrorOriginPoint={
+                    somePatternStuff.baseLoop.baseCircle.center
+                  }
+                  squareRootLength={
+                    somePatternStuff.oscillationSampleBaseLength
+                  }
+                  somePoints={getOscillatedLoopPoints({
+                    loopCenter,
+                    loopPoints,
+                    sampleCount: somePatternStuff.oscillationSampleCount,
+                    oscillationRadius: somePatternStuff.oscillationRadius,
+                    oscillationFrequency:
+                      somePatternStuff.oscillationOverlayFrequency,
+                  })}
+                />
+              </mask>
+              <rect
+                fill={colors[nestIndex]}
+                x={-10}
+                y={-10}
+                width={120}
+                height={120}
+                mask={`url(#${maskId})`}
               />
             </Fragment>
           )
@@ -224,7 +304,10 @@ function getNestCompositeLoopsPoints(api: GetNestCompositeLoopsPointsApi) {
     pointA: compositeCenter,
     pointB: maxShiftPoint,
   })
-  return reduceRhythmSequence<Array<Point>>({
+  return reduceRhythmSequence<{
+    loopCenter: Point
+    loopPoints: Array<Point>
+  }>({
     baseRhythm: nestRhythm,
     getCellResult: (someNestStuff) => {
       const childShiftRadius =
@@ -235,72 +318,75 @@ function getNestCompositeLoopsPoints(api: GetNestCompositeLoopsPointsApi) {
         x: childShiftRadius * Math.cos(shiftAngle) + compositeCenter.x,
         y: childShiftRadius * Math.sin(shiftAngle) + compositeCenter.y,
       }
-      return cellLoopBasePoints.map((someBasePoint, pointIndex) => {
-        const maxRadius = getDistanceBetweenPoints({
-          pointA: compositeCenter,
-          pointB: someBasePoint,
-        })
-        const currentBaseRadius =
-          maxRadius -
-          (maxRadius / someNestStuff.rhythmResolution) *
-            someNestStuff.rhythmIndex
-        const currentAngle =
-          ((2 * Math.PI) / cellLoopBasePoints.length) * pointIndex
-        return {
-          x: currentBaseRadius * Math.cos(currentAngle) + currentCenter.x,
-          y: currentBaseRadius * Math.sin(currentAngle) + currentCenter.y,
-        }
-      })
+      return {
+        loopCenter: currentCenter,
+        loopPoints: cellLoopBasePoints.map((someBasePoint, pointIndex) => {
+          const maxRadius = getDistanceBetweenPoints({
+            pointA: compositeCenter,
+            pointB: someBasePoint,
+          })
+          const currentBaseRadius =
+            maxRadius -
+            (maxRadius / someNestStuff.rhythmResolution) *
+              someNestStuff.rhythmIndex
+          const currentAngle =
+            ((2 * Math.PI) / cellLoopBasePoints.length) * pointIndex
+          return {
+            x: currentBaseRadius * Math.cos(currentAngle) + currentCenter.x,
+            y: currentBaseRadius * Math.sin(currentAngle) + currentCenter.y,
+          }
+        }),
+      }
     },
   })
 }
 
-// interface MirroredPointSquaresProps {
-//   somePoints: Array<Point>
-//   mirrorOriginPoint: Point
-//   mirrorAngle: number
-//   squareRootLength: number
-//   fillColor: string
-// }
-//
-// function MirroredPointSquares(props: MirroredPointSquaresProps) {
-//   const {
-//     somePoints,
-//     mirrorOriginPoint,
-//     mirrorAngle,
-//     squareRootLength,
-//     fillColor,
-//   } = props
-//   return (
-//     <Fragment>
-//       {somePoints.map((somePoint) => {
-//         const mirroredPoint = getMirroredPoint({
-//           originPoint: mirrorOriginPoint,
-//           mirrorAngle: mirrorAngle,
-//           basePoint: somePoint,
-//         })
-//         return (
-//           <Fragment>
-//             <rect
-//               fill={fillColor}
-//               x={somePoint.x - squareRootLength}
-//               y={somePoint.y - squareRootLength}
-//               width={2 * squareRootLength}
-//               height={2 * squareRootLength}
-//             />
-//             <rect
-//               fill={fillColor}
-//               x={mirroredPoint.x - squareRootLength}
-//               y={mirroredPoint.y - squareRootLength}
-//               width={2 * squareRootLength}
-//               height={2 * squareRootLength}
-//             />
-//           </Fragment>
-//         )
-//       })}
-//     </Fragment>
-//   )
-// }
+interface MirroredPointSquaresProps {
+  somePoints: Array<Point>
+  mirrorOriginPoint: Point
+  mirrorAngle: number
+  squareRootLength: number
+  fillColor: string
+}
+
+function MirroredPointSquares(props: MirroredPointSquaresProps) {
+  const {
+    somePoints,
+    mirrorOriginPoint,
+    mirrorAngle,
+    squareRootLength,
+    fillColor,
+  } = props
+  return (
+    <Fragment>
+      {somePoints.map((somePoint) => {
+        const mirroredPoint = getMirroredPoint({
+          originPoint: mirrorOriginPoint,
+          mirrorAngle: mirrorAngle,
+          basePoint: somePoint,
+        })
+        return (
+          <Fragment>
+            <rect
+              fill={fillColor}
+              x={somePoint.x - squareRootLength}
+              y={somePoint.y - squareRootLength}
+              width={2 * squareRootLength}
+              height={2 * squareRootLength}
+            />
+            <rect
+              fill={fillColor}
+              x={mirroredPoint.x - squareRootLength}
+              y={mirroredPoint.y - squareRootLength}
+              width={2 * squareRootLength}
+              height={2 * squareRootLength}
+            />
+          </Fragment>
+        )
+      })}
+    </Fragment>
+  )
+}
 //
 // function foo() {
 // const patternPointsA = patternLoopsA.map((someCellStuff) => {

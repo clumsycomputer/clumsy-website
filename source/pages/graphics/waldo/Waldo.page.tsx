@@ -17,7 +17,10 @@ import {
   getDistanceBetweenPoints,
   reduceRhythmSequence,
 } from '../../../library/helperStuff'
-import { getNaturalCompositeRhythm } from '../../../library/rhythmStuff'
+import {
+  DiscreteRhythm,
+  getNaturalCompositeRhythm,
+} from '../../../library/rhythmStuff'
 import {
   getLoopContractingPattern,
   getLoopExpandingPattern,
@@ -153,89 +156,95 @@ function Waldo() {
     >
       <rect x={-10} y={-10} width={120} height={120} fill={'black'} />
       {patternLoops.map((somePatternStuff) => {
-        const cellLoopBasePoints = getCompositeLoopPoints({
-          sampleCount: 128,
-          baseLoops: somePatternStuff.cellLoop,
-        })
-        const compositeCenter = getCompositeCenterPoint({
-          baseLoops: somePatternStuff.cellLoop,
-        })
-        // const baseShiftAngle = Math.atan2(
-        //   compositeCenter.y - somePatternStuff.baseLoop.baseCircle.center.y,
-        //   compositeCenter.x - somePatternStuff.baseLoop.baseCircle.rootCircle.center.x
-        // )
-        const maxShiftPoint: Point = getTracePoint({
-          somePoints: cellLoopBasePoints,
-          traceAngle: somePatternStuff.nestShiftAngle,
-          originPoint: compositeCenter,
-        })
-        const maxShiftRadius = getDistanceBetweenPoints({
-          pointA: compositeCenter,
-          pointB: maxShiftPoint,
-        })
-        return reduceRhythmSequence({
-          baseRhythm: somePatternStuff.nestRhythm,
-          getCellResult: (someNestStuff) => {
-            const childShiftRadius =
-              somePatternStuff.nestShiftScalar *
-              (maxShiftRadius / someNestStuff.rhythmResolution) *
-              someNestStuff.rhythmIndex
-            const currentCenter: Point = {
-              x:
-                childShiftRadius * Math.cos(somePatternStuff.nestShiftAngle) +
-                compositeCenter.x,
-              y:
-                childShiftRadius * Math.sin(somePatternStuff.nestShiftAngle) +
-                compositeCenter.y,
-            }
-            const cellLoopPoints = cellLoopBasePoints.map(
-              (someBasePoint, pointIndex) => {
-                const maxRadius = getDistanceBetweenPoints({
-                  pointA: compositeCenter,
-                  pointB: someBasePoint,
-                })
-                const currentBaseRadius =
-                  maxRadius -
-                  (maxRadius / someNestStuff.rhythmResolution) *
-                    someNestStuff.rhythmIndex
-                const currentAngle =
-                  ((2 * Math.PI) / cellLoopBasePoints.length) * pointIndex
-                return {
-                  x:
-                    currentBaseRadius * Math.cos(currentAngle) +
-                    currentCenter.x,
-                  y:
-                    currentBaseRadius * Math.sin(currentAngle) +
-                    currentCenter.y,
-                }
-              }
-            )
-            const mirroredCellLoopPoints = cellLoopPoints.map((somePoint) =>
-              getMirroredPoint({
-                mirrorAngle: Math.PI / 2,
-                originPoint: somePatternStuff.baseLoop.baseCircle.center,
-                basePoint: somePoint,
-              })
-            )
-            return (
-              <Fragment>
-                <Polygon
-                  strokeColor={'white'}
-                  strokeWidth={0.2}
-                  somePoints={cellLoopPoints}
-                />
-                <Polygon
-                  strokeColor={'white'}
-                  strokeWidth={0.2}
-                  somePoints={mirroredCellLoopPoints}
-                />
-              </Fragment>
-            )
-          },
+        return getNestCompositeLoopsPoints({
+          sampleCount: 256,
+          baseLoop: somePatternStuff.cellLoop,
+          shiftAngle: somePatternStuff.nestShiftAngle,
+          shiftScalar: somePatternStuff.nestShiftScalar,
+          nestRhythm: somePatternStuff.nestRhythm,
+        }).map((somePolygonPoints) => {
+          const mirroredCellLoopPoints = somePolygonPoints.map((somePoint) =>
+            getMirroredPoint({
+              mirrorAngle: Math.PI / 2,
+              originPoint: somePatternStuff.baseLoop.baseCircle.center,
+              basePoint: somePoint,
+            })
+          )
+          return (
+            <Fragment>
+              <Polygon
+                strokeColor={'white'}
+                strokeWidth={0.2}
+                somePoints={somePolygonPoints}
+              />
+              <Polygon
+                strokeColor={'red'}
+                strokeWidth={0.2}
+                somePoints={mirroredCellLoopPoints}
+              />
+            </Fragment>
+          )
         })
       })}
     </svg>
   )
+}
+
+interface GetNestCompositeLoopsPointsApi {
+  baseLoop: CompositeLoop
+  sampleCount: number
+  shiftAngle: number
+  shiftScalar: number
+  nestRhythm: DiscreteRhythm
+}
+
+function getNestCompositeLoopsPoints(api: GetNestCompositeLoopsPointsApi) {
+  const { sampleCount, baseLoop, shiftAngle, nestRhythm, shiftScalar } = api
+  const cellLoopBasePoints = getCompositeLoopPoints({
+    sampleCount,
+    baseLoops: baseLoop,
+  })
+  const compositeCenter = getCompositeCenterPoint({
+    baseLoops: baseLoop,
+  })
+  const maxShiftPoint: Point = getTracePoint({
+    somePoints: cellLoopBasePoints,
+    traceAngle: shiftAngle,
+    originPoint: compositeCenter,
+  })
+  const maxShiftRadius = getDistanceBetweenPoints({
+    pointA: compositeCenter,
+    pointB: maxShiftPoint,
+  })
+  return reduceRhythmSequence<Array<Point>>({
+    baseRhythm: nestRhythm,
+    getCellResult: (someNestStuff) => {
+      const childShiftRadius =
+        shiftScalar *
+        (maxShiftRadius / someNestStuff.rhythmResolution) *
+        someNestStuff.rhythmIndex
+      const currentCenter: Point = {
+        x: childShiftRadius * Math.cos(shiftAngle) + compositeCenter.x,
+        y: childShiftRadius * Math.sin(shiftAngle) + compositeCenter.y,
+      }
+      return cellLoopBasePoints.map((someBasePoint, pointIndex) => {
+        const maxRadius = getDistanceBetweenPoints({
+          pointA: compositeCenter,
+          pointB: someBasePoint,
+        })
+        const currentBaseRadius =
+          maxRadius -
+          (maxRadius / someNestStuff.rhythmResolution) *
+            someNestStuff.rhythmIndex
+        const currentAngle =
+          ((2 * Math.PI) / cellLoopBasePoints.length) * pointIndex
+        return {
+          x: currentBaseRadius * Math.cos(currentAngle) + currentCenter.x,
+          y: currentBaseRadius * Math.sin(currentAngle) + currentCenter.y,
+        }
+      })
+    },
+  })
 }
 
 // interface MirroredPointSquaresProps {

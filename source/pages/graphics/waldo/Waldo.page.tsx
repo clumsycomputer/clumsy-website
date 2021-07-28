@@ -133,7 +133,7 @@ function Waldo() {
           radius:
             (somePatternCell.baseLoop.baseCircle.radius /
               somePatternCell.rhythmResolution) *
-            1.125,
+            3,
         },
         childCircle: {
           relativeRadius: 3 / 4,
@@ -182,12 +182,16 @@ function Waldo() {
       }
     })
     .map((somePatternCell) => {
-      const oscillationRadius = 1 / 5
+      const oscillationRadius =
+        somePatternCell.cellLoopBase.baseCircle.radius / 8
+      const oscillationBaseBaseLength = oscillationRadius / 24
+      const oscillationBaseOverlayLength = oscillationBaseBaseLength / 2
       return {
         ...somePatternCell,
         oscillationRadius,
-        oscillationSampleCount: 256,
-        oscillationSampleBaseLength: oscillationRadius / 4,
+        oscillationBaseBaseLength,
+        oscillationBaseOverlayLength,
+        oscillationSampleCount: 2048,
         oscillationBaseFrequency: getWaveFrequency({
           baseFrequency: 211,
           scaleResolution: somePatternCell.rhythmResolution,
@@ -196,10 +200,30 @@ function Waldo() {
         oscillationOverlayFrequency: getWaveFrequency({
           baseFrequency: 211,
           scaleResolution: somePatternCell.rhythmResolution,
-          frequencyIndex: 1,
+          frequencyIndex: 0,
         }),
       }
     })
+  const patternLayers = patternLoops.reduce<Array<Array<any>>>(
+    (result, somePatternStuff) => {
+      getNestCompositeLoopsPoints({
+        sampleCount: 256,
+        baseLoop: somePatternStuff.cellLoopComposition,
+        shiftAngle: somePatternStuff.nestShiftAngle,
+        shiftScalar: somePatternStuff.nestShiftScalar,
+        nestRhythm: somePatternStuff.nestRhythm,
+      }).forEach((nestLoopPointsData, layerIndex) => {
+        result[layerIndex]!.push({
+          ...somePatternStuff,
+          ...nestLoopPointsData,
+        })
+      })
+      return result
+    },
+    Array(7)
+      .fill(undefined)
+      .map(() => [])
+  )
   return (
     <svg
       style={{
@@ -213,67 +237,62 @@ function Waldo() {
       imageRendering={'optimizeQuality'}
     >
       <rect x={-10} y={-10} width={120} height={120} fill={'black'} />
-      {patternLoops.map((somePatternStuff) => {
-        return getNestCompositeLoopsPoints({
-          sampleCount: 256,
-          baseLoop: somePatternStuff.cellLoopComposition,
-          shiftAngle: somePatternStuff.nestShiftAngle,
-          shiftScalar: somePatternStuff.nestShiftScalar,
-          nestRhythm: somePatternStuff.nestRhythm,
-        }).map(({ loopCenter, loopPoints }, nestIndex) => {
-          const maskId = `${somePatternStuff.cellKey}-${nestIndex}`
-          return (
-            <Fragment>
-              <mask id={maskId}>
-                <MirroredPointSquares
-                  fillColor={'white'}
-                  mirrorAngle={Math.PI / 2}
-                  mirrorOriginPoint={
-                    somePatternStuff.baseLoop.baseCircle.center
-                  }
-                  squareRootLength={
-                    somePatternStuff.oscillationSampleBaseLength
-                  }
-                  somePoints={getOscillatedLoopPoints({
-                    loopCenter,
-                    loopPoints,
-                    sampleCount: somePatternStuff.oscillationSampleCount,
-                    oscillationFrequency:
-                      somePatternStuff.oscillationBaseFrequency,
-                    oscillationRadius: somePatternStuff.oscillationRadius,
-                  })}
-                />
-                <MirroredPointSquares
-                  fillColor={'black'}
-                  mirrorAngle={Math.PI / 2}
-                  mirrorOriginPoint={
-                    somePatternStuff.baseLoop.baseCircle.center
-                  }
-                  squareRootLength={
-                    somePatternStuff.oscillationSampleBaseLength
-                  }
-                  somePoints={getOscillatedLoopPoints({
-                    loopCenter,
-                    loopPoints,
-                    sampleCount: somePatternStuff.oscillationSampleCount,
-                    oscillationRadius: somePatternStuff.oscillationRadius,
-                    oscillationFrequency:
-                      somePatternStuff.oscillationOverlayFrequency,
-                  })}
-                />
-              </mask>
-              <rect
-                fill={colors[nestIndex]}
-                x={-10}
-                y={-10}
-                width={120}
-                height={120}
-                mask={`url(#${maskId})`}
-              />
-            </Fragment>
-          )
-        })
+      {patternLayers.map((someLayerCells, layerIndex) => {
+        const maskId = `${layerIndex}`
+        return (
+          <Fragment>
+            <mask id={maskId}>
+              {someLayerCells.map((someCellStuff) => {
+                return (
+                  <MirroredPointSquares
+                    fillColor={'white'}
+                    mirrorAngle={Math.PI / 2}
+                    mirrorOriginPoint={someCellStuff.baseLoop.baseCircle.center}
+                    squareRootLength={someCellStuff.oscillationBaseBaseLength}
+                    somePoints={getOscillatedLoopPoints({
+                      loopCenter: someCellStuff.loopCenter,
+                      loopPoints: someCellStuff.loopPoints,
+                      sampleCount: someCellStuff.oscillationSampleCount,
+                      oscillationRadius: someCellStuff.oscillationRadius,
+                      oscillationFrequency:
+                        someCellStuff.oscillationBaseFrequency,
+                    })}
+                  />
+                )
+              })}
+              {someLayerCells.map((someCellStuff) => {
+                return (
+                  <MirroredPointSquares
+                    fillColor={'black'}
+                    mirrorAngle={Math.PI / 2}
+                    mirrorOriginPoint={someCellStuff.baseLoop.baseCircle.center}
+                    squareRootLength={
+                      someCellStuff.oscillationBaseOverlayLength
+                    }
+                    somePoints={getOscillatedLoopPoints({
+                      loopCenter: someCellStuff.loopCenter,
+                      loopPoints: someCellStuff.loopPoints,
+                      sampleCount: someCellStuff.oscillationSampleCount,
+                      oscillationRadius: someCellStuff.oscillationRadius,
+                      oscillationFrequency:
+                        someCellStuff.oscillationBaseFrequency,
+                    })}
+                  />
+                )
+              })}
+            </mask>
+            <rect
+              x={-10}
+              y={-10}
+              width={120}
+              height={120}
+              mask={`url(#${maskId})`}
+              fill={colors[layerIndex]!}
+            />
+          </Fragment>
+        )
       })}
+      )
     </svg>
   )
 }

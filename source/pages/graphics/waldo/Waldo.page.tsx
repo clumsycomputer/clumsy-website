@@ -62,17 +62,6 @@ function Waldo() {
     ],
     rhythmPhase: 1,
   })
-  const patternA = getLoopRayPattern({
-    patternId: 'A',
-    baseLoop: getUpdatedData({
-      baseData: rootLoop,
-      dataUpdates: {
-        'childCircle.relativeRadius': () => 8.75 / 12,
-      },
-    }),
-    spacerRhythm: rhythmA,
-    waveRhythm: rhythmA,
-  })
   const rhythmB = getNaturalCompositeRhythm({
     rhythmResolution: 17,
     rhythmParts: [
@@ -82,18 +71,30 @@ function Waldo() {
     ],
     rhythmPhase: 12,
   })
-  const patternB = getLoopContractingPattern({
-    patternId: 'B',
-    baseLoop: getUpdatedData({
-      baseData: rootLoop,
-      dataUpdates: {
-        'childCircle.relativeRadius': () => 11 / 12,
-      },
+  const patternLoops = [
+    ...getLoopRayPattern({
+      patternId: 'A',
+      baseLoop: getUpdatedData({
+        baseData: rootLoop,
+        dataUpdates: {
+          'childCircle.relativeRadius': () => 8.75 / 12,
+        },
+      }),
+      spacerRhythm: rhythmA,
+      waveRhythm: rhythmA,
     }),
-    spacerRhythm: rhythmB,
-    waveRhythm: rhythmB,
-  })
-  const patternLoops = [...patternA, ...patternB]
+    ...getLoopContractingPattern({
+      patternId: 'B',
+      baseLoop: getUpdatedData({
+        baseData: rootLoop,
+        dataUpdates: {
+          'childCircle.relativeRadius': () => 11 / 12,
+        },
+      }),
+      spacerRhythm: rhythmB,
+      waveRhythm: rhythmB,
+    }),
+  ]
     .map((somePatternCell) => {
       const cellLoopBase: RotatedLoop = {
         baseCircle: {
@@ -115,7 +116,8 @@ function Waldo() {
       }
       return {
         ...somePatternCell,
-        cellLoop: [
+        cellLoopBase,
+        cellLoopComposition: [
           cellLoopBase,
           cellLoopBase,
           getUpdatedData({
@@ -133,11 +135,17 @@ function Waldo() {
     .map((somePatternCell) => {
       return {
         ...somePatternCell,
-        nestShiftAngle: 0,
-        nestShiftScalar: 1,
+        nestShiftAngle: Math.log(somePatternCell.cellLoopBase.rotationAngle),
+        nestShiftScalar: 0.5,
         nestRhythm: getNaturalCompositeRhythm({
-          rhythmResolution: 12,
-          rhythmParts: [{ rhythmDensity: 7, rhythmPhase: 0 }],
+          rhythmResolution: 19,
+          rhythmParts: [
+            { rhythmDensity: 17, rhythmPhase: 0 },
+            { rhythmDensity: 13, rhythmPhase: 0 },
+            { rhythmDensity: 12, rhythmPhase: 0 },
+            { rhythmDensity: 7, rhythmPhase: 0 },
+            { rhythmDensity: 5, rhythmPhase: 0 },
+          ],
           rhythmPhase: 0,
         }),
       }
@@ -158,7 +166,7 @@ function Waldo() {
       {patternLoops.map((somePatternStuff) => {
         return getNestCompositeLoopsPoints({
           sampleCount: 256,
-          baseLoop: somePatternStuff.cellLoop,
+          baseLoop: somePatternStuff.cellLoopComposition,
           shiftAngle: somePatternStuff.nestShiftAngle,
           shiftScalar: somePatternStuff.nestShiftScalar,
           nestRhythm: somePatternStuff.nestRhythm,
@@ -178,7 +186,7 @@ function Waldo() {
                 somePoints={somePolygonPoints}
               />
               <Polygon
-                strokeColor={'red'}
+                strokeColor={'white'}
                 strokeWidth={0.2}
                 somePoints={mirroredCellLoopPoints}
               />

@@ -25,6 +25,60 @@ export function Graphic(props: GraphicProps) {
   )
 }
 
+export interface FreakPolygonsProps
+  extends Pick<FreakPolygonProps, 'fillColor' | 'targetRectangle'> {
+  polygonLayers: Array<
+    Pick<
+      FreakPolygonProps,
+      'baseSquares' | 'overlaySquares' | 'polygonOrigin' | 'polygonPoints'
+    >
+  >
+}
+
+export function FreakPolygons(props: FreakPolygonsProps) {
+  const { polygonLayers, targetRectangle, fillColor } = props
+  const maskId = `${Math.random()}`
+  return (
+    <Fragment>
+      <mask id={maskId}>
+        {polygonLayers.map((someFreakPolygon) => (
+          <WaveSquares
+            fillColor={'white'}
+            polygonPoints={someFreakPolygon.polygonPoints}
+            polygonOrigin={someFreakPolygon.polygonOrigin}
+            {...someFreakPolygon.baseSquares}
+          />
+        ))}
+        {polygonLayers.map((someFreakPolygon) => (
+          <WaveSquares
+            fillColor={'black'}
+            polygonPoints={someFreakPolygon.polygonPoints}
+            polygonOrigin={someFreakPolygon.polygonOrigin}
+            {...someFreakPolygon.overlaySquares}
+          />
+        ))}
+      </mask>
+      {/* {polygonLayers.map((someFreakPolygon) => (
+          <WaveSquares
+            fillColor={baseColor}
+            polygonPoints={someFreakPolygon.polygonPoints}
+            polygonOrigin={someFreakPolygon.polygonOrigin}
+            {...someFreakPolygon.baseSquares}
+          />
+        ))}
+      {polygonLayers.map((someFreakPolygon) => (
+        <WaveSquares
+          fillColor={overlayColor}
+          polygonPoints={someFreakPolygon.polygonPoints}
+          polygonOrigin={someFreakPolygon.polygonOrigin}
+          {...someFreakPolygon.overlaySquares}
+        />
+      ))} */}
+      <rect {...targetRectangle} fill={fillColor} mask={`url(#${maskId})`} />
+    </Fragment>
+  )
+}
+
 export interface FreakPolygonProps<
   SquaresLayer = Pick<
     WaveSquaresProps,

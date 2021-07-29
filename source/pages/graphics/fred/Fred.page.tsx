@@ -5,7 +5,12 @@ import {
   getRotatedLoopPoints,
   RotatedLoop,
 } from '../../../library/circleStuff'
-import { FreakPolygon, Graphic, GraphicRectangle } from './helpers'
+import {
+  FreakPolygon,
+  FreakPolygons,
+  Graphic,
+  GraphicRectangle,
+} from './helpers'
 
 export default {
   pageRoute: '/graphics/fred',
@@ -30,12 +35,22 @@ function Fred() {
   const rotatedLoopA: RotatedLoop = {
     baseCircle: rootCircle,
     childCircle: {
+      relativeRadius: 7 / 12,
+      relativeDepth: 1,
+      phaseAngle: 0,
+    },
+    rotationAnchor: 'base',
+    rotationAngle: Math.PI / 2,
+  }
+  const rotatedLoopB: RotatedLoop = {
+    baseCircle: rootCircle,
+    childCircle: {
       relativeRadius: 1,
       relativeDepth: 1,
       phaseAngle: 0,
     },
     rotationAnchor: 'base',
-    rotationAngle: 0,
+    rotationAngle: Math.PI / 2,
   }
   return (
     <Graphic
@@ -49,32 +64,57 @@ function Fred() {
       canvasRectangle={canvasRectangle}
     >
       <rect fill={'black'} {...canvasRectangle} />
-      <FreakPolygon
+      <FreakPolygons
         fillColor={'white'}
         targetRectangle={canvasRectangle}
-        baseSquares={{
-          oscillationSampleCount: 2048,
-          oscillationAmplitude: 2,
-          oscillationFrequency: 220,
-          oscillationPhase: 0,
-          squareBaseLength: 0.2,
-        }}
-        overlaySquares={{
-          oscillationSampleCount: 2048,
-          oscillationAmplitude: 1,
-          oscillationFrequency: 440,
-          oscillationPhase: Math.PI / 3,
-          squareBaseLength: 0.2,
-        }}
-        polygonOrigin={
-          getRotatedLoopChildCircle({
-            someRotatedLoop: rotatedLoopA,
-          }).center
-        }
-        polygonPoints={getRotatedLoopPoints({
-          sampleCount: 256,
-          someRotatedLoop: rotatedLoopA,
-        })}
+        polygonLayers={[
+          {
+            baseSquares: {
+              oscillationSampleCount: 2048,
+              oscillationAmplitude: 5,
+              oscillationFrequency: 220,
+              oscillationPhase: Math.PI / 2,
+              squareBaseLength: 0.5,
+            },
+            overlaySquares: {
+              oscillationSampleCount: 2048,
+              oscillationAmplitude: 4,
+              oscillationFrequency: 220,
+              oscillationPhase: Math.PI / 2,
+              squareBaseLength: 0.5,
+            },
+            polygonOrigin: getRotatedLoopChildCircle({
+              someRotatedLoop: rotatedLoopA,
+            }).center,
+            polygonPoints: getRotatedLoopPoints({
+              sampleCount: 4,
+              someRotatedLoop: rotatedLoopA,
+            }),
+          },
+          {
+            baseSquares: {
+              oscillationSampleCount: 2048,
+              oscillationAmplitude: 4,
+              oscillationFrequency: 220,
+              oscillationPhase: Math.PI / 2,
+              squareBaseLength: 0.5,
+            },
+            overlaySquares: {
+              oscillationSampleCount: 2048,
+              oscillationAmplitude: 3,
+              oscillationFrequency: 220,
+              oscillationPhase: Math.PI / 2 - Math.PI / 12,
+              squareBaseLength: 0.5,
+            },
+            polygonOrigin: getRotatedLoopChildCircle({
+              someRotatedLoop: rotatedLoopB,
+            }).center,
+            polygonPoints: getRotatedLoopPoints({
+              sampleCount: 3,
+              someRotatedLoop: rotatedLoopB,
+            }),
+          },
+        ]}
       />
     </Graphic>
   )

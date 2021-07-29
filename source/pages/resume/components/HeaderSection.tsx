@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react'
-import { SectionBase } from './SectionBase'
+import { SectionBase } from '../../components/SectionBase'
 import { SectionContent } from './SectionContent'
 
 export interface HeaderSectionProps {
@@ -13,6 +13,7 @@ export function HeaderSection(props: HeaderSectionProps) {
   const { fullName, emailAddress, briefText, statusText } = props
   return (
     <SectionBase
+      sectionDivider={null}
       accessibilityLabel={`career overview: ${fullName}`}
       headerLabels={[
         {
@@ -25,7 +26,6 @@ export function HeaderSection(props: HeaderSectionProps) {
           linkHref: `mailto:${emailAddress}`,
         },
       ]}
-      sectionDivider={null}
       bodyContent={
         <Fragment>
           <SectionContent

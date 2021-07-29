@@ -40,7 +40,7 @@ export async function generateSiteAssets(api: GenerateSiteAssetsApi) {
     '*'
   )
   ChildProcess.execSync(
-    `cp ${absoluteGlobAssets} ${absolutePathOutputDirectory}`
+    `cp -R ${absoluteGlobAssets} ${absolutePathOutputDirectory}`
   )
   const absolutePathTempPdfHtmlDirectory = Path.resolve(
     currentWorkingDirectoryAbsolutePath,

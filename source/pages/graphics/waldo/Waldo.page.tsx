@@ -2,28 +2,14 @@ import React, { Fragment } from 'react'
 import {
   Circle,
   getMirroredPoint,
-  getMirroredRotatedLoop,
-  getRotatedLoopPoints,
-  getTracePoint,
   Point,
   RotatedLoop,
 } from '../../../library/circleStuff'
-import { Polygon } from '../../../library/components/Polygon'
 import { getUpdatedData } from '../../../library/getUpdatedData'
-import {
-  CompositeLoop,
-  getCompositeCenterPoint,
-  getCompositeLoopPoints,
-  getDistanceBetweenPoints,
-  reduceRhythmSequence,
-} from '../../../library/helperStuff'
-import {
-  DiscreteRhythm,
-  getNaturalCompositeRhythm,
-} from '../../../library/rhythmStuff'
+import { CompositeLoop } from '../../../library/helperStuff'
+import { getNaturalCompositeRhythm } from '../../../library/rhythmStuff'
 import {
   getLoopContractingPattern,
-  getLoopExpandingPattern,
   getLoopRayPattern,
   getNestCompositeLoopsPoints,
   getOscillatedLoopPoints,

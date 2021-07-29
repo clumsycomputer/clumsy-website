@@ -367,8 +367,8 @@ export function getTracePoint(api: GetTracePointApi): Point {
       )
       if (intersectionResult.type === 'intersecting')
         return intersectionResult.point
-      if (intersectionResult.type === 'colinear') console.log('colinear')
-      if (intersectionResult.type === 'parallel') console.log('parallel')
+      // if (intersectionResult.type === 'colinear') console.log('colinear')
+      // if (intersectionResult.type === 'parallel') console.log('parallel')
       return null
     },
     null

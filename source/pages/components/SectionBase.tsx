@@ -39,8 +39,10 @@ export function SectionBase(props: SectionBaseProps) {
             </div>
           ))}
         </div>
-        <div role={'group'} className={styles.bodyContainer}>
-          {bodyContent}
+        <div role={'presentation'} className={styles.bodyContainer}>
+          <div role={'group'} className={styles.bodyContentContainer}>
+            {bodyContent}
+          </div>
         </div>
       </div>
     </div>
@@ -77,12 +79,20 @@ const useSectionBaseStyles = createUseStyles((theme: SiteTheme) => ({
     paddingTop: theme.spacing(1),
   },
   bodyContainer: {
-    flexGrow: 0,
+    flexGrow: 1,
     flexShrink: 1,
     flexBasis: 512,
     paddingLeft: theme.spacing(3 / 2),
     paddingTop: theme.spacing(3),
     paddingRight: theme.spacing(2),
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+  },
+  bodyContentContainer: {
+    flexGrow: 0,
+    flexShrink: 1,
+    flexBasis: 512,
   },
 }))
 

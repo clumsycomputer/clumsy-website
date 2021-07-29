@@ -1,10 +1,12 @@
 import React from 'react'
-import { createUseStyles } from 'react-jss'
-import { SiteTheme } from '../../siteTheme'
+import { siteConfig } from '../../siteConfig'
+import { NavigationFooter } from '../components/NavigationFooter'
+import { Page } from '../components/Page'
 import { SectionBase, SectionBaseProps } from '../components/SectionBase'
+import { SectionDivider } from '../components/SectionDivider'
 
 export default {
-  pageRoute: '/graphics',
+  pageRoute: '/',
   PageContent: Graphics,
   htmlTitle: 'graphics - jmath',
   htmlDescription: 'a sampling of recent explorations into space',
@@ -13,189 +15,126 @@ export default {
 }
 
 function Graphics() {
-  const styles = useGraphicStyles()
   return (
-    <div role={'none'} className={styles.pageContainer}>
-      <div role={'main'} className={styles.resumeContainer}>
-        <div role={'header'} aria-level={1} className={styles.mainHeader}>
-          graphics
-        </div>
-        <GraphicSection
-          accessibilityLabel={'culprit-graphic'}
-          headerLabels={[
-            {
-              variant: 'text',
-              label: 'kool-pah-bleh',
-            },
-            {
-              variant: 'text',
-              label: 'plural pinata',
-            },
-            {
-              variant: 'text',
-              label: 'sea you dad day mexico',
-            },
-            {
-              variant: 'text',
-              label: 'july 2021',
-            },
-            {
-              variant: 'link',
-              label: 'view solo',
-              linkHref: '/graphics/culprit.png',
-            },
-          ]}
-          imageUrl={'/graphics/culprit.png'}
-        />
-        <GraphicSection
-          accessibilityLabel={'mascot-graphic'}
-          headerLabels={[
-            {
-              variant: 'text',
-              label: 'mahs-koh-tah',
-            },
-            {
-              variant: 'text',
-              label: 'plural pinata',
-            },
-            {
-              variant: 'text',
-              label: 'sea you dad day mexico',
-            },
-            {
-              variant: 'text',
-              label: 'july 2021',
-            },
-            {
-              variant: 'link',
-              label: 'view solo',
-              linkHref: '/graphics/mascot.png',
-            },
-          ]}
-          imageUrl={'/graphics/mascot.png'}
-        />
-        <GraphicSection
-          accessibilityLabel={'comrade-graphic'}
-          headerLabels={[
-            {
-              variant: 'text',
-              label: 'kah-mah-rah-dah',
-            },
-            {
-              variant: 'text',
-              label: 'plural pinata',
-            },
-            {
-              variant: 'text',
-              label: 'sea you dad day mexico',
-            },
-            {
-              variant: 'text',
-              label: 'july 2021',
-            },
-            {
-              variant: 'link',
-              label: 'view solo',
-              linkHref: '/graphics/comrade.png',
-            },
-          ]}
-          imageUrl={'/graphics/comrade.png'}
-        />
-        <GraphicSection
-          accessibilityLabel={'accomplice-graphic'}
-          headerLabels={[
-            {
-              variant: 'text',
-              label: 'kohm-plee-seh',
-            },
-            {
-              variant: 'text',
-              label: 'plural pinata',
-            },
-            {
-              variant: 'text',
-              label: 'sea you dad day mexico',
-            },
-            {
-              variant: 'text',
-              label: 'july 2021',
-            },
-            {
-              variant: 'link',
-              label: 'view solo',
-              linkHref: '/graphics/accomplice.png',
-            },
-          ]}
-          imageUrl={'/graphics/accomplice.png'}
-        />
-      </div>
-    </div>
+    <Page accessibilityLabel={'graphics'}>
+      <GraphicSection
+        sectionDivider={null}
+        graphicName={'kool-pah-bleh'}
+        graphicDescription={'what do you see?'}
+        projectName={'plural pinata'}
+        projectLocation={'sea you dad day mexico'}
+        projectDate={'july 2021'}
+        soloUrl={'/graphics/kool-pah-bleh.hi.png'}
+        listUrl={'/graphics/kool-pah-bleh.png'}
+      />
+      <GraphicSection
+        sectionDivider={<SectionDivider />}
+        graphicName={'mahs-koh-tah'}
+        graphicDescription={'what do you see?'}
+        projectName={'plural pinata'}
+        projectLocation={'sea you dad day mexico'}
+        projectDate={'july 2021'}
+        soloUrl={'/graphics/mahs-koh-tah.hi.png'}
+        listUrl={'/graphics/mahs-koh-tah.png'}
+      />
+      <GraphicSection
+        sectionDivider={<SectionDivider />}
+        graphicName={'kah-mah-rah-dah'}
+        graphicDescription={'what do you see?'}
+        projectName={'plural pinata'}
+        projectLocation={'sea you dad day mexico'}
+        projectDate={'july 2021'}
+        soloUrl={'/graphics/kah-mah-rah-dah.hi.png'}
+        listUrl={'/graphics/kah-mah-rah-dah.png'}
+      />
+      <GraphicSection
+        sectionDivider={<SectionDivider />}
+        graphicName={'kohm-plee-seh'}
+        graphicDescription={'what do you see?'}
+        projectName={'plural pinata'}
+        projectLocation={'sea you dad day mexico'}
+        projectDate={'july 2021'}
+        soloUrl={'/graphics/kohm-plee-seh.hi.png'}
+        listUrl={'/graphics/kohm-plee-seh.png'}
+      />
+      <NavigationFooter
+        websiteLinks={[
+          {
+            linkLabel: 'resume',
+            linkText: '/resume',
+            linkHref: `${siteConfig.baseUrl}/resume`,
+          },
+          {
+            linkLabel: 'github',
+            linkText: 'clumsycomputer',
+            linkHref: 'https://github.com/clumsycomputer',
+          },
+        ]}
+      />
+    </Page>
   )
 }
 
-const useGraphicStyles = createUseStyles({
-  '@global': {
-    body: {
-      margin: 0,
-      fontFamily: 'monospace',
-      WebkitTextSizeAdjust: '100%',
-      WebkitFontSmoothing: 'antialiased',
-      MozOsxFontSmoothing: 'grayscale',
-      lineHeight: 5 / 4,
-    },
-  },
-  pageContainer: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'center',
-  },
-  resumeContainer: {
-    flexGrow: 0,
-    flexShrink: 1,
-    flexBasis: 832,
-    display: 'flex',
-    flexDirection: 'column',
-  },
-  mainHeader: {
-    display: 'none',
-  },
-})
-
 export interface GraphicSectionProps
-  extends Pick<SectionBaseProps, 'accessibilityLabel' | 'headerLabels'> {
-  imageUrl: string
+  extends Pick<SectionBaseProps, 'sectionDivider'> {
+  graphicName: string
+  graphicDescription: string
+  projectName: string
+  projectLocation: string
+  projectDate: string
+  soloUrl: string
+  listUrl: string
 }
 
 export function GraphicSection(props: GraphicSectionProps) {
-  const { accessibilityLabel, headerLabels, imageUrl } = props
-  const styles = useGraphicSectionStyles()
+  const {
+    sectionDivider,
+    graphicName,
+    projectName,
+    projectLocation,
+    projectDate,
+    soloUrl,
+    listUrl,
+    graphicDescription,
+  } = props
   return (
     <SectionBase
-      sectionDivider={
-        <div role={'separator'} className={styles.sectionDivider} />
-      }
-      accessibilityLabel={accessibilityLabel}
-      headerLabels={headerLabels}
+      sectionDivider={sectionDivider}
+      accessibilityLabel={`graphic: ${graphicName}`}
+      headerLabels={[
+        {
+          variant: 'text',
+          label: graphicName,
+        },
+        {
+          variant: 'text',
+          label: projectName,
+        },
+        {
+          variant: 'text',
+          label: projectLocation,
+        },
+        {
+          variant: 'text',
+          label: projectDate,
+        },
+        {
+          variant: 'link',
+          label: 'view solo',
+          linkHref: soloUrl,
+        },
+      ]}
       bodyContent={
-        <div>
-          <img
-            style={{
-              width: '100%',
-              backgroundColor: 'black',
-              borderRadius: 6,
-            }}
-            src={imageUrl}
-          />
-        </div>
+        <img
+          style={{
+            width: '100%',
+            backgroundColor: 'black',
+            borderRadius: 6,
+          }}
+          src={listUrl}
+          alt={graphicDescription}
+        />
       }
     />
   )
 }
-
-const useGraphicSectionStyles = createUseStyles((theme: SiteTheme) => ({
-  sectionDivider: {
-    backgroundColor: theme.palette.lightGrey,
-    height: theme.spacing(1 / 2),
-    borderRadius: theme.spacing(1 / 4),
-  },
-}))

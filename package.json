@@ -4,6 +4,7 @@
   "main": "source/pages/resume/Resume.page.tsx",
   "private": true,
   "dependencies": {
+    "colormap": "^2.3.2",
     "csstype": "^3.0.8",
     "line-intersect": "^3.0.0",
     "react": "^17.0.2",

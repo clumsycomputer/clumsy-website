@@ -57,6 +57,16 @@ function Graphics() {
         soloUrl={'/graphics/kohm-plee-seh.hi.png'}
         listUrl={'/graphics/kohm-plee-seh.png'}
       />
+      <GraphicSection
+        sectionDivider={<SectionDivider />}
+        graphicName={'rree-koh'}
+        graphicDescription={'what do you see?'}
+        projectName={'plural pinata'}
+        projectLocation={'sea you dad day mexico'}
+        projectDate={'july 2021'}
+        soloUrl={'/graphics/rree-koh.hi.png'}
+        listUrl={'/graphics/rree-koh.png'}
+      />
       <NavigationFooter
         websiteLinks={[
           {
@@ -120,7 +130,7 @@ export function GraphicSection(props: GraphicSectionProps) {
         },
         {
           variant: 'link',
-          label: 'view solo',
+          label: 'view hi-res',
           linkHref: soloUrl,
         },
       ]}

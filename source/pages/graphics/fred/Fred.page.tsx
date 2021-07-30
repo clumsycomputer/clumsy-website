@@ -57,9 +57,44 @@ function Fred() {
     radius: 50,
     center: { x: 50, y: 50 },
   }
+
+  return (
+    <Graphic
+      style={{
+        position: 'absolute',
+        left: 0,
+        top: 0,
+        width: '100vw',
+        height: '100vh',
+      }}
+      canvasRectangle={canvasRectangle}
+    >
+      <rect fill={'black'} {...canvasRectangle} />
+      <g transform={'translate(-75 -80) scale(2.5 2.5)'}>
+        {getFred({
+          canvasRectangle,
+          patternCenter: rootCircle.center,
+          loopSampleCount: 128,
+          loopShiftScalar: 1,
+        })}
+      </g>
+    </Graphic>
+  )
+}
+
+interface GetFredApi {
+  canvasRectangle: GraphicRectangle
+  patternCenter: Point
+  loopSampleCount: number
+  loopShiftScalar: number
+}
+
+function getFred(api: GetFredApi) {
+  const { patternCenter, canvasRectangle, loopSampleCount, loopShiftScalar } =
+    api
   const rotatedLoopA: RotatedLoop = {
     baseCircle: {
-      ...rootCircle,
+      center: patternCenter,
       radius: 57,
     },
     childCircle: {
@@ -71,6 +106,12 @@ function Fred() {
     rotationAngle: Math.PI,
   }
   const rootRhythmResolution = 19
+  const colorMap = getColorMap({
+    colormap: 'par',
+    format: 'hex',
+    alpha: 1,
+    nshades: rootRhythmResolution,
+  })
   const rhythmA = getNaturalCompositeRhythm({
     rhythmResolution: rootRhythmResolution,
     rhythmParts: [
@@ -152,12 +193,12 @@ function Fred() {
       return {
         ...someStuff,
         layerLoops: getNestCompositeLoopsPoints({
-          sampleCount: 128,
+          sampleCount: loopSampleCount,
           nestRhythm: rhythmA,
           baseLoop: someStuff.baseCompositeCellLoop,
           getShiftAngle: (shiftIndex: number) => -someStuff.cellAngle,
           // + (Math.PI / 8) * Math.sin(2 * Math.PI * shiftIndex),
-          shiftScalar: 1,
+          shiftScalar: loopShiftScalar,
         }),
       }
     })
@@ -174,61 +215,41 @@ function Fred() {
     },
     new Array(rootRhythmResolution).fill(undefined).map(() => [])
   )
-  const colorMap = getColorMap({
-    colormap: 'par',
-    format: 'hex',
-    alpha: 1,
-    nshades: rootRhythmResolution,
+  return loopLayers.map((someLoopLayer, layerIndex) => {
+    if (someLoopLayer.length === 0) return null
+    return (
+      <MirroredFreakPolygons
+        key={Math.random()}
+        fillColor={colorMap[layerIndex]}
+        mirrorAngle={Math.PI / 2}
+        mirrorOrigin={rotatedLoopA.baseCircle.center}
+        targetRectangle={canvasRectangle}
+        polygonLayers={someLoopLayer.map((someLayerLoop) => {
+          const oscillationSampleCount = 512 * 6
+          const oscillationAmplitude = 0.65
+          const squareBaseLength = oscillationAmplitude / 10.5
+          return {
+            baseSquares: {
+              oscillationSampleCount,
+              oscillationAmplitude,
+              oscillationFrequency: 211,
+              oscillationPhase: 0,
+              squareBaseLength: squareBaseLength,
+            },
+            overlaySquares: {
+              oscillationSampleCount,
+              oscillationAmplitude,
+              oscillationFrequency: 211,
+              oscillationPhase: 9,
+              squareBaseLength: squareBaseLength,
+            },
+            polygonOrigin: someLayerLoop.loopCenter,
+            polygonPoints: someLayerLoop.loopPoints,
+          }
+        })}
+      />
+    )
   })
-  return (
-    <Graphic
-      style={{
-        position: 'absolute',
-        left: 0,
-        top: 0,
-        width: '100vw',
-        height: '100vh',
-      }}
-      canvasRectangle={canvasRectangle}
-    >
-      <rect fill={'black'} {...canvasRectangle} />
-      {loopLayers.map((someLoopLayer, layerIndex) => {
-        if (someLoopLayer.length === 0) return null
-        return (
-          <MirroredFreakPolygons
-            key={Math.random()}
-            fillColor={colorMap[layerIndex]}
-            mirrorAngle={Math.PI / 2}
-            mirrorOrigin={rotatedLoopA.baseCircle.center}
-            targetRectangle={canvasRectangle}
-            polygonLayers={someLoopLayer.map((someLayerLoop) => {
-              const oscillationSampleCount = 512 * 6 // 512 * 6
-              const oscillationAmplitude = 0.65
-              const squareBaseLength = oscillationAmplitude / 10.5 // 10.5
-              return {
-                baseSquares: {
-                  oscillationSampleCount,
-                  oscillationAmplitude,
-                  oscillationFrequency: 211,
-                  oscillationPhase: 0,
-                  squareBaseLength: squareBaseLength,
-                },
-                overlaySquares: {
-                  oscillationSampleCount,
-                  oscillationAmplitude,
-                  oscillationFrequency: 211,
-                  oscillationPhase: 9,
-                  squareBaseLength: squareBaseLength,
-                },
-                polygonOrigin: someLayerLoop.loopCenter,
-                polygonPoints: someLayerLoop.loopPoints,
-              }
-            })}
-          />
-        )
-      })}
-    </Graphic>
-  )
 }
 
 type Element<SomeArray extends Array<any>> = SomeArray extends Array<

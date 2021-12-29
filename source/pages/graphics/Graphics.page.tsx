@@ -22,8 +22,8 @@ function Graphics() {
         graphicName={'kool-pah-bleh'}
         graphicDescription={'what do you see?'}
         projectName={'plural pinata'}
-        projectLocation={'sea you dad day mexico'}
-        projectDate={'july 2021'}
+        projectLocation={'mexico city'}
+        projectDate={'summer 2021'}
         soloUrl={'/graphics/kool-pah-bleh.hi.png'}
         listUrl={'/graphics/kool-pah-bleh.png'}
       />
@@ -32,8 +32,8 @@ function Graphics() {
         graphicName={'mahs-koh-tah'}
         graphicDescription={'what do you see?'}
         projectName={'plural pinata'}
-        projectLocation={'sea you dad day mexico'}
-        projectDate={'july 2021'}
+        projectLocation={'mexico city'}
+        projectDate={'summer 2021'}
         soloUrl={'/graphics/mahs-koh-tah.hi.png'}
         listUrl={'/graphics/mahs-koh-tah.png'}
       />
@@ -42,8 +42,8 @@ function Graphics() {
         graphicName={'kah-mah-rah-dah'}
         graphicDescription={'what do you see?'}
         projectName={'plural pinata'}
-        projectLocation={'sea you dad day mexico'}
-        projectDate={'july 2021'}
+        projectLocation={'mexico city'}
+        projectDate={'summer 2021'}
         soloUrl={'/graphics/kah-mah-rah-dah.hi.png'}
         listUrl={'/graphics/kah-mah-rah-dah.png'}
       />
@@ -52,8 +52,8 @@ function Graphics() {
         graphicName={'kohm-plee-seh'}
         graphicDescription={'what do you see?'}
         projectName={'plural pinata'}
-        projectLocation={'sea you dad day mexico'}
-        projectDate={'july 2021'}
+        projectLocation={'mexico city'}
+        projectDate={'summer 2021'}
         soloUrl={'/graphics/kohm-plee-seh.hi.png'}
         listUrl={'/graphics/kohm-plee-seh.png'}
       />
@@ -62,10 +62,80 @@ function Graphics() {
         graphicName={'rree-koh'}
         graphicDescription={'what do you see?'}
         projectName={'plural pinata'}
-        projectLocation={'sea you dad day mexico'}
-        projectDate={'july 2021'}
+        projectLocation={'mexico city'}
+        projectDate={'summer 2021'}
         soloUrl={'/graphics/rree-koh.hi.png'}
         listUrl={'/graphics/rree-koh.png'}
+      />
+      <GraphicSection
+        sectionDivider={<SectionDivider />}
+        graphicName={'trywe'}
+        graphicDescription={'what do you see?'}
+        projectName={'try all'}
+        projectLocation={'fort collins'}
+        projectDate={'winter 2017-18'}
+        soloUrl={'/graphics/trywe.hi.png'}
+        listUrl={'/graphics/trywe.png'}
+      />
+      <GraphicSection
+        sectionDivider={<SectionDivider />}
+        graphicName={'trythee'}
+        graphicDescription={'what do you see?'}
+        projectName={'try all'}
+        projectLocation={'fort collins'}
+        projectDate={'winter 2017-18'}
+        soloUrl={'/graphics/trythee.hi.png'}
+        listUrl={'/graphics/trythee.png'}
+      />
+      <GraphicSection
+        sectionDivider={<SectionDivider />}
+        graphicName={'tryme'}
+        graphicDescription={'what do you see?'}
+        projectName={'try all'}
+        projectLocation={'fort collins'}
+        projectDate={'winter 2017-18'}
+        soloUrl={'/graphics/tryme.hi.png'}
+        listUrl={'/graphics/tryme.png'}
+      />
+      <GraphicSection
+        sectionDivider={<SectionDivider />}
+        graphicName={'litethrewyou'}
+        graphicDescription={'what do you see?'}
+        projectName={'squared'}
+        projectLocation={'fort collins'}
+        projectDate={'winter 2017-18'}
+        soloUrl={'/graphics/litethrewyou.hi.png'}
+        listUrl={'/graphics/litethrewyou.png'}
+      />
+      <GraphicSection
+        sectionDivider={<SectionDivider />}
+        graphicName={'leadtwowater'}
+        graphicDescription={'what do you see?'}
+        projectName={'squared'}
+        projectLocation={'fort collins'}
+        projectDate={'winter 2017-18'}
+        soloUrl={'/graphics/leadtwowater.hi.png'}
+        listUrl={'/graphics/leadtwowater.png'}
+      />
+      <GraphicSection
+        sectionDivider={<SectionDivider />}
+        graphicName={'sircomevent'}
+        graphicDescription={'what do you see?'}
+        projectName={'chord theory'}
+        projectLocation={'fort collins'}
+        projectDate={'winter 2017-18'}
+        soloUrl={'/graphics/sircomevent.hi.png'}
+        listUrl={'/graphics/sircomevent.png'}
+      />
+      <GraphicSection
+        sectionDivider={<SectionDivider />}
+        graphicName={'sonsetrise'}
+        graphicDescription={'what do you see?'}
+        projectName={'chord theory'}
+        projectLocation={'fort collins'}
+        projectDate={'winter 2017-18'}
+        soloUrl={'/graphics/sonsetrise.hi.png'}
+        listUrl={'/graphics/sonsetrise.png'}
       />
       <NavigationFooter
         websiteLinks={[

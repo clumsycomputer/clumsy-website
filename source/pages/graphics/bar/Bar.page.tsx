@@ -27,24 +27,31 @@ export default {
 
 const camouflage = true
 
+const blue = 'rgb(26,155,252)'
+const green = 'rgb(42,253,110)'
+const lime = 'rgb(156,253,50)'
+const orange = 'rgb(252,100,32)'
+const red = 'rgb(252,13,39)'
+const yellow = 'rgb(252,228,51)'
+
 const PaletteB = {
   primary: {
-    main: '#4000ff',
+    main: orange,
   },
   complementary: {
-    main: '#bfff00',
+    main: blue,
   },
   analogousA: {
-    main: '#0040ff',
+    main: red,
   },
   analogousB: {
-    main: '#bf00ff',
+    main: yellow,
   },
   triadicA: {
-    main: '#ff00bf',
+    main: lime,
   },
   triadicB: {
-    main: '#ff4000',
+    main: green,
   },
 }
 

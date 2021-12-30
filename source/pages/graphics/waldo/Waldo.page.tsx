@@ -279,7 +279,6 @@ function Waldo() {
           </Fragment>
         )
       })}
-      )
     </svg>
   )
 }

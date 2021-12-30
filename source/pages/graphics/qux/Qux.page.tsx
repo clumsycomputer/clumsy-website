@@ -29,7 +29,7 @@ export default {
   pdfFileName: 'qux',
 }
 
-const globalSampleCount = 2048
+const globalSampleCount = 2047
 const camouflage = true
 const camouflageStrokeScalar = 1 / 7
 interface GetRootLoopDataApi {

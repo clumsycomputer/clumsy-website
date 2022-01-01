@@ -18,34 +18,14 @@ function Graphics() {
   return (
     <Page accessibilityLabel={'graphics'}>
       <GraphicSection
-        sectionDivider={null}
-        graphicName={'kool-pah-bleh'}
-        graphicDescription={'what do you see?'}
-        projectName={'plural pinata'}
-        projectLocation={'mexico city'}
-        projectDate={'summer 2021'}
-        soloUrl={'/graphics/kool-pah-bleh.hi.png'}
-        listUrl={'/graphics/kool-pah-bleh.png'}
-      />
-      <GraphicSection
         sectionDivider={<SectionDivider />}
-        graphicName={'mahs-koh-tah'}
+        graphicName={'rree-koh'}
         graphicDescription={'what do you see?'}
         projectName={'plural pinata'}
         projectLocation={'mexico city'}
         projectDate={'summer 2021'}
-        soloUrl={'/graphics/mahs-koh-tah.hi.png'}
-        listUrl={'/graphics/mahs-koh-tah.png'}
-      />
-      <GraphicSection
-        sectionDivider={<SectionDivider />}
-        graphicName={'kah-mah-rah-dah'}
-        graphicDescription={'what do you see?'}
-        projectName={'plural pinata'}
-        projectLocation={'mexico city'}
-        projectDate={'summer 2021'}
-        soloUrl={'/graphics/kah-mah-rah-dah.hi.png'}
-        listUrl={'/graphics/kah-mah-rah-dah.png'}
+        soloUrl={'/graphics/rree-koh.hi.png'}
+        listUrl={'/graphics/rree-koh.png'}
       />
       <GraphicSection
         sectionDivider={<SectionDivider />}
@@ -59,13 +39,23 @@ function Graphics() {
       />
       <GraphicSection
         sectionDivider={<SectionDivider />}
-        graphicName={'rree-koh'}
+        graphicName={'mahs-koh-tah'}
         graphicDescription={'what do you see?'}
         projectName={'plural pinata'}
         projectLocation={'mexico city'}
         projectDate={'summer 2021'}
-        soloUrl={'/graphics/rree-koh.hi.png'}
-        listUrl={'/graphics/rree-koh.png'}
+        soloUrl={'/graphics/mahs-koh-tah.hi.png'}
+        listUrl={'/graphics/mahs-koh-tah.png'}
+      />
+      <GraphicSection
+        sectionDivider={null}
+        graphicName={'kool-pah-bleh'}
+        graphicDescription={'what do you see?'}
+        projectName={'plural pinata'}
+        projectLocation={'mexico city'}
+        projectDate={'summer 2021'}
+        soloUrl={'/graphics/kool-pah-bleh.hi.png'}
+        listUrl={'/graphics/kool-pah-bleh.png'}
       />
       <GraphicSection
         sectionDivider={<SectionDivider />}
@@ -119,16 +109,6 @@ function Graphics() {
       />
       <GraphicSection
         sectionDivider={<SectionDivider />}
-        graphicName={'sircomevent'}
-        graphicDescription={'what do you see?'}
-        projectName={'chord theory'}
-        projectLocation={'fort collins'}
-        projectDate={'winter 2017-18'}
-        soloUrl={'/graphics/sircomevent.hi.png'}
-        listUrl={'/graphics/sircomevent.png'}
-      />
-      <GraphicSection
-        sectionDivider={<SectionDivider />}
         graphicName={'sonsetrise'}
         graphicDescription={'what do you see?'}
         projectName={'chord theory'}
@@ -136,6 +116,16 @@ function Graphics() {
         projectDate={'winter 2017-18'}
         soloUrl={'/graphics/sonsetrise.hi.png'}
         listUrl={'/graphics/sonsetrise.png'}
+      />
+      <GraphicSection
+        sectionDivider={<SectionDivider />}
+        graphicName={'sircomevent'}
+        graphicDescription={'what do you see?'}
+        projectName={'chord theory'}
+        projectLocation={'fort collins'}
+        projectDate={'winter 2017-18'}
+        soloUrl={'/graphics/sircomevent.hi.png'}
+        listUrl={'/graphics/sircomevent.png'}
       />
       <NavigationFooter
         websiteLinks={[

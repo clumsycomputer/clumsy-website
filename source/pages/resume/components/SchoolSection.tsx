@@ -10,17 +10,12 @@ export interface SchoolSectionProps {
 }
 
 export function SchoolSection(props: SchoolSectionProps) {
-  const {
-    schoolName,
-    programName,
-    dateRange,
-    programDescription,
-    techStack,
-  } = props
+  const { schoolName, programName, dateRange, programDescription, techStack } =
+    props
   return (
     <ContentsSection
       accessibilityLabel={`school: ${schoolName} - ${programName}`}
-      headerLabels={[
+      sectionLabels={[
         {
           variant: 'text',
           label: schoolName,

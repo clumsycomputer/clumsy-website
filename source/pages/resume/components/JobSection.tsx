@@ -24,7 +24,7 @@ export function JobSection(props: JobSectionProps) {
   return (
     <ContentsSection
       accessibilityLabel={`job: ${companyName} - ${jobTitle}`}
-      headerLabels={[
+      sectionLabels={[
         {
           variant: 'text',
           label: companyName,

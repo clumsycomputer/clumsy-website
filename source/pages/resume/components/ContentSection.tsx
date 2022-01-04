@@ -1,17 +1,17 @@
 import React from 'react'
-import { SectionBase, SectionBaseProps } from '../../components/SectionBase'
+import { ResumeSectionBase, ResumeSectionBaseProps } from './ResumeSectionBase'
 import { SectionDivider } from '../../components/SectionDivider'
 import { SectionContent, SectionContentProps } from './SectionContent'
 
 export interface ContentsSectionProps
-  extends Pick<SectionBaseProps, 'accessibilityLabel' | 'headerLabels'> {
+  extends Pick<ResumeSectionBaseProps, 'accessibilityLabel' | 'headerLabels'> {
   bodyContents: SectionContentProps[]
 }
 
 export function ContentsSection(props: ContentsSectionProps) {
   const { accessibilityLabel, headerLabels, bodyContents } = props
   return (
-    <SectionBase
+    <ResumeSectionBase
       sectionDivider={<SectionDivider />}
       accessibilityLabel={accessibilityLabel}
       headerLabels={headerLabels}

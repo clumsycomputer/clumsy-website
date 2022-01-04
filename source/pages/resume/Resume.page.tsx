@@ -1,14 +1,16 @@
 import React from 'react'
+import { createUseStyles } from 'react-jss'
 import { siteConfig } from '../../siteConfig'
+import { SiteTheme } from '../../siteTheme'
+import { NavigationFooter } from '../components/NavigationFooter'
 import { Page } from '../components/Page'
 import { HeaderSection } from './components/HeaderSection'
 import { JobSection } from './components/JobSection'
-import { NavigationFooter } from '../components/NavigationFooter'
 import { SchoolSection } from './components/SchoolSection'
 
 export default {
   pageRoute: '/resume',
-  PageContent: Resume,
+  PageContent: ResumePage,
   htmlTitle: 'resume - jmath',
   htmlDescription:
     "a concise overview of jared mathews's career in software development",
@@ -16,9 +18,13 @@ export default {
   pdfFileName: 'resume',
 }
 
-function Resume() {
+function ResumePage() {
+  const styles = useResumePageStyles()
   return (
-    <Page accessibilityLabel={'resume'}>
+    <Page
+      accessibilityLabel={'resume'}
+      pageContentContainerClassname={styles.pageContentContainer}
+    >
       <HeaderSection
         fullName={'jared mathews'}
         emailAddress={'hire@jmath.dev'}
@@ -140,3 +146,9 @@ function Resume() {
     </Page>
   )
 }
+
+const useResumePageStyles = createUseStyles((theme: SiteTheme) => ({
+  pageContentContainer: {
+    flexBasis: 832,
+  },
+}))

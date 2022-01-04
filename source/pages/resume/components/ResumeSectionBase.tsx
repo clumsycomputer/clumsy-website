@@ -1,15 +1,15 @@
 import React, { ReactNode } from 'react'
 import { createUseStyles } from 'react-jss'
-import { SiteTheme } from '../../siteTheme'
+import { SiteTheme } from '../../../siteTheme'
 
-export interface SectionBaseProps {
+export interface ResumeSectionBaseProps {
   sectionDivider: ReactNode
   accessibilityLabel: string
   headerLabels: HeaderLabelProps[]
   bodyContent: ReactNode
 }
 
-export function SectionBase(props: SectionBaseProps) {
+export function ResumeSectionBase(props: ResumeSectionBaseProps) {
   const { sectionDivider, accessibilityLabel, headerLabels, bodyContent } =
     props
   const styles = useSectionBaseStyles()

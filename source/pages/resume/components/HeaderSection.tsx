@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react'
-import { SectionBase } from '../../components/SectionBase'
+import { ResumeSectionBase } from './ResumeSectionBase'
 import { SectionContent } from './SectionContent'
 
 export interface HeaderSectionProps {
@@ -12,7 +12,7 @@ export interface HeaderSectionProps {
 export function HeaderSection(props: HeaderSectionProps) {
   const { fullName, emailAddress, briefText, statusText } = props
   return (
-    <SectionBase
+    <ResumeSectionBase
       sectionDivider={null}
       accessibilityLabel={`career overview: ${fullName}`}
       headerLabels={[

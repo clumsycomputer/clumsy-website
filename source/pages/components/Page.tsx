@@ -1,16 +1,20 @@
-import React, { PropsWithChildren, ReactNode } from 'react'
+import React, { PropsWithChildren } from 'react'
 import { createUseStyles } from 'react-jss'
 
 export type PageProps = PropsWithChildren<{
   accessibilityLabel: string
+  pageContentContainerClassname: string
 }>
 
 export function Page(props: PageProps) {
-  const { accessibilityLabel, children } = props
+  const { pageContentContainerClassname, accessibilityLabel, children } = props
   const styles = usePageStyles()
   return (
     <div role={'none'} className={styles.pageContainer}>
-      <div role={'main'} className={styles.resumeContainer}>
+      <div
+        role={'main'}
+        className={`${pageContentContainerClassname} ${styles.contentContainerBase}`}
+      >
         <div role={'header'} aria-level={1} className={styles.mainHeader}>
           {accessibilityLabel}
         </div>
@@ -36,10 +40,9 @@ const usePageStyles = createUseStyles({
     flexDirection: 'row',
     justifyContent: 'center',
   },
-  resumeContainer: {
+  contentContainerBase: {
     flexGrow: 0,
     flexShrink: 1,
-    flexBasis: 832,
     display: 'flex',
     flexDirection: 'column',
   },

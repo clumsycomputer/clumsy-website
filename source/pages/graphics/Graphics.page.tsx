@@ -1,24 +1,30 @@
 import React from 'react'
+import { createUseStyles } from 'react-jss'
 import { siteConfig } from '../../siteConfig'
+import { SiteTheme } from '../../siteTheme'
 import { NavigationFooter } from '../components/NavigationFooter'
 import { Page } from '../components/Page'
-import { SectionBase, SectionBaseProps } from '../components/SectionBase'
 import { SectionDivider } from '../components/SectionDivider'
+import { GraphicSection } from './components/GraphicSection'
 
 export default {
   pageRoute: '/',
-  PageContent: Graphics,
+  PageContent: GraphicsPage,
   htmlTitle: 'graphics - jmath',
   htmlDescription: 'a sampling of recent explorations into space',
   generatePdf: false,
   pdfFileName: 'graphics',
 }
 
-function Graphics() {
+function GraphicsPage() {
+  const styles = useGraphicsPageStyles()
   return (
-    <Page accessibilityLabel={'graphics'}>
+    <Page
+      accessibilityLabel={'graphics'}
+      pageContentContainerClassname={styles.pageContentContainer}
+    >
       <GraphicSection
-        sectionDivider={<SectionDivider />}
+        sectionDivider={null}
         graphicName={'rree-koh'}
         graphicDescription={'what do you see?'}
         projectName={'plural pinata'}
@@ -48,7 +54,7 @@ function Graphics() {
         listUrl={'/graphics/mahs-koh-tah.png'}
       />
       <GraphicSection
-        sectionDivider={null}
+        sectionDivider={<SectionDivider />}
         graphicName={'kool-pah-bleh'}
         graphicDescription={'what do you see?'}
         projectName={'plural pinata'}
@@ -145,66 +151,8 @@ function Graphics() {
   )
 }
 
-export interface GraphicSectionProps
-  extends Pick<SectionBaseProps, 'sectionDivider'> {
-  graphicName: string
-  graphicDescription: string
-  projectName: string
-  projectLocation: string
-  projectDate: string
-  soloUrl: string
-  listUrl: string
-}
-
-export function GraphicSection(props: GraphicSectionProps) {
-  const {
-    sectionDivider,
-    graphicName,
-    projectName,
-    projectLocation,
-    projectDate,
-    soloUrl,
-    listUrl,
-    graphicDescription,
-  } = props
-  return (
-    <SectionBase
-      sectionDivider={sectionDivider}
-      accessibilityLabel={`graphic: ${graphicName}`}
-      headerLabels={[
-        {
-          variant: 'text',
-          label: graphicName,
-        },
-        {
-          variant: 'text',
-          label: projectName,
-        },
-        {
-          variant: 'text',
-          label: projectLocation,
-        },
-        {
-          variant: 'text',
-          label: projectDate,
-        },
-        {
-          variant: 'link',
-          label: 'view hi-res',
-          linkHref: soloUrl,
-        },
-      ]}
-      bodyContent={
-        <img
-          style={{
-            width: '100%',
-            backgroundColor: 'black',
-            borderRadius: 6,
-          }}
-          src={listUrl}
-          alt={graphicDescription}
-        />
-      }
-    />
-  )
-}
+const useGraphicsPageStyles = createUseStyles((theme: SiteTheme) => ({
+  pageContentContainer: {
+    flexBasis: 512,
+  },
+}))

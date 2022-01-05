@@ -2,7 +2,7 @@ import React from 'react'
 import { createUseStyles } from 'react-jss'
 import { siteConfig } from '../../siteConfig'
 import { SiteTheme } from '../../siteTheme'
-import { NavigationFooter } from '../components/NavigationFooter'
+import { ExternalNavigationFooter } from '../components/ExternalNavigationFooter'
 import { Page } from '../components/Page'
 import { HeaderSection } from './components/HeaderSection'
 import { JobSection } from './components/JobSection'
@@ -128,7 +128,7 @@ function ResumePage() {
           'postgresql',
         ]}
       />
-      <NavigationFooter
+      <ExternalNavigationFooter
         websiteLinks={[
           {
             linkLabel: 'website',
@@ -139,6 +139,11 @@ function ResumePage() {
             linkLabel: 'github',
             linkText: 'clumsycomputer',
             linkHref: 'https://github.com/clumsycomputer',
+          },
+          {
+            linkLabel: 'hnews',
+            linkText: 'jmath',
+            linkHref: 'https://news.ycombinator.com/user?id=jmath',
           },
         ]}
         pdfHref={siteConfig.resumePdfUrl}

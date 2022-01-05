@@ -2,13 +2,12 @@ import React from 'react'
 import { createUseStyles } from 'react-jss'
 import { siteConfig } from '../../siteConfig'
 import { SiteTheme } from '../../siteTheme'
-import { NavigationFooter } from '../components/NavigationFooter'
 import { Page } from '../components/Page'
 import { SectionDivider } from '../components/SectionDivider'
 import { GraphicSection } from './components/GraphicSection'
 
 export default {
-  pageRoute: '/',
+  pageRoute: '/graphics',
   PageContent: GraphicsPage,
   htmlTitle: 'graphics - jmath',
   htmlDescription: 'a sampling of recent explorations into space',
@@ -133,20 +132,30 @@ function GraphicsPage() {
         soloUrl={'/graphics/sircomevent.hi.png'}
         listUrl={'/graphics/sircomevent.png'}
       />
-      <NavigationFooter
-        websiteLinks={[
-          {
-            linkLabel: 'resume',
-            linkText: '/resume',
-            linkHref: `${siteConfig.baseUrl}/resume`,
-          },
-          {
-            linkLabel: 'github',
-            linkText: 'clumsycomputer',
-            linkHref: 'https://github.com/clumsycomputer',
-          },
-        ]}
-      />
+      <div role={'none'} className={styles.footerContainer}>
+        <div role={'navigation'} className={styles.footerContent}>
+          <div role={'list'} className={styles.routeLinksContainer}>
+            {[
+              { routeName: 'home', routeHref: '/' },
+              { routeName: 'resume', routeHref: '/resume' },
+            ].map((someWebsiteLink) => (
+              <div
+                role={'listitem'}
+                className={styles.routeLinkContainer}
+                key={someWebsiteLink.routeName}
+              >
+                <a
+                  role={'link'}
+                  className={styles.routeLink}
+                  href={someWebsiteLink.routeHref}
+                >
+                  {someWebsiteLink.routeName}
+                </a>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
     </Page>
   )
 }
@@ -154,5 +163,36 @@ function GraphicsPage() {
 const useGraphicsPageStyles = createUseStyles((theme: SiteTheme) => ({
   pageContentContainer: {
     flexBasis: 512,
+  },
+  footerContainer: {
+    padding: theme.spacing(1),
+    paddingTop: theme.spacing(3 / 2),
+    paddingBottom: theme.pdfMode ? theme.spacing(5 / 2) : theme.spacing(5),
+  },
+  footerContent: {
+    backgroundColor: theme.palette.lightGrey,
+    borderRadius: theme.spacing(1 / 2),
+    display: 'flex',
+    flexDirection: 'row',
+    padding: theme.spacing(1),
+    paddingLeft: theme.spacing(1 / 4),
+    // paddingRight: theme.spacing(2),
+  },
+  routeLinksContainer: {
+    flexGrow: 1,
+    flexShrink: 1,
+    display: 'flex',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
+  routeLinkContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    padding: theme.spacing(1),
+    paddingLeft: theme.spacing(3),
+  },
+  routeLink: {
+    fontSize: 20,
+    fontWeight: 600,
   },
 }))

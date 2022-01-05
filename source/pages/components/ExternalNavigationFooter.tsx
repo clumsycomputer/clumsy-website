@@ -2,7 +2,7 @@ import React from 'react'
 import { createUseStyles } from 'react-jss'
 import { SiteTheme } from '../../siteTheme'
 
-export interface NavigationFooterProps {
+export interface ExternalNavigationFooterProps {
   websiteLinks: {
     linkLabel: string
     linkText: string
@@ -11,7 +11,7 @@ export interface NavigationFooterProps {
   pdfHref?: string
 }
 
-export function NavigationFooter(props: NavigationFooterProps) {
+export function ExternalNavigationFooter(props: ExternalNavigationFooterProps) {
   const { websiteLinks, pdfHref } = props
   const styles = useNavigationFooterStyles()
   return (

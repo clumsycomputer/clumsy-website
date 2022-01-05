@@ -1,6 +1,7 @@
 import React from 'react'
 import { createUseStyles } from 'react-jss'
 import { SiteTheme } from '../../siteTheme'
+import { ExternalNavigationFooter } from '../components/ExternalNavigationFooter'
 import { Page } from '../components/Page'
 
 export default {
@@ -51,6 +52,20 @@ function HomePage() {
           </div>
         ))}
       </div>
+      <ExternalNavigationFooter
+        websiteLinks={[
+          {
+            linkLabel: 'github',
+            linkText: 'clumsycomputer',
+            linkHref: 'https://github.com/clumsycomputer',
+          },
+          {
+            linkLabel: 'hnews',
+            linkText: 'jmath',
+            linkHref: 'https://news.ycombinator.com/user?id=jmath',
+          },
+        ]}
+      />
     </Page>
   )
 }
@@ -62,21 +77,24 @@ const useHomePageStyles = createUseStyles((theme: SiteTheme) => ({
   selfieContainer: {
     display: 'flex',
     padding: theme.spacing(2),
+    paddingTop: theme.spacing(2.125),
   },
   selfieBackground: {
     display: 'flex',
     padding: theme.spacing(1),
-    borderRadius: 6,
+    paddingBottom: theme.spacing(0.95),
+    borderRadius: 7,
     // background: () => `linear-gradient(to left top, #CDDC39, #E65100)`,
   },
   selfieImage: {
     width: '100%',
-    borderRadius: 3,
+    borderRadius: 4,
   },
   routesContainer: {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
+    paddingBottom: theme.spacing(5),
   },
   routeActionContainer: {
     paddingTop: theme.spacing(2),

@@ -125,12 +125,12 @@ function HeaderLabel(props: HeaderLabelProps) {
 
 const useHeaderLabelStyles = createUseStyles((theme: SiteTheme) => ({
   headerLabel: {
-    backgroundColor: theme.palette.lightGrey,
     paddingLeft: theme.spacing(5 / 8),
     paddingRight: theme.spacing(5 / 8),
     paddingTop: theme.spacing(3 / 8),
     paddingBottom: theme.spacing(3 / 8),
     borderRadius: theme.spacing(3 / 8),
     fontWeight: 700,
+    backgroundColor: theme.palette.lightGrey,
   },
 }))

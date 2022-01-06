@@ -13,6 +13,10 @@ export const JssThemeModuleCodec = IO.exact(
         palette: IO.exact(
           IO.type({
             lightGrey: IO.string,
+            blue: IO.string,
+            lime: IO.string,
+            mustardGold: IO.string,
+            purple: IO.string,
           })
         ),
       })

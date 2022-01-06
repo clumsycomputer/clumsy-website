@@ -1,7 +1,7 @@
 import React from 'react'
 import { createUseStyles } from 'react-jss'
 import { SiteTheme } from '../../siteTheme'
-import { ExternalNavigationFooter } from '../components/ExternalNavigationFooter'
+import { ExternalNavigationFooter } from '../components/NavigationFooter'
 import { Page } from '../components/Page'
 
 export default {
@@ -20,13 +20,8 @@ function HomePage() {
       accessibilityLabel={'home'}
       pageContentContainerClassname={styles.pageContentContainer}
     >
-      <div className={styles.selfieContainer}>
-        <div
-          className={styles.selfieBackground}
-          style={{
-            background: `linear-gradient(115deg, #CDDC39, #FFC107)`,
-          }}
-        >
+      <div role={'presentation'} className={styles.selfieContainer}>
+        <div role={'presentation'} className={styles.selfieBackground}>
           <img
             className={styles.selfieImage}
             src={'/selfie.jpeg'}
@@ -34,7 +29,7 @@ function HomePage() {
           />
         </div>
       </div>
-      <div className={styles.routesContainer}>
+      <div role={'list'} className={styles.routesContainer}>
         {[
           {
             prompt: 'graphics',
@@ -45,7 +40,11 @@ function HomePage() {
             linkHref: '/resume',
           },
         ].map((someRouteAction) => (
-          <div className={styles.routeActionContainer}>
+          <div
+            role={'listitem'}
+            className={styles.routeActionContainer}
+            key={someRouteAction.linkHref}
+          >
             <a className={styles.routeAction} href={someRouteAction.linkHref}>
               {someRouteAction.prompt}
             </a>
@@ -84,7 +83,7 @@ const useHomePageStyles = createUseStyles((theme: SiteTheme) => ({
     padding: theme.spacing(1),
     paddingBottom: theme.spacing(0.95),
     borderRadius: 7,
-    // background: () => `linear-gradient(to left top, #CDDC39, #E65100)`,
+    background: `linear-gradient(115deg, ${theme.palette.lime}, ${theme.palette.mustardGold})`,
   },
   selfieImage: {
     width: '100%',

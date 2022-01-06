@@ -1,8 +1,11 @@
 import React from 'react'
-import { createUseStyles } from 'react-jss'
+import { createUseStyles, useTheme } from 'react-jss'
 import { siteConfig } from '../../siteConfig'
 import { SiteTheme } from '../../siteTheme'
-import { NavigationFooter } from '../components/NavigationFooter'
+import {
+  ExternalNavigationFooter,
+  InternalNavigationFooter,
+} from '../components/NavigationFooter'
 import { Page } from '../components/Page'
 import { HeaderSection } from './components/HeaderSection'
 import { JobSection } from './components/JobSection'
@@ -20,6 +23,7 @@ export default {
 
 function ResumePage() {
   const styles = useResumePageStyles()
+  const theme = useTheme<SiteTheme>()
   return (
     <Page
       accessibilityLabel={'resume'}
@@ -128,21 +132,35 @@ function ResumePage() {
           'postgresql',
         ]}
       />
-      <NavigationFooter
-        websiteLinks={[
-          {
-            linkLabel: 'website',
-            linkText: 'jmath.dev',
-            linkHref: siteConfig.baseUrl,
-          },
-          {
-            linkLabel: 'github',
-            linkText: 'clumsycomputer',
-            linkHref: 'https://github.com/clumsycomputer',
-          },
-        ]}
-        pdfHref={siteConfig.resumePdfUrl}
-      />
+      {theme.pdfMode ? (
+        <ExternalNavigationFooter
+          websiteLinks={[
+            {
+              linkLabel: 'website',
+              linkText: 'jmath.dev',
+              linkHref: siteConfig.baseUrl,
+            },
+            {
+              linkLabel: 'github',
+              linkText: 'clumsycomputer',
+              linkHref: 'https://github.com/clumsycomputer',
+            },
+            {
+              linkLabel: 'hnews',
+              linkText: 'jmath',
+              linkHref: 'https://news.ycombinator.com/user?id=jmath',
+            },
+          ]}
+        />
+      ) : (
+        <InternalNavigationFooter
+          routeLinks={[
+            { routeName: 'home', routeHref: '/' },
+            { routeName: 'graphics', routeHref: '/graphics' },
+          ]}
+          pdfHref={siteConfig.resumePdfUrl}
+        />
+      )}
     </Page>
   )
 }

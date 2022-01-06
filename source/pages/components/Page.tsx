@@ -1,5 +1,6 @@
 import React, { PropsWithChildren } from 'react'
 import { createUseStyles } from 'react-jss'
+import { SiteTheme } from '../../siteTheme'
 
 export type PageProps = PropsWithChildren<{
   accessibilityLabel: string
@@ -24,7 +25,7 @@ export function Page(props: PageProps) {
   )
 }
 
-const usePageStyles = createUseStyles({
+const usePageStyles = createUseStyles((theme: SiteTheme) => ({
   '@global': {
     body: {
       margin: 0,
@@ -33,6 +34,12 @@ const usePageStyles = createUseStyles({
       WebkitFontSmoothing: 'antialiased',
       MozOsxFontSmoothing: 'grayscale',
       lineHeight: 5 / 4,
+    },
+    a: {
+      color: theme.palette.blue,
+      '&:visited': {
+        color: theme.palette.purple,
+      },
     },
   },
   pageContainer: {
@@ -49,4 +56,4 @@ const usePageStyles = createUseStyles({
   mainHeader: {
     display: 'none',
   },
-})
+}))

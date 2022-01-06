@@ -2,13 +2,13 @@ import React from 'react'
 import { createUseStyles } from 'react-jss'
 import { siteConfig } from '../../siteConfig'
 import { SiteTheme } from '../../siteTheme'
-import { NavigationFooter } from '../components/NavigationFooter'
+import { InternalNavigationFooter } from '../components/NavigationFooter'
 import { Page } from '../components/Page'
 import { SectionDivider } from '../components/SectionDivider'
 import { GraphicSection } from './components/GraphicSection'
 
 export default {
-  pageRoute: '/',
+  pageRoute: '/graphics',
   PageContent: GraphicsPage,
   htmlTitle: 'graphics - jmath',
   htmlDescription: 'a sampling of recent explorations into space',
@@ -133,19 +133,12 @@ function GraphicsPage() {
         soloUrl={'/graphics/sircomevent.hi.png'}
         listUrl={'/graphics/sircomevent.png'}
       />
-      <NavigationFooter
-        websiteLinks={[
-          {
-            linkLabel: 'resume',
-            linkText: '/resume',
-            linkHref: `${siteConfig.baseUrl}/resume`,
-          },
-          {
-            linkLabel: 'github',
-            linkText: 'clumsycomputer',
-            linkHref: 'https://github.com/clumsycomputer',
-          },
+      <InternalNavigationFooter
+        routeLinks={[
+          { routeName: 'home', routeHref: '/' },
+          { routeName: 'resume', routeHref: '/resume' },
         ]}
+        pdfHref={null}
       />
     </Page>
   )

@@ -20,13 +20,18 @@ function HomePage() {
       accessibilityLabel={'home'}
       pageContentContainerClassname={styles.pageContentContainer}
     >
-      <div role={'presentation'} className={styles.selfieContainer}>
+      <div role={'figure'} className={styles.selfieContainer}>
         <div role={'presentation'} className={styles.selfieBackground}>
           <img
             className={styles.selfieImage}
             src={'/selfie.jpeg'}
-            alt={'selfie'}
+            alt={'¡perro ladrando!'}
           />
+        </div>
+        <div role={'presentation'} className={styles.selfieCaptionContainer}>
+          <figcaption className={styles.selfieCaption}>
+            ¡perro ladrando!
+          </figcaption>
         </div>
       </div>
       <div role={'list'} className={styles.routesContainer}>
@@ -75,6 +80,7 @@ const useHomePageStyles = createUseStyles((theme: SiteTheme) => ({
   },
   selfieContainer: {
     display: 'flex',
+    flexDirection: 'column',
     padding: theme.spacing(2),
     paddingTop: theme.spacing(2.125),
   },
@@ -89,11 +95,21 @@ const useHomePageStyles = createUseStyles((theme: SiteTheme) => ({
     width: '100%',
     borderRadius: 4,
   },
+  selfieCaptionContainer: {
+    display: 'flex',
+    justifyContent: 'center',
+    paddingTop: theme.spacing(3 / 2),
+  },
+  selfieCaption: {
+    fontStyle: 'italic',
+    fontWeight: 500,
+    fontSize: 16,
+  },
   routesContainer: {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    paddingBottom: theme.spacing(5),
+    paddingBottom: theme.spacing(6),
   },
   routeActionContainer: {
     paddingTop: theme.spacing(2),

@@ -30,10 +30,7 @@ class WebsiteDocument extends Document {
       styles: (
         <Fragment>
           {initialPropsBase.styles}
-          <style
-            id={serverSideStylesId}
-            dangerouslySetInnerHTML={{ __html: jssRegistry.toString() }}
-          />
+          <style id={serverSideStylesId}>{jssRegistry.toString()}</style>
         </Fragment>
       ),
     }

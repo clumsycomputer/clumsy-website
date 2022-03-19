@@ -1,8 +1,17 @@
-import '../styles/globals.css'
 import type { AppProps } from 'next/app'
+import { ThemeProvider } from 'react-jss'
+import '../styles/globals.css'
 
-function MyApp({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />
+interface WebsiteTheme {}
+
+const websiteTheme: WebsiteTheme = {}
+
+function WebsiteApp({ Component, pageProps }: AppProps) {
+  return (
+    <ThemeProvider theme={websiteTheme}>
+      <Component {...pageProps} />
+    </ThemeProvider>
+  )
 }
 
-export default MyApp
+export default WebsiteApp

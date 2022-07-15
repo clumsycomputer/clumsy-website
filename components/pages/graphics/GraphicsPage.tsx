@@ -9,7 +9,7 @@ export const GraphicsPage: NextPage = () => {
   return (
     <Page
       accessibilityLabel={"graphics"}
-      pageTabTitle={"graphics - jmath"}
+      pageTabTitle={"graphics - clumsycomputer"}
       pageDescription={"a sampling of recent explorations into space"}
       pageContentContainerClassname={graphicsPageStyles.pageContentContainer}
     >

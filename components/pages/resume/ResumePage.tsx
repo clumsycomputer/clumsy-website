@@ -39,8 +39,8 @@ export const ResumePdfPage: NextPage = () => {
           websiteLinks={[
             {
               linkLabel: "website",
-              linkText: "jmath.dev",
-              linkHref: "todo",
+              linkText: "clumsycomputer.com",
+              linkHref: "https://www.clumsycomputer.com",
             },
             {
               linkLabel: "github",

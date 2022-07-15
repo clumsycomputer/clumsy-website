@@ -1,0 +1,61 @@
+@import 'styles/websiteTheme.scss';
+
+.contentContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding-bottom: $spacer * 3;
+}
+
+.labelContainer {
+  font-weight: 700;
+  margin-bottom: $spacer * 5 / 4;
+}
+
+.labelUnderline {
+  margin-left: $spacer;
+  width: 100%;
+  height: 1px;
+  border-radius: 1px;
+  background-color: black;
+}
+
+.textContainer {
+  padding-left: $spacer * 3 / 2;
+}
+
+.columnListContainer {
+  padding-left: $spacer * 3 / 2;
+}
+
+.columnListItemContainer {
+  display: flex;
+  flex-direction: row;
+  &:not(:last-child) {
+    padding-bottom: $spacer * 5 / 4;
+  }
+}
+
+.columnListItemBullet {}
+
+.columnListItem {
+  padding-left: $spacer;
+}
+
+.wrapListContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  padding-left: $spacer * 3 / 2;
+  margin-top: $spacer * -5 / 4;
+}
+
+.wrapListItemContainer {
+  display: flex;
+  flex-direction: row;
+  padding-top: $spacer * 5 / 4;
+  padding-right: $spacer * 3 / 2;
+}
+
+.wrapListItem {}

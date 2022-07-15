@@ -1,0 +1,17 @@
+@import 'styles/websiteTheme.scss';
+
+body {
+  margin: 0;
+  font-family: monospace;
+  -webkit-text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 5 / 4;
+}
+
+a {
+  color: $purple;
+  &:visited {
+    color: $purple,
+  }
+}

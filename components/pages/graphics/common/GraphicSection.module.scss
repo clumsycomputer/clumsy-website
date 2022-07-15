@@ -1,0 +1,90 @@
+@import 'styles/websiteTheme.scss';
+
+.sectionContainer {
+  display: flex;
+  flex-direction: column;
+  padding-left: $spacer;
+  padding-right: $spacer;
+  padding-bottom: $spacer * 2;
+}
+
+.contentContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-left: $spacer;
+}
+
+.accessibilityHeader {
+  display: none;
+}
+
+.bodyContainer {
+  flex-grow: 1;
+  flex-shrink: 1;
+  padding-top: $spacer * 2;
+  padding-right: $spacer;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.bodyContentContainer {
+  flex-grow: 0;
+  flex-shrink: 1;
+}
+
+.graphicImage {
+  width: 100%;  
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.footerContainer {
+  display: flex;
+  flex-direction: row;
+  padding-left: $spacer;
+  padding-right: $spacer;
+  padding-bottom: $spacer;
+}
+
+.labelsContainer {
+  flex-grow: 1;
+  flex-shrink: 1;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.labelContainer {
+  display: flex;
+  padding-top: $spacer;
+  padding-right: $spacer;
+}
+
+.graphicLabel {
+  background-color: $lightGrey;
+}
+
+.actionsContainer {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  padding-left: $spacer * 4;
+}
+
+.actionContainer {
+  display: flex;
+  padding-top: $spacer;
+}
+
+.graphicAction {}
+
+.footerTextBase {
+  padding-left: $spacer * 5 / 8;
+  padding-right: $spacer * 5 / 8;
+  padding-top: $spacer * 3 / 8;
+  padding-bottom: $spacer * 3 / 8;
+  border-radius: $spacer * 3 / 8;
+  font-weight: 700;
+}

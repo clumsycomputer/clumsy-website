@@ -1,0 +1,16 @@
+@import 'styles/websiteTheme.scss';
+
+.websiteLinkContainer {
+  display: flex;
+  flex-direction: row;
+  padding: $spacer;
+  padding-left: $spacer * 3 / 2;
+}
+
+.websiteLinkLabelContainer {
+  font-weight: 700;
+}
+
+.websiteLink {
+  padding-left: $spacer;
+}

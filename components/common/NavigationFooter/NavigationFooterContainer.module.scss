@@ -1,0 +1,18 @@
+@import 'styles/websiteTheme.scss';
+
+.footerContainer {
+  padding: $spacer;
+  padding-top: $spacer * 3 / 2;
+  // padding-bottom: theme.pdfMode ? theme.spacing(5 / 2) : theme.spacing(5),
+  padding-bottom: $spacer * 5;
+}
+
+.navigationContainer {
+  display: flex;
+  flex-direction: row;
+  padding: $spacer;
+  padding-left: $spacer / 4;
+  padding-right: $spacer * 2;
+  border-radius: $spacer / 2;
+  background-color: $lightGrey;
+}

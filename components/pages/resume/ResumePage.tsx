@@ -100,9 +100,9 @@ function ResumePageBase(props: ResumePageBaseProps) {
           "a web app aimed at internet service providers that assists employees in scheduling and completing a variety of tasks ranging from managing network infrastructure to analyzing client subscriptions"
         }
         workResponsibilities={[
-          "provide thorough and detailed code reviews with an emphasis on iteration",
+          "provide thorough code reviews with an emphasis on iteration",
           "refactor a number of entrenched components in order to enable a requested feature or fix an outstanding bug while minimizing breaking changes to existing apis",
-          "adapt and bend third-party component libraries to support undocumented use-cases",
+          "adapt third-party component libraries to support undocumented use-cases",
           "participate in establishing best practices for frontend development with a focus on component composition that is fairly formulaic in implementation and resulted in code that was more straightforward to reason about",
           "participate in sprint planning and issue prioritization",
           "collaborate with teammates on problems where unobivous or unique solutions were required",

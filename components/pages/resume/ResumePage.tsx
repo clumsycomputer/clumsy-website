@@ -83,11 +83,11 @@ function ResumePageBase(props: ResumePageBaseProps) {
         statusText={
           <Fragment>
             focused on sharing, documenting, and developing{" "}
-            <a href="https://github.com/clumsycomputer/graphics-renderer#readme">
-              <b>graphics-renderer</b>
+            <a href="https://github.com/clumsycomputer/clumsy-graphics#readme">
+              <b>clumsy-graphics</b>
             </a>
-            , an open-source tool for rapidly developing animations where frames
-            are described with svg à la react
+            , an tool for rapidly developing animations where frames are
+            described with svg à la react
           </Fragment>
         }
       />

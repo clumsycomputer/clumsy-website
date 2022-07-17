@@ -10,7 +10,7 @@ async function generateResumePdf() {
   ChildProcess.execSync("next build", {
     stdio: "inherit",
   });
-  ChildProcess.exec("next start", {
+  const nextServer = ChildProcess.spawn("next", ["start"], {
     stdio: "inherit",
   });
   const playwrightBrowser = await Playwright.chromium.launch();
@@ -29,4 +29,5 @@ async function generateResumePdf() {
     Path.join(process.cwd(), `public/pdfs/resume.pdf`),
     resumePdfBuffer
   );
+  nextServer.kill();
 }

@@ -86,7 +86,7 @@ function ResumePageBase(props: ResumePageBaseProps) {
             <a href="https://github.com/clumsycomputer/clumsy-graphics#readme">
               <b>clumsy-graphics</b>
             </a>
-            , an tool for rapidly developing animations where frames are
+            , a tool for rapidly developing animations where frames are
             described with svg à la react
           </Fragment>
         }

@@ -1,38 +1,40 @@
 import { NextPage } from "next";
 import { getPhasedRhythmMap } from "./library/rhythm/getPhasedRhythmMap";
+import { getRhythmIntervals } from "./library/rhythm/getRhythmIntervals";
 import { getRhythmMap } from "./library/rhythm/getRhythmMap";
-import { getRhythmSlotWeights } from "./library/rhythm/getRhythmSlotsWeights";
+import { getRhythmPointWeights } from "./library/rhythm/getRhythmPointWeights";
+import { getRhythmSlotWeights } from "./library/rhythm/getRhythmSlotWeights";
+import { getRhythmString } from "./library/rhythm/getRhythmString";
+import { getRhythmWeight } from "./library/rhythm/getRhythmWeight";
 import { RhythmStructure } from "./library/rhythm/models";
 
 export const RhythmPage: NextPage = () => {
+  const rhythmResolution = 12;
+  const rhythmDensityA = 7;
+  const rhythmDensityB = 3;
   const rhythmStructure: RhythmStructure = {
     structureType: "initial",
-    rhythmResolution: 12,
+    rhythmResolution,
     rhythmPhase: 0,
     subStructure: {
-      structureType: "terminal",
-      rhythmDensity: 7,
+      structureType: "interposed",
+      rhythmDensity: rhythmDensityA,
       rhythmOrientation: 0,
-    },
-  };
-  const rhythmMap = getRhythmMap({
-    someRhythmStructure: {
-      structureType: "initial",
-      rhythmResolution: 12,
       rhythmPhase: 0,
       subStructure: {
         structureType: "terminal",
-        rhythmDensity: 7,
+        rhythmDensity: rhythmDensityB,
         rhythmOrientation: 0,
       },
     },
+  };
+  const rhythmMap = getRhythmMap({
+    someRhythmStructure: rhythmStructure,
   });
-  const rhythmPointIntervals = rhythmMap.rhythmPoints.map(
-    (someRhythmPoint, pointIndex) =>
-      (rhythmMap.rhythmPoints[(pointIndex + 1) % rhythmMap.rhythmResolution] ||
-        rhythmMap.rhythmResolution) - someRhythmPoint
-  );
-  const rhythmSlotWeights = getRhythmSlotWeights({
+  const rhythmIntervals = getRhythmIntervals({
+    someRhythmMap: rhythmMap,
+  });
+  const generalSlotWeights = getRhythmSlotWeights({
     someRhythmMaps: rhythmMap.rhythmPoints.map((someRhythmPoint) => {
       return getPhasedRhythmMap({
         someRhythmMap: rhythmMap,
@@ -40,39 +42,27 @@ export const RhythmPage: NextPage = () => {
       });
     }),
   });
-  const rhythmPointWeights = rhythmMap.rhythmPoints.map(
-    (someRhythmPoint) => rhythmSlotWeights[someRhythmPoint]
-  );
-  const rhythmWeight = rhythmMap.rhythmPoints.reduce(
-    (rhythmWeightResult, someRhythmPoint) =>
-      rhythmWeightResult + rhythmSlotWeights[someRhythmPoint],
-    0
-  );
+  const generalPointWeights = getRhythmPointWeights({
+    someRhythmMap: rhythmMap,
+    rhythmMapSlotWeights: generalSlotWeights,
+  });
+  const generalRhythmWeight = getRhythmWeight({
+    someRhythmMap: rhythmMap,
+    rhythmMapSlotWeights: generalSlotWeights,
+  });
   const displayData = {
     rhythmStructure,
     rhythmMap: {
       ...rhythmMap,
-      // rhythmPoints: rhythmMap.rhythmPoints.map(
-      //   (someRhythmPoint, someRhythmPointIndex) => {
-      //     return {
-      //       slotIndex: someRhythmPoint,
-      //       pointInterval: rhythmPointIntervals[someRhythmPointIndex],
-      //       pointWeight: rhythmPointWeights[someRhythmPointIndex],
-      //     };
-      //   }
-      // ),
       rhythmPoints: rhythmMap.rhythmPoints.join(","),
-      rhythmPointIntervals: rhythmPointIntervals.join(","),
-      rhythmPointWeights: rhythmPointWeights.join(","),
     },
-    rhythmString: rhythmMap.rhythmPoints
-      .reduce((rhythmStringResult, someRhythmPoint) => {
-        rhythmStringResult[someRhythmPoint] = 1;
-        return rhythmStringResult;
-      }, new Array(rhythmMap.rhythmResolution).fill(0))
-      .join(""),
-    rhythmSlotWeights: rhythmSlotWeights.join(","),
-    rhythmWeight: rhythmWeight,
+    rhythmString: getRhythmString({
+      someRhythmMap: rhythmMap,
+    }),
+    pointIntervals: rhythmIntervals.join(","),
+    generalSlotWeights: generalSlotWeights.join(","),
+    generalPointWeights: generalPointWeights.join(","),
+    generalRhythmWeight: generalRhythmWeight,
   };
   return <pre>{JSON.stringify(displayData, null, 2)}</pre>;
 };

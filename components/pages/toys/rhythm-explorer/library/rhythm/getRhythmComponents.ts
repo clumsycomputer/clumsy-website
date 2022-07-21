@@ -1,22 +1,36 @@
 import { getEuclideanRhythm } from "./getEuclideanRhythm";
 import { BasicRhythmStructure, RhythmPoints, RhythmStructure } from "./models";
 
-export interface GetRhythmComponentsDataApi {
-  someRhythmStructure: RhythmStructure;
-  rhythmComponentsDataResult?: Array<ReturnType<typeof getRhythmComponentData>>;
+export interface GetRhythmComponentsApi
+  extends Pick<_GetRhythmComponentsApi, "someRhythmStructure"> {}
+
+export function getRhythmComponents(api: GetRhythmComponentsApi) {
+  const { someRhythmStructure } = api;
+  return _getRhythmComponents({
+    someRhythmStructure,
+    rhythmComponentsDataResult: [],
+    structuredBasePoints: new Array(someRhythmStructure.rhythmResolution)
+      .fill(undefined)
+      .map((_, containerCellIndex) => containerCellIndex),
+  });
 }
 
-export function getRhythmComponentsData(
-  api: GetRhythmComponentsDataApi
+interface _GetRhythmComponentsApi
+  extends Pick<GetRhythmComponentDataApi, "structuredBasePoints"> {
+  someRhythmStructure: RhythmStructure;
+  rhythmComponentsDataResult: Array<ReturnType<typeof getRhythmComponentData>>;
+}
+
+function _getRhythmComponents(
+  api: _GetRhythmComponentsApi
 ): Array<ReturnType<typeof getRhythmComponentData>> {
-  const { someRhythmStructure, rhythmComponentsDataResult = [] } = api;
-  const structureBasePoints = rhythmComponentsDataResult[0]
-    ? rhythmComponentsDataResult[0].structurePoints
-    : new Array(someRhythmStructure.rhythmResolution)
-        .fill(undefined)
-        .map((_, containerCellIndex) => containerCellIndex);
+  const {
+    structuredBasePoints,
+    someRhythmStructure,
+    rhythmComponentsDataResult,
+  } = api;
   const currentRhythmStructureData = getRhythmComponentData({
-    structureBasePoints,
+    structuredBasePoints,
     isolatedStructure: {
       rhythmResolution: someRhythmStructure.rhythmResolution,
       rhythmPhase: someRhythmStructure.rhythmPhase,
@@ -26,7 +40,8 @@ export function getRhythmComponentsData(
   });
   switch (someRhythmStructure.subStructure.structureType) {
     case "interposed":
-      return getRhythmComponentsData({
+      return _getRhythmComponents({
+        structuredBasePoints: currentRhythmStructureData.structuredPoints,
         someRhythmStructure: {
           rhythmResolution: someRhythmStructure.subStructure.rhythmDensity,
           rhythmPhase: someRhythmStructure.subStructure.rhythmPhase,
@@ -45,19 +60,19 @@ export function getRhythmComponentsData(
 
 interface GetRhythmComponentDataApi {
   isolatedStructure: BasicRhythmStructure;
-  structureBasePoints: RhythmPoints;
+  structuredBasePoints: RhythmPoints;
 }
 
 function getRhythmComponentData(api: GetRhythmComponentDataApi): {
   isolatedStructure: BasicRhythmStructure;
   isolatedPoints: RhythmPoints;
-  structurePoints: RhythmPoints;
+  structuredPoints: RhythmPoints;
 } {
-  const { isolatedStructure, structureBasePoints } = api;
-  const rhythmStructureDataResult = {
+  const { isolatedStructure, structuredBasePoints } = api;
+  const rhythmComponentDataResult = {
     isolatedStructure,
     isolatedPoints: new Array<number>(isolatedStructure.rhythmDensity),
-    structurePoints: new Array<number>(isolatedStructure.rhythmDensity),
+    structuredPoints: new Array<number>(isolatedStructure.rhythmDensity),
   };
   getEuclideanRhythm({
     lhsCount: isolatedStructure.rhythmDensity,
@@ -86,15 +101,15 @@ function getRhythmComponentData(api: GetRhythmComponentDataApi): {
           isolatedOffset +
           isolatedStructure.rhythmResolution) %
         isolatedStructure.rhythmResolution;
-      const structurePoint = structureBasePoints[isolatedPoint]!;
-      rhythmStructureDataResult.isolatedPoints[pointIndex] = isolatedPoint;
-      rhythmStructureDataResult.structurePoints[pointIndex] = structurePoint;
+      const structuredPoint = structuredBasePoints[isolatedPoint]!;
+      rhythmComponentDataResult.isolatedPoints[pointIndex] = isolatedPoint;
+      rhythmComponentDataResult.structuredPoints[pointIndex] = structuredPoint;
     });
-  rhythmStructureDataResult.isolatedPoints.sort(
+  rhythmComponentDataResult.isolatedPoints.sort(
     (pointA, pointB) => pointA - pointB
   );
-  rhythmStructureDataResult.structurePoints.sort(
+  rhythmComponentDataResult.structuredPoints.sort(
     (pointA, pointB) => pointA - pointB
   );
-  return rhythmStructureDataResult;
+  return rhythmComponentDataResult;
 }

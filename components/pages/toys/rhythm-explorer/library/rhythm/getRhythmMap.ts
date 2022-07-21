@@ -1,4 +1,4 @@
-import { getRhythmComponentsData } from "./getRhythmComponentsData";
+import { getRhythmComponents } from "./getRhythmComponents";
 import { RhythmMap, RhythmStructure } from "./models";
 
 export interface GetRhythmMapApi {
@@ -7,11 +7,11 @@ export interface GetRhythmMapApi {
 
 export function getRhythmMap(api: GetRhythmMapApi): RhythmMap {
   const { someRhythmStructure } = api;
-  const rhythmStructuresData = getRhythmComponentsData({
+  const rhythmComponents = getRhythmComponents({
     someRhythmStructure,
   });
   return {
     rhythmResolution: someRhythmStructure.rhythmResolution,
-    rhythmPoints: rhythmStructuresData[0]!.structurePoints,
+    rhythmPoints: rhythmComponents[0]!.structuredPoints,
   };
 }

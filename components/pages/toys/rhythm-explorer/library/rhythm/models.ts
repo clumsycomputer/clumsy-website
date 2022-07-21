@@ -8,11 +8,13 @@ export type Rhythm = Array<boolean>;
 
 export type RhythmPoints = Array<number>;
 
+export type RhythmSlotWeights = Array<number>;
+
+export type RhythmIntervals = Array<number>;
+
 export interface RhythmMap extends Pick<RhythmStructure, "rhythmResolution"> {
   rhythmPoints: RhythmPoints;
 }
-
-export type RhythmPointDistribution = Array<number>;
 
 export interface RhythmStructure
   extends RecursiveSpatialStructure<

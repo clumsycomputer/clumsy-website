@@ -16,25 +16,21 @@ export const HomePage: NextPage = () => {
       <div role={"figure"} className={homePageStyles.landingImageContainer}>
         <Image
           className={homePageStyles.landingImage}
-          src={"/graphics/whichway.gif"}
-          alt={"¡which way!"}
+          src={"/graphics/gary.jpeg"}
+          alt={"gary"}
           width={1024}
           height={1024}
         />
-        <div
-          role={"presentation"}
-          className={homePageStyles.landingImageCaptionContainer}
-        >
-          <figcaption className={homePageStyles.landingImageCaption}>
-            ¡which way!
-          </figcaption>
-        </div>
       </div>
       <div role={"list"} className={homePageStyles.routesContainer}>
         {[
           {
             prompt: "graphics",
             linkHref: "/graphics",
+          },
+          {
+            prompt: "toys/rhythm",
+            linkHref: "/rhythm-explorer",
           },
           {
             prompt: "resume",

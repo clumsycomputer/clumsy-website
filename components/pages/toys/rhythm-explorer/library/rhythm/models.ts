@@ -16,6 +16,12 @@ export interface RhythmMap extends Pick<RhythmStructure, "rhythmResolution"> {
   rhythmPoints: RhythmPoints;
 }
 
+export interface RhythmComponent {
+  isolatedStructure: BasicRhythmStructure;
+  isolatedMap: RhythmMap;
+  structuredMap: RhythmMap;
+}
+
 export interface RhythmStructure
   extends RecursiveSpatialStructure<
       InterposedRhythmStructure,

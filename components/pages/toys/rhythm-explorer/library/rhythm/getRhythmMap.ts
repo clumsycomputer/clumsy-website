@@ -10,8 +10,5 @@ export function getRhythmMap(api: GetRhythmMapApi): RhythmMap {
   const rhythmComponents = getRhythmComponents({
     someRhythmStructure,
   });
-  return {
-    rhythmResolution: someRhythmStructure.rhythmResolution,
-    rhythmPoints: rhythmComponents[0]!.structuredPoints,
-  };
+  return rhythmComponents[0]!.structuredMap;
 }

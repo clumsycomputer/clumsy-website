@@ -1,17 +1,20 @@
-import { RhythmStructure } from "./models";
+import { RhythmGroupStructure, RhythmStructure } from "./models";
 
-export interface GetRhythmGroupApi {
+export interface GetRhythmGroupStructuresApi {
   someRhythmGroupStructure: RhythmGroupStructure;
 }
 
-export function getRhythmGroup(api: GetRhythmGroupApi) {
+export function getRhythmGroupStructures(
+  api: GetRhythmGroupStructuresApi
+): Array<RhythmStructure> {
   const { someRhythmGroupStructure } = api;
-  return _getRhythmGroup({
-    rhythmGroupResult: [],
-    currentStructure: [],
-    rhythmResolution: someRhythmGroupStructure.rhythmResolution,
-    remainingDensities: [...someRhythmGroupStructure.rhythmDensities],
-  });
+  return [];
+  // return _getRhythmGroup({
+  //   rhythmGroupResult: [],
+  //   currentStructure: [],
+  //   rhythmResolution: someRhythmGroupStructure.baseStructure.rhythmResolution,
+  //   remainingDensities: [...someRhythmGroupStructure.rhythmDensities],
+  // });
 }
 
 interface _GetRhythmGroupApi {
@@ -82,9 +85,4 @@ function _getRhythmGroup(api: _GetRhythmGroupApi): Array<RhythmStructure> {
     }
   }
   return nextRhythmGroupResult;
-}
-
-interface RhythmGroupStructure {
-  rhythmResolution: number;
-  rhythmDensities: Array<number>;
 }

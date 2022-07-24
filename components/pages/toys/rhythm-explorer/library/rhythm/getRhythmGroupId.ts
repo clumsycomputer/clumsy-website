@@ -17,7 +17,15 @@ export function getRhythmGroupId(api: GetRhythmGroupIdApi) {
   iterateRhythmGroupBaseStructure({
     someRhythmGroupBaseStructure: someRhythmGroupStructure.baseStructure,
     forEach: (someBaseStructure) => {
-      if (someBaseStructure.structureType === "initial") {
+      if (
+        someBaseStructure.structureType === "initial" &&
+        someBaseStructure.subStructure === undefined
+      ) {
+        rhythmGroupId = `${someBaseStructure.rhythmResolution}`;
+      } else if (
+        someBaseStructure.structureType === "initial" &&
+        someBaseStructure.subStructure !== undefined
+      ) {
         rhythmGroupId = `${someBaseStructure.rhythmResolution}__`;
       } else if (someBaseStructure.structureType === "interposed") {
         rhythmGroupId = `${rhythmGroupId}${someBaseStructure.rhythmDensity}_${someBaseStructure.rhythmOrientation}`;

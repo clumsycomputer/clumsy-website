@@ -57,38 +57,38 @@ export interface BasicRhythmStructure
     SubRhythmStructureBase {}
 
 export interface RhythmGroupStructure {
-  baseStructure: BaseRhythmGroupStructure;
-  memberStructure: MemberRhythmGroupStructure;
+  baseStructure: RhythmGroupBaseStructure;
+  memberStructure: RhythmGroupMemberStructure;
 }
 
-export type BaseRhythmGroupStructure = Omit<
+export type RhythmGroupBaseStructure = Omit<
   RhythmStructure,
   "subStructure" | "rhythmPhase"
 > & {
-  subStructure?: BaseRhythmGroupInterposedStructure;
+  subStructure?: RhythmGroupBaseInterposedStructure;
 };
 
-type BaseRhythmGroupInterposedStructure = Omit<
+export type RhythmGroupBaseInterposedStructure = Omit<
   InterposedRhythmStructure,
   "subStructure" | "rhythmPhase"
 > & {
-  subStructure?: BaseRhythmGroupInterposedStructure;
+  subStructure?: RhythmGroupBaseInterposedStructure;
 };
 
-export type MemberRhythmGroupStructure =
-  | MemberRhythmGroupInterposedStructure
-  | MemberRhythmGroupTerminalStructure;
+export type RhythmGroupMemberStructure =
+  | RhythmGroupMemberInterposedStructure
+  | RhythmGroupMemberTerminalStructure;
 
-type MemberRhythmGroupInterposedStructure = Omit<
+export type RhythmGroupMemberInterposedStructure = Omit<
   InterposedRhythmStructure,
   "subStructure" | "rhythmOrientation" | "rhythmPhase"
 > & {
-  subStructure?:
-    | MemberRhythmGroupInterposedStructure
-    | MemberRhythmGroupTerminalStructure;
+  subStructure:
+    | RhythmGroupMemberInterposedStructure
+    | RhythmGroupMemberTerminalStructure;
 };
 
-type MemberRhythmGroupTerminalStructure = Omit<
+export type RhythmGroupMemberTerminalStructure = Omit<
   TerminalRhythmStructure,
   "rhythmOrientation"
 >;

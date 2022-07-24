@@ -3,6 +3,7 @@ import { getAdjacentRhythmGroup } from "./library/rhythm/getAdjacentRhythmGroup"
 import { getPhasedRhythmMap } from "./library/rhythm/getPhasedRhythmMap";
 import { getRhythmComponents } from "./library/rhythm/getRhythmComponents";
 import { getRhythmGroup } from "./library/rhythm/getRhythmGroup";
+import { getRhythmGroupId } from "./library/rhythm/getRhythmGroupId";
 import { getRhythmId } from "./library/rhythm/getRhythmId";
 import { getRhythmIntervals } from "./library/rhythm/getRhythmIntervals";
 import { getRhythmMap } from "./library/rhythm/getRhythmMap";
@@ -125,6 +126,23 @@ export const RhythmPage: NextPage = () => {
     generalPointWeights: generalPointWeights.join(","),
     generalRhythmWeight,
     adjacentRhythmGroup: {
+      rhythmGroupId: getRhythmGroupId({
+        someRhythmGroupStructure: {
+          baseStructure: {
+            structureType: "initial",
+            rhythmResolution,
+            subStructure: {
+              structureType: "interposed",
+              rhythmDensity: rhythmDensityA,
+              rhythmOrientation: 0,
+            },
+          },
+          memberStructure: {
+            structureType: "terminal",
+            rhythmDensity: rhythmDensityB,
+          },
+        },
+      }),
       groupSlotWeights: adjacentStructuredSlotWeights.join(","),
       groupMembers: adjacentRhythmGroup.map((someRhythmStructure) => {
         const someRhythmMap = getRhythmMap({
@@ -164,23 +182,13 @@ const fooGroup: RhythmGroupStructure = {
   baseStructure: {
     structureType: "initial",
     rhythmResolution: 12,
-    subStructure: {
-      structureType: "interposed",
-      rhythmDensity: 7,
-      rhythmOrientation: 0,
-      subStructure: {
-        structureType: "interposed",
-        rhythmDensity: 4,
-        rhythmOrientation: 0,
-      },
-    },
   },
   memberStructure: {
     structureType: "interposed",
-    rhythmDensity: 3,
+    rhythmDensity: 7,
     subStructure: {
       structureType: "terminal",
-      rhythmDensity: 2,
+      rhythmDensity: 3,
     },
   },
 };

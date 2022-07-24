@@ -3,13 +3,14 @@ import { getAdjacentRhythmGroup } from "./library/rhythm/getAdjacentRhythmGroup"
 import { getPhasedRhythmMap } from "./library/rhythm/getPhasedRhythmMap";
 import { getRhythmComponents } from "./library/rhythm/getRhythmComponents";
 import { getRhythmGroup } from "./library/rhythm/getRhythmGroup";
+import { getRhythmId } from "./library/rhythm/getRhythmId";
 import { getRhythmIntervals } from "./library/rhythm/getRhythmIntervals";
 import { getRhythmMap } from "./library/rhythm/getRhythmMap";
 import { getRhythmPointWeights } from "./library/rhythm/getRhythmPointWeights";
 import { getRhythmSlotWeights } from "./library/rhythm/getRhythmSlotWeights";
 import { getRhythmString } from "./library/rhythm/getRhythmString";
 import { getRhythmWeight } from "./library/rhythm/getRhythmWeight";
-import { BasicRhythmStructure, RhythmStructure } from "./library/rhythm/models";
+import { RhythmGroupStructure, RhythmStructure } from "./library/rhythm/models";
 
 export const RhythmPage: NextPage = () => {
   const rhythmResolution = 12;
@@ -50,7 +51,7 @@ export const RhythmPage: NextPage = () => {
   });
   const generalPointWeights = getRhythmPointWeights({
     someRhythmMap: rhythmMap,
-    rhythmMapSlotWeights: generalSlotWeights,
+    slotWeights: generalSlotWeights,
   });
   const generalRhythmWeight = getRhythmWeight({
     someRhythmMap: rhythmMap,
@@ -70,16 +71,19 @@ export const RhythmPage: NextPage = () => {
   });
   const structuredPointWeights = getRhythmPointWeights({
     someRhythmMap: rhythmMap,
-    rhythmMapSlotWeights: structuredSlotWeights,
+    slotWeights: structuredSlotWeights,
   });
   const structuredRhythmWeight = getRhythmWeight({
     someRhythmMap: rhythmMap,
     rhythmMapSlotWeights: structuredSlotWeights,
   });
+  const adjacentRhythmGroup = getAdjacentRhythmGroup({
+    someRhythmStructure: rhythmStructure,
+  });
   const adjacentStructuredSlotWeights = getRhythmSlotWeights({
-    someRhythmMaps: getAdjacentRhythmGroup({
-      someRhythmStructure: rhythmStructure,
-    }).map((someRhythmStructure) => getRhythmMap({ someRhythmStructure })),
+    someRhythmMaps: adjacentRhythmGroup.map((someRhythmStructure) =>
+      getRhythmMap({ someRhythmStructure })
+    ),
   });
   const displayData = {
     rhythmStructure,
@@ -111,7 +115,7 @@ export const RhythmPage: NextPage = () => {
     adjacentStructuredSlotWeights: adjacentStructuredSlotWeights.join(","),
     adjacentStructuredPointWeights: getRhythmPointWeights({
       someRhythmMap: rhythmMap,
-      rhythmMapSlotWeights: adjacentStructuredSlotWeights,
+      slotWeights: adjacentStructuredSlotWeights,
     }).join(","),
     adjacentStructuredRhythmWeight: getRhythmWeight({
       someRhythmMap: rhythmMap,
@@ -120,6 +124,63 @@ export const RhythmPage: NextPage = () => {
     generalSlotWeights: generalSlotWeights.join(","),
     generalPointWeights: generalPointWeights.join(","),
     generalRhythmWeight,
+    adjacentRhythmGroup: {
+      groupSlotWeights: adjacentStructuredSlotWeights.join(","),
+      groupMembers: adjacentRhythmGroup.map((someRhythmStructure) => {
+        const someRhythmMap = getRhythmMap({
+          someRhythmStructure,
+        });
+        return {
+          rhythmId: getRhythmId({
+            someRhythmStructure,
+          }),
+          // rhythmStructure: someRhythmStructure,
+          // rhythmMap: {
+          //   ...someRhythmMap,
+          //   rhythmPoints: someRhythmMap.rhythmPoints.join(","),
+          // },
+          rhythmString: getRhythmString({
+            someRhythmMap,
+          }),
+          rhythmIntervals: getRhythmIntervals({
+            someRhythmMap,
+          }).join(","),
+          pointWeights: getRhythmPointWeights({
+            someRhythmMap,
+            slotWeights: adjacentStructuredSlotWeights,
+          }).join(","),
+          groupWeight: getRhythmWeight({
+            someRhythmMap,
+            rhythmMapSlotWeights: adjacentStructuredSlotWeights,
+          }),
+        };
+      }),
+    },
   };
   return <pre>{JSON.stringify(displayData, null, 2)}</pre>;
+};
+
+const fooGroup: RhythmGroupStructure = {
+  baseStructure: {
+    structureType: "initial",
+    rhythmResolution: 12,
+    subStructure: {
+      structureType: "interposed",
+      rhythmDensity: 7,
+      rhythmOrientation: 0,
+      subStructure: {
+        structureType: "interposed",
+        rhythmDensity: 4,
+        rhythmOrientation: 0,
+      },
+    },
+  },
+  memberStructure: {
+    structureType: "interposed",
+    rhythmDensity: 3,
+    subStructure: {
+      structureType: "terminal",
+      rhythmDensity: 2,
+    },
+  },
 };

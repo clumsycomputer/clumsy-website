@@ -2,12 +2,12 @@ import { RhythmMap, RhythmSlotWeights } from "./models";
 
 export interface GetRhythmPointWeightsApi {
   someRhythmMap: RhythmMap;
-  rhythmMapSlotWeights: RhythmSlotWeights;
+  slotWeights: RhythmSlotWeights;
 }
 
 export function getRhythmPointWeights(api: GetRhythmPointWeightsApi) {
-  const { someRhythmMap, rhythmMapSlotWeights } = api;
+  const { someRhythmMap, slotWeights } = api;
   return someRhythmMap.rhythmPoints.map(
-    (someRhythmPoint) => rhythmMapSlotWeights[someRhythmPoint]
+    (someRhythmPoint) => slotWeights[someRhythmPoint]
   );
 }

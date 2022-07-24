@@ -29,7 +29,7 @@ export const HomePage: NextPage = () => {
             linkHref: "/graphics",
           },
           {
-            prompt: "toys/rhythm",
+            prompt: "explorer/rhythm",
             linkHref: "/rhythm-explorer",
           },
           {

@@ -55,3 +55,40 @@ export interface BasicRhythmStructure
   extends Pick<RhythmStructure, "rhythmResolution">,
     Pick<BaseRhythmStructureBase, "rhythmPhase">,
     SubRhythmStructureBase {}
+
+export interface RhythmGroupStructure {
+  baseStructure: BaseRhythmGroupStructure;
+  memberStructure: MemberRhythmGroupStructure;
+}
+
+export type BaseRhythmGroupStructure = Omit<
+  RhythmStructure,
+  "subStructure" | "rhythmPhase"
+> & {
+  subStructure?: BaseRhythmGroupInterposedStructure;
+};
+
+type BaseRhythmGroupInterposedStructure = Omit<
+  InterposedRhythmStructure,
+  "subStructure" | "rhythmPhase"
+> & {
+  subStructure?: BaseRhythmGroupInterposedStructure;
+};
+
+export type MemberRhythmGroupStructure =
+  | MemberRhythmGroupInterposedStructure
+  | MemberRhythmGroupTerminalStructure;
+
+type MemberRhythmGroupInterposedStructure = Omit<
+  InterposedRhythmStructure,
+  "subStructure" | "rhythmOrientation" | "rhythmPhase"
+> & {
+  subStructure?:
+    | MemberRhythmGroupInterposedStructure
+    | MemberRhythmGroupTerminalStructure;
+};
+
+type MemberRhythmGroupTerminalStructure = Omit<
+  TerminalRhythmStructure,
+  "rhythmOrientation"
+>;

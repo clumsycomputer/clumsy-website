@@ -9,12 +9,12 @@ import {
   RhythmStructure,
 } from "./models";
 
-export interface GetRhythmLineageStructureApi {
+export interface GetLineageGroupStructuresApi {
   someRhythmStructure: RhythmStructure;
 }
 
-export function getRhythmLineageStructure(
-  api: GetRhythmLineageStructureApi
+export function getLineageGroupStructures(
+  api: GetLineageGroupStructuresApi
 ): Array<RhythmGroupStructure> {
   const { someRhythmStructure } = api;
   const lineageGroupStructuresResult: Array<RhythmGroupStructure> = [];

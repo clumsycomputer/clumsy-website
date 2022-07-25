@@ -46,7 +46,7 @@ export function getRhythmGroupId(api: GetRhythmGroupIdApi) {
   return rhythmGroupId;
 }
 
-interface IterateRhythmGroupBaseStructureApi {
+export interface IterateRhythmGroupBaseStructureApi {
   someRhythmGroupBaseStructure:
     | RhythmGroupBaseStructure
     | RhythmGroupBaseInterposedStructure;
@@ -57,7 +57,7 @@ interface IterateRhythmGroupBaseStructureApi {
   ) => void;
 }
 
-function iterateRhythmGroupBaseStructure(
+export function iterateRhythmGroupBaseStructure(
   api: IterateRhythmGroupBaseStructureApi
 ) {
   const { someRhythmGroupBaseStructure, forEach } = api;
@@ -74,7 +74,7 @@ function iterateRhythmGroupBaseStructure(
   }
 }
 
-interface IterateRhythmGroupMemberStructureApi {
+export interface IterateRhythmGroupMemberStructureApi {
   someRhythmGroupMemberStructure: RhythmGroupMemberStructure;
   forEach: (
     someMemberStructure:
@@ -84,7 +84,7 @@ interface IterateRhythmGroupMemberStructureApi {
   ) => void;
 }
 
-function iterateRhythmGroupMemberStructure(
+export function iterateRhythmGroupMemberStructure(
   api: IterateRhythmGroupMemberStructureApi
 ) {
   const { someRhythmGroupMemberStructure, forEach } = api;

@@ -95,16 +95,47 @@ export const RhythmPage: NextPage = () => {
         });
         const groupRhythmMaps = groupRhythmStructures.map(
           (someRhythmStructure) => {
-            return getRhythmMap({ someRhythmStructure });
+            return {
+              id: getRhythmId({ someRhythmStructure }),
+              map: getRhythmMap({ someRhythmStructure }),
+            };
           }
         );
         const groupSlotWeights = getRhythmSlotWeights({
-          someRhythmMaps: groupRhythmMaps,
+          someRhythmMaps: groupRhythmMaps.map(({ map }) => map),
         });
+        const groupRhythmWeights = groupRhythmMaps.map((someRhythmMap) => ({
+          id: someRhythmMap.id,
+          weight: getRhythmWeight({
+            someRhythmMap: someRhythmMap.map,
+            rhythmMapSlotWeights: groupSlotWeights,
+          }),
+        }));
         return {
           groupId: getRhythmGroupId({ someRhythmGroupStructure }),
           // groupStructure: someRhythmGroupStructure,
           groupSlotWeights: groupSlotWeights.join(","),
+          groupWeightDistributions: groupRhythmWeights.reduce<any>(
+            (weightDistributionsResult, someRhythmWeight) => {
+              const currentMemberData =
+                weightDistributionsResult[someRhythmWeight.weight];
+              weightDistributionsResult[someRhythmWeight.weight] =
+                currentMemberData
+                  ? {
+                      count: currentMemberData.count + 1,
+                      members: [
+                        ...currentMemberData.members,
+                        someRhythmWeight.id,
+                      ],
+                    }
+                  : {
+                      count: 1,
+                      members: [someRhythmWeight.id],
+                    };
+              return weightDistributionsResult;
+            },
+            {}
+          ),
           activePointWeights: getRhythmPointWeights({
             someRhythmMap: activeRhythmMap,
             slotWeights: groupSlotWeights,
@@ -113,21 +144,28 @@ export const RhythmPage: NextPage = () => {
             someRhythmMap: activeRhythmMap,
             rhythmMapSlotWeights: groupSlotWeights,
           }),
-          groupMembers: groupRhythmStructures.map(
-            (someRhythmStructure, structureIndex) => {
+          groupMembers: groupRhythmStructures.reduce<any>(
+            (groupMembersResult, someRhythmStructure, structureIndex) => {
               const targetRhythmMap = groupRhythmMaps[structureIndex];
-              return {
-                rhythmId: getRhythmId({ someRhythmStructure }),
+              groupMembersResult[targetRhythmMap.id] = {
+                rhythmId: targetRhythmMap.id,
                 // rhythmStructure: someRhythmStructure,
                 // rhythmMap: {
                 //   ...targetRhythmMap,
                 //   rhythmPoints: targetRhythmMap.rhythmPoints.join(","),
                 // },
                 rhythmString: getRhythmString({
-                  someRhythmMap: targetRhythmMap,
+                  someRhythmMap: targetRhythmMap.map,
                 }),
+                rhythmPointWeights: getRhythmPointWeights({
+                  someRhythmMap: targetRhythmMap.map,
+                  slotWeights: groupSlotWeights,
+                }).join(","),
+                rhythmWeight: groupRhythmWeights[structureIndex].weight,
               };
-            }
+              return groupMembersResult;
+            },
+            {}
           ),
         };
       }),

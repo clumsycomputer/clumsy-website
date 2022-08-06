@@ -1,10 +1,7 @@
 import type { NextPage } from "next";
 import Link from "next/link";
 import { Fragment, ReactNode } from "react";
-import {
-  ExternalNavigationFooter,
-  InternalNavigationFooter,
-} from "../../common/NavigationFooter/NavigationFooter";
+import { NavigationFooter } from "../../common/NavigationFooter/NavigationFooter";
 import { Page } from "../../common/Page/Page";
 import { HeaderSection } from "./common/HeaderSection";
 import { JobSection } from "./common/JobSection";
@@ -15,7 +12,7 @@ export const ResumePage: NextPage = () => {
   return (
     <ResumePageBase
       navigationFooter={
-        <InternalNavigationFooter
+        <NavigationFooter
           routeLinks={[
             { routeName: "home", routeHref: "/" },
             { routeName: "graphics", routeHref: "/graphics" },
@@ -35,24 +32,18 @@ export const ResumePdfPage: NextPage = () => {
   return (
     <ResumePageBase
       navigationFooter={
-        <ExternalNavigationFooter
-          websiteLinks={[
+        <NavigationFooter
+          routeLinks={[
             {
-              linkLabel: "website",
-              linkText: "clumsycomputer.com",
-              linkHref: "https://www.clumsycomputer.com",
+              routeName: "website",
+              routeHref: "https://www.clumsycomputer.com",
             },
             {
-              linkLabel: "github",
-              linkText: "clumsycomputer",
-              linkHref: "https://github.com/clumsycomputer",
-            },
-            {
-              linkLabel: "hnews",
-              linkText: "jmath",
-              linkHref: "https://news.ycombinator.com/user?id=jmath",
+              routeName: "github",
+              routeHref: "https://github.com/clumsycomputer",
             },
           ]}
+          pdfLink={null}
         />
       }
     />

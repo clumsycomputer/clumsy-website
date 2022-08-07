@@ -216,6 +216,7 @@ export const GraphicsPage: NextPage = () => {
       <NavigationFooter
         routeLinks={[
           { routeName: "home", routeHref: "/" },
+          { routeName: "software", routeHref: "/software" },
           { routeName: "resume", routeHref: "/resume" },
         ]}
         pdfLink={null}

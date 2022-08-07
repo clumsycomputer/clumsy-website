@@ -16,7 +16,7 @@ export const HomePage: NextPage = () => {
       <div role={"figure"} className={homePageStyles.landingImageContainer}>
         <Image
           className={homePageStyles.landingImage}
-          src={"/graphics/gary.JPEG"}
+          src={"/graphics/whichway.gif"}
           alt={"gary"}
           width={1024}
           height={1024}
@@ -24,6 +24,10 @@ export const HomePage: NextPage = () => {
       </div>
       <div role={"list"} className={homePageStyles.routesContainer}>
         {[
+          {
+            prompt: "software",
+            linkHref: "/software",
+          },
           {
             prompt: "graphics",
             linkHref: "/graphics",

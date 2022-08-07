@@ -1,4 +1,4 @@
-import { ContentsSection } from "./ContentSection";
+import { ContentsSection } from "../../../common/Document/ContentSection";
 
 export interface SchoolSectionProps {
   schoolName: string;

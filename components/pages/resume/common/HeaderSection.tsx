@@ -1,6 +1,6 @@
 import { Fragment, ReactNode } from "react";
-import { ResumeSectionBase } from "./ResumeSectionBase";
-import { SectionContent } from "./SectionContent";
+import { DocumentSectionBase } from "../../../common/Document/DocumentSectionBase";
+import { SectionContent } from "../../../common/Document/SectionContent";
 
 export interface HeaderSectionProps {
   fullName: string;
@@ -12,7 +12,7 @@ export interface HeaderSectionProps {
 export function HeaderSection(props: HeaderSectionProps) {
   const { fullName, emailAddress, briefText, statusText } = props;
   return (
-    <ResumeSectionBase
+    <DocumentSectionBase
       sectionDivider={null}
       accessibilityLabel={`career overview: ${fullName}`}
       headerLabels={[

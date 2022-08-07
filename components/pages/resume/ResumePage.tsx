@@ -1,6 +1,7 @@
 import type { NextPage } from "next";
 import Link from "next/link";
 import { Fragment, ReactNode } from "react";
+import { DocumentPage } from "../../common/Document/DocumentPage";
 import { NavigationFooter } from "../../common/NavigationFooter/NavigationFooter";
 import { Page } from "../../common/Page/Page";
 import { HeaderSection } from "./common/HeaderSection";
@@ -15,6 +16,7 @@ export const ResumePage: NextPage = () => {
         <NavigationFooter
           routeLinks={[
             { routeName: "home", routeHref: "/" },
+            { routeName: "software", routeHref: "/software" },
             { routeName: "graphics", routeHref: "/graphics" },
           ]}
           pdfLink={
@@ -57,13 +59,12 @@ interface ResumePageBaseProps {
 function ResumePageBase(props: ResumePageBaseProps) {
   const { navigationFooter } = props;
   return (
-    <Page
+    <DocumentPage
       accessibilityLabel={"resume"}
       pageTabTitle={"resume - clumsycomputer"}
       pageDescription={
         "a concise overview of jared mathews's career in software development"
       }
-      pageContentContainerClassname={styles.pageContentContainer}
     >
       <HeaderSection
         fullName={"jared mathews"}
@@ -73,12 +74,11 @@ function ResumePageBase(props: ResumePageBaseProps) {
         }
         statusText={
           <Fragment>
-            focused on sharing, documenting, and developing{" "}
-            <a href="https://github.com/clumsycomputer/clumsy-graphics#readme">
-              <b>clumsy-graphics</b>
-            </a>
-            , a tool for rapidly developing animations where frames are
-            described with svg à la react
+            focused on developing, maintaining, and sharing open-source{" "}
+            <a href="/software">
+              <b>software</b>
+            </a>{" "}
+            that assists developers in their creative pursuits
           </Fragment>
         }
       />
@@ -203,6 +203,6 @@ function ResumePageBase(props: ResumePageBaseProps) {
         ]}
       />
       {navigationFooter}
-    </Page>
+    </DocumentPage>
   );
 }

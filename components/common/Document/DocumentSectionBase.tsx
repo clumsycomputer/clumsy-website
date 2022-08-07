@@ -1,36 +1,39 @@
 import { ReactNode } from "react";
-import resumeSectionBaseStyles from "./ResumeSectionBase.module.scss";
+import documentSectionBaseStyles from "./documentSectionBase.module.scss";
 
-export interface ResumeSectionBaseProps {
+export interface DocumentSectionBaseProps {
   sectionDivider: ReactNode;
   accessibilityLabel: string;
   headerLabels: HeaderLabelProps[];
   bodyContent: ReactNode;
 }
 
-export function ResumeSectionBase(props: ResumeSectionBaseProps) {
+export function DocumentSectionBase(props: DocumentSectionBaseProps) {
   const { sectionDivider, accessibilityLabel, headerLabels, bodyContent } =
     props;
   return (
-    <div role={"none"} className={resumeSectionBaseStyles.sectionContainer}>
+    <div role={"none"} className={documentSectionBaseStyles.sectionContainer}>
       {sectionDivider}
       <div
         role={"region"}
         aria-label={accessibilityLabel}
-        className={resumeSectionBaseStyles.contentContainer}
+        className={documentSectionBaseStyles.contentContainer}
       >
         <div
           role={"header"}
           aria-level={2}
-          className={resumeSectionBaseStyles.accessibilityHeader}
+          className={documentSectionBaseStyles.accessibilityHeader}
         >
           {accessibilityLabel}
         </div>
-        <div role={"list"} className={resumeSectionBaseStyles.headerContainer}>
+        <div
+          role={"list"}
+          className={documentSectionBaseStyles.headerContainer}
+        >
           {headerLabels.map((someHeaderLabel) => (
             <div
               role={"listitem"}
-              className={resumeSectionBaseStyles.labelContainer}
+              className={documentSectionBaseStyles.labelContainer}
               key={someHeaderLabel.label}
             >
               <HeaderLabel {...someHeaderLabel} />
@@ -39,11 +42,11 @@ export function ResumeSectionBase(props: ResumeSectionBaseProps) {
         </div>
         <div
           role={"presentation"}
-          className={resumeSectionBaseStyles.bodyContainer}
+          className={documentSectionBaseStyles.bodyContainer}
         >
           <div
             role={"group"}
-            className={resumeSectionBaseStyles.bodyContentContainer}
+            className={documentSectionBaseStyles.bodyContentContainer}
           >
             {bodyContent}
           </div>
@@ -70,12 +73,14 @@ function HeaderLabel(props: HeaderLabelProps) {
   switch (props.variant) {
     case "text":
       return (
-        <div className={resumeSectionBaseStyles.headerLabel}>{props.label}</div>
+        <div className={documentSectionBaseStyles.headerLabel}>
+          {props.label}
+        </div>
       );
     case "link":
       return (
         <a
-          className={resumeSectionBaseStyles.headerLabel}
+          className={documentSectionBaseStyles.headerLabel}
           href={props.linkHref}
         >
           {props.label}

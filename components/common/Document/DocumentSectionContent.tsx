@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
-import sectionContentStyles from "./SectionContent.module.scss";
+import sectionContentStyles from "./DocumentSectionContent.module.scss";
 
-export type SectionContentProps =
+export type DocumentSectionContentProps =
   | SomeSectionContentProps<"text", TextContentProps>
   | SomeSectionContentProps<"columnList", ColumnListContentProps>
   | SomeSectionContentProps<"wrapList", WrapListContentProps>;
@@ -11,7 +11,7 @@ type SomeSectionContentProps<
   SomeContentProps
 > = { contentType: SomeContentType } & SomeContentProps;
 
-export function SectionContent(props: SectionContentProps) {
+export function DocumentSectionContent(props: DocumentSectionContentProps) {
   switch (props.contentType) {
     case "text":
       return <TextContent {...props} />;

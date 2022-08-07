@@ -1,23 +1,21 @@
 import type { NextPage } from "next";
 import Link from "next/link";
 import { Fragment, ReactNode } from "react";
-import {
-  ExternalNavigationFooter,
-  InternalNavigationFooter,
-} from "../../common/NavigationFooter/NavigationFooter";
-import { Page } from "../../common/Page/Page";
-import { HeaderSection } from "./common/HeaderSection";
-import { JobSection } from "./common/JobSection";
-import { SchoolSection } from "./common/SchoolSection";
-import styles from "./ResumePage.module.scss";
+import { DocumentPage } from "../../common/Document/DocumentPage";
+import { NavigationFooter } from "../../common/NavigationFooter/NavigationFooter";
+import { ResumeHeaderSection } from "./common/ResumeHeaderSection";
+import { ResumeJobSection } from "./common/ResumeJobSection";
+import { ResumeSchoolSection } from "./common/ResumeSchoolSection";
 
 export const ResumePage: NextPage = () => {
   return (
     <ResumePageBase
+      softwarePageHref={"/software"}
       navigationFooter={
-        <InternalNavigationFooter
+        <NavigationFooter
           routeLinks={[
             { routeName: "home", routeHref: "/" },
+            { routeName: "software", routeHref: "/software" },
             { routeName: "graphics", routeHref: "/graphics" },
           ]}
           pdfLink={
@@ -34,25 +32,20 @@ export const ResumePage: NextPage = () => {
 export const ResumePdfPage: NextPage = () => {
   return (
     <ResumePageBase
+      softwarePageHref={"https://www.clumsycomputer.com/software"}
       navigationFooter={
-        <ExternalNavigationFooter
-          websiteLinks={[
+        <NavigationFooter
+          routeLinks={[
             {
-              linkLabel: "website",
-              linkText: "clumsycomputer.com",
-              linkHref: "https://www.clumsycomputer.com",
+              routeName: "website",
+              routeHref: "https://www.clumsycomputer.com",
             },
             {
-              linkLabel: "github",
-              linkText: "clumsycomputer",
-              linkHref: "https://github.com/clumsycomputer",
-            },
-            {
-              linkLabel: "hnews",
-              linkText: "jmath",
-              linkHref: "https://news.ycombinator.com/user?id=jmath",
+              routeName: "github",
+              routeHref: "https://github.com/clumsycomputer",
             },
           ]}
+          pdfLink={null}
         />
       }
     />
@@ -61,20 +54,20 @@ export const ResumePdfPage: NextPage = () => {
 
 interface ResumePageBaseProps {
   navigationFooter: ReactNode;
+  softwarePageHref: string;
 }
 
 function ResumePageBase(props: ResumePageBaseProps) {
-  const { navigationFooter } = props;
+  const { navigationFooter, softwarePageHref } = props;
   return (
-    <Page
+    <DocumentPage
       accessibilityLabel={"resume"}
       pageTabTitle={"resume - clumsycomputer"}
       pageDescription={
         "a concise overview of jared mathews's career in software development"
       }
-      pageContentContainerClassname={styles.pageContentContainer}
     >
-      <HeaderSection
+      <ResumeHeaderSection
         fullName={"jared mathews"}
         emailAddress={"clumsycomputer@gmail.com"}
         briefText={
@@ -82,16 +75,17 @@ function ResumePageBase(props: ResumePageBaseProps) {
         }
         statusText={
           <Fragment>
-            focused on sharing, documenting, and developing{" "}
-            <a href="https://github.com/clumsycomputer/clumsy-graphics#readme">
-              <b>clumsy-graphics</b>
-            </a>
-            , a tool for rapidly developing animations where frames are
-            described with svg à la react
+            focused on developing, maintaining, and sharing open-source{" "}
+            <Link href={softwarePageHref}>
+              <a>
+                <b>software</b>
+              </a>
+            </Link>{" "}
+            that assists developers in their creative pursuits
           </Fragment>
         }
       />
-      <JobSection
+      <ResumeJobSection
         companyName={"wyyerd intuition"}
         teamName={"engineering"}
         jobTitle={"frontend developer"}
@@ -118,7 +112,7 @@ function ResumePageBase(props: ResumePageBaseProps) {
           "git",
         ]}
       />
-      <JobSection
+      <ResumeJobSection
         companyName={"native roots"}
         teamName={"operations"}
         jobTitle={"frontend developer"}
@@ -144,7 +138,7 @@ function ResumePageBase(props: ResumePageBaseProps) {
           "git",
         ]}
       />
-      <JobSection
+      <ResumeJobSection
         companyName={"confident cannabis"}
         teamName={"wholesale"}
         jobTitle={"junior developer"}
@@ -170,7 +164,7 @@ function ResumePageBase(props: ResumePageBaseProps) {
           "git",
         ]}
       />
-      <JobSection
+      <ResumeJobSection
         companyName={"datasplice"}
         teamName={"research & development"}
         jobTitle={"apprentice developer"}
@@ -195,7 +189,7 @@ function ResumePageBase(props: ResumePageBaseProps) {
           "git",
         ]}
       />
-      <SchoolSection
+      <ResumeSchoolSection
         schoolName={"galvanize"}
         programName={"fullstack web development"}
         dateRange={"2016.04 - 2015.10"}
@@ -212,6 +206,6 @@ function ResumePageBase(props: ResumePageBaseProps) {
         ]}
       />
       {navigationFooter}
-    </Page>
+    </DocumentPage>
   );
 }

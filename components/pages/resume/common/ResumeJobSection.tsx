@@ -1,6 +1,6 @@
-import { ContentsSection } from "./ContentSection";
+import { DocumentContentSection } from "../../../common/Document/DocumentContentSection";
 
-export interface JobSectionProps {
+export interface ResumeJobSectionProps {
   companyName: string;
   teamName: string;
   jobTitle: string;
@@ -10,7 +10,7 @@ export interface JobSectionProps {
   techStack: string[];
 }
 
-export function JobSection(props: JobSectionProps) {
+export function ResumeJobSection(props: ResumeJobSectionProps) {
   const {
     companyName,
     teamName,
@@ -21,7 +21,7 @@ export function JobSection(props: JobSectionProps) {
     techStack,
   } = props;
   return (
-    <ContentsSection
+    <DocumentContentSection
       accessibilityLabel={`job: ${companyName} - ${jobTitle}`}
       headerLabels={[
         {

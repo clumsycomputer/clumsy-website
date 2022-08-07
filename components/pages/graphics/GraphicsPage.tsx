@@ -1,5 +1,5 @@
 import type { NextPage } from "next";
-import { InternalNavigationFooter } from "../../common/NavigationFooter/NavigationFooter";
+import { NavigationFooter } from "../../common/NavigationFooter/NavigationFooter";
 import { Page } from "../../common/Page/Page";
 import { SectionDivider } from "../../common/SectionDivider/SectionDivider";
 import { GraphicSection } from "./common/GraphicSection";
@@ -213,9 +213,10 @@ export const GraphicsPage: NextPage = () => {
           soloUrl={"/graphics/duction.hi.png"}
           listUrl={"/graphics/duction.png"}
         /> */}
-      <InternalNavigationFooter
+      <NavigationFooter
         routeLinks={[
           { routeName: "home", routeHref: "/" },
+          { routeName: "software", routeHref: "/software" },
           { routeName: "resume", routeHref: "/resume" },
         ]}
         pdfLink={null}

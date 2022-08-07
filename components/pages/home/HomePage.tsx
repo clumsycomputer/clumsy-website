@@ -1,7 +1,7 @@
 import type { NextPage } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { ExternalNavigationFooter } from "../../common/NavigationFooter/NavigationFooter";
+import { NavigationFooter } from "../../common/NavigationFooter/NavigationFooter";
 import { Page } from "../../common/Page/Page";
 import homePageStyles from "./HomePage.module.scss";
 
@@ -17,21 +17,17 @@ export const HomePage: NextPage = () => {
         <Image
           className={homePageStyles.landingImage}
           src={"/graphics/whichway.gif"}
-          alt={"¡which way!"}
+          alt={"gary"}
           width={1024}
           height={1024}
         />
-        <div
-          role={"presentation"}
-          className={homePageStyles.landingImageCaptionContainer}
-        >
-          <figcaption className={homePageStyles.landingImageCaption}>
-            ¡which way!
-          </figcaption>
-        </div>
       </div>
       <div role={"list"} className={homePageStyles.routesContainer}>
         {[
+          {
+            prompt: "software",
+            linkHref: "/software",
+          },
           {
             prompt: "graphics",
             linkHref: "/graphics",
@@ -54,19 +50,22 @@ export const HomePage: NextPage = () => {
           </div>
         ))}
       </div>
-      <ExternalNavigationFooter
-        websiteLinks={[
+      <NavigationFooter
+        routeLinks={[
           {
-            linkLabel: "github",
-            linkText: "clumsycomputer",
-            linkHref: "https://github.com/clumsycomputer",
+            routeName: "github",
+            routeHref: "https://github.com/clumsycomputer",
           },
           {
-            linkLabel: "hnews",
-            linkText: "jmath",
-            linkHref: "https://news.ycombinator.com/user?id=jmath",
+            routeName: "twitter",
+            routeHref: "https://twitter.com/c1umsyc0mputer",
+          },
+          {
+            routeName: "hnews",
+            routeHref: "https://news.ycombinator.com/user?id=clumsycomputer",
           },
         ]}
+        pdfLink={null}
       />
     </Page>
   );

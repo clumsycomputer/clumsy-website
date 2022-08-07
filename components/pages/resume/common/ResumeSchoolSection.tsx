@@ -1,6 +1,6 @@
-import { ContentsSection } from "./ContentSection";
+import { DocumentContentSection } from "../../../common/Document/DocumentContentSection";
 
-export interface SchoolSectionProps {
+export interface ResumeSchoolSectionProps {
   schoolName: string;
   programName: string;
   dateRange: string;
@@ -8,11 +8,11 @@ export interface SchoolSectionProps {
   techStack: string[];
 }
 
-export function SchoolSection(props: SchoolSectionProps) {
+export function ResumeSchoolSection(props: ResumeSchoolSectionProps) {
   const { schoolName, programName, dateRange, programDescription, techStack } =
     props;
   return (
-    <ContentsSection
+    <DocumentContentSection
       accessibilityLabel={`school: ${schoolName} - ${programName}`}
       headerLabels={[
         {

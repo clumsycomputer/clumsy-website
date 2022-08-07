@@ -1,11 +1,10 @@
 import Link from "next/link";
 import { ReactNode } from "react";
-import externalNavigationFooterStyles from "./ExternalNavigationFooter.module.scss";
-import internalNavigationFooterStyles from "./InternalNavigationFooter.module.scss";
+import navigationFooterStyles from "./NavigationFooter.module.scss";
 import navigationFooterContainerStyles from "./NavigationFooterContainer.module.scss";
 import navigationListContainerStyles from "./NavigationListContainer.module.scss";
 
-export interface InternalNavigationFooterProps {
+export interface NavigationFooterProps {
   routeLinks: Array<{
     routeName: string;
     routeHref: string;
@@ -13,7 +12,7 @@ export interface InternalNavigationFooterProps {
   pdfLink: ReactNode;
 }
 
-export function InternalNavigationFooter(props: InternalNavigationFooterProps) {
+export function NavigationFooter(props: NavigationFooterProps) {
   const { routeLinks, pdfLink } = props;
   return (
     <NavigationFooterContainer>
@@ -21,66 +20,20 @@ export function InternalNavigationFooter(props: InternalNavigationFooterProps) {
         {routeLinks.map((someRouteLink) => (
           <div
             role={"listitem"}
-            className={internalNavigationFooterStyles.routeLinkContainer}
+            className={navigationFooterStyles.routeLinkContainer}
             key={someRouteLink.routeName}
           >
             <Link href={someRouteLink.routeHref}>
-              <a
-                role={"link"}
-                className={internalNavigationFooterStyles.routeLink}
-              >
+              <a role={"link"} className={navigationFooterStyles.routeLink}>
                 {someRouteLink.routeName}
               </a>
             </Link>
           </div>
         ))}
       </NavigationListContainer>
-      <div
-        role={"none"}
-        className={internalNavigationFooterStyles.pdfLinkContainer}
-      >
+      <div role={"none"} className={navigationFooterStyles.pdfLinkContainer}>
         {pdfLink}
       </div>
-    </NavigationFooterContainer>
-  );
-}
-
-export interface ExternalNavigationFooterProps {
-  websiteLinks: Array<{
-    linkLabel: string;
-    linkText: string;
-    linkHref: string;
-  }>;
-}
-
-export function ExternalNavigationFooter(props: ExternalNavigationFooterProps) {
-  const { websiteLinks } = props;
-  return (
-    <NavigationFooterContainer>
-      <NavigationListContainer>
-        {websiteLinks.map((someWebsiteLink) => (
-          <div
-            role={"listitem"}
-            className={externalNavigationFooterStyles.websiteLinkContainer}
-            key={someWebsiteLink.linkLabel}
-          >
-            <div
-              className={
-                externalNavigationFooterStyles.websiteLinkLabelContainer
-              }
-            >
-              {someWebsiteLink.linkLabel}:
-            </div>
-            <a
-              role={"link"}
-              className={externalNavigationFooterStyles.websiteLink}
-              href={someWebsiteLink.linkHref}
-            >
-              {someWebsiteLink.linkText}
-            </a>
-          </div>
-        ))}
-      </NavigationListContainer>
     </NavigationFooterContainer>
   );
 }

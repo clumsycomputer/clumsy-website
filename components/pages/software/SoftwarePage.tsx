@@ -19,6 +19,9 @@ export const SoftwarePage: NextPage = () => {
         pageTitle={pageTitle}
         fullName={fullName}
         githubHref={"https://github.com/clumsycomputer"}
+        softwareOverview={
+          "the projects here are open versions of software that ive been iterating on in one form or another for almost a decade now, and believe they can offer unique value to the typescript community and beyond"
+        }
       />
       <SoftwareProjectSection
         projectName={"clumsy-graphics"}
@@ -31,7 +34,7 @@ export const SoftwarePage: NextPage = () => {
         }
         projectRoadmap={[
           "streamline installation and initialization",
-          "enable exporting animation as gif from gui",
+          "enable exporting animation as gif",
           "improve documentation with simple examples of varied use-cases and a basic video tutorial walking through getting started",
         ]}
         projectTech={[
@@ -73,10 +76,11 @@ interface SoftwareHeaderSectionProps {
   githubHref: string;
   fullName: string;
   pageTitle: string;
+  softwareOverview: string;
 }
 
 function SoftwareHeaderSection(props: SoftwareHeaderSectionProps) {
-  const { fullName, pageTitle, githubHref } = props;
+  const { fullName, pageTitle, githubHref, softwareOverview } = props;
   return (
     <DocumentSectionBase
       sectionDivider={null}
@@ -98,7 +102,7 @@ function SoftwareHeaderSection(props: SoftwareHeaderSectionProps) {
             accessibilityLabel={`software overview: ${fullName}`}
             contentType={"text"}
             contentLabel={"overview"}
-            textContent={"todo"}
+            textContent={softwareOverview}
           />
         </Fragment>
       }

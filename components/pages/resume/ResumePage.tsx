@@ -3,11 +3,9 @@ import Link from "next/link";
 import { Fragment, ReactNode } from "react";
 import { DocumentPage } from "../../common/Document/DocumentPage";
 import { NavigationFooter } from "../../common/NavigationFooter/NavigationFooter";
-import { Page } from "../../common/Page/Page";
 import { HeaderSection } from "./common/HeaderSection";
 import { JobSection } from "./common/JobSection";
 import { SchoolSection } from "./common/SchoolSection";
-import styles from "./ResumePage.module.scss";
 
 export const ResumePage: NextPage = () => {
   return (
@@ -75,9 +73,9 @@ function ResumePageBase(props: ResumePageBaseProps) {
         statusText={
           <Fragment>
             focused on developing, maintaining, and sharing open-source{" "}
-            <a href="/software">
+            <Link href="/software">
               <b>software</b>
-            </a>{" "}
+            </Link>{" "}
             that assists developers in their creative pursuits
           </Fragment>
         }

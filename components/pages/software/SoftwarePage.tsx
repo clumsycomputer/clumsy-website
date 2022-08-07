@@ -20,7 +20,7 @@ export const SoftwarePage: NextPage = () => {
         fullName={fullName}
         githubHref={"https://github.com/clumsycomputer"}
         softwareOverview={
-          "the projects here are open versions of software that ive been iterating on in one form or another for almost a decade now, and believe they can offer unique value to the typescript community and beyond"
+          "the projects here are open versions of software that ive been iterating on in one form or another for almost a decade now. i believe they offer unique value to the typescript community and beyond"
         }
       />
       <SoftwareProjectSection

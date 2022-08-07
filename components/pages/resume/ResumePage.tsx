@@ -73,8 +73,10 @@ function ResumePageBase(props: ResumePageBaseProps) {
         statusText={
           <Fragment>
             focused on developing, maintaining, and sharing open-source{" "}
-            <Link href="/software">
-              <b>software</b>
+            <Link href="https://clumsycomputer.com/software">
+              <a>
+                <b>software</b>
+              </a>
             </Link>{" "}
             that assists developers in their creative pursuits
           </Fragment>

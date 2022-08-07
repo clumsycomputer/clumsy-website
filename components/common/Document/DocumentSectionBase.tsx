@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import documentSectionBaseStyles from "./documentSectionBase.module.scss";
+import documentSectionBaseStyles from "./DocumentSectionBase.module.scss";
 
 export interface DocumentSectionBaseProps {
   sectionDivider: ReactNode;

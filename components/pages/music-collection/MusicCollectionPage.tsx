@@ -1,4 +1,5 @@
 import { NextPage } from "next";
+import { Fragment } from "react";
 import { Page } from "../../common/Page/Page";
 import pageStyles from "./MusicCollectionPage.module.scss";
 
@@ -9,41 +10,84 @@ export const MusicCollectionPage: NextPage = () => (
     pageDescription={"a catalog of awesome music"}
     pageContentContainerClassname={pageStyles.pageContentContainer}
   >
-    {musicCollection.map((someMusicItem) => {
+    {musicCollection.map((someMusicItem, itemIndex) => {
       return (
-        <div style={{ display: "flex", flexDirection: "row" }}>
-          <div style={{ maxInlineSize: 96 }}>
-            <img style={{ width: "100%" }} src={someMusicItem.thumbnailHref} />
+        <div
+          key={`${itemIndex}`}
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            padding: 8,
+            paddingBottom: 2,
+          }}
+        >
+          <div
+            style={{
+              flexBasis: 128,
+              flexShrink: 0,
+              padding: 3,
+            }}
+          >
+            <img
+              style={{ width: "100%", border: "solid 1px rgb(241,241,241)" }}
+              src={someMusicItem.thumbnailHref}
+            />
           </div>
-          <div>
-            <PropertyDisplay label={"Name:"} value={someMusicItem.musicName} />
-            <PropertyDisplay
-              label={"Artist:"}
-              value={someMusicItem.musicArtist.join(", ")}
-            />
-            <PropertyDisplay
-              label={"Type:"}
-              value={
-                someMusicItem.itemType === "collection"
-                  ? someMusicItem.collectionType
-                  : someMusicItem.itemType
-              }
-            />
-            <PropertyDisplay
-              label={"Recording:"}
-              value={someMusicItem.recordingStyle.join(", ")}
-            />
-            <PropertyDisplay
-              label={"Tags:"}
-              value={someMusicItem.musicTags.join(", ") || "none"}
-            />
-            <div>
+          <div
+            style={{
+              flexShrink: 1,
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
+            <div
+              style={{
+                width: "100%",
+                display: "flex",
+                flexDirection: "column",
+              }}
+            >
+              <PropertyView propertyValue={someMusicItem.musicName} />
+              <div style={{ display: "flex", flexDirection: "row" }}>
+                {someMusicItem.musicArtist.map((someMusicArtist) => (
+                  <PropertyView
+                    key={someMusicArtist}
+                    propertyValue={someMusicArtist}
+                  />
+                ))}
+              </div>
+              <PropertyView
+                propertyValue={`${someMusicItem.recordingStyle.join("/")} ${
+                  someMusicItem.itemType === "collection"
+                    ? someMusicItem.collectionType
+                    : someMusicItem.itemType
+                }`}
+              />
+              <div style={{ display: "flex", flexDirection: "row" }}>
+                {someMusicItem.musicTags.map((someMusicTag) => (
+                  <PropertyView
+                    key={someMusicTag}
+                    propertyValue={someMusicTag}
+                  />
+                ))}
+              </div>
+            </div>
+            <div
+              style={{
+                padding: 4,
+                display: "flex",
+                flexDirection: "row",
+                flexWrap: "wrap",
+              }}
+            >
               {someMusicItem.externalLinks.map((someExternalLink) => {
                 return (
                   <a
+                    key={someExternalLink.linkLabel}
                     style={{ fontWeight: 600, marginRight: 8 }}
                     href={someExternalLink.linkHref}
                     target={"_blank"}
+                    rel={"noreferrer"}
                   >
                     {someExternalLink.linkLabel}
                   </a>
@@ -57,19 +101,33 @@ export const MusicCollectionPage: NextPage = () => (
   </Page>
 );
 
-interface PropertyDisplayProps {
-  label: string;
-  value: string;
+interface PropertyViewProps {
+  propertyValue: string;
 }
 
-function PropertyDisplay(props: PropertyDisplayProps) {
-  const { label, value } = props;
+function PropertyView(props: PropertyViewProps) {
+  const { propertyValue } = props;
   return (
     <div style={{ display: "flex", flexDirection: "row" }}>
-      <div style={{ fontStyle: "italic" }}>{label.toLowerCase()}</div>
-      <div style={{ paddingLeft: 8, fontWeight: 600 }}>
-        {value.toLowerCase()}
+      <div
+        style={{
+          flexShrink: 1,
+          marginInline: 3,
+          marginBlock: 3,
+          paddingInline: 3,
+          paddingBlock: 1,
+          backgroundColor: "rgb(241,241,241)",
+          fontWeight: 600,
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          whiteSpace: "nowrap",
+          borderRadius: 2,
+          // maxInlineSize: 280,
+        }}
+      >
+        {propertyValue.toLowerCase()}
       </div>
+      <div style={{ flexGrow: 1 }} />
     </div>
   );
 }
@@ -277,21 +335,21 @@ const musicCollection: Array<MusicItem> = [
     collectionType: "album",
     thumbnailHref:
       "https://upload.wikimedia.org/wikipedia/en/a/ab/Pretty-Lights-Filling-Up-the-City-Skies.jpg",
-    musicName: "Filling Up the City Skies",
+    musicName: "Filling Up the City Skies - Disc 1",
     musicArtist: ["Pretty Lights"],
     recordingStyle: ["studio"],
-    musicTags: ["movement", "soul", "hip-hop", "electronica"],
+    musicTags: ["soul", "hip-hop", "electronica"],
     externalLinks: [
       getYoutubeLinkData({
-        youtubeLabel: "disc 1 - youtube",
+        youtubeLabel: "youtube",
         youtubeHref:
           "https://m.youtube.com/playlist?list=OLAK5uy_mQuwlK3nAsIdmW9FCAZe-VHy94NRlzt34&playnext=1&index=1",
       }),
-      getYoutubeLinkData({
-        youtubeLabel: "disc 2 - youtube",
-        youtubeHref:
-          "https://m.youtube.com/watch?v=_lNWO4ImyxI&list=PL73E43D96EC1D09B6&playnext=1&index=1",
-      }),
+      // getYoutubeLinkData({
+      //   youtubeLabel: "disc 2 - youtube",
+      //   youtubeHref:
+      //     "https://m.youtube.com/watch?v=_lNWO4ImyxI&list=PL73E43D96EC1D09B6&playnext=1&index=1",
+      // }),
     ],
   },
 ];

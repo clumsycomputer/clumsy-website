@@ -1,131 +1,138 @@
 import { NextPage } from "next";
-import { Page } from "../../common/Page/Page";
-import pageStyles from "./MusicCollectionPage.module.scss";
+import { Page } from "../../../common/Page/Page";
+import pageStyles from "./MusicCurationsPage.module.scss";
 import Link from "next/link";
 import { ReactNode } from "react";
-import { NavigationFooter } from "../../common/NavigationFooter/NavigationFooter";
+import { NavigationFooter } from "../../../common/NavigationFooter/NavigationFooter";
 
-export const MusicCollectionPage: NextPage = () => (
+export const MusicCurationsPage: NextPage = () => (
   <Page
-    accessibilityLabel={"music collection"}
-    pageTabTitle={"music collection - clumsycomputer"}
+    accessibilityLabel={"music curations"}
+    pageTabTitle={"- music + - clumsycomputer"}
     pageDescription={"a catalog of awesome music"}
     pageContentContainerClassname={pageStyles.pageContentContainer}
   >
-    {musicCollection.map((someMusicItem) => {
-      return (
-        <div
-          key={someMusicItem.itemId}
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            padding: 4,
-            paddingRight: 8,
-            paddingBottom: 8,
-          }}
-        >
+    <div
+      style={{
+        paddingInline: 4,
+        paddingBlock: 4,
+      }}
+    >
+      {musicCollection.map((someMusicItem) => {
+        return (
           <div
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "flex-start",
-            }}
-          >
-            <svg
-              style={{
-                marginInline: 4,
-                marginBlock: 4,
-                width: 128,
-                height: 128,
-              }}
-              viewBox={"0 0 100 100"}
-            >
-              <rect
-                x={0}
-                y={0}
-                width={100}
-                height={100}
-                rx={3}
-                ry={3}
-                fill={"rgb(241,241,241"}
-              />
-              <image
-                href={someMusicItem.thumbnailHref}
-                x={1}
-                y={1}
-                width={98}
-                height={98}
-                clipPath={"inset(0% round 2.5)"}
-              />
-            </svg>
-            <div
-              style={{
-                flexGrow: 1,
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "flex-end",
-              }}
-            >
-              {someMusicItem.externalLinks.map((someExternalLink) => {
-                return (
-                  <Link
-                    key={someExternalLink.linkLabel}
-                    href={someExternalLink.linkHref}
-                  >
-                    <a
-                      style={{
-                        marginInline: 4,
-                        marginBlock: 4,
-                        fontWeight: 600,
-                      }}
-                      rel={"noreferrer"}
-                      target={"_blank"}
-                    >
-                      {someExternalLink.linkLabel}
-                    </a>
-                  </Link>
-                );
-              })}
-            </div>
-          </div>
-          <div
+            key={someMusicItem.itemId}
             style={{
               display: "flex",
               flexDirection: "column",
+              padding: 4,
+              paddingRight: 8,
+              paddingBottom: 12,
             }}
           >
-            <MusicItemPropertyList>
-              <MusicItemProperty propertyValue={someMusicItem.musicName} />
-            </MusicItemPropertyList>
-            <MusicItemPropertyList>
-              {someMusicItem.musicArtist.map((someMusicArtist) => (
-                <MusicItemProperty
-                  key={someMusicArtist}
-                  propertyValue={someMusicArtist}
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "flex-start",
+              }}
+            >
+              <svg
+                style={{
+                  marginInline: 4,
+                  marginBlock: 4,
+                  width: 128,
+                  height: 128,
+                }}
+                viewBox={"0 0 100 100"}
+              >
+                <rect
+                  x={0}
+                  y={0}
+                  width={100}
+                  height={100}
+                  rx={3}
+                  ry={3}
+                  fill={"rgb(241,241,241"}
                 />
-              ))}
-            </MusicItemPropertyList>
-            <MusicItemPropertyList>
-              <MusicItemProperty
-                propertyValue={`${someMusicItem.recordingStyle.join("/")} ${
-                  someMusicItem.itemType === "collection"
-                    ? someMusicItem.collectionType
-                    : someMusicItem.itemType
-                }`}
-              />
-            </MusicItemPropertyList>
-            <MusicItemPropertyList>
-              {someMusicItem.musicTags.map((someMusicTag) => (
-                <MusicItemProperty
-                  key={someMusicTag}
-                  propertyValue={someMusicTag}
+                <image
+                  href={someMusicItem.thumbnailHref}
+                  x={1}
+                  y={1}
+                  width={98}
+                  height={98}
+                  clipPath={"inset(0% round 2.5)"}
                 />
-              ))}
-            </MusicItemPropertyList>
+              </svg>
+              <div
+                style={{
+                  flexGrow: 1,
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "flex-end",
+                }}
+              >
+                {someMusicItem.externalLinks.map((someExternalLink) => {
+                  return (
+                    <Link
+                      key={someExternalLink.linkLabel}
+                      href={someExternalLink.linkHref}
+                    >
+                      <a
+                        style={{
+                          marginInline: 4,
+                          marginBlock: 4,
+                          fontWeight: 600,
+                        }}
+                        rel={"noreferrer"}
+                        target={"_blank"}
+                      >
+                        {someExternalLink.linkLabel}
+                      </a>
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+              }}
+            >
+              <MusicItemPropertyList>
+                <MusicItemProperty propertyValue={someMusicItem.musicName} />
+              </MusicItemPropertyList>
+              <MusicItemPropertyList>
+                {someMusicItem.musicArtist.map((someMusicArtist) => (
+                  <MusicItemProperty
+                    key={someMusicArtist}
+                    propertyValue={someMusicArtist}
+                  />
+                ))}
+              </MusicItemPropertyList>
+              <MusicItemPropertyList>
+                <MusicItemProperty
+                  propertyValue={`${someMusicItem.recordingStyle.join("/")} ${
+                    someMusicItem.itemType === "collection"
+                      ? someMusicItem.collectionType
+                      : someMusicItem.itemType
+                  }`}
+                />
+              </MusicItemPropertyList>
+              <MusicItemPropertyList>
+                {someMusicItem.musicTags.map((someMusicTag) => (
+                  <MusicItemProperty
+                    key={someMusicTag}
+                    propertyValue={someMusicTag}
+                  />
+                ))}
+              </MusicItemPropertyList>
+            </div>
           </div>
-        </div>
-      );
-    })}
+        );
+      })}
+    </div>
     <NavigationFooter
       routeLinks={[
         { routeName: "home", routeHref: "/" },

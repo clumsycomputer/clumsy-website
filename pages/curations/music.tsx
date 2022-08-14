@@ -1,3 +1,3 @@
-import { MusicCollectionPage } from "../../components/pages/music-collection/MusicCollectionPage";
+import { MusicCurationsPage } from "../../components/pages/curations/music/MusicCurationsPage";
 
-export default MusicCollectionPage;
+export default MusicCurationsPage;

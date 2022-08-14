@@ -1,7 +1,8 @@
 import { NextPage } from "next";
-import { Fragment } from "react";
 import { Page } from "../../common/Page/Page";
 import pageStyles from "./MusicCollectionPage.module.scss";
+import Link from "next/link";
+import { ReactNode } from "react";
 
 export const MusicCollectionPage: NextPage = () => (
   <Page
@@ -10,90 +11,114 @@ export const MusicCollectionPage: NextPage = () => (
     pageDescription={"a catalog of awesome music"}
     pageContentContainerClassname={pageStyles.pageContentContainer}
   >
-    {musicCollection.map((someMusicItem, itemIndex) => {
+    {musicCollection.map((someMusicItem) => {
       return (
         <div
-          key={`${itemIndex}`}
+          key={someMusicItem.itemId}
           style={{
             display: "flex",
-            flexDirection: "row",
-            padding: 8,
-            paddingBottom: 2,
+            flexDirection: "column",
+            padding: 4,
+            paddingRight: 8,
+            paddingBottom: 8,
           }}
         >
           <div
             style={{
-              flexBasis: 128,
-              flexShrink: 0,
-              padding: 3,
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "flex-start",
             }}
           >
-            <img
-              style={{ width: "100%", border: "solid 1px rgb(241,241,241)" }}
-              src={someMusicItem.thumbnailHref}
-            />
+            <svg
+              style={{
+                marginInline: 4,
+                marginBlock: 4,
+                width: 128,
+                height: 128,
+              }}
+              viewBox={"0 0 100 100"}
+            >
+              <rect
+                x={0}
+                y={0}
+                width={100}
+                height={100}
+                rx={3}
+                ry={3}
+                fill={"rgb(241,241,241"}
+              />
+              <image
+                href={someMusicItem.thumbnailHref}
+                x={1}
+                y={1}
+                width={98}
+                height={98}
+                clipPath={"inset(0% round 2.5)"}
+              />
+            </svg>
+            <div
+              style={{
+                flexGrow: 1,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "flex-end",
+              }}
+            >
+              {someMusicItem.externalLinks.map((someExternalLink) => {
+                return (
+                  <Link
+                    key={someExternalLink.linkLabel}
+                    href={someExternalLink.linkHref}
+                  >
+                    <a
+                      style={{
+                        marginInline: 4,
+                        marginBlock: 4,
+                        fontWeight: 600,
+                      }}
+                    >
+                      {someExternalLink.linkLabel}
+                    </a>
+                  </Link>
+                );
+              })}
+            </div>
           </div>
           <div
             style={{
-              flexShrink: 1,
               display: "flex",
               flexDirection: "column",
             }}
           >
-            <div
-              style={{
-                width: "100%",
-                display: "flex",
-                flexDirection: "column",
-              }}
-            >
-              <PropertyView propertyValue={someMusicItem.musicName} />
-              <div style={{ display: "flex", flexDirection: "row" }}>
-                {someMusicItem.musicArtist.map((someMusicArtist) => (
-                  <PropertyView
-                    key={someMusicArtist}
-                    propertyValue={someMusicArtist}
-                  />
-                ))}
-              </div>
-              <PropertyView
+            <MusicItemPropertyList>
+              <MusicItemProperty propertyValue={someMusicItem.musicName} />
+            </MusicItemPropertyList>
+            <MusicItemPropertyList>
+              {someMusicItem.musicArtist.map((someMusicArtist) => (
+                <MusicItemProperty
+                  key={someMusicArtist}
+                  propertyValue={someMusicArtist}
+                />
+              ))}
+            </MusicItemPropertyList>
+            <MusicItemPropertyList>
+              <MusicItemProperty
                 propertyValue={`${someMusicItem.recordingStyle.join("/")} ${
                   someMusicItem.itemType === "collection"
                     ? someMusicItem.collectionType
                     : someMusicItem.itemType
                 }`}
               />
-              <div style={{ display: "flex", flexDirection: "row" }}>
-                {someMusicItem.musicTags.map((someMusicTag) => (
-                  <PropertyView
-                    key={someMusicTag}
-                    propertyValue={someMusicTag}
-                  />
-                ))}
-              </div>
-            </div>
-            <div
-              style={{
-                padding: 4,
-                display: "flex",
-                flexDirection: "row",
-                flexWrap: "wrap",
-              }}
-            >
-              {someMusicItem.externalLinks.map((someExternalLink) => {
-                return (
-                  <a
-                    key={someExternalLink.linkLabel}
-                    style={{ fontWeight: 600, marginRight: 8 }}
-                    href={someExternalLink.linkHref}
-                    target={"_blank"}
-                    rel={"noreferrer"}
-                  >
-                    {someExternalLink.linkLabel}
-                  </a>
-                );
-              })}
-            </div>
+            </MusicItemPropertyList>
+            <MusicItemPropertyList>
+              {someMusicItem.musicTags.map((someMusicTag) => (
+                <MusicItemProperty
+                  key={someMusicTag}
+                  propertyValue={someMusicTag}
+                />
+              ))}
+            </MusicItemPropertyList>
           </div>
         </div>
       );
@@ -101,33 +126,46 @@ export const MusicCollectionPage: NextPage = () => (
   </Page>
 );
 
-interface PropertyViewProps {
+interface MusicItemPropertyListProps {
+  children: ReactNode;
+}
+
+function MusicItemPropertyList(props: MusicItemPropertyListProps) {
+  const { children } = props;
+  return (
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "row",
+      }}
+    >
+      {children}
+    </div>
+  );
+}
+
+interface MusicItemPropertyProps {
   propertyValue: string;
 }
 
-function PropertyView(props: PropertyViewProps) {
+function MusicItemProperty(props: MusicItemPropertyProps) {
   const { propertyValue } = props;
   return (
-    <div style={{ display: "flex", flexDirection: "row" }}>
-      <div
-        style={{
-          flexShrink: 1,
-          marginInline: 3,
-          marginBlock: 3,
-          paddingInline: 3,
-          paddingBlock: 1,
-          backgroundColor: "rgb(241,241,241)",
-          fontWeight: 600,
-          overflow: "hidden",
-          textOverflow: "ellipsis",
-          whiteSpace: "nowrap",
-          borderRadius: 2,
-          // maxInlineSize: 280,
-        }}
-      >
-        {propertyValue.toLowerCase()}
-      </div>
-      <div style={{ flexGrow: 1 }} />
+    <div
+      style={{
+        marginInline: 4,
+        marginBlock: 4,
+        overflow: "hidden",
+        whiteSpace: "nowrap",
+        textOverflow: "ellipsis",
+        backgroundColor: "rgb(241,241,241)",
+        borderRadius: 3,
+        paddingInline: 4,
+        paddingBottom: 2,
+        fontWeight: 600,
+      }}
+    >
+      {propertyValue.toLowerCase()}
     </div>
   );
 }
@@ -173,6 +211,7 @@ interface MusicItemBase<
   ItemType extends string,
   RecordingStyle = "studio" | "live" | "concert"
 > {
+  itemId: string;
   itemType: ItemType;
   thumbnailHref: string;
   musicName: string;
@@ -187,10 +226,11 @@ interface MusicItemBase<
 
 const musicCollection: Array<MusicItem> = [
   {
+    itemId: "0",
     itemType: "collection",
     collectionType: "album",
     thumbnailHref:
-      "https://upload.wikimedia.org/wikipedia/en/5/57/UnknownMortalOrchestraIC-01Hanoi.png",
+      "https://m.media-amazon.com/images/I/815pLljpegL._SL1500_.jpg",
     musicName: "IC-01 Hanoi",
     musicArtist: ["Unknown Mortal Orchestra"],
     recordingStyle: ["studio"],
@@ -200,13 +240,21 @@ const musicCollection: Array<MusicItem> = [
         youtubeHref:
           "https://m.youtube.com/playlist?list=OLAK5uy_nCjQf37f4TiIDL2budDY-NCgch1gRrPH0&playnext=1&index=1",
       }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/1gmj1UwTm2mT6DoS8H4jke?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref: "https://music.apple.com/us/album/ic-01-hanoi/1434607269",
+      }),
     ],
   },
   {
+    itemId: "1",
     itemType: "collection",
     collectionType: "ep",
     thumbnailHref:
-      "https://upload.wikimedia.org/wikipedia/en/e/ee/Air_-_Premiers_Sympt%C3%B4mes.png",
+      "https://m.media-amazon.com/images/I/61XiJrQYpuL._UX500_FMwebp_QL85_.jpg",
     musicName: "Premiers Symptômes",
     musicArtist: ["Air"],
     recordingStyle: ["studio"],
@@ -216,13 +264,22 @@ const musicCollection: Array<MusicItem> = [
         youtubeHref:
           "https://www.youtube.com/watch?v=tl7dASVOY-U&list=OLAK5uy_ly5-qc6sTJFqfArTGCB9HoBaRZFWWpLMM&index=1",
       }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/3g9O7pvuaaFRvdzsoSJXVc?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref:
+          "https://music.apple.com/us/album/premiers-sympt%C3%B4mes-ep/966652812",
+      }),
     ],
   },
   {
+    itemId: "2",
     itemType: "collection",
     collectionType: "album",
     thumbnailHref:
-      "https://i.scdn.co/image/ab67616d00001e028a39d1a2a747e9c7336a25ce",
+      "https://m.media-amazon.com/images/I/71CzC0CGECL._AC_UY436_FMwebp_QL65_.jpg",
     musicName: "Live Vol. 1",
     musicArtist: ["Parcels"],
     recordingStyle: ["live"],
@@ -232,29 +289,46 @@ const musicCollection: Array<MusicItem> = [
         youtubeHref:
           "https://m.youtube.com/playlist?list=OLAK5uy_lLJK7Z5OSt6XzI7rcgDmeIWpqervk2ycE&playnext=1&index=1",
       }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/4ckyPfMqe26PrOgEWdjWns?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref: "https://music.apple.com/us/album/live-vol-1/1506250361",
+      }),
     ],
   },
   {
+    itemId: "3",
     itemType: "collection",
     collectionType: "compilation",
     thumbnailHref:
-      "https://upload.wikimedia.org/wikipedia/en/a/a4/The_Best_of_What%27s_Around_Vol._1_%28Dave_Matthews_Band_album_-_cover_art%29.jpg",
+      "https://m.media-amazon.com/images/I/41Eldx-iyAL._UX500_FMwebp_QL85_.jpg",
     musicName: "The Best Of What's Around Vol. 01",
     musicArtist: ["Dave Matthews Band"],
     recordingStyle: ["studio", "concert"],
-    musicTags: ["american"],
+    musicTags: ["pop", "jam"],
     externalLinks: [
       getYoutubeLinkData({
         youtubeHref:
           "https://m.youtube.com/playlist?list=OLAK5uy_mnKHdXzQnlF54alv4i-UTCtpxLc-ujwfo",
       }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/1kae5MA0gbXveSdJDYtFHo?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref:
+          "https://music.apple.com/us/album/the-best-of-whats-around-vol-1/311604755",
+      }),
     ],
   },
   {
+    itemId: "4",
     itemType: "collection",
     collectionType: "album",
     thumbnailHref:
-      "https://upload.wikimedia.org/wikipedia/en/3/33/Blankfacelpcover.jpg",
+      "https://m.media-amazon.com/images/I/71XmXBCQ+XL._AC_UY436_FMwebp_QL65_.jpg",
     musicName: "Blank Face LP",
     musicArtist: ["ScHoolboy Q"],
     recordingStyle: ["studio"],
@@ -264,13 +338,20 @@ const musicCollection: Array<MusicItem> = [
         youtubeHref:
           "https://m.youtube.com/playlist?list=OLAK5uy_nn39BWFdkmInyIa8zuRv16th53bELbtBQ&playnext=1&index=1",
       }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/0YbpATCIng8Fz2JrfHmEf7?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref: "https://music.apple.com/us/album/blank-face-lp/1440870906",
+      }),
     ],
   },
   {
+    itemId: "5",
     itemType: "collection",
     collectionType: "album",
-    thumbnailHref:
-      "https://upload.wikimedia.org/wikipedia/commons/b/b5/8878_lrg.jpg",
+    thumbnailHref: "https://m.media-amazon.com/images/I/41us+rdexmL.jpg",
     musicName: "Pickin' on Modest Mouse: A Bluegrass Tribute",
     musicArtist: ["Iron Horse", "Modest Mouse"],
     recordingStyle: ["studio"],
@@ -280,13 +361,22 @@ const musicCollection: Array<MusicItem> = [
         youtubeHref:
           "https://m.youtube.com/playlist?list=OLAK5uy_lR47WSacINRlobDIqT57PVHE-Hp5FKizg&playnext=1&index=1",
       }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/3hewWfO0hKXbAFfcsmpYk5?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref:
+          "https://music.apple.com/us/album/pickin-on-modest-mouse/983448014",
+      }),
     ],
   },
   {
+    itemId: "6",
     itemType: "collection",
     collectionType: "album",
     thumbnailHref:
-      "https://upload.wikimedia.org/wikipedia/en/f/fb/TEEDTrouble.jpg",
+      "https://m.media-amazon.com/images/I/51my4h86mRL._AC_UY312_FMwebp_QL65_.jpg",
     musicName: "Trouble",
     musicArtist: ["Totally Extinct Enormous Dinosaurs"],
     recordingStyle: ["studio"],
@@ -296,13 +386,21 @@ const musicCollection: Array<MusicItem> = [
         youtubeHref:
           "https://m.youtube.com/playlist?list=OLAK5uy_n9kdQogDwJvVlB5KLTebiUjyPQ5TXKxGQ&playnext=1&index=1",
       }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/1srFzlchwSOzxO8n99tJxP?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref: "https://music.apple.com/us/album/trouble/1442636211",
+      }),
     ],
   },
   {
+    itemId: "7",
     itemType: "collection",
     collectionType: "album",
     thumbnailHref:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSiCBbLc-IFmEttU5BWIc5SwhkC-J-2lIs9QqG2E0c7dMr1qYdqLY357d1nVFIG_dtABDI&usqp=CAU",
+      "https://m.media-amazon.com/images/I/718tt6ncquL._AC_UY436_FMwebp_QL65_.jpg",
     musicName: "Room 41",
     musicArtist: ["Paul Cauthen"],
     recordingStyle: ["studio"],
@@ -312,13 +410,21 @@ const musicCollection: Array<MusicItem> = [
         youtubeHref:
           "https://m.youtube.com/playlist?list=OLAK5uy_liodoEz6-VjfyY_RJpJgLW2IMA2Eo-nGc&playnext=1&index=1",
       }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/4ABV7fsu8iN6eAmnQhvd0a?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref: "https://music.apple.com/us/album/room-41/1466095577",
+      }),
     ],
   },
   {
+    itemId: "8",
     itemType: "collection",
     collectionType: "album",
     thumbnailHref:
-      "https://e.snmc.io/i/600/s/c96f32cd22ca3bdd6d5620dbe669d65a/9934086/bastien-keb-organ-recital-Cover-Art.jpg",
+      "https://m.media-amazon.com/images/I/61XijFIRaxL._AC_UY436_FMwebp_QL65_.jpg",
     musicName: "Organ Recital",
     musicArtist: ["Bastien Keb"],
     recordingStyle: ["studio"],
@@ -328,41 +434,74 @@ const musicCollection: Array<MusicItem> = [
         youtubeHref:
           "https://m.youtube.com/playlist?list=OLAK5uy_mZIP4yLMAoq7d2wa8NojzttHzBPuV3PY0&playnext=1&index=1",
       }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/2CmRxlrIhDSmpM3STHxB5A?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref: "https://music.apple.com/us/album/organ-recital/1626095915",
+      }),
     ],
   },
   {
+    itemId: "9",
     itemType: "collection",
     collectionType: "album",
     thumbnailHref:
-      "https://upload.wikimedia.org/wikipedia/en/a/ab/Pretty-Lights-Filling-Up-the-City-Skies.jpg",
+      "https://m.media-amazon.com/images/I/813BJ4cG9RL._SS500_.jpg",
     musicName: "Filling Up the City Skies - Disc 1",
     musicArtist: ["Pretty Lights"],
     recordingStyle: ["studio"],
     musicTags: ["soul", "hip-hop", "electronica"],
     externalLinks: [
       getYoutubeLinkData({
-        youtubeLabel: "youtube",
         youtubeHref:
           "https://m.youtube.com/playlist?list=OLAK5uy_mQuwlK3nAsIdmW9FCAZe-VHy94NRlzt34&playnext=1&index=1",
       }),
-      // getYoutubeLinkData({
-      //   youtubeLabel: "disc 2 - youtube",
-      //   youtubeHref:
-      //     "https://m.youtube.com/watch?v=_lNWO4ImyxI&list=PL73E43D96EC1D09B6&playnext=1&index=1",
-      // }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/48DZzoUru3KKjcgZD6ZjTg?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref:
+          "https://music.apple.com/us/album/filling-up-the-city-skies-vol-1/301057252",
+      }),
     ],
   },
 ];
 
 interface GetYoutubeLinkDataApi {
-  youtubeLabel?: string;
   youtubeHref: string;
 }
 
 function getYoutubeLinkData(api: GetYoutubeLinkDataApi) {
-  const { youtubeLabel = "youtube", youtubeHref } = api;
+  const { youtubeHref } = api;
   return {
-    linkLabel: youtubeLabel,
+    linkLabel: "youtube",
     linkHref: youtubeHref,
+  };
+}
+
+interface GetSpotifyLinkDataApi {
+  spotifyHref: string;
+}
+
+function getSpotifyLinkData(api: GetSpotifyLinkDataApi) {
+  const { spotifyHref } = api;
+  return {
+    linkLabel: "spotify",
+    linkHref: spotifyHref,
+  };
+}
+
+interface GetAppleLinkDataApi {
+  appleHref: string;
+}
+
+function getAppleLinkData(api: GetAppleLinkDataApi) {
+  const { appleHref } = api;
+  return {
+    linkLabel: "apple",
+    linkHref: appleHref,
   };
 }

@@ -31,9 +31,7 @@ export function NavigationFooter(props: NavigationFooterProps) {
           </div>
         ))}
       </NavigationListContainer>
-      <div role={"none"} className={navigationFooterStyles.pdfLinkContainer}>
-        {pdfLink}
-      </div>
+      {pdfLink}
     </NavigationFooterContainer>
   );
 }

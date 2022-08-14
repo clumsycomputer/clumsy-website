@@ -1,0 +1,8 @@
+@import 'styles/websiteTheme.scss';
+
+.pdfLink {
+  flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    padding-left: $spacer * 4;
+}

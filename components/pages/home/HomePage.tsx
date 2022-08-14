@@ -29,16 +29,16 @@ export const HomePage: NextPage = () => {
             linkHref: "/software",
           },
           {
-            prompt: "graphics",
-            linkHref: "/graphics",
-          },
-          {
             prompt: "resume",
             linkHref: "/resume",
           },
           {
-            prompt: "awesome music",
-            linkHref: "/collections/music",
+            prompt: "graphics",
+            linkHref: "/graphics",
+          },
+          {
+            prompt: "- music +",
+            linkHref: "/curations/music",
           },
         ].map((someRouteAction) => (
           <div

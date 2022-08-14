@@ -5,7 +5,7 @@ import { SoftwareHeaderSection } from "./components/SoftwareHeaderSection";
 import { SoftwareProjectSection } from "./components/SoftwareProjectSection";
 
 export const SoftwarePage: NextPage = () => (
-  <_SoftwarePage pageTitle={"software"} fullName={"jared mathews"} />
+  <_SoftwarePage pageTitle={"open-source"} fullName={"jared mathews"} />
 );
 
 interface _SoftwarePageProps {
@@ -71,7 +71,7 @@ function _SoftwarePage(props: _SoftwarePageProps) {
           { routeName: "home", routeHref: "/" },
           { routeName: "graphics", routeHref: "/graphics" },
           { routeName: "resume", routeHref: "/resume" },
-          { routeName: "awesome music", routeHref: "/collections/music" },
+          { routeName: "- music +", routeHref: "/curations/music" },
         ]}
         pdfLink={null}
       />

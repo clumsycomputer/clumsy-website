@@ -17,6 +17,7 @@ export const ResumePage: NextPage = () => {
             { routeName: "home", routeHref: "/" },
             { routeName: "software", routeHref: "/software" },
             { routeName: "graphics", routeHref: "/graphics" },
+            { routeName: "awesome music", routeHref: "/collections/music" },
           ]}
           pdfLink={
             <Link href="/pdfs/resume.pdf">

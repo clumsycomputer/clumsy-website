@@ -36,6 +36,10 @@ export const HomePage: NextPage = () => {
             prompt: "resume",
             linkHref: "/resume",
           },
+          {
+            prompt: "awesome music",
+            linkHref: "/collections/music",
+          },
         ].map((someRouteAction) => (
           <div
             role={"listitem"}

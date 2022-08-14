@@ -3,6 +3,7 @@ import { Page } from "../../common/Page/Page";
 import pageStyles from "./MusicCollectionPage.module.scss";
 import Link from "next/link";
 import { ReactNode } from "react";
+import { NavigationFooter } from "../../common/NavigationFooter/NavigationFooter";
 
 export const MusicCollectionPage: NextPage = () => (
   <Page
@@ -77,6 +78,8 @@ export const MusicCollectionPage: NextPage = () => (
                         marginBlock: 4,
                         fontWeight: 600,
                       }}
+                      rel={"noreferrer"}
+                      target={"_blank"}
                     >
                       {someExternalLink.linkLabel}
                     </a>
@@ -123,6 +126,15 @@ export const MusicCollectionPage: NextPage = () => (
         </div>
       );
     })}
+    <NavigationFooter
+      routeLinks={[
+        { routeName: "home", routeHref: "/" },
+        { routeName: "software", routeHref: "/software" },
+        { routeName: "graphics", routeHref: "/graphics" },
+        { routeName: "resume", routeHref: "/resume" },
+      ]}
+      pdfLink={null}
+    />
   </Page>
 );
 

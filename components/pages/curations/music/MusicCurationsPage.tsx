@@ -125,10 +125,10 @@ export const MusicCurationsPage: NextPage = () => (
               <MusicItemPropertyList>
                 <MusicItemProperty
                   propertyValue={`${someMusicItem.recordingStyle.join("/")} ${
-                    someMusicItem.itemType === "collection"
+                    someMusicItem.sourceType === "collection"
                       ? someMusicItem.collectionType
-                      : someMusicItem.itemType
-                  }`}
+                      : someMusicItem.sourceType
+                  }${someMusicItem.itemType === "clip" ? " (clip)" : ""}`}
                 />
               </MusicItemPropertyList>
               <MusicItemPropertyList>
@@ -167,6 +167,7 @@ function MusicItemPropertyList(props: MusicItemPropertyListProps) {
       style={{
         display: "flex",
         flexDirection: "row",
+        flexWrap: "wrap",
       }}
     >
       {children}
@@ -191,7 +192,7 @@ function MusicItemProperty(props: MusicItemPropertyProps) {
         backgroundColor: "rgb(241,241,241)",
         borderRadius: 3,
         paddingInline: 4,
-        paddingBlockEnd: 1,
+        paddingBlock: 1,
         fontWeight: 600,
         fontSize: 14,
       }}
@@ -201,17 +202,15 @@ function MusicItemProperty(props: MusicItemPropertyProps) {
   );
 }
 
-type MusicItem =
-  | ClipMusicItem
-  | MixMusicItem
-  | SongMusicItem
-  | CollectionMusicItem;
+type MusicItem = ClippedMusicItem | WholeMusicItem;
 
-interface ClipMusicItem extends MusicItemBase<"clip"> {}
+interface ClippedMusicItem
+  extends MusicItemBase<"clip">,
+    Pick<SongMusicItem | MixMusicItem, "sourceType"> {}
 
-interface MixMusicItem extends MusicItemBase<"mix"> {}
+type WholeMusicItem = SongMusicItem | CollectionMusicItem | MixMusicItem;
 
-interface SongMusicItem extends MusicItemBase<"song"> {}
+interface SongMusicItem extends SourceMusicItemBase<"song"> {}
 
 type CollectionMusicItem =
   | SingleMusicItem
@@ -234,8 +233,15 @@ interface MixtapeMusicItem extends CollectionMusicItemBase<"mixtape"> {}
 interface SoundtrackMusicItem extends CollectionMusicItemBase<"soundtrack"> {}
 
 interface CollectionMusicItemBase<CollectionType extends string>
-  extends MusicItemBase<"collection"> {
+  extends SourceMusicItemBase<"collection"> {
   collectionType: CollectionType;
+}
+
+interface MixMusicItem extends SourceMusicItemBase<"mix"> {}
+
+interface SourceMusicItemBase<SourceType extends string>
+  extends MusicItemBase<"source"> {
+  sourceType: SourceType;
 }
 
 interface MusicItemBase<
@@ -258,7 +264,8 @@ interface MusicItemBase<
 const musicCollection: Array<MusicItem> = [
   {
     itemId: "0",
-    itemType: "collection",
+    itemType: "source",
+    sourceType: "collection",
     collectionType: "album",
     thumbnailHref:
       "https://m.media-amazon.com/images/I/815pLljpegL._SL1500_.jpg",
@@ -282,7 +289,8 @@ const musicCollection: Array<MusicItem> = [
   },
   {
     itemId: "1",
-    itemType: "collection",
+    itemType: "source",
+    sourceType: "collection",
     collectionType: "ep",
     thumbnailHref:
       "https://m.media-amazon.com/images/I/61XiJrQYpuL._UX500_FMwebp_QL85_.jpg",
@@ -307,7 +315,8 @@ const musicCollection: Array<MusicItem> = [
   },
   {
     itemId: "2",
-    itemType: "collection",
+    itemType: "source",
+    sourceType: "collection",
     collectionType: "album",
     thumbnailHref:
       "https://m.media-amazon.com/images/I/71CzC0CGECL._AC_UY436_FMwebp_QL65_.jpg",
@@ -331,7 +340,8 @@ const musicCollection: Array<MusicItem> = [
   },
   {
     itemId: "3",
-    itemType: "collection",
+    itemType: "source",
+    sourceType: "collection",
     collectionType: "compilation",
     thumbnailHref:
       "https://m.media-amazon.com/images/I/41Eldx-iyAL._UX500_FMwebp_QL85_.jpg",
@@ -356,7 +366,8 @@ const musicCollection: Array<MusicItem> = [
   },
   {
     itemId: "4",
-    itemType: "collection",
+    itemType: "source",
+    sourceType: "collection",
     collectionType: "album",
     thumbnailHref:
       "https://m.media-amazon.com/images/I/71XmXBCQ+XL._AC_UY436_FMwebp_QL65_.jpg",
@@ -380,7 +391,8 @@ const musicCollection: Array<MusicItem> = [
   },
   {
     itemId: "5",
-    itemType: "collection",
+    itemType: "source",
+    sourceType: "collection",
     collectionType: "album",
     thumbnailHref: "https://m.media-amazon.com/images/I/41us+rdexmL.jpg",
     musicName: "Pickin' on Modest Mouse: A Bluegrass Tribute",
@@ -404,7 +416,8 @@ const musicCollection: Array<MusicItem> = [
   },
   {
     itemId: "6",
-    itemType: "collection",
+    itemType: "source",
+    sourceType: "collection",
     collectionType: "album",
     thumbnailHref:
       "https://m.media-amazon.com/images/I/51my4h86mRL._AC_UY312_FMwebp_QL65_.jpg",
@@ -428,7 +441,8 @@ const musicCollection: Array<MusicItem> = [
   },
   {
     itemId: "7",
-    itemType: "collection",
+    itemType: "source",
+    sourceType: "collection",
     collectionType: "album",
     thumbnailHref:
       "https://m.media-amazon.com/images/I/718tt6ncquL._AC_UY436_FMwebp_QL65_.jpg",
@@ -452,7 +466,8 @@ const musicCollection: Array<MusicItem> = [
   },
   {
     itemId: "8",
-    itemType: "collection",
+    itemType: "source",
+    sourceType: "collection",
     collectionType: "album",
     thumbnailHref:
       "https://m.media-amazon.com/images/I/61XijFIRaxL._AC_UY436_FMwebp_QL65_.jpg",
@@ -476,7 +491,8 @@ const musicCollection: Array<MusicItem> = [
   },
   {
     itemId: "9",
-    itemType: "collection",
+    itemType: "source",
+    sourceType: "collection",
     collectionType: "album",
     thumbnailHref:
       "https://m.media-amazon.com/images/I/813BJ4cG9RL._SS500_.jpg",
@@ -499,6 +515,103 @@ const musicCollection: Array<MusicItem> = [
       }),
     ],
   },
+  {
+    itemId: "10",
+    itemType: "source",
+    sourceType: "collection",
+    collectionType: "ep",
+    thumbnailHref:
+      "https://preview.redd.it/t55x4lyak2y51.jpg?auto=webp&s=6cffa2dd89b7bb9f41a7abe3979ab41f93313c72",
+    musicName: "Bon Iver at AIR studios",
+    musicArtist: ["Bon Iver", "Sean Carey"],
+    recordingStyle: ["live"],
+    musicTags: ["voice", "piano", "minimal"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref: "https://www.youtube.com/watch?v=A9Tp5fl18Ho",
+      }),
+    ],
+  },
+  {
+    itemId: "11",
+    itemType: "source",
+    sourceType: "mix",
+    thumbnailHref:
+      "https://is4-ssl.mzstatic.com/image/thumb/Features125/v4/f4/6b/a9/f46ba999-c102-ea24-7efa-a8e48b43bebd/mza_4437830076440205700.jpg/1000x1000bb.webp",
+    musicName: "WhoMadeWho",
+    musicArtist: ["WhoMadeWho live at Abu Simbel"],
+    recordingStyle: ["live"],
+    musicTags: ["electronic", "cercle"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref: "https://www.youtube.com/watch?v=BDwAlto-NKU&t=4260s",
+      }),
+      getAppleLinkData({
+        appleHref:
+          "https://music.apple.com/us/album/cercle-whomadewho-in-abu-simbel-egypt-live/1585737974",
+      }),
+    ],
+  },
+  {
+    itemId: "12",
+    itemType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    thumbnailHref:
+      "https://cdn.albumoftheyear.org/album/55039-in-rainbows-from-the-basement.jpg",
+    musicName: "In Rainbows From the Basement",
+    musicArtist: ["Radiohead", "Nigel Godrich"],
+    recordingStyle: ["live"],
+    musicTags: ["spooky", "spiritual", "rock"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref: "https://www.youtube.com/watch?v=DWuAn6C8Mfc",
+      }),
+    ],
+  },
+  {
+    itemId: "13",
+    itemType: "source",
+    sourceType: "mix",
+    thumbnailHref:
+      "https://i1.sndcdn.com/artworks-000484735170-v2qg5l-t500x500.jpg",
+    musicName: "Nicolas Jaar Presents the Network",
+    musicArtist: ["Nicolas Jaar"],
+    recordingStyle: ["studio"],
+    musicTags: ["full-spectrum"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref: "https://www.youtube.com/watch?v=JqjhIrys238",
+      }),
+      {
+        linkLabel: "soundcloud(1)",
+        linkHref:
+          "https://soundcloud.com/otherpeoplerecords/nicolas-jaar-presents-the-network-part-1-sept-7-2016",
+      },
+      {
+        linkLabel: "soundcloud(2)",
+        linkHref:
+          "https://soundcloud.com/otherpeoplerecords/nicolas-jaar-presents-the-network-part-2-sept-7-2016",
+      },
+    ],
+  },
+  {
+    itemId: "14",
+    itemType: "clip",
+    sourceType: "mix",
+    thumbnailHref:
+      "https://e.snmc.io/i/1200/s/af23292a9abbba762d6e0d96ffa7eb03/7962041",
+    musicName: "Hip-Hop portion - Nicolas Jaar Presents the Network",
+    musicArtist: ["Nicolas Jaar"],
+    recordingStyle: ["studio"],
+    musicTags: ["space", "hip-hop"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://www.youtube.com/watch?v=JqjhIrys238&start=7260&end=9320",
+      }),
+    ],
+  },
 ];
 
 interface GetYoutubeLinkDataApi {
@@ -508,8 +621,8 @@ interface GetYoutubeLinkDataApi {
 function getYoutubeLinkData(api: GetYoutubeLinkDataApi) {
   const { youtubeHref } = api;
   return {
-    linkLabel: "youtube",
     linkHref: youtubeHref,
+    linkLabel: "youtube",
   };
 }
 

@@ -109,6 +109,7 @@ export const MusicCurationsPage: NextPage = () => (
               style={{
                 display: "flex",
                 flexDirection: "column",
+                marginInlineStart: 4,
               }}
             >
               <MusicItemPropertyList>
@@ -352,7 +353,7 @@ const musicCollection: Array<MusicItem> = [
     externalLinks: [
       getYoutubeLinkData({
         youtubeHref:
-          "https://m.youtube.com/playlist?list=OLAK5uy_mnKHdXzQnlF54alv4i-UTCtpxLc-ujwfo",
+          "https://www.youtube.com/watch?v=wILVn4QrNxU&list=OLAK5uy_mnKHdXzQnlF54alv4i-UTCtpxLc-ujwfo&playnext=1&index=1",
       }),
       getSpotifyLinkData({
         spotifyHref:
@@ -544,7 +545,7 @@ const musicCollection: Array<MusicItem> = [
     musicTags: ["electronic", "cercle"],
     externalLinks: [
       getYoutubeLinkData({
-        youtubeHref: "https://www.youtube.com/watch?v=BDwAlto-NKU&t=4260s",
+        youtubeHref: "https://www.youtube.com/watch?v=BDwAlto-NKU",
       }),
       getAppleLinkData({
         appleHref:
@@ -609,6 +610,132 @@ const musicCollection: Array<MusicItem> = [
       getYoutubeLinkData({
         youtubeHref:
           "https://www.youtube.com/watch?v=JqjhIrys238&start=7260&end=9320",
+      }),
+    ],
+  },
+  {
+    itemId: "15",
+    itemType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    thumbnailHref:
+      "https://m.media-amazon.com/images/I/71cHQs6MslL._AC_UY436_FMwebp_QL65_.jpg",
+    musicName: "iridescence",
+    musicArtist: ["BROCKHAMPTON"],
+    recordingStyle: ["studio"],
+    musicTags: ["pop", "hip-hop"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_nGAVB_h2YgCbmGLq2I5j3gGXNDdpUkJfI&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/3Mj4A4nNJzIdxOyS4yzOhj?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref: "https://music.apple.com/us/album/iridescence/1436535889",
+      }),
+    ],
+  },
+  {
+    itemId: "16",
+    itemType: "source",
+    sourceType: "collection",
+    collectionType: "ep",
+    thumbnailHref:
+      "https://m.media-amazon.com/images/I/51NdilLHVTL._UX500_FMwebp_QL85_.jpg",
+    musicName: "Beyond Serious",
+    musicArtist: ["Bibio"],
+    recordingStyle: ["studio"],
+    musicTags: ["electronic", "funk"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_meOmPY5SdCTsCv6wm6BN0RerkZxW2hfFU&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/0aPIoyP4acTVSfbd2VgQQF?autoplay=true&source_application=google_assistant",
+      }),
+      getAppleLinkData({
+        appleHref:
+          "https://music.apple.com/us/album/beyond-serious-ep/1228243251",
+      }),
+    ],
+  },
+  {
+    itemId: "17",
+    itemType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    thumbnailHref:
+      "https://m.media-amazon.com/images/I/51h7dDC5oGL._AC_UL640_FMwebp_QL65_.jpg",
+    musicName: "Surrounded",
+    musicArtist: ["Tipper"],
+    recordingStyle: ["studio"],
+    musicTags: ["interdimensional", "hip-hop"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_kRf5h8JiqTHMJnHP-KCq_Gpoc-cfCgJ4g&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/3wE8r7MmysKGOtVTqm7ac9?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref: "https://music.apple.com/us/album/surrounded/283227098",
+      }),
+    ],
+  },
+  {
+    itemId: "18",
+    itemType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    thumbnailHref:
+      "https://m.media-amazon.com/images/I/61zjF4Ft7tL._AC_UY436_FMwebp_QL65_.jpg",
+    musicName: "OOFIE",
+    musicArtist: ["Wiki"],
+    recordingStyle: ["studio"],
+    musicTags: ["hip-hop"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_nwNPu8L9UeH0F6OmbX-7XfOeriSJljt9k&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/5Ye9kDYxIZM0LVj1M1CvC6?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref: "https://music.apple.com/us/album/oofie/1486639899",
+      }),
+    ],
+  },
+  {
+    itemId: "19",
+    itemType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    thumbnailHref:
+      "https://m.media-amazon.com/images/I/61V9YTk78EL._AC_UY436_FMwebp_QL65_.jpg",
+    musicName: "Entroducing",
+    musicArtist: ["DJ Shadow"],
+    recordingStyle: ["studio"],
+    musicTags: ["electronic", "hip-hop"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_lA4P3neYe5g7f9Vs7VD0oCYHcEPytjupI&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/4wvqGLk1HThPA0b5lzRK2l?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref: "https://music.apple.com/us/album/endtroducing/1448896560",
       }),
     ],
   },

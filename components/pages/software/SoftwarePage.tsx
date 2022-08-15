@@ -26,7 +26,7 @@ function _SoftwarePage(props: _SoftwarePageProps) {
         fullName={fullName}
         githubHref={"https://github.com/clumsycomputer"}
         softwareOverview={
-          "the projects below are open versions of software that have been iterated on in one form or another for close to a decade. these packages offer unique value to the typescript community and beyond"
+          "below are open versions of software that have been iterated on in one form or another for close to a decade. these packages offer unique value to the typescript community and beyond"
         }
       />
       <SoftwareProjectSection
@@ -59,7 +59,7 @@ function _SoftwarePage(props: _SoftwarePageProps) {
         packageHref={"https://www.npmjs.com/package/clumsy-math"}
         projectDescription={"a little library of helpful math utensils :)"}
         projectRoadmap={[
-          "produce utilities for working with prime numbers",
+          "add utilities for working with prime numbers",
           "introduce loop concept and basic apis",
           "provide in-depth documentation detailing expected inputs and outputs of exported functions",
           "implement stack-safe variants of recursive modeled functions",

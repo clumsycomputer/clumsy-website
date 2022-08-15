@@ -26,7 +26,7 @@ function _SoftwarePage(props: _SoftwarePageProps) {
         fullName={fullName}
         githubHref={"https://github.com/clumsycomputer"}
         softwareOverview={
-          "the projects here are open versions of software that have been iterated on in one form or another for close to a decade. these packages offer unique value to the typescript community and beyond"
+          "the projects below are open versions of software that have been iterated on in one form or another for close to a decade. these packages offer unique value to the typescript community and beyond"
         }
       />
       <SoftwareProjectSection
@@ -69,8 +69,8 @@ function _SoftwarePage(props: _SoftwarePageProps) {
       <NavigationFooter
         routeLinks={[
           { routeName: "home", routeHref: "/" },
-          { routeName: "graphics", routeHref: "/graphics" },
           { routeName: "resume", routeHref: "/resume" },
+          { routeName: "graphics", routeHref: "/graphics" },
           { routeName: "- music +", routeHref: "/curations/music" },
         ]}
         pdfLink={null}

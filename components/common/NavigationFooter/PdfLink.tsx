@@ -8,8 +8,10 @@ export interface PdfLinkProps {
 export function PdfLink(props: PdfLinkProps) {
   const { pdfHref } = props;
   return (
-    <Link href={pdfHref}>
-      <a className={pdfLinkStyles.pdfLink}>view pdf</a>
-    </Link>
+    <div className={pdfLinkStyles.linkContainer}>
+      <Link href={pdfHref}>
+        <a className={pdfLinkStyles.pdfLink}>view pdf</a>
+      </Link>
+    </div>
   );
 }

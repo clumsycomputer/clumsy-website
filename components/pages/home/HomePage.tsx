@@ -17,7 +17,7 @@ export const HomePage: NextPage = () => {
         <Image
           className={homePageStyles.landingImage}
           src={"/graphics/whichway.gif"}
-          alt={"gary"}
+          alt={"¡which way!"}
           width={1024}
           height={1024}
         />

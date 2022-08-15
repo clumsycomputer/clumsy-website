@@ -8,7 +8,7 @@ import { NavigationFooter } from "../../../common/NavigationFooter/NavigationFoo
 export const MusicCurationsPage: NextPage = () => (
   <Page
     accessibilityLabel={"music curations"}
-    pageTabTitle={"- music + - clumsycomputer"}
+    pageTabTitle={"+ music - clumsycomputer"}
     pageDescription={"a catalog of awesome music"}
     pageContentContainerClassname={pageStyles.pageContentContainer}
   >
@@ -37,33 +37,43 @@ export const MusicCurationsPage: NextPage = () => (
                 alignItems: "flex-start",
               }}
             >
-              <svg
-                style={{
-                  marginInline: 4,
-                  marginBlock: 4,
-                  width: 128,
-                  height: 128,
-                }}
-                viewBox={"0 0 100 100"}
+              <Link
+                href={
+                  someMusicItem.externalLinks[0]
+                    ? someMusicItem.externalLinks[0].linkHref
+                    : ""
+                }
               >
-                <rect
-                  x={0}
-                  y={0}
-                  width={100}
-                  height={100}
-                  rx={3}
-                  ry={3}
-                  fill={"rgb(241,241,241"}
-                />
-                <image
-                  href={someMusicItem.thumbnailHref}
-                  x={1}
-                  y={1}
-                  width={98}
-                  height={98}
-                  clipPath={"inset(0% round 2.5)"}
-                />
-              </svg>
+                <a rel={"noreferrer"} target={"_blank"}>
+                  <svg
+                    style={{
+                      marginInline: 4,
+                      marginBlock: 4,
+                      width: 128,
+                      height: 128,
+                    }}
+                    viewBox={"0 0 100 100"}
+                  >
+                    <rect
+                      x={0}
+                      y={0}
+                      width={100}
+                      height={100}
+                      rx={3}
+                      ry={3}
+                      fill={"rgb(241,241,241"}
+                    />
+                    <image
+                      href={someMusicItem.thumbnailHref}
+                      x={1}
+                      y={1}
+                      width={98}
+                      height={98}
+                      clipPath={"inset(0% round 2.5)"}
+                    />
+                  </svg>
+                </a>
+              </Link>
               <div
                 style={{
                   flexGrow: 1,
@@ -83,6 +93,7 @@ export const MusicCurationsPage: NextPage = () => (
                           marginInline: 4,
                           marginBlock: 4,
                           fontWeight: 600,
+                          fontSize: 14,
                         }}
                         rel={"noreferrer"}
                         target={"_blank"}
@@ -137,8 +148,8 @@ export const MusicCurationsPage: NextPage = () => (
       routeLinks={[
         { routeName: "home", routeHref: "/" },
         { routeName: "software", routeHref: "/software" },
-        { routeName: "graphics", routeHref: "/graphics" },
         { routeName: "resume", routeHref: "/resume" },
+        { routeName: "graphics", routeHref: "/graphics" },
       ]}
       pdfLink={null}
     />
@@ -180,8 +191,9 @@ function MusicItemProperty(props: MusicItemPropertyProps) {
         backgroundColor: "rgb(241,241,241)",
         borderRadius: 3,
         paddingInline: 4,
-        paddingBottom: 2,
+        paddingBlockEnd: 1,
         fontWeight: 600,
+        fontSize: 14,
       }}
     >
       {propertyValue.toLowerCase()}

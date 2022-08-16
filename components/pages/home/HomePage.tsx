@@ -10,7 +10,7 @@ export const HomePage: NextPage = () => {
     <Page
       accessibilityLabel={"home"}
       pageTabTitle={"clumsycomputer"}
-      pageDescription={"a junction of shareables"}
+      pageDescription={"a junction for all things clumsycomputer"}
       pageContentContainerClassname={homePageStyles.pageContentContainer}
     >
       <div role={"figure"} className={homePageStyles.landingImageContainer}>

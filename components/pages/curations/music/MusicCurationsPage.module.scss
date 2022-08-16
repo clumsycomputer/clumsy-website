@@ -1,4 +1,75 @@
+@import 'styles/websiteTheme.scss';
+
 .pageContentContainer {
   width: 100%;
   max-width: 512px;
+}
+
+.musicItemsContainer {
+  display: flex;
+  flex-direction: column;
+  padding-inline: $spacer / 2;
+  padding-block: $spacer / 2;
+}
+
+.musicItemContainer {
+  display: flex;
+  flex-direction: column;
+  padding: $spacer;
+}
+
+.musicItemTopRowContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+}
+
+.thumbnailLink {
+  display: flex;
+  align-items: flex-start;
+}
+
+.thumbnailSvg {
+  width: 128px;
+  height: 128px;
+}
+
+.externalLinksContainer {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.linkLabel {
+  padding-block-end: $spacer;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.musicItemLabelsContainer {
+  display: flex;
+  flex-direction: column;
+  padding-inline-start: $spacer / 2;
+  padding-block-start: $spacer * 3 / 2;
+}
+
+.musicItemLabelList {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.musicItemLabel {
+  margin-inline-end: $spacer; 
+  margin-block-end: $spacer;
+  background-color: $lightGrey;
+  border-radius: 3px;
+  padding-inline: $spacer / 2;
+  padding-block: $spacer / 8;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;  
+  font-weight: 600;
+  font-size: 14px;
 }

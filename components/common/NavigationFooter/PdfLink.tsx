@@ -10,7 +10,7 @@ export function PdfLink(props: PdfLinkProps) {
   return (
     <div className={pdfLinkStyles.linkContainer}>
       <Link href={pdfHref}>
-        <a className={pdfLinkStyles.pdfLink}>view pdf</a>
+        <a>view pdf</a>
       </Link>
     </div>
   );

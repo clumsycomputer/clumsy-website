@@ -26,7 +26,7 @@ function _SoftwarePage(props: _SoftwarePageProps) {
         fullName={fullName}
         githubHref={"https://github.com/clumsycomputer"}
         softwareOverview={
-          "below are open versions of software that have been iterated on in one form or another for close to a decade. these packages offer unique value to the typescript community and beyond"
+          "listed below are open versions of software that have been iterated on in one form or another for close to a decade and offer unique value to the typescript community and beyond"
         }
       />
       <SoftwareProjectSection

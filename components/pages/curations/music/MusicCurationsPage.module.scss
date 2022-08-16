@@ -41,8 +41,11 @@
   align-items: flex-end;
 }
 
-.linkLabel {
+.externalLinkContainer {
   padding-block-end: $spacer;
+}
+
+.externalLinkLabel {  
   font-weight: 600;
   font-size: 14px;
 }

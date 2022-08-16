@@ -442,7 +442,7 @@ export const musicItemsData: Array<MusicItem> = [
     musicName: "OOFIE",
     musicArtist: ["Wiki"],
     recordingStyle: ["studio"],
-    musicTags: ["hip-hop"],
+    musicTags: ["hip-hop", "rap"],
     externalLinks: [
       getYoutubeLinkData({
         youtubeHref:
@@ -479,6 +479,134 @@ export const musicItemsData: Array<MusicItem> = [
       }),
       getAppleLinkData({
         appleHref: "https://music.apple.com/us/album/endtroducing/1448896560",
+      }),
+    ],
+  },
+  {
+    itemId: 20,
+    itemType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    thumbnailHref:
+      "https://i.pinimg.com/736x/1c/f5/1c/1cf51c9f6658424cafaf0cd2a9079865.jpg",
+    musicName: "The Love Below",
+    musicArtist: ["Andre 3000", "Outkast"],
+    recordingStyle: ["studio"],
+    musicTags: ["love", "rap", "hip-hop"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/watch?v=egKtZBPi1U4&list=OLAK5uy_m3lgBREvjnTGcUIPoD1e1Z1uCVwI5sjeo&index=20",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/1UsmQ3bpJTyK6ygoOOjG1r?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref:
+          "https://music.apple.com/us/album/speakerboxxx-the-love-below/281430653",
+      }),
+    ],
+  },
+  {
+    itemId: 21,
+    itemType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    thumbnailHref:
+      "https://m.media-amazon.com/images/I/71LCBA0rOHL._AC_UY436_FMwebp_QL65_.jpg",
+    musicName: "Los Angeles",
+    musicArtist: ["Flying Lotus"],
+    recordingStyle: ["studio"],
+    musicTags: ["primal", "electronic", "beats"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_nlsLRecArw04-4_Vo3qGJjlIUYXJ3a8Yc&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/7pdhnkO0t8HiRv4dmggt2I?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref: "https://music.apple.com/us/album/los-angeles/279977486",
+      }),
+    ],
+  },
+  {
+    itemId: 22,
+    itemType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    thumbnailHref:
+      "https://m.media-amazon.com/images/I/71bsHTr6idL._AC_UY436_FMwebp_QL65_.jpg",
+    musicName: "Discovery",
+    musicArtist: ["Daft Punk"],
+    recordingStyle: ["studio"],
+    musicTags: ["house", "electronic"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_lMA_iEf3aqk5YSDsnrPKojXegOiecSF94&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/2noRn2Aes5aoNVsU6iWThc?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref: "https://music.apple.com/us/album/discovery/697194953",
+      }),
+    ],
+  },
+  {
+    itemId: 23,
+    itemType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    thumbnailHref:
+      "https://m.media-amazon.com/images/I/71lpRjtW+YL._AC_UY436_FMwebp_QL65_.jpg",
+    musicName: "Con Todo El Mundo",
+    musicArtist: ["Khruangbin"],
+    recordingStyle: ["studio"],
+    musicTags: ["style", "groove", "funk"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_kuJ7H1aJ5o6nLTCfQVV3rMqUdb4LLZ8U0&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/09AkhNYWocEZWbeYl1YBf7?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref:
+          "https://music.apple.com/us/album/con-todo-el-mundo/1299241642",
+      }),
+    ],
+  },
+  {
+    itemId: 24,
+    itemType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    thumbnailHref:
+      "https://m.media-amazon.com/images/I/81D9t2wdqiL._AC_UY436_FMwebp_QL65_.jpg",
+    musicName: "Speaking in Tongues",
+    musicArtist: ["Talking Heads"],
+    recordingStyle: ["studio"],
+    musicTags: ["pop"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_nYHzD9LEtWIKxLhNm8OfmtIJ2Pu324MfU&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/78MM8HrabEGPLVWaJkM2t1?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref:
+          "https://music.apple.com/us/album/speaking-in-tongues/300202199",
       }),
     ],
   },

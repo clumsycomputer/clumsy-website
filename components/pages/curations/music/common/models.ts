@@ -39,7 +39,11 @@ interface SourceMusicItemBase<SourceType extends string>
 
 interface MusicItemBase<
   ItemType extends string,
-  RecordingStyle = "studio" | "live" | "concert"
+  RecordingStyle = "studio" | "live" | "concert",
+  ExternalLink = {
+    linkLabel: string;
+    linkHref: string;
+  }
 > {
   itemId: number;
   itemType: ItemType;
@@ -48,8 +52,5 @@ interface MusicItemBase<
   musicArtist: Array<string>;
   musicTags: Array<string>;
   recordingStyle: Array<RecordingStyle>;
-  externalLinks: Array<{
-    linkLabel: string;
-    linkHref: string;
-  }>;
+  externalLinks: [ExternalLink, ...Array<ExternalLink>];
 }

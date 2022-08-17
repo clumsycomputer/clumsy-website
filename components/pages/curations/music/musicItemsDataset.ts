@@ -610,4 +610,156 @@ export const musicItemsDataset: Array<MusicItem> = [
       }),
     ],
   },
+  {
+    itemId: 25,
+    itemType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    thumbnailHref:
+      "https://m.media-amazon.com/images/I/61lPDPdkfYL._UX500_FMwebp_QL85_.jpg",
+    musicName: "Witches Stew",
+    musicArtist: ["Lettuce"],
+    recordingStyle: ["live"],
+    musicTags: ["jazz"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_kpSCH55anM5tIYEjIKdLUAY3RTrvUoceM&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/5p0YrSUdEeURL2Ei1WNLZP?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref: "https://music.apple.com/us/album/witches-stew/1292424573",
+      }),
+    ],
+  },
+  {
+    itemId: 26,
+    itemType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    thumbnailHref:
+      "https://m.media-amazon.com/images/I/41JbqQVjLkL._UX500_FMwebp_QL85_.jpg",
+    musicName: "Blonde",
+    musicArtist: ["Frank Ocean"],
+    recordingStyle: ["studio"],
+    musicTags: ["pop", "r&b"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_kClWWfWghQXro7ONQ-DfH3RZ1oxiu0kMA&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/3mH6qwIy9crq0I9YQbOuDf?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref: "https://music.apple.com/us/album/blonde/1146195596",
+      }),
+    ],
+  },
+  {
+    itemId: 27,
+    itemType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    thumbnailHref:
+      "https://m.media-amazon.com/images/I/61l+GoCpryL._UX500_FMwebp_QL85_.jpg",
+    musicName: "Little Dark Age",
+    musicArtist: ["MGMT"],
+    recordingStyle: ["studio"],
+    musicTags: ["psychedelic", "rock"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_kBFHQWSR3V3RPeRDSA1JKl_HpHDVgYYEA&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/7GjVWG39IOj4viyWplJV4H?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref:
+          "https://music.apple.com/us/album/little-dark-age/1334814526",
+      }),
+    ],
+  },
+  {
+    itemId: 28,
+    itemType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    thumbnailHref:
+      "https://m.media-amazon.com/images/I/61Zt+yZ1coL._UX500_FMwebp_QL85_.jpg",
+    musicName: "Choose Your Weapon",
+    musicArtist: ["Hiatus Kaiyote"],
+    recordingStyle: ["studio"],
+    musicTags: ["funk", "soul"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_mxQdlK-tNsc1GCJG5XZ64I3fQBBt5ijv4&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/3qzmmmRmVBiOuMvrerfW4z?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref:
+          "https://music.apple.com/us/album/choose-your-weapon/972218237",
+      }),
+    ],
+  },
+  {
+    itemId: 29,
+    itemType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    thumbnailHref:
+      "https://m.media-amazon.com/images/I/51N5HSJz9MS._UX500_FMwebp_QL85_.jpg",
+    musicName: "Mister Mellow",
+    musicArtist: ["Washed Out"],
+    recordingStyle: ["studio"],
+    musicTags: ["psychedelic", "groove", "electronic"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_kgLpntHizHSMzb85u4xPEDwVCm3gTINPA&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/6Rfsivv6DPegVm4oYLeAsm?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref: "https://music.apple.com/us/album/mister-mellow/1243853548",
+      }),
+    ],
+  },
+  {
+    itemId: 30,
+    itemType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    thumbnailHref:
+      "https://m.media-amazon.com/images/I/41jm4pUABmL._UX500_FMwebp_QL85_.jpg",
+    musicName: "STUDIO",
+    musicArtist: ["Benny Sings"],
+    recordingStyle: ["studio"],
+    musicTags: ["pop"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_kTsALwS42z9SeG0UZ3vVeyEybgmN9S9fI&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/6lud7M9JXFZ0QHoY2CeYCk?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref: "https://music.apple.com/us/album/studio/1050342885",
+      }),
+    ],
+  },
 ];

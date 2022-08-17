@@ -88,7 +88,7 @@ export function GraphicSection(props: GraphicSectionProps) {
             >
               {[
                 {
-                  prompt: "hi",
+                  prompt: "hi-res",
                   linkHref: soloUrl,
                 },
               ].map((someGraphicAction, actionIndex) => (

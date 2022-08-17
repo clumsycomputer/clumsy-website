@@ -5,7 +5,7 @@ import {
 } from "./common/getExternalLinkData";
 import { MusicItem } from "./common/models";
 
-export const musicItemsData: Array<MusicItem> = [
+export const musicItemsDataset: Array<MusicItem> = [
   {
     itemId: 0,
     itemType: "source",

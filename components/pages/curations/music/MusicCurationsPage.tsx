@@ -1,7 +1,7 @@
 import { NextPage } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useMemo } from "react";
+import { ReactNode, useMemo } from "react";
 import { NavigationFooter } from "../../../common/NavigationFooter/NavigationFooter";
 import { Page } from "../../../common/Page/Page";
 import styles from "./MusicCurationsPage.module.scss";
@@ -9,19 +9,47 @@ import { musicItemsDataset } from "./musicItemsDataset";
 
 export const MusicCurationsPage: NextPage = () => {
   const pageRouter = useRouter();
-  const { filteredMusicItems, dataPageIndex, dataPageCount } = useMemo(() => {
+  const { dataPageItems, dataPageNavigation } = useMemo(() => {
     const dataPageSize = Number(pageRouter.query.dataPageSize) || 10;
     const dataPageIndex = Number(pageRouter.query.dataPageIndex) || 1;
-    const dataPageCount = Math.ceil(musicItemsDataset.length / dataPageSize);
     const dataPageItemIndexStart = dataPageSize * (dataPageIndex - 1);
-    const filteredMusicItems = musicItemsDataset.slice(
-      dataPageItemIndexStart,
-      dataPageItemIndexStart + dataPageSize
-    );
+    const filteredMusicItems = musicItemsDataset.filter(() => true);
+    const dataPageCount = Math.ceil(filteredMusicItems.length / dataPageSize);
     return {
-      filteredMusicItems,
-      dataPageIndex,
-      dataPageCount,
+      dataPageItems: filteredMusicItems.slice(
+        dataPageItemIndexStart,
+        dataPageItemIndexStart + dataPageSize
+      ),
+      dataPageNavigation: (
+        <DataPageNavigation
+          dataPageCount={dataPageCount}
+          dataPageIndex={dataPageIndex}
+          previousPageLink={
+            dataPageIndex > 1 ? (
+              <ActiveDataPageLink
+                relativePageLinkLabel={"prev"}
+                dataPageHref={`${pageRouter.route}?dataPageIndex=${
+                  dataPageIndex - 1
+                }`}
+              />
+            ) : (
+              <DisabledDataPageLink relativePageLinkLabel={"prev"} />
+            )
+          }
+          nextPageLink={
+            dataPageIndex < dataPageCount ? (
+              <ActiveDataPageLink
+                relativePageLinkLabel={"next"}
+                dataPageHref={`${pageRouter.route}?dataPageIndex=${
+                  dataPageIndex + 1
+                }`}
+              />
+            ) : (
+              <DisabledDataPageLink relativePageLinkLabel={"next"} />
+            )
+          }
+        />
+      ),
     };
   }, [pageRouter.query]);
   return (
@@ -32,7 +60,7 @@ export const MusicCurationsPage: NextPage = () => {
       pageContentContainerClassname={styles.pageContentContainer}
     >
       <div className={styles.musicItemsContainer}>
-        {filteredMusicItems.map((someMusicItem) => {
+        {dataPageItems.map((someMusicItem) => {
           return (
             <div
               key={someMusicItem.itemId}
@@ -110,86 +138,8 @@ export const MusicCurationsPage: NextPage = () => {
             </div>
           );
         })}
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            paddingInline: 12,
-            paddingBlockStart: 10,
-            paddingBlockEnd: 16,
-            alignItems: "baseline",
-          }}
-        >
-          <div>
-            {dataPageIndex > 1 ? (
-              <Link
-                href={`${pageRouter.route}?dataPageIndex=${dataPageIndex - 1}`}
-              >
-                <a
-                  style={{
-                    fontWeight: 600,
-                    fontSize: 18,
-                  }}
-                >
-                  prev
-                </a>
-              </Link>
-            ) : (
-              <a
-                style={{
-                  fontWeight: 600,
-                  fontSize: 18,
-                  color: "#CCCCCC",
-                }}
-              >
-                prev
-              </a>
-            )}
-          </div>
-          <div
-            style={{
-              flexGrow: 1,
-              display: "flex",
-              justifyContent: "center",
-            }}
-          >
-            <div
-              style={{
-                fontWeight: 600,
-                fontSize: 18,
-              }}
-            >
-              {`${dataPageIndex} / ${dataPageCount}`}
-            </div>
-          </div>
-          <div>
-            {dataPageIndex < dataPageCount ? (
-              <Link
-                href={`${pageRouter.route}?dataPageIndex=${dataPageIndex + 1}`}
-              >
-                <a
-                  style={{
-                    fontWeight: 600,
-                    fontSize: 18,
-                  }}
-                >
-                  next
-                </a>
-              </Link>
-            ) : (
-              <a
-                style={{
-                  fontWeight: 600,
-                  fontSize: 18,
-                  color: "#CCCCCC",
-                }}
-              >
-                next
-              </a>
-            )}
-          </div>
-        </div>
       </div>
+      {dataPageNavigation}
       <NavigationFooter
         routeLinks={[
           { routeName: "home", routeHref: "/" },
@@ -218,4 +168,51 @@ function MusicItemLabelList(props: MusicItemLabelListProps) {
       ))}
     </div>
   );
+}
+
+interface DataPageNavigationProps {
+  dataPageCount: number;
+  dataPageIndex: number;
+  previousPageLink: ReactNode;
+  nextPageLink: ReactNode;
+}
+
+function DataPageNavigation(props: DataPageNavigationProps) {
+  const { previousPageLink, dataPageIndex, dataPageCount, nextPageLink } =
+    props;
+  return (
+    <div className={styles.dataPageNavigationContainer}>
+      {previousPageLink}
+      <div className={styles.focusedDataPageIndexDisplayContainer}>
+        <div
+          className={styles.dataPageNavigationText}
+        >{`${dataPageIndex} / ${dataPageCount}`}</div>
+      </div>
+      {nextPageLink}
+    </div>
+  );
+}
+
+interface ActiveDataPageLinkProps extends DataPageLinkBaseProps {
+  dataPageHref: string;
+}
+
+function ActiveDataPageLink(props: ActiveDataPageLinkProps) {
+  const { dataPageHref, relativePageLinkLabel } = props;
+  return (
+    <Link href={dataPageHref}>
+      <a className={styles.activeDataPageLink}>{relativePageLinkLabel}</a>
+    </Link>
+  );
+}
+
+interface DisabledDataPageLinkProps extends DataPageLinkBaseProps {}
+
+function DisabledDataPageLink(props: DisabledDataPageLinkProps) {
+  const { relativePageLinkLabel } = props;
+  return <a className={styles.disabledDataPageLink}>{relativePageLinkLabel}</a>;
+}
+
+interface DataPageLinkBaseProps {
+  relativePageLinkLabel: string;
 }

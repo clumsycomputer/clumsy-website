@@ -9,7 +9,7 @@
   display: flex;
   flex-direction: column;
   padding-inline: $spacer / 2;
-  padding-block: $spacer / 2;
+  padding-block-start: $spacer / 2;
 }
 
 .musicItemContainer {
@@ -66,7 +66,7 @@
 .musicItemLabel {
   margin-inline-end: $spacer; 
   margin-block-end: $spacer;
-  background-color: $lightGrey;
+  background-color: $textBackgroundGrey;
   border-radius: 3px;
   padding-inline: $spacer / 2;
   padding-block: $spacer / 8;
@@ -75,4 +75,37 @@
   text-overflow: ellipsis;  
   font-weight: 600;
   font-size: 14px;
+}
+
+.dataPageNavigationContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  padding-inline: $spacer * 2;
+  padding-block-start: $spacer;
+  padding-block-end: $spacer * 2;
+}
+
+.focusedDataPageIndexDisplayContainer {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.activeDataPageLink {
+  @extend .dataPageLink;  
+}
+
+.disabledDataPageLink {
+  @extend .dataPageLink;
+  color: $disabledGrey;
+}
+
+.dataPageLink {
+  @extend .dataPageNavigationText;
+}
+
+.dataPageNavigationText {
+  font-weight: 600;
+  font-size: 18px;
 }

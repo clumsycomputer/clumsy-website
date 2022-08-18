@@ -10,66 +10,67 @@ import { musicItemsDataset } from "./musicItemsDataset";
 
 export const MusicCurationsPage: NextPage = () => {
   const pageRouter = useRouter();
-  const { dataPageItems, dataPageNavigation } = useMemo(() => {
-    const filteredMusicItemsPageSize = 10;
-    const filteredMusicItems = musicItemsDataset.filter(() => true);
-    const filteredMusicItemsPageCount = Math.ceil(
-      filteredMusicItems.length / filteredMusicItemsPageSize
-    );
-    const filteredMusicItemsPageIndexQueryParam =
-      parseInt(
-        typeof pageRouter.query.filteredMusicItemsPageIndex === "string"
-          ? pageRouter.query.filteredMusicItemsPageIndex
-          : "wtf?"
-      ) || -1;
-    const filteredMusicItemsPageIndex =
-      filteredMusicItemsPageIndexQueryParam > 0 &&
-      filteredMusicItemsPageIndexQueryParam < filteredMusicItemsPageCount
-        ? filteredMusicItemsPageIndexQueryParam
-        : 1;
-    const filteredMusicItemsItemIndexStart =
-      filteredMusicItemsPageSize * (filteredMusicItemsPageIndex - 1);
-    return {
-      dataPageItems: filteredMusicItems.slice(
-        filteredMusicItemsItemIndexStart,
-        filteredMusicItemsItemIndexStart + filteredMusicItemsPageSize
-      ),
-      dataPageNavigation: (
-        <FilteredMusicItemsPageNavigation
-          filteredMusicItemsPageIndex={filteredMusicItemsPageIndex}
-          filteredMusicItemsPageCount={filteredMusicItemsPageCount}
-          previousPageLink={
-            filteredMusicItemsPageIndex > 1 ? (
-              <ActiveMusicItemsPageLink
-                relativePageLinkLabel={"prev"}
-                dataPageHref={`${
-                  pageRouter.route
-                }?filteredMusicItemsPageIndex=${
-                  filteredMusicItemsPageIndex - 1
-                }`}
-              />
-            ) : (
-              <DisabledMusicItemsPageLink relativePageLinkLabel={"prev"} />
-            )
-          }
-          nextPageLink={
-            filteredMusicItemsPageIndex < filteredMusicItemsPageCount ? (
-              <ActiveMusicItemsPageLink
-                relativePageLinkLabel={"next"}
-                dataPageHref={`${
-                  pageRouter.route
-                }?filteredMusicItemsPageIndex=${
-                  filteredMusicItemsPageIndex + 1
-                }`}
-              />
-            ) : (
-              <DisabledMusicItemsPageLink relativePageLinkLabel={"next"} />
-            )
-          }
-        />
-      ),
-    };
-  }, [pageRouter.query]);
+  const { filteredMusicItemsPage, filteredMusicItemsPageNavigation } =
+    useMemo(() => {
+      const filteredMusicItemsPageSize = 10;
+      const filteredMusicItems = musicItemsDataset.filter(() => true);
+      const filteredMusicItemsPageCount = Math.ceil(
+        filteredMusicItems.length / filteredMusicItemsPageSize
+      );
+      const filteredMusicItemsPageIndexQueryParam =
+        parseInt(
+          typeof pageRouter.query.filteredMusicItemsPageIndex === "string"
+            ? pageRouter.query.filteredMusicItemsPageIndex
+            : "wtf?"
+        ) || -1;
+      const filteredMusicItemsPageIndex =
+        filteredMusicItemsPageIndexQueryParam >= 1 &&
+        filteredMusicItemsPageIndexQueryParam <= filteredMusicItemsPageCount
+          ? filteredMusicItemsPageIndexQueryParam
+          : 1;
+      const filteredMusicItemsItemIndexStart =
+        filteredMusicItemsPageSize * (filteredMusicItemsPageIndex - 1);
+      return {
+        filteredMusicItemsPage: filteredMusicItems.slice(
+          filteredMusicItemsItemIndexStart,
+          filteredMusicItemsItemIndexStart + filteredMusicItemsPageSize
+        ),
+        filteredMusicItemsPageNavigation: (
+          <FilteredMusicItemsPageNavigation
+            filteredMusicItemsPageIndex={filteredMusicItemsPageIndex}
+            filteredMusicItemsPageCount={filteredMusicItemsPageCount}
+            previousPageLink={
+              filteredMusicItemsPageIndex > 1 ? (
+                <ActiveMusicItemsPageLink
+                  relativePageLinkLabel={"prev"}
+                  dataPageHref={`${
+                    pageRouter.route
+                  }?filteredMusicItemsPageIndex=${
+                    filteredMusicItemsPageIndex - 1
+                  }`}
+                />
+              ) : (
+                <DisabledMusicItemsPageLink relativePageLinkLabel={"prev"} />
+              )
+            }
+            nextPageLink={
+              filteredMusicItemsPageIndex < filteredMusicItemsPageCount ? (
+                <ActiveMusicItemsPageLink
+                  relativePageLinkLabel={"next"}
+                  dataPageHref={`${
+                    pageRouter.route
+                  }?filteredMusicItemsPageIndex=${
+                    filteredMusicItemsPageIndex + 1
+                  }`}
+                />
+              ) : (
+                <DisabledMusicItemsPageLink relativePageLinkLabel={"next"} />
+              )
+            }
+          />
+        ),
+      };
+    }, [pageRouter.query]);
   return (
     <Page
       pageContentContainerClassname={styles.pageContentContainer}
@@ -78,7 +79,7 @@ export const MusicCurationsPage: NextPage = () => {
       pageDescription={"a catalog of awesome music"}
     >
       <div className={styles.musicItemsContainer} role={"list"}>
-        {dataPageItems.map((someMusicItemData) => (
+        {filteredMusicItemsPage.map((someMusicItemData) => (
           <MusicItem
             key={someMusicItemData.itemId}
             musicName={someMusicItemData.musicName}
@@ -94,7 +95,7 @@ export const MusicCurationsPage: NextPage = () => {
           />
         ))}
       </div>
-      {dataPageNavigation}
+      {filteredMusicItemsPageNavigation}
       <NavigationFooter
         routeLinks={[
           { routeName: "home", routeHref: "/" },

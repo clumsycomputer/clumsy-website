@@ -60,7 +60,7 @@ function NavigationFooterContainer(props: NavigationFooterContainerProps) {
   const { children } = props;
   return (
     <div
-      role={"none"}
+      role={"presentation"}
       className={navigationFooterContainerStyles.footerContainer}
     >
       <div

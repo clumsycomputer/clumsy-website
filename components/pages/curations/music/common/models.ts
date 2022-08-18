@@ -1,36 +1,41 @@
-export type MusicItem = ClippedMusicItem | WholeMusicItem;
+export type MusicItemData = ClippedMusicItemData | WholeMusicItemData;
 
-interface ClippedMusicItem
+interface ClippedMusicItemData
   extends MusicItemBase<"clip">,
-    Pick<SongMusicItem | MixMusicItem, "sourceType"> {}
+    Pick<SongMusicItemData | MixMusicItemData, "sourceType"> {}
 
-type WholeMusicItem = SongMusicItem | CollectionMusicItem | MixMusicItem;
+type WholeMusicItemData =
+  | SongMusicItemData
+  | CollectionMusicItemData
+  | MixMusicItemData;
 
-interface SongMusicItem extends SourceMusicItemBase<"song"> {}
+interface SongMusicItemData extends SourceMusicItemBase<"song"> {}
 
-type CollectionMusicItem =
-  | SingleMusicItem
-  | EpMusicItem
-  | AlbumMusicItem
-  | CompilationMusicItem
-  | SoundtrackMusicItem;
+type CollectionMusicItemData =
+  | SingleMusicItemData
+  | EpMusicItemData
+  | AlbumMusicItemData
+  | CompilationMusicItemData
+  | SoundtrackMusicItemData;
 
-interface SingleMusicItem extends CollectionMusicItemBase<"single"> {}
+interface SingleMusicItemData extends CollectionMusicItemBase<"single"> {}
 
-interface EpMusicItem extends CollectionMusicItemBase<"ep"> {}
+interface EpMusicItemData extends CollectionMusicItemBase<"ep"> {}
 
-interface AlbumMusicItem extends CollectionMusicItemBase<"album"> {}
+interface AlbumMusicItemData extends CollectionMusicItemBase<"album"> {}
 
-interface CompilationMusicItem extends CollectionMusicItemBase<"compilation"> {}
+interface CompilationMusicItemData
+  extends CollectionMusicItemBase<"compilation"> {}
 
-interface SoundtrackMusicItem extends CollectionMusicItemBase<"soundtrack"> {}
+interface SoundtrackMusicItemData
+  extends CollectionMusicItemBase<"soundtrack"> {}
 
 interface CollectionMusicItemBase<CollectionType extends string>
   extends SourceMusicItemBase<"collection"> {
   collectionType: CollectionType;
 }
 
-interface MixMusicItem extends SourceMusicItemBase<"mix"> {}
+interface MixMusicItemData extends SourceMusicItemBase<"mix"> {}
 
 interface SourceMusicItemBase<SourceType extends string>
   extends MusicItemBase<"source"> {

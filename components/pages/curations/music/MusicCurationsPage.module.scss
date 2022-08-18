@@ -92,20 +92,24 @@
   justify-content: center;
 }
 
-.activeDataPageLink {
-  @extend .dataPageLink;  
+.activeFilteredMusicItemsPageLink {
+  @extend .filteredMusicItemsPageLink;  
 }
 
-.disabledDataPageLink {
-  @extend .dataPageLink;
+.disabledFilteredMusicItemsPageLink {
+  @extend .filteredMusicItemsPageLink;
   color: $disabledGrey;
 }
 
-.dataPageLink {
-  @extend .dataPageNavigationText;
+.filteredMusicItemsPageLink {
+  @extend .filteredMusicItemsPageText;
 }
 
-.dataPageNavigationText {
+.filteredMusicItemsPageText {
   font-weight: 600;
   font-size: 18px;
+}
+
+.filteredMusicItemsPageLabel {
+  display: none;
 }

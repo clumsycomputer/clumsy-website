@@ -23,7 +23,7 @@ export function Page(props: PageProps) {
         <title>{pageTabTitle}</title>
         <meta name="description" content={pageDescription} />
       </Head>
-      <div role={"none"} className={pageStyles.pageContainer}>
+      <div role={"presentation"} className={pageStyles.pageContainer}>
         <div
           role={"main"}
           className={`${pageContentContainerClassname} ${pageStyles.contentContainerBase}`}

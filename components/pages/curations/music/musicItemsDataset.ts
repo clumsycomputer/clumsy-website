@@ -3,9 +3,9 @@ import {
   getSpotifyLinkData,
   getYoutubeLinkData,
 } from "./common/getExternalLinkData";
-import { MusicItem } from "./common/models";
+import { MusicItemData } from "./common/models";
 
-export const musicItemsDataset: Array<MusicItem> = [
+export const musicItemsDataset: Array<MusicItemData> = [
   {
     itemId: 0,
     itemType: "source",

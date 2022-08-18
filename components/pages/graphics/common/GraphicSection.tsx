@@ -27,7 +27,10 @@ export function GraphicSection(props: GraphicSectionProps) {
   } = props;
   const accessibilityLabel = `graphic: ${graphicName}`;
   return (
-    <div role={"none"} className={graphicSectionStyles.sectionContainer}>
+    <div
+      role={"presentation"}
+      className={graphicSectionStyles.sectionContainer}
+    >
       {sectionDivider}
       <div
         role={"region"}

@@ -11,42 +11,59 @@ import { musicItemsDataset } from "./musicItemsDataset";
 export const MusicCurationsPage: NextPage = () => {
   const pageRouter = useRouter();
   const { dataPageItems, dataPageNavigation } = useMemo(() => {
-    const dataPageSize = Number(pageRouter.query.dataPageSize) || 10;
-    const dataPageIndex = Number(pageRouter.query.dataPageIndex) || 1;
-    const dataPageItemIndexStart = dataPageSize * (dataPageIndex - 1);
+    const filteredMusicItemsPageSize = 10;
     const filteredMusicItems = musicItemsDataset.filter(() => true);
-    const dataPageCount = Math.ceil(filteredMusicItems.length / dataPageSize);
+    const filteredMusicItemsPageCount = Math.ceil(
+      filteredMusicItems.length / filteredMusicItemsPageSize
+    );
+    const filteredMusicItemsPageIndexQueryParam =
+      parseInt(
+        typeof pageRouter.query.filteredMusicItemsPageIndex === "string"
+          ? pageRouter.query.filteredMusicItemsPageIndex
+          : "wtf?"
+      ) || -1;
+    const filteredMusicItemsPageIndex =
+      filteredMusicItemsPageIndexQueryParam > 0 &&
+      filteredMusicItemsPageIndexQueryParam < filteredMusicItemsPageCount
+        ? filteredMusicItemsPageIndexQueryParam
+        : 1;
+    const filteredMusicItemsItemIndexStart =
+      filteredMusicItemsPageSize * (filteredMusicItemsPageIndex - 1);
     return {
       dataPageItems: filteredMusicItems.slice(
-        dataPageItemIndexStart,
-        dataPageItemIndexStart + dataPageSize
+        filteredMusicItemsItemIndexStart,
+        filteredMusicItemsItemIndexStart + filteredMusicItemsPageSize
       ),
       dataPageNavigation: (
-        <DataPageNavigation
-          dataPageCount={dataPageCount}
-          dataPageIndex={dataPageIndex}
+        <FilteredMusicItemsPageNavigation
+          filteredMusicItemsPageIndex={filteredMusicItemsPageIndex}
+          filteredMusicItemsPageCount={filteredMusicItemsPageCount}
           previousPageLink={
-            dataPageIndex > 1 ? (
-              <ActiveDataPageLink
+            filteredMusicItemsPageIndex > 1 ? (
+              <ActiveMusicItemsPageLink
                 relativePageLinkLabel={"prev"}
-                dataPageHref={`${pageRouter.route}?dataPageIndex=${
-                  dataPageIndex - 1
+                dataPageHref={`${
+                  pageRouter.route
+                }?filteredMusicItemsPageIndex=${
+                  filteredMusicItemsPageIndex - 1
                 }`}
               />
             ) : (
-              <DisabledDataPageLink relativePageLinkLabel={"prev"} />
+              <DisabledMusicItemsPageLink relativePageLinkLabel={"prev"} />
             )
           }
           nextPageLink={
-            dataPageIndex < dataPageCount ? (
-              <ActiveDataPageLink
+            filteredMusicItemsPageIndex < filteredMusicItemsPageCount ? (
+              <ActiveMusicItemsPageLink
                 relativePageLinkLabel={"next"}
-                dataPageHref={`${pageRouter.route}?dataPageIndex=${
-                  dataPageIndex + 1
+                dataPageHref={`${
+                  pageRouter.route
+                }?filteredMusicItemsPageIndex=${
+                  filteredMusicItemsPageIndex + 1
                 }`}
               />
             ) : (
-              <DisabledDataPageLink relativePageLinkLabel={"next"} />
+              <DisabledMusicItemsPageLink relativePageLinkLabel={"next"} />
             )
           }
         />
@@ -220,36 +237,46 @@ function MusicItemLabelList(props: MusicItemLabelListProps) {
   );
 }
 
-interface DataPageNavigationProps {
-  dataPageCount: number;
-  dataPageIndex: number;
+interface FilteredMusicItemsPageNavigationProps {
+  filteredMusicItemsPageCount: number;
+  filteredMusicItemsPageIndex: number;
   previousPageLink: ReactNode;
   nextPageLink: ReactNode;
 }
 
-function DataPageNavigation(props: DataPageNavigationProps) {
-  const { previousPageLink, dataPageIndex, dataPageCount, nextPageLink } =
-    props;
+function FilteredMusicItemsPageNavigation(
+  props: FilteredMusicItemsPageNavigationProps
+) {
+  const {
+    previousPageLink,
+    filteredMusicItemsPageIndex,
+    filteredMusicItemsPageCount,
+    nextPageLink,
+  } = props;
 
   return (
-    <div className={styles.dataPageNavigationContainer} role={"navigation"}>
+    <div
+      className={styles.dataPageNavigationContainer}
+      role={"navigation"}
+      aria-label={"filtered music items page navigation"}
+    >
       {previousPageLink}
       <div className={styles.focusedDataPageIndexDisplayContainer}>
         <label
           className={styles.filteredMusicItemsPageLabel}
           id={"filteredMusicItemsPageLabel"}
         >
-          music item page:
+          filtered music items page:
         </label>
         <div
           className={styles.filteredMusicItemsPageText}
           role={"meter"}
           aria-valuemin={1}
-          aria-valuemax={dataPageCount}
-          aria-valuenow={dataPageIndex}
+          aria-valuemax={filteredMusicItemsPageCount}
+          aria-valuenow={filteredMusicItemsPageIndex}
           aria-labelledby={"filteredMusicItemsPageLabel"}
         >
-          {`${dataPageIndex} / ${dataPageCount}`}
+          {`${filteredMusicItemsPageIndex} / ${filteredMusicItemsPageCount}`}
         </div>
       </div>
       {nextPageLink}
@@ -257,11 +284,11 @@ function DataPageNavigation(props: DataPageNavigationProps) {
   );
 }
 
-interface ActiveDataPageLinkProps extends DataPageLinkBaseProps {
+interface ActiveMusicItemsPageLinkProps extends MusicItemsPageBaseProps {
   dataPageHref: string;
 }
 
-function ActiveDataPageLink(props: ActiveDataPageLinkProps) {
+function ActiveMusicItemsPageLink(props: ActiveMusicItemsPageLinkProps) {
   const { dataPageHref, relativePageLinkLabel } = props;
   return (
     <Link href={dataPageHref}>
@@ -272,9 +299,9 @@ function ActiveDataPageLink(props: ActiveDataPageLinkProps) {
   );
 }
 
-interface DisabledDataPageLinkProps extends DataPageLinkBaseProps {}
+interface DisabledMusicItemsPageLinkProps extends MusicItemsPageBaseProps {}
 
-function DisabledDataPageLink(props: DisabledDataPageLinkProps) {
+function DisabledMusicItemsPageLink(props: DisabledMusicItemsPageLinkProps) {
   const { relativePageLinkLabel } = props;
   return (
     <a className={styles.disabledFilteredMusicItemsPageLink}>
@@ -283,6 +310,6 @@ function DisabledDataPageLink(props: DisabledDataPageLinkProps) {
   );
 }
 
-interface DataPageLinkBaseProps {
+interface MusicItemsPageBaseProps {
   relativePageLinkLabel: string;
 }

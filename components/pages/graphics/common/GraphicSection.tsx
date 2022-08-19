@@ -27,7 +27,10 @@ export function GraphicSection(props: GraphicSectionProps) {
   } = props;
   const accessibilityLabel = `graphic: ${graphicName}`;
   return (
-    <div role={"none"} className={graphicSectionStyles.sectionContainer}>
+    <div
+      role={"presentation"}
+      className={graphicSectionStyles.sectionContainer}
+    >
       {sectionDivider}
       <div
         role={"region"}
@@ -50,13 +53,15 @@ export function GraphicSection(props: GraphicSectionProps) {
             className={graphicSectionStyles.bodyContentContainer}
           >
             <Link href={soloUrl} prefetch={false}>
-              <Image
-                className={graphicSectionStyles.graphicImage}
-                src={listUrl}
-                alt={graphicDescription}
-                width={1280}
-                height={1280}
-              />
+              <a rel={"noreferrer"} target={"_blank"}>
+                <Image
+                  className={graphicSectionStyles.graphicImage}
+                  src={listUrl}
+                  alt={graphicDescription}
+                  width={1280}
+                  height={1280}
+                />
+              </a>
             </Link>
           </div>
           <div
@@ -86,7 +91,7 @@ export function GraphicSection(props: GraphicSectionProps) {
             >
               {[
                 {
-                  prompt: "view hi-res",
+                  prompt: "hi-res",
                   linkHref: soloUrl,
                 },
               ].map((someGraphicAction, actionIndex) => (
@@ -95,12 +100,15 @@ export function GraphicSection(props: GraphicSectionProps) {
                   className={graphicSectionStyles.actionContainer}
                   key={`${actionIndex}`}
                 >
-                  <a
-                    className={`${graphicSectionStyles.graphicAction} ${graphicSectionStyles.footerTextBase}`}
-                    href={someGraphicAction.linkHref}
-                  >
-                    {someGraphicAction.prompt}
-                  </a>
+                  <Link href={someGraphicAction.linkHref} prefetch={false}>
+                    <a
+                      className={`${graphicSectionStyles.graphicAction} ${graphicSectionStyles.footerTextBase}`}
+                      rel={"noreferrer"}
+                      target={"_blank"}
+                    >
+                      {someGraphicAction.prompt}
+                    </a>
+                  </Link>
                 </div>
               ))}
             </div>

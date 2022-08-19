@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Fragment, ReactNode } from "react";
 import { DocumentPage } from "../../common/Document/DocumentPage";
 import { NavigationFooter } from "../../common/NavigationFooter/NavigationFooter";
+import { PdfLink } from "../../common/NavigationFooter/PdfLink";
 import { ResumeHeaderSection } from "./common/ResumeHeaderSection";
 import { ResumeJobSection } from "./common/ResumeJobSection";
 import { ResumeSchoolSection } from "./common/ResumeSchoolSection";
@@ -17,12 +18,9 @@ export const ResumePage: NextPage = () => {
             { routeName: "home", routeHref: "/" },
             { routeName: "software", routeHref: "/software" },
             { routeName: "graphics", routeHref: "/graphics" },
+            { routeName: "- music +", routeHref: "/curations/music" },
           ]}
-          pdfLink={
-            <Link href="/pdfs/resume.pdf">
-              <a>view pdf</a>
-            </Link>
-          }
+          pdfLink={<PdfLink pdfHref={"/pdfs/resume.pdf"} />}
         />
       }
     />

@@ -1,0 +1,9 @@
+@import 'styles/websiteTheme.scss';
+
+.linkContainer {
+  padding-left: $spacer * 4;
+  padding-right: $spacer * 2;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}

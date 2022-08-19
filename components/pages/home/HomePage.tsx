@@ -10,14 +10,14 @@ export const HomePage: NextPage = () => {
     <Page
       accessibilityLabel={"home"}
       pageTabTitle={"clumsycomputer"}
-      pageDescription={"a junction of shareables"}
+      pageDescription={"a junction for all things clumsycomputer"}
       pageContentContainerClassname={homePageStyles.pageContentContainer}
     >
       <div role={"figure"} className={homePageStyles.landingImageContainer}>
         <Image
           className={homePageStyles.landingImage}
           src={"/graphics/whichway.gif"}
-          alt={"gary"}
+          alt={"¡which way!"}
           width={1024}
           height={1024}
         />
@@ -29,12 +29,16 @@ export const HomePage: NextPage = () => {
             linkHref: "/software",
           },
           {
+            prompt: "resume",
+            linkHref: "/resume",
+          },
+          {
             prompt: "graphics",
             linkHref: "/graphics",
           },
           {
-            prompt: "resume",
-            linkHref: "/resume",
+            prompt: "- music +",
+            linkHref: "/curations/music",
           },
         ].map((someRouteAction) => (
           <div

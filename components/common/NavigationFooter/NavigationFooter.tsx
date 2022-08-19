@@ -31,9 +31,7 @@ export function NavigationFooter(props: NavigationFooterProps) {
           </div>
         ))}
       </NavigationListContainer>
-      <div role={"none"} className={navigationFooterStyles.pdfLinkContainer}>
-        {pdfLink}
-      </div>
+      {pdfLink}
     </NavigationFooterContainer>
   );
 }
@@ -62,7 +60,7 @@ function NavigationFooterContainer(props: NavigationFooterContainerProps) {
   const { children } = props;
   return (
     <div
-      role={"none"}
+      role={"presentation"}
       className={navigationFooterContainerStyles.footerContainer}
     >
       <div

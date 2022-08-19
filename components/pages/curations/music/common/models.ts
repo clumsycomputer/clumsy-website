@@ -54,7 +54,7 @@ interface MusicItemBase<
   itemType: ItemType;
   thumbnailHref: string;
   musicName: string;
-  musicYear: number;
+  musicYear: string;
   musicArtist: Array<string>;
   musicTags: Array<string>;
   recordingStyle: Array<RecordingStyle>;

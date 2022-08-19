@@ -13,7 +13,7 @@ export const musicItemsDataset: Array<MusicItemData> = [
     collectionType: "album",
     thumbnailHref:
       "https://m.media-amazon.com/images/I/815pLljpegL._SL1500_.jpg",
-    musicYear: 2018,
+    musicYear: "2018",
     musicName: "IC-01 Hanoi",
     musicArtist: ["Unknown Mortal Orchestra"],
     recordingStyle: ["studio"],
@@ -39,7 +39,7 @@ export const musicItemsDataset: Array<MusicItemData> = [
     collectionType: "ep",
     thumbnailHref:
       "https://m.media-amazon.com/images/I/61XiJrQYpuL._UX500_FMwebp_QL85_.jpg",
-    musicYear: 1997,
+    musicYear: "1997",
     musicName: "Premiers Symptômes",
     musicArtist: ["Air"],
     recordingStyle: ["studio"],
@@ -67,7 +67,7 @@ export const musicItemsDataset: Array<MusicItemData> = [
     thumbnailHref:
       "https://m.media-amazon.com/images/I/71CzC0CGECL._AC_UY436_FMwebp_QL65_.jpg",
     musicName: "Live Vol. 1",
-    musicYear: 2020,
+    musicYear: "2020",
     musicArtist: ["Parcels"],
     recordingStyle: ["live"],
     musicTags: ["pop", "social"],
@@ -92,7 +92,7 @@ export const musicItemsDataset: Array<MusicItemData> = [
     collectionType: "compilation",
     thumbnailHref:
       "https://m.media-amazon.com/images/I/41Eldx-iyAL._UX500_FMwebp_QL85_.jpg",
-    musicYear: 2006,
+    musicYear: "2006",
     musicName: "The Best Of What's Around Vol. 01",
     musicArtist: ["Dave Matthews Band"],
     recordingStyle: ["studio", "concert"],
@@ -119,7 +119,7 @@ export const musicItemsDataset: Array<MusicItemData> = [
     collectionType: "album",
     thumbnailHref:
       "https://m.media-amazon.com/images/I/71XmXBCQ+XL._AC_UY436_FMwebp_QL65_.jpg",
-    musicYear: 2016,
+    musicYear: "2016",
     musicName: "Blank Face LP",
     musicArtist: ["ScHoolboy Q"],
     recordingStyle: ["studio"],
@@ -144,7 +144,7 @@ export const musicItemsDataset: Array<MusicItemData> = [
     sourceType: "collection",
     collectionType: "album",
     thumbnailHref: "https://m.media-amazon.com/images/I/41us+rdexmL.jpg",
-    musicYear: 2004,
+    musicYear: "2004",
     musicName: "Pickin' on Modest Mouse: A Bluegrass Tribute",
     musicArtist: ["Iron Horse", "Modest Mouse"],
     recordingStyle: ["studio"],
@@ -171,7 +171,7 @@ export const musicItemsDataset: Array<MusicItemData> = [
     collectionType: "album",
     thumbnailHref:
       "https://m.media-amazon.com/images/I/51my4h86mRL._AC_UY312_FMwebp_QL65_.jpg",
-    musicYear: 2012,
+    musicYear: "2012",
     musicName: "Trouble",
     musicArtist: ["Totally Extinct Enormous Dinosaurs"],
     recordingStyle: ["studio"],
@@ -197,7 +197,7 @@ export const musicItemsDataset: Array<MusicItemData> = [
     collectionType: "album",
     thumbnailHref:
       "https://m.media-amazon.com/images/I/718tt6ncquL._AC_UY436_FMwebp_QL65_.jpg",
-    musicYear: 2019,
+    musicYear: "2019",
     musicName: "Room 41",
     musicArtist: ["Paul Cauthen"],
     recordingStyle: ["studio"],
@@ -223,7 +223,7 @@ export const musicItemsDataset: Array<MusicItemData> = [
     collectionType: "album",
     thumbnailHref:
       "https://m.media-amazon.com/images/I/61XijFIRaxL._AC_UY436_FMwebp_QL65_.jpg",
-    musicYear: 2022,
+    musicYear: "2022",
     musicName: "Organ Recital",
     musicArtist: ["Bastien Keb"],
     recordingStyle: ["studio"],
@@ -249,7 +249,7 @@ export const musicItemsDataset: Array<MusicItemData> = [
     collectionType: "album",
     thumbnailHref:
       "https://m.media-amazon.com/images/I/813BJ4cG9RL._SS500_.jpg",
-    musicYear: 2008,
+    musicYear: "2008",
     musicName: "Filling Up the City Skies - Disc 1",
     musicArtist: ["Pretty Lights"],
     recordingStyle: ["studio"],
@@ -276,7 +276,7 @@ export const musicItemsDataset: Array<MusicItemData> = [
     collectionType: "ep",
     thumbnailHref:
       "https://preview.redd.it/t55x4lyak2y51.jpg?auto=webp&s=6cffa2dd89b7bb9f41a7abe3979ab41f93313c72",
-    musicYear: 2012,
+    musicYear: "2012",
     musicName: "Bon Iver at AIR studios",
     musicArtist: ["Bon Iver", "Sean Carey"],
     recordingStyle: ["live"],
@@ -293,7 +293,7 @@ export const musicItemsDataset: Array<MusicItemData> = [
     sourceType: "mix",
     thumbnailHref:
       "https://is4-ssl.mzstatic.com/image/thumb/Features125/v4/f4/6b/a9/f46ba999-c102-ea24-7efa-a8e48b43bebd/mza_4437830076440205700.jpg/1000x1000bb.webp",
-    musicYear: 2021,
+    musicYear: "2021",
     musicName: "WhoMadeWho",
     musicArtist: ["WhoMadeWho live at Abu Simbel"],
     recordingStyle: ["live"],
@@ -315,7 +315,7 @@ export const musicItemsDataset: Array<MusicItemData> = [
     collectionType: "album",
     thumbnailHref:
       "https://cdn.albumoftheyear.org/album/55039-in-rainbows-from-the-basement.jpg",
-    musicYear: 2008,
+    musicYear: "2008",
     musicName: "In Rainbows From the Basement",
     musicArtist: ["Radiohead", "Nigel Godrich"],
     recordingStyle: ["live"],
@@ -332,7 +332,7 @@ export const musicItemsDataset: Array<MusicItemData> = [
     sourceType: "mix",
     thumbnailHref:
       "https://i1.sndcdn.com/artworks-000484735170-v2qg5l-t500x500.jpg",
-    musicYear: 2016,
+    musicYear: "2016",
     musicName: "Nicolas Jaar Presents the Network",
     musicArtist: ["Nicolas Jaar"],
     recordingStyle: ["studio"],
@@ -359,7 +359,7 @@ export const musicItemsDataset: Array<MusicItemData> = [
     sourceType: "mix",
     thumbnailHref:
       "https://e.snmc.io/i/1200/s/af23292a9abbba762d6e0d96ffa7eb03/7962041",
-    musicYear: 2016,
+    musicYear: "2016",
     musicName: "Hip-Hop portion - Nicolas Jaar Presents the Network",
     musicArtist: ["Nicolas Jaar"],
     recordingStyle: ["studio"],
@@ -378,7 +378,7 @@ export const musicItemsDataset: Array<MusicItemData> = [
     collectionType: "album",
     thumbnailHref:
       "https://m.media-amazon.com/images/I/71cHQs6MslL._AC_UY436_FMwebp_QL65_.jpg",
-    musicYear: 2018,
+    musicYear: "2018",
     musicName: "iridescence",
     musicArtist: ["BROCKHAMPTON"],
     recordingStyle: ["studio"],
@@ -404,7 +404,7 @@ export const musicItemsDataset: Array<MusicItemData> = [
     collectionType: "ep",
     thumbnailHref:
       "https://m.media-amazon.com/images/I/51NdilLHVTL._UX500_FMwebp_QL85_.jpg",
-    musicYear: 2017,
+    musicYear: "2017",
     musicName: "Beyond Serious",
     musicArtist: ["Bibio"],
     recordingStyle: ["studio"],
@@ -431,7 +431,7 @@ export const musicItemsDataset: Array<MusicItemData> = [
     collectionType: "album",
     thumbnailHref:
       "https://m.media-amazon.com/images/I/51h7dDC5oGL._AC_UL640_FMwebp_QL65_.jpg",
-    musicYear: 2003,
+    musicYear: "2003",
     musicName: "Surrounded",
     musicArtist: ["Tipper"],
     recordingStyle: ["studio"],
@@ -457,7 +457,7 @@ export const musicItemsDataset: Array<MusicItemData> = [
     collectionType: "album",
     thumbnailHref:
       "https://m.media-amazon.com/images/I/61zjF4Ft7tL._AC_UY436_FMwebp_QL65_.jpg",
-    musicYear: 2019,
+    musicYear: "2019",
     musicName: "OOFIE",
     musicArtist: ["Wiki"],
     recordingStyle: ["studio"],
@@ -483,7 +483,7 @@ export const musicItemsDataset: Array<MusicItemData> = [
     collectionType: "album",
     thumbnailHref:
       "https://m.media-amazon.com/images/I/61V9YTk78EL._AC_UY436_FMwebp_QL65_.jpg",
-    musicYear: 1996,
+    musicYear: "1996",
     musicName: "Entroducing",
     musicArtist: ["DJ Shadow"],
     recordingStyle: ["studio"],
@@ -509,7 +509,7 @@ export const musicItemsDataset: Array<MusicItemData> = [
     collectionType: "album",
     thumbnailHref:
       "https://i.pinimg.com/736x/1c/f5/1c/1cf51c9f6658424cafaf0cd2a9079865.jpg",
-    musicYear: 2003,
+    musicYear: "2003",
     musicName: "The Love Below",
     musicArtist: ["Andre 3000", "Outkast"],
     recordingStyle: ["studio"],
@@ -536,7 +536,7 @@ export const musicItemsDataset: Array<MusicItemData> = [
     collectionType: "album",
     thumbnailHref:
       "https://m.media-amazon.com/images/I/71LCBA0rOHL._AC_UY436_FMwebp_QL65_.jpg",
-    musicYear: 2008,
+    musicYear: "2008",
     musicName: "Los Angeles",
     musicArtist: ["Flying Lotus"],
     recordingStyle: ["studio"],
@@ -562,7 +562,7 @@ export const musicItemsDataset: Array<MusicItemData> = [
     collectionType: "album",
     thumbnailHref:
       "https://m.media-amazon.com/images/I/71bsHTr6idL._AC_UY436_FMwebp_QL65_.jpg",
-    musicYear: 2001,
+    musicYear: "2001",
     musicName: "Discovery",
     musicArtist: ["Daft Punk"],
     recordingStyle: ["studio"],
@@ -588,7 +588,7 @@ export const musicItemsDataset: Array<MusicItemData> = [
     collectionType: "album",
     thumbnailHref:
       "https://m.media-amazon.com/images/I/71lpRjtW+YL._AC_UY436_FMwebp_QL65_.jpg",
-    musicYear: 2018,
+    musicYear: "2018",
     musicName: "Con Todo El Mundo",
     musicArtist: ["Khruangbin"],
     recordingStyle: ["studio"],
@@ -615,7 +615,7 @@ export const musicItemsDataset: Array<MusicItemData> = [
     collectionType: "album",
     thumbnailHref:
       "https://m.media-amazon.com/images/I/81D9t2wdqiL._AC_UY436_FMwebp_QL65_.jpg",
-    musicYear: 1983,
+    musicYear: "1983",
     musicName: "Speaking in Tongues",
     musicArtist: ["Talking Heads"],
     recordingStyle: ["studio"],
@@ -642,7 +642,7 @@ export const musicItemsDataset: Array<MusicItemData> = [
     collectionType: "album",
     thumbnailHref:
       "https://m.media-amazon.com/images/I/61lPDPdkfYL._UX500_FMwebp_QL85_.jpg",
-    musicYear: 2017,
+    musicYear: "2017",
     musicName: "Witches Stew",
     musicArtist: ["Lettuce"],
     recordingStyle: ["live"],
@@ -668,7 +668,7 @@ export const musicItemsDataset: Array<MusicItemData> = [
     collectionType: "album",
     thumbnailHref:
       "https://m.media-amazon.com/images/I/41JbqQVjLkL._UX500_FMwebp_QL85_.jpg",
-    musicYear: 2016,
+    musicYear: "2016",
     musicName: "Blonde",
     musicArtist: ["Frank Ocean"],
     recordingStyle: ["studio"],
@@ -694,7 +694,7 @@ export const musicItemsDataset: Array<MusicItemData> = [
     collectionType: "album",
     thumbnailHref:
       "https://m.media-amazon.com/images/I/61l+GoCpryL._UX500_FMwebp_QL85_.jpg",
-    musicYear: 2018,
+    musicYear: "2018",
     musicName: "Little Dark Age",
     musicArtist: ["MGMT"],
     recordingStyle: ["studio"],
@@ -721,7 +721,7 @@ export const musicItemsDataset: Array<MusicItemData> = [
     collectionType: "album",
     thumbnailHref:
       "https://m.media-amazon.com/images/I/61Zt+yZ1coL._UX500_FMwebp_QL85_.jpg",
-    musicYear: 2015,
+    musicYear: "2015",
     musicName: "Choose Your Weapon",
     musicArtist: ["Hiatus Kaiyote"],
     recordingStyle: ["studio"],
@@ -748,7 +748,7 @@ export const musicItemsDataset: Array<MusicItemData> = [
     collectionType: "album",
     thumbnailHref:
       "https://m.media-amazon.com/images/I/51N5HSJz9MS._UX500_FMwebp_QL85_.jpg",
-    musicYear: 2017,
+    musicYear: "2017",
     musicName: "Mister Mellow",
     musicArtist: ["Washed Out"],
     recordingStyle: ["studio"],
@@ -774,7 +774,7 @@ export const musicItemsDataset: Array<MusicItemData> = [
     collectionType: "album",
     thumbnailHref:
       "https://m.media-amazon.com/images/I/41jm4pUABmL._UX500_FMwebp_QL85_.jpg",
-    musicYear: 2015,
+    musicYear: "2015",
     musicName: "STUDIO",
     musicArtist: ["Benny Sings"],
     recordingStyle: ["studio"],
@@ -800,7 +800,7 @@ export const musicItemsDataset: Array<MusicItemData> = [
     collectionType: "album",
     thumbnailHref:
       "https://is2-ssl.mzstatic.com/image/thumb/Video112/v4/fc/1b/b5/fc1bb5f1-252f-24a3-53d3-38753dcbb135/Job23508cff-ee56-4c24-9025-020e49851f71-132680369-PreviewImage_preview_image_nonvideo_sdr-Time1654619187377.png/540x540bb.webp",
-    musicYear: 2017,
+    musicYear: "2017",
     musicName: "Ctrl",
     musicArtist: ["SZA"],
     recordingStyle: ["studio"],
@@ -826,7 +826,7 @@ export const musicItemsDataset: Array<MusicItemData> = [
     collectionType: "album",
     thumbnailHref:
       "https://is2-ssl.mzstatic.com/image/thumb/Music113/v4/dc/2a/14/dc2a1483-015c-2959-994a-d92786b2d2a9/cover.jpg/540x540bb.webp",
-    musicYear: 1997,
+    musicYear: "1997",
     musicName: "Overcast!",
     musicArtist: ["Atmosphere"],
     recordingStyle: ["studio"],
@@ -852,7 +852,7 @@ export const musicItemsDataset: Array<MusicItemData> = [
     collectionType: "album",
     thumbnailHref:
       "https://m.media-amazon.com/images/I/41EF0hxIr6L._UX500_FMwebp_QL85_.jpg",
-    musicYear: 1996,
+    musicYear: "1996",
     musicName: "The Score",
     musicArtist: ["Fugees"],
     recordingStyle: ["studio"],
@@ -878,7 +878,7 @@ export const musicItemsDataset: Array<MusicItemData> = [
     collectionType: "album",
     thumbnailHref:
       "https://m.media-amazon.com/images/I/51XQywmFasL._UX500_FMwebp_QL85_.jpg",
-    musicYear: 2013,
+    musicYear: "2013",
     musicName: "Evil Friends",
     musicArtist: ["Portugal. The Man"],
     recordingStyle: ["studio"],
@@ -904,7 +904,7 @@ export const musicItemsDataset: Array<MusicItemData> = [
     collectionType: "album",
     thumbnailHref:
       "https://m.media-amazon.com/images/I/812op+rEfKL._AA256._SX354_SY354_BL0_QL100__UX500_FMwebp_QL85_.jpg",
-    musicYear: 2008,
+    musicYear: "2008",
     musicName: "Flight of the Conchords",
     musicArtist: ["Flight of the Conchords"],
     recordingStyle: ["studio"],
@@ -931,7 +931,7 @@ export const musicItemsDataset: Array<MusicItemData> = [
     collectionType: "album",
     thumbnailHref:
       "https://m.media-amazon.com/images/I/51Jx+T890oL._UX500_FMwebp_QL85_.jpg",
-    musicYear: 1967,
+    musicYear: "1967",
     musicName: "The Doors",
     musicArtist: ["The Doors"],
     recordingStyle: ["studio"],
@@ -957,7 +957,7 @@ export const musicItemsDataset: Array<MusicItemData> = [
     collectionType: "album",
     thumbnailHref:
       "https://is1-ssl.mzstatic.com/image/thumb/Features/70/0a/9f/dj.dnkdzyhk.jpg/1000x1000bf.webp",
-    musicYear: 1962,
+    musicYear: "1962",
     musicName: "Le Sacre du Printemps",
     musicArtist: ["Igor Stravinsky"],
     recordingStyle: ["live"],
@@ -982,7 +982,7 @@ export const musicItemsDataset: Array<MusicItemData> = [
     collectionType: "album",
     thumbnailHref:
       "https://m.media-amazon.com/images/I/41e6DSuUdDL._UX500_FMwebp_QL85_.jpg",
-    musicYear: 2020,
+    musicYear: "2020",
     musicName: "Adult Themes",
     musicArtist: ["El Michels Affair"],
     recordingStyle: ["studio"],
@@ -1008,7 +1008,7 @@ export const musicItemsDataset: Array<MusicItemData> = [
     collectionType: "album",
     thumbnailHref:
       "https://m.media-amazon.com/images/I/813SCblk8XL._AA256._SX354_SY354_BL0_QL100__UX500_FMwebp_QL85_.jpg",
-    musicYear: 2013,
+    musicYear: "2013",
     musicName: "No Better Time Than Now",
     musicArtist: ["Shigeto"],
     recordingStyle: ["studio"],
@@ -1034,7 +1034,7 @@ export const musicItemsDataset: Array<MusicItemData> = [
     sourceType: "song",
     thumbnailHref:
       "https://m.media-amazon.com/images/I/41D+IHLrtNL._UX500_FMwebp_QL85_.jpg",
-    musicYear: 2017,
+    musicYear: "2017",
     musicName: "Whitehouse Road",
     musicArtist: ["Tyler Childers"],
     recordingStyle: ["concert"],
@@ -1051,7 +1051,7 @@ export const musicItemsDataset: Array<MusicItemData> = [
     sourceType: "song",
     thumbnailHref:
       "https://m.media-amazon.com/images/I/61XofOaiGNL._UX500_FMwebp_QL85_.jpg",
-    musicYear: 2006,
+    musicYear: "2006",
     musicName: "Girlfriend is Better",
     musicArtist: ["Yonder Mountain String Band", "Talking Heads"],
     recordingStyle: ["concert"],

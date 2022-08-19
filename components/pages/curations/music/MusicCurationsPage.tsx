@@ -223,8 +223,8 @@ function MusicItem(props: MusicItemProps) {
           musicLabels={musicArtist}
         />
         <MusicItemLabelList
-          accessibilityLabel={"music type"}
-          musicLabels={[musicType, `${musicYear}`]}
+          accessibilityLabel={"music context"}
+          musicLabels={[musicType, musicYear]}
         />
         <MusicItemLabelList
           accessibilityLabel={"music tags"}

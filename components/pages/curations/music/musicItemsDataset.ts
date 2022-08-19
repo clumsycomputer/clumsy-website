@@ -762,4 +762,262 @@ export const musicItemsDataset: Array<MusicItemData> = [
       }),
     ],
   },
+  {
+    itemId: 31,
+    itemType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    thumbnailHref:
+      "https://is2-ssl.mzstatic.com/image/thumb/Video112/v4/fc/1b/b5/fc1bb5f1-252f-24a3-53d3-38753dcbb135/Job23508cff-ee56-4c24-9025-020e49851f71-132680369-PreviewImage_preview_image_nonvideo_sdr-Time1654619187377.png/540x540bb.webp",
+    musicName: "Ctrl",
+    musicArtist: ["SZA"],
+    recordingStyle: ["studio"],
+    musicTags: ["pop", "r&b"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_nc7f_y7E_3cXhJmMkV8yq9CU2iqpnooug&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/76290XdXVF9rPzGdNRWdCh?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref: "https://music.apple.com/br/album/ctrl/1239976329",
+      }),
+    ],
+  },
+  {
+    itemId: 32,
+    itemType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    thumbnailHref:
+      "https://is2-ssl.mzstatic.com/image/thumb/Music113/v4/dc/2a/14/dc2a1483-015c-2959-994a-d92786b2d2a9/cover.jpg/540x540bb.webp",
+    musicName: "Overcast!",
+    musicArtist: ["Atmosphere"],
+    recordingStyle: ["studio"],
+    musicTags: ["hip-hop", "rap"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/watch?v=7i3wE2M1BBI&list=OLAK5uy_l6ka6bY5unpGPgYZhsNDDGRZmLJQGGkL4",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/30qOEMzZYtb5VJYk5cRKxS?si=SFj5Gjh_S3urZBu-4dQlkA?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref: "https://music.apple.com/br/album/overcast/1516916379",
+      }),
+    ],
+  },
+  {
+    itemId: 33,
+    itemType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    thumbnailHref:
+      "https://m.media-amazon.com/images/I/41EF0hxIr6L._UX500_FMwebp_QL85_.jpg",
+    musicName: "The Score",
+    musicArtist: ["Fugees"],
+    recordingStyle: ["studio"],
+    musicTags: ["hip-hop", "rap"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_ljAN3FWIIkF0zqP_32xyMpC5WrheadLAQ&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/4z6F5s3RVaOsekuaegbLfD?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref: "https://music.apple.com/br/album/the-score/281701670",
+      }),
+    ],
+  },
+  {
+    itemId: 34,
+    itemType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    thumbnailHref:
+      "https://m.media-amazon.com/images/I/51XQywmFasL._UX500_FMwebp_QL85_.jpg",
+    musicName: "Evil Friends",
+    musicArtist: ["Portugal. The Man"],
+    recordingStyle: ["studio"],
+    musicTags: ["rock"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_k1SkzsVL3L_X97PnTRlRJg4GQBRJAWLos&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/6VoOCCv0bXPrTHDncJyIgF?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref: "https://music.apple.com/br/album/evil-friends/613557623",
+      }),
+    ],
+  },
+  {
+    itemId: 35,
+    itemType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    thumbnailHref:
+      "https://m.media-amazon.com/images/I/812op+rEfKL._AA256._SX354_SY354_BL0_QL100__UX500_FMwebp_QL85_.jpg",
+    musicName: "Flight of the Conchords",
+    musicArtist: ["Flight of the Conchords"],
+    recordingStyle: ["studio"],
+    musicTags: ["parody"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_lmWE5WDOJdEPaDEuFWW78-MsDjeRp5LN8&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/0YFBrqatMlyDCqqYhhoizO?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref:
+          "https://music.apple.com/br/album/flight-of-the-conchords/278064216",
+      }),
+    ],
+  },
+  {
+    itemId: 36,
+    itemType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    thumbnailHref:
+      "https://m.media-amazon.com/images/I/51Jx+T890oL._UX500_FMwebp_QL85_.jpg",
+    musicName: "The Doors",
+    musicArtist: ["The Doors"],
+    recordingStyle: ["studio"],
+    musicTags: ["rock"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/watch?v=NFeUko-lQHg&list=OLAK5uy_mx98OhRuCf1iPS49rGdS-PxBTvjXdlU6I",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/1jWmEhn3ggaL6isoyLfwBn?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref: "https://music.apple.com/br/album/the-doors/1622368510",
+      }),
+    ],
+  },
+  {
+    itemId: 37,
+    itemType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    thumbnailHref:
+      "https://is1-ssl.mzstatic.com/image/thumb/Features/70/0a/9f/dj.dnkdzyhk.jpg/1000x1000bf.webp",
+    musicName: "Le Sacre du Printemps",
+    musicArtist: ["Igor Stravinsky"],
+    recordingStyle: ["live"],
+    musicTags: ["atonal", "classic"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref: "https://m.youtube.com/watch?v=Q3SvnwGVem4",
+      }),
+      getSpotifyLinkData({
+        spotifyHref: "https://open.spotify.com/album/4JSlgU7UYZWKuYspYvP00h",
+      }),
+      getAppleLinkData({
+        appleHref:
+          "https://music.apple.com/br/album/stravinsky-conducts-le-sacre-du-printemps-rite-spring/257253660",
+      }),
+    ],
+  },
+  {
+    itemId: 38,
+    itemType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    thumbnailHref:
+      "https://m.media-amazon.com/images/I/41e6DSuUdDL._UX500_FMwebp_QL85_.jpg",
+    musicName: "Adult Themes",
+    musicArtist: ["El Michels Affair"],
+    recordingStyle: ["studio"],
+    musicTags: ["jazz"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_mFc2D3li3lEnZGOa5sPoYsoYdLdgAHSS8&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/2btMPVa8QYYO6japUqGsZl?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref: "https://music.apple.com/br/album/adult-themes/1497327175",
+      }),
+    ],
+  },
+  {
+    itemId: 39,
+    itemType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    thumbnailHref:
+      "https://m.media-amazon.com/images/I/813SCblk8XL._AA256._SX354_SY354_BL0_QL100__UX500_FMwebp_QL85_.jpg",
+    musicName: "No Better Time Than Now",
+    musicArtist: ["Shigeto"],
+    recordingStyle: ["studio"],
+    musicTags: ["electronic", "jazz"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_noKjXkmoXHZpg3PiwVvfOYJMIgKMSYdW8&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/62tmAcovHK4IMrHxNO3h0s?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref:
+          "https://music.apple.com/br/album/no-better-time-than-now/661873896",
+      }),
+    ],
+  },
+  {
+    itemId: 40,
+    itemType: "source",
+    sourceType: "song",
+    thumbnailHref:
+      "https://m.media-amazon.com/images/I/41D+IHLrtNL._UX500_FMwebp_QL85_.jpg",
+    musicName: "Whitehouse Road",
+    musicArtist: ["Tyler Childers"],
+    recordingStyle: ["concert"],
+    musicTags: ["canyon", "country"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref: "https://m.youtube.com/watch?v=WtVrDud1gZM",
+      }),
+    ],
+  },
+  {
+    itemId: 40,
+    itemType: "source",
+    sourceType: "song",
+    thumbnailHref:
+      "https://m.media-amazon.com/images/I/61XofOaiGNL._UX500_FMwebp_QL85_.jpg",
+    musicName: "Girlfriend is Better",
+    musicArtist: ["Yonder Mountain String Band", "Talking Heads"],
+    recordingStyle: ["concert"],
+    musicTags: ["cover", "bluegrass"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref: "https://www.youtube.com/watch?v=7Owzmf9vp3E",
+      }),
+    ],
+  },
 ];

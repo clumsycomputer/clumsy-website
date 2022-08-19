@@ -8,12 +8,32 @@ import { MusicItemData } from "./common/models";
 import styles from "./MusicCurationsPage.module.scss";
 import { musicItemsDataset } from "./musicItemsDataset";
 
-export const MusicCurationsPage: NextPage = () => {
+export function getStaticProps() {
+  return {
+    props: {
+      randomlySortedMusicItemsDataset: musicItemsDataset
+        .map((value) => ({ value, sort: Math.random() }))
+        .sort((a, b) => a.sort - b.sort)
+        .map(({ value }) => value),
+    },
+  };
+}
+
+export interface MusicCurationsPageProps {
+  randomlySortedMusicItemsDataset: Array<MusicItemData>;
+}
+
+export const MusicCurationsPage: NextPage<MusicCurationsPageProps> = (
+  props: MusicCurationsPageProps
+) => {
+  const { randomlySortedMusicItemsDataset } = props;
   const pageRouter = useRouter();
   const { filteredMusicItemsPage, filteredMusicItemsPageNavigation } =
     useMemo(() => {
       const filteredMusicItemsPageSize = 10;
-      const filteredMusicItems = musicItemsDataset.filter(() => true);
+      const filteredMusicItems = randomlySortedMusicItemsDataset.filter(
+        () => true
+      );
       const filteredMusicItemsPageCount = Math.ceil(
         filteredMusicItems.length / filteredMusicItemsPageSize
       );

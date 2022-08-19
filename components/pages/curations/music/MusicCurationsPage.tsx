@@ -102,6 +102,7 @@ export const MusicCurationsPage: NextPage<MusicCurationsPageProps> = (
         {filteredMusicItemsPage.map((someMusicItemData) => (
           <MusicItem
             key={someMusicItemData.itemId}
+            musicYear={someMusicItemData.musicYear}
             musicName={someMusicItemData.musicName}
             musicArtist={someMusicItemData.musicArtist}
             musicTags={someMusicItemData.musicTags}
@@ -132,6 +133,7 @@ export const MusicCurationsPage: NextPage<MusicCurationsPageProps> = (
 interface MusicItemProps
   extends Pick<
     MusicItemData,
+    | "musicYear"
     | "musicName"
     | "musicArtist"
     | "musicTags"
@@ -148,6 +150,7 @@ function MusicItem(props: MusicItemProps) {
     musicName,
     musicArtist,
     musicType,
+    musicYear,
     musicTags,
   } = props;
   return (
@@ -221,7 +224,7 @@ function MusicItem(props: MusicItemProps) {
         />
         <MusicItemLabelList
           accessibilityLabel={"music type"}
-          musicLabels={[musicType]}
+          musicLabels={[musicType, `${musicYear}`]}
         />
         <MusicItemLabelList
           accessibilityLabel={"music tags"}

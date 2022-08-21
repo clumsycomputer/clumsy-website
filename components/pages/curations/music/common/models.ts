@@ -9,7 +9,7 @@ type WholeMusicItemData =
   | CollectionMusicItemData
   | MixMusicItemData;
 
-interface SongMusicItemData extends SourceMusicItemBase<"song"> {}
+interface SongMusicItemData extends SourceMusicItemBase<"track"> {}
 
 type CollectionMusicItemData =
   | SingleMusicItemData
@@ -53,7 +53,7 @@ interface MusicItemBase<
   itemId: number;
   itemType: ItemType;
   thumbnailHref: string;
-  musicName: string;
+  musicTitle: string;
   musicYear: string;
   musicArtist: Array<string>;
   musicTags: Array<string>;

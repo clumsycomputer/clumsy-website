@@ -1,7 +1,7 @@
 import { NextPage } from "next";
 import Link from "next/link";
-import { useRouter } from "next/router";
-import { ReactNode, useMemo } from "react";
+import { NextRouter, useRouter } from "next/router";
+import { ReactNode, useEffect, useMemo, useState } from "react";
 import { NavigationFooter } from "../../../common/NavigationFooter/NavigationFooter";
 import { Page } from "../../../common/Page/Page";
 import { MusicItemData } from "./common/models";
@@ -11,45 +11,93 @@ import { musicItemsDataset } from "./musicItemsDataset";
 export function getStaticProps() {
   return {
     props: {
-      randomlySortedMusicItemsDataset: musicItemsDataset
-        .map((value) => ({ value, sort: Math.random() }))
-        .sort((a, b) => a.sort - b.sort)
-        .map(({ value }) => value),
+      adjustedMusicItems: musicItemsDataset,
     },
   };
 }
 
 export interface MusicCurationsPageProps {
-  randomlySortedMusicItemsDataset: Array<MusicItemData>;
+  adjustedMusicItems: Array<MusicItemData>;
 }
 
 export const MusicCurationsPage: NextPage<MusicCurationsPageProps> = (
   props: MusicCurationsPageProps
 ) => {
-  const { randomlySortedMusicItemsDataset } = props;
+  const { adjustedMusicItems } = props;
   const pageRouter = useRouter();
+  const pageState = useMemo<MusicCurationsPageState>(() => {
+    return {
+      pageIndex:
+        parseInt(
+          typeof pageRouter.query["pageIndex"] === "string"
+            ? pageRouter.query["pageIndex"]
+            : "wtf?"
+        ) || 1,
+      searchQuery:
+        typeof pageRouter.query["searchQuery"] === "string"
+          ? pageRouter.query["searchQuery"]
+          : "",
+      sortOrder:
+        typeof pageRouter.query["sortOrder"] === "string" &&
+        [
+          "titleAscending",
+          "titleDescending",
+          "artistAscending",
+          "artistDescending",
+          "yearAscending",
+          "yearDescending",
+        ].reduce((sortOrderValid, someValidSortOrder) => {
+          return sortOrderValid
+            ? sortOrderValid
+            : someValidSortOrder === pageRouter.query["sortOrder"];
+        }, false)
+          ? (pageRouter.query[
+              "sortOrder"
+            ] as MusicCurationsPageState["sortOrder"])
+          : "titleAscending",
+    };
+  }, [pageRouter.query]);
   const { filteredMusicItemsPage, filteredMusicItemsPageNavigation } =
     useMemo(() => {
+      const searchQuery =
+        typeof pageRouter.query.searchQuery === "string"
+          ? pageRouter.query.searchQuery
+          : "";
       const filteredMusicItemsPageSize = 10;
-      const filteredMusicItems = randomlySortedMusicItemsDataset.filter(
-        () => true
-      );
-      const filteredMusicItemsPageCount = Math.ceil(
-        filteredMusicItems.length / filteredMusicItemsPageSize
-      );
-      const filteredMusicItemsPageIndexQueryParam =
-        parseInt(
-          typeof pageRouter.query.filteredMusicItemsPageIndex === "string"
-            ? pageRouter.query.filteredMusicItemsPageIndex
-            : "wtf?"
-        ) || -1;
-      const filteredMusicItemsPageIndex =
-        filteredMusicItemsPageIndexQueryParam >= 1 &&
-        filteredMusicItemsPageIndexQueryParam <= filteredMusicItemsPageCount
-          ? filteredMusicItemsPageIndexQueryParam
-          : 1;
+      const filteredMusicItems = adjustedMusicItems
+        .filter((someMusicItemData) =>
+          `${someMusicItemData.musicTitle},${someMusicItemData.musicArtist.join(
+            ","
+          )},${someMusicItemData.musicTags.join(",")},${
+            someMusicItemData.musicYear
+          },${`${someMusicItemData.recordingStyle.join("/")} ${
+            someMusicItemData.sourceType === "collection"
+              ? someMusicItemData.collectionType
+              : someMusicItemData.sourceType
+          }${someMusicItemData.itemType === "clip" ? " clip" : ""}`}`
+            .toLowerCase()
+            .includes(searchQuery.toLowerCase())
+        )
+        .sort((itemA, itemB) => {
+          switch (pageState.sortOrder) {
+            case "titleAscending":
+              return itemA.musicTitle.localeCompare(itemB.musicTitle);
+            case "titleDescending":
+              return itemB.musicTitle.localeCompare(itemA.musicTitle);
+            case "artistAscending":
+              return itemA.musicArtist[0].localeCompare(itemB.musicArtist[0]);
+            case "artistDescending":
+              return itemB.musicArtist[0].localeCompare(itemA.musicArtist[0]);
+            case "yearAscending":
+              return itemA.musicYear.localeCompare(itemB.musicYear);
+            case "yearDescending":
+              return itemB.musicYear.localeCompare(itemA.musicYear);
+          }
+        });
+      const filteredMusicItemsPageCount =
+        Math.ceil(filteredMusicItems.length / filteredMusicItemsPageSize) || 1;
       const filteredMusicItemsItemIndexStart =
-        filteredMusicItemsPageSize * (filteredMusicItemsPageIndex - 1);
+        filteredMusicItemsPageSize * (pageState.pageIndex - 1);
       return {
         filteredMusicItemsPage: filteredMusicItems.slice(
           filteredMusicItemsItemIndexStart,
@@ -57,31 +105,35 @@ export const MusicCurationsPage: NextPage<MusicCurationsPageProps> = (
         ),
         filteredMusicItemsPageNavigation: (
           <FilteredMusicItemsPageNavigation
-            filteredMusicItemsPageIndex={filteredMusicItemsPageIndex}
+            filteredMusicItemsPageIndex={pageState.pageIndex}
             filteredMusicItemsPageCount={filteredMusicItemsPageCount}
             previousPageLink={
-              filteredMusicItemsPageIndex > 1 ? (
+              pageState.pageIndex > 1 ? (
                 <ActiveMusicItemsPageLink
                   relativePageLinkLabel={"prev"}
-                  dataPageHref={`${
-                    pageRouter.route
-                  }?filteredMusicItemsPageIndex=${
-                    filteredMusicItemsPageIndex - 1
-                  }`}
+                  dataPageHref={getUpdatedPageRoute({
+                    pageRouter,
+                    currentState: pageState,
+                    stateUpdates: {
+                      pageIndex: pageState.pageIndex - 1,
+                    },
+                  })}
                 />
               ) : (
                 <DisabledMusicItemsPageLink relativePageLinkLabel={"prev"} />
               )
             }
             nextPageLink={
-              filteredMusicItemsPageIndex < filteredMusicItemsPageCount ? (
+              pageState.pageIndex < filteredMusicItemsPageCount ? (
                 <ActiveMusicItemsPageLink
                   relativePageLinkLabel={"next"}
-                  dataPageHref={`${
-                    pageRouter.route
-                  }?filteredMusicItemsPageIndex=${
-                    filteredMusicItemsPageIndex + 1
-                  }`}
+                  dataPageHref={getUpdatedPageRoute({
+                    pageRouter,
+                    currentState: pageState,
+                    stateUpdates: {
+                      pageIndex: pageState.pageIndex + 1,
+                    },
+                  })}
                 />
               ) : (
                 <DisabledMusicItemsPageLink relativePageLinkLabel={"next"} />
@@ -98,23 +150,130 @@ export const MusicCurationsPage: NextPage<MusicCurationsPageProps> = (
       pageTabTitle={"+ music - clumsycomputer"}
       pageDescription={"a catalog of awesome music"}
     >
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "row-reverse",
+          padding: 12,
+          paddingBottom: 0,
+        }}
+      >
+        <select
+          style={{
+            fontFamily: "monospace",
+            fontSize: 18,
+            paddingLeft: 2,
+            paddingRight: 8,
+            borderColor: "#EEEEEE",
+            borderStyle: "solid",
+            borderRadius: 3,
+            borderWidth: 1.5,
+          }}
+          value={pageState.sortOrder}
+          onChange={(someChangeEvent) => {
+            pageRouter.push(
+              getUpdatedPageRoute({
+                pageRouter,
+                currentState: pageState,
+                stateUpdates: {
+                  sortOrder: someChangeEvent.currentTarget
+                    .value as MusicCurationsPageState["sortOrder"],
+                  pageIndex: 1,
+                },
+              }),
+              undefined,
+              {
+                shallow: true,
+              }
+            );
+          }}
+        >
+          <option value="titleAscending">title: a → z</option>
+          <option value="titleDescending">title: z → a</option>
+          <option value="artistAscending">artist: a → z</option>
+          <option value="artistDescending">artist: z → a</option>
+          <option value="yearDescending">year: newest</option>
+          <option value="yearAscending">year: oldest</option>
+        </select>
+      </div>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          padding: 12,
+          paddingTop: 8,
+          paddingBottom: 18,
+        }}
+      >
+        <input
+          style={{
+            minWidth: 0,
+            flexShrink: 1,
+            flexGrow: 1,
+            fontFamily: "monospace",
+            fontSize: 18,
+            paddingLeft: 4,
+            borderColor: "#EEEEEE",
+            borderStyle: "solid",
+            borderRadius: 3,
+            borderWidth: 1.5,
+          }}
+          type={"search"}
+          placeholder={"search music"}
+          value={pageState.searchQuery}
+          onChange={(someChangeEvent) => {
+            pageRouter.push(
+              getUpdatedPageRoute({
+                pageRouter,
+                currentState: pageState,
+                stateUpdates: {
+                  searchQuery: someChangeEvent.currentTarget.value,
+                  pageIndex: 1,
+                },
+              }),
+              undefined,
+              {
+                shallow: true,
+              }
+            );
+          }}
+        />
+      </div>
       <div className={styles.musicItemsContainer} role={"list"}>
-        {filteredMusicItemsPage.map((someMusicItemData) => (
-          <MusicItem
-            key={someMusicItemData.itemId}
-            musicYear={someMusicItemData.musicYear}
-            musicName={someMusicItemData.musicName}
-            musicArtist={someMusicItemData.musicArtist}
-            musicTags={someMusicItemData.musicTags}
-            thumbnailHref={someMusicItemData.thumbnailHref}
-            externalLinks={someMusicItemData.externalLinks}
-            musicType={`${someMusicItemData.recordingStyle.join("/")} ${
-              someMusicItemData.sourceType === "collection"
-                ? someMusicItemData.collectionType
-                : someMusicItemData.sourceType
-            }${someMusicItemData.itemType === "clip" ? " (clip)" : ""}`}
-          />
-        ))}
+        {filteredMusicItemsPage.length > 0 ? (
+          filteredMusicItemsPage.map((someMusicItemData) => (
+            <MusicItem
+              key={someMusicItemData.itemId}
+              musicTitle={someMusicItemData.musicTitle}
+              musicArtist={someMusicItemData.musicArtist}
+              musicTags={someMusicItemData.musicTags}
+              thumbnailHref={someMusicItemData.thumbnailHref}
+              externalLinks={someMusicItemData.externalLinks}
+              musicContext={`${
+                someMusicItemData.musicYear
+              } ${someMusicItemData.recordingStyle.join("/")} ${
+                someMusicItemData.sourceType === "collection"
+                  ? someMusicItemData.collectionType
+                  : someMusicItemData.sourceType
+              }${someMusicItemData.itemType === "clip" ? " (clip)" : ""}`}
+            />
+          ))
+        ) : (
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              fontSize: 18,
+              fontWeight: 600,
+              fontStyle: "italic",
+              color: "#CCCCCC",
+              padding: 32,
+              paddingTop: 24,
+            }}
+          >
+            no items match
+          </div>
+        )}
       </div>
       {filteredMusicItemsPageNavigation}
       <NavigationFooter
@@ -130,27 +289,62 @@ export const MusicCurationsPage: NextPage<MusicCurationsPageProps> = (
   );
 };
 
+interface MusicCurationsPageState {
+  pageIndex: number;
+  sortOrder:
+    | "titleAscending"
+    | "titleDescending"
+    | "artistAscending"
+    | "artistDescending"
+    | "yearAscending"
+    | "yearDescending";
+  searchQuery: string;
+}
+
+interface GetUpdatedPageRouteApi {
+  pageRouter: NextRouter;
+  currentState: MusicCurationsPageState;
+  stateUpdates: Partial<MusicCurationsPageState>;
+}
+
+function getUpdatedPageRoute(api: GetUpdatedPageRouteApi) {
+  const { pageRouter, stateUpdates, currentState } = api;
+  return `${pageRouter.route}?pageIndex=${
+    stateUpdates.pageIndex || currentState.pageIndex
+  }&sortOrder=${
+    stateUpdates.sortOrder !== undefined
+      ? stateUpdates.sortOrder
+      : currentState.sortOrder
+  }${
+    stateUpdates.searchQuery !== undefined && stateUpdates.searchQuery !== ""
+      ? `&searchQuery=${stateUpdates.searchQuery}`
+      : stateUpdates.searchQuery === undefined &&
+        currentState.searchQuery &&
+        currentState.searchQuery !== ""
+      ? `&searchQuery=${currentState.searchQuery}`
+      : ""
+  }`;
+}
+
 interface MusicItemProps
   extends Pick<
     MusicItemData,
-    | "musicYear"
-    | "musicName"
+    | "musicTitle"
     | "musicArtist"
     | "musicTags"
     | "thumbnailHref"
     | "externalLinks"
   > {
-  musicType: string;
+  musicContext: string;
 }
 
 function MusicItem(props: MusicItemProps) {
   const {
     thumbnailHref,
     externalLinks,
-    musicName,
+    musicTitle,
     musicArtist,
-    musicType,
-    musicYear,
+    musicContext,
     musicTags,
   } = props;
   return (
@@ -167,7 +361,7 @@ function MusicItem(props: MusicItemProps) {
               viewBox={"0 0 100 100"}
               role={"img"}
             >
-              <title>{`${musicName}: thumbnail image`}</title>
+              <title>{`${musicTitle}: thumbnail image`}</title>
               <rect
                 x={0}
                 y={0}
@@ -215,8 +409,8 @@ function MusicItem(props: MusicItemProps) {
       </div>
       <div className={styles.musicItemLabelsContainer} role={"group"}>
         <MusicItemLabelList
-          accessibilityLabel={"music name"}
-          musicLabels={[musicName]}
+          accessibilityLabel={"music title"}
+          musicLabels={[musicTitle]}
         />
         <MusicItemLabelList
           accessibilityLabel={"music artist"}
@@ -224,7 +418,7 @@ function MusicItem(props: MusicItemProps) {
         />
         <MusicItemLabelList
           accessibilityLabel={"music context"}
-          musicLabels={[musicType, musicYear]}
+          musicLabels={[musicContext]}
         />
         <MusicItemLabelList
           accessibilityLabel={"music tags"}

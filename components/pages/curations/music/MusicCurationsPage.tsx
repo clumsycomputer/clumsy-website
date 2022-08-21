@@ -162,12 +162,12 @@ export const MusicCurationsPage: NextPage<MusicCurationsPageProps> = (
           style={{
             fontFamily: "monospace",
             fontSize: 18,
-            paddingLeft: 2,
             paddingRight: 8,
             borderColor: "#EEEEEE",
             borderStyle: "solid",
             borderRadius: 3,
             borderWidth: 1.5,
+            fontWeight: 600,
           }}
           value={pageState.sortOrder}
           onChange={(someChangeEvent) => {
@@ -217,6 +217,7 @@ export const MusicCurationsPage: NextPage<MusicCurationsPageProps> = (
             borderStyle: "solid",
             borderRadius: 3,
             borderWidth: 1.5,
+            fontWeight: 600,
           }}
           type={"search"}
           placeholder={"search music"}

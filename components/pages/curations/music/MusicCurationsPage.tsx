@@ -143,7 +143,7 @@ export const MusicCurationsPage: NextPage<MusicCurationsPageProps> = (
           />
         ),
       };
-    }, [pageRouter.query]);
+    }, [pageRouter.query, pageState, pageRouter, adjustedMusicItems]);
   return (
     <Page
       pageContentContainerClassname={styles.pageContentContainer}
@@ -376,6 +376,7 @@ function SortSelect(props: SortSelectProps) {
           ] as Array<MusicCurationsPageState["sortOrder"]>
         ).map((someSortOrder) => (
           <div
+            key={someSortOrder}
             style={{
               display: "flex",
               flexDirection: "row",

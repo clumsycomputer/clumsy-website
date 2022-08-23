@@ -1,6 +1,6 @@
 import { Fragment, ReactNode } from "react";
-import { DocumentSectionBase } from "../../../common/Document/DocumentSectionBase";
-import { DocumentSectionContent } from "../../../common/Document/DocumentSectionContent";
+import { DocumentSectionBase } from "../../../../common/Document/DocumentSectionBase";
+import { DocumentSectionContent } from "../../../../common/Document/DocumentSectionContent";
 
 export interface ResumeHeaderSectionProps {
   fullName: string;

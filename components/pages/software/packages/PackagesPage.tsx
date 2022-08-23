@@ -1,11 +1,11 @@
 import { NextPage } from "next";
-import { DocumentPage } from "../../common/Document/DocumentPage";
-import { NavigationFooter } from "../../common/NavigationFooter/NavigationFooter";
+import { DocumentPage } from "../../../common/Document/DocumentPage";
+import { NavigationFooter } from "../../../common/NavigationFooter/NavigationFooter";
 import { SoftwareHeaderSection } from "./components/SoftwareHeaderSection";
 import { SoftwareProjectSection } from "./components/SoftwareProjectSection";
 
 export const SoftwarePage: NextPage = () => (
-  <_SoftwarePage pageTitle={"open-source"} fullName={"jared mathews"} />
+  <_SoftwarePage pageTitle={"packages"} fullName={"jared mathews"} />
 );
 
 interface _SoftwarePageProps {
@@ -31,10 +31,8 @@ function _SoftwarePage(props: _SoftwarePageProps) {
       />
       <SoftwareProjectSection
         projectName={"clumsy-graphics"}
-        repositoryHref={
-          "https://github.com/clumsycomputer/clumsy-graphics#readme"
-        }
-        packageHref={"https://www.npmjs.com/package/clumsy-graphics"}
+        githubHref={"https://github.com/clumsycomputer/clumsy-graphics#readme"}
+        npmHref={"https://www.npmjs.com/package/clumsy-graphics"}
         projectDescription={
           "a tool for rapidly developing animations where frames are described using svg elements à la react (:"
         }
@@ -55,8 +53,8 @@ function _SoftwarePage(props: _SoftwarePageProps) {
       />
       <SoftwareProjectSection
         projectName={"clumsy-math"}
-        repositoryHref={"https://github.com/clumsycomputer/clumsy-math#readme"}
-        packageHref={"https://www.npmjs.com/package/clumsy-math"}
+        githubHref={"https://github.com/clumsycomputer/clumsy-math#readme"}
+        npmHref={"https://www.npmjs.com/package/clumsy-math"}
         projectDescription={"a little library of helpful math utensils :)"}
         projectRoadmap={[
           "add utilities for working with prime numbers",
@@ -69,8 +67,8 @@ function _SoftwarePage(props: _SoftwarePageProps) {
       <NavigationFooter
         routeLinks={[
           { routeName: "home", routeHref: "/" },
-          { routeName: "resume", routeHref: "/resume" },
-          { routeName: "graphics", routeHref: "/graphics" },
+          { routeName: "resume", routeHref: "/software/resume" },
+          { routeName: "graphics", routeHref: "/art/graphics" },
           { routeName: "- music +", routeHref: "/curations/music" },
         ]}
         pdfLink={null}

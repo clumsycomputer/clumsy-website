@@ -316,9 +316,9 @@ export const MusicCurationsPage: NextPage<MusicCurationsPageProps> = (
       <NavigationFooter
         routeLinks={[
           { routeName: "home", routeHref: "/" },
-          { routeName: "software", routeHref: "/software" },
-          { routeName: "resume", routeHref: "/resume" },
-          { routeName: "graphics", routeHref: "/graphics" },
+          { routeName: "packages", routeHref: "/software/packages" },
+          { routeName: "resume", routeHref: "/software/resume" },
+          { routeName: "graphics", routeHref: "/art/graphics" },
         ]}
         pdfLink={null}
       />

@@ -1,9 +1,9 @@
 import type { NextPage } from "next";
 import Link from "next/link";
 import { Fragment, ReactNode } from "react";
-import { DocumentPage } from "../../common/Document/DocumentPage";
-import { NavigationFooter } from "../../common/NavigationFooter/NavigationFooter";
-import { PdfLink } from "../../common/NavigationFooter/PdfLink";
+import { DocumentPage } from "../../../common/Document/DocumentPage";
+import { NavigationFooter } from "../../../common/NavigationFooter/NavigationFooter";
+import { PdfLink } from "../../../common/NavigationFooter/PdfLink";
 import { ResumeHeaderSection } from "./common/ResumeHeaderSection";
 import { ResumeJobSection } from "./common/ResumeJobSection";
 import { ResumeSchoolSection } from "./common/ResumeSchoolSection";
@@ -11,13 +11,13 @@ import { ResumeSchoolSection } from "./common/ResumeSchoolSection";
 export const ResumePage: NextPage = () => {
   return (
     <ResumePageBase
-      softwarePageHref={"/software"}
+      softwarePageHref={"/software/packages"}
       navigationFooter={
         <NavigationFooter
           routeLinks={[
             { routeName: "home", routeHref: "/" },
-            { routeName: "software", routeHref: "/software" },
-            { routeName: "graphics", routeHref: "/graphics" },
+            { routeName: "packages", routeHref: "/software/packages" },
+            { routeName: "graphics", routeHref: "/art/graphics" },
             { routeName: "- music +", routeHref: "/curations/music" },
           ]}
           pdfLink={<PdfLink pdfHref={"/pdfs/resume.pdf"} />}

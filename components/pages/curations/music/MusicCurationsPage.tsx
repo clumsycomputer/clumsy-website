@@ -1,7 +1,8 @@
 import { NextPage } from "next";
 import Link from "next/link";
 import { NextRouter, useRouter } from "next/router";
-import { ReactNode, useEffect, useMemo, useState } from "react";
+import { Fragment, ReactNode, useEffect, useMemo, useState } from "react";
+import { usePopper } from "react-popper";
 import { NavigationFooter } from "../../../common/NavigationFooter/NavigationFooter";
 import { Page } from "../../../common/Page/Page";
 import { MusicItemData } from "./common/models";
@@ -153,71 +154,56 @@ export const MusicCurationsPage: NextPage<MusicCurationsPageProps> = (
       <div
         style={{
           display: "flex",
-          flexDirection: "row-reverse",
+          flexDirection: "column",
           padding: 12,
-          paddingBottom: 0,
         }}
       >
-        <select
+        <div
           style={{
-            fontFamily: "monospace",
-            fontSize: 18,
-            paddingRight: 8,
-            borderColor: "#EEEEEE",
-            borderStyle: "solid",
-            borderRadius: 3,
-            borderWidth: 1.5,
-            fontWeight: 600,
-          }}
-          value={pageState.sortOrder}
-          onChange={(someChangeEvent) => {
-            pageRouter.push(
-              getUpdatedPageRoute({
-                pageRouter,
-                currentState: pageState,
-                stateUpdates: {
-                  sortOrder: someChangeEvent.currentTarget
-                    .value as MusicCurationsPageState["sortOrder"],
-                  pageIndex: 1,
-                },
-              }),
-              undefined,
-              {
-                shallow: true,
-              }
-            );
+            display: "flex",
+            flexDirection: "row-reverse",
+            paddingBottom: 8,
           }}
         >
-          <option value="titleAscending">title: a → z</option>
-          <option value="titleDescending">title: z → a</option>
-          <option value="artistAscending">artist: a → z</option>
-          <option value="artistDescending">artist: z → a</option>
-          <option value="yearDescending">year: newest</option>
-          <option value="yearAscending">year: oldest</option>
-        </select>
-      </div>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          padding: 12,
-          paddingTop: 8,
-          paddingBottom: 18,
-        }}
-      >
+          <SortSelect
+            sortOrder={pageState.sortOrder}
+            onChange={(nextSortOrder) => {
+              pageRouter.push(
+                getUpdatedPageRoute({
+                  pageRouter,
+                  currentState: pageState,
+                  stateUpdates: {
+                    sortOrder: nextSortOrder,
+                  },
+                }),
+                undefined,
+                {
+                  shallow: true,
+                }
+              );
+            }}
+          />
+        </div>
         <input
+          className={styles.searchInput}
           style={{
+            padding: 0,
+            appearance: "textfield",
+            WebkitAppearance: "textfield",
+            margin: 0,
             minWidth: 0,
             flexShrink: 1,
             flexGrow: 1,
             fontFamily: "monospace",
             fontSize: 18,
-            paddingLeft: 4,
-            borderColor: "#EEEEEE",
+            borderColor: "black",
             borderStyle: "solid",
             borderRadius: 3,
             borderWidth: 1.5,
             fontWeight: 600,
+            fontStyle: "italic",
+            paddingBlock: 1,
+            paddingInline: 4,
           }}
           type={"search"}
           placeholder={"search music"}
@@ -289,6 +275,158 @@ export const MusicCurationsPage: NextPage<MusicCurationsPageProps> = (
     </Page>
   );
 };
+
+interface SortSelectProps {
+  sortOrder: MusicCurationsPageState["sortOrder"];
+  onChange: (nextSortOrder: MusicCurationsPageState["sortOrder"]) => void;
+}
+
+function SortSelect(props: SortSelectProps) {
+  const { sortOrder, onChange } = props;
+  const [selectMenuOpen, setSelectMenuOpen] = useState(false);
+  const [selectElement, setSelectElement] = useState<HTMLDivElement | null>(
+    null
+  );
+  const [selectMenuElement, setSelectMenuElement] =
+    useState<HTMLDivElement | null>(null);
+  const selectMenuPopper = usePopper(selectElement, selectMenuElement, {
+    placement: "bottom-end",
+    modifiers: [
+      {
+        name: "offset",
+        options: {
+          offset: [2, -28],
+        },
+      },
+    ],
+  });
+  return (
+    <Fragment>
+      <div
+        tabIndex={0}
+        ref={setSelectElement}
+        style={{
+          width: 164,
+          borderStyle: "solid",
+          borderColor: "black",
+          borderWidth: 1.5,
+          borderRadius: 3,
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          paddingBlock: 1,
+          paddingInline: 4,
+          fontWeight: 600,
+          fontSize: 18,
+          fontStyle: "italic",
+          cursor: "pointer",
+        }}
+        onClick={() => {
+          setSelectMenuOpen(true);
+        }}
+      >
+        <div style={{ flexGrow: 1 }}>
+          {getSortOrderLabel({
+            sortOrder,
+          })}
+        </div>
+        <svg
+          width={14}
+          height={14}
+          viewBox="0 0 1 1"
+          style={{ paddingLeft: 8 }}
+        >
+          <polygon
+            points="0.2,0.375 0.8,0.375 0.5,0.775"
+            stroke={"black"}
+            strokeWidth={0.11}
+            strokeLinejoin={"round"}
+            fill={"white"}
+          />
+        </svg>
+      </div>
+      <div
+        ref={setSelectMenuElement}
+        {...selectMenuPopper.attributes.popper}
+        style={{
+          ...selectMenuPopper.styles.popper,
+          backgroundColor: "white",
+          borderStyle: "solid",
+          borderColor: "black",
+          borderWidth: 1.5,
+          borderRadius: 3,
+          display: selectMenuOpen ? "flex" : "none",
+          flexDirection: "column",
+          padding: 8,
+          paddingRight: 12,
+          paddingTop: 4,
+          paddingBottom: 0,
+          fontWeight: 600,
+          fontSize: 18,
+        }}
+      >
+        {(
+          [
+            "titleAscending",
+            "titleDescending",
+            "artistAscending",
+            "artistDescending",
+            "yearDescending",
+            "yearAscending",
+          ] as Array<MusicCurationsPageState["sortOrder"]>
+        ).map((someSortOrder) => (
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              paddingBottom: 4,
+              cursor: "pointer",
+            }}
+            onClick={() => {
+              const nextSortOrder = someSortOrder;
+              setSelectMenuOpen(false);
+              onChange(nextSortOrder);
+            }}
+          >
+            <div
+              style={{
+                fontSize: 24,
+                paddingRight: 8,
+                visibility: someSortOrder === sortOrder ? "visible" : "hidden",
+              }}
+            >
+              ✓
+            </div>
+            {getSortOrderLabel({
+              sortOrder: someSortOrder,
+            })}
+          </div>
+        ))}
+      </div>
+    </Fragment>
+  );
+}
+
+interface GetSortOrderLabelApi extends Pick<SortSelectProps, "sortOrder"> {}
+
+function getSortOrderLabel(api: GetSortOrderLabelApi) {
+  const { sortOrder } = api;
+  switch (sortOrder) {
+    case "titleAscending":
+      return "title: a → z";
+    case "titleDescending":
+      return "title: z → a";
+    case "artistAscending":
+      return "artist: a → z";
+    case "artistDescending":
+      return "artist: z → a";
+    case "yearAscending":
+      return "year: oldest";
+    case "yearDescending":
+      return "year: newest";
+  }
+}
 
 interface MusicCurationsPageState {
   pageIndex: number;

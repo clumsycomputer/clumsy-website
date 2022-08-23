@@ -5,6 +5,41 @@
   max-width: 512px;
 }
 
+.sortSelectContainer {
+  border-style: solid;
+  border-color: black;
+  border-width: 1.5px;
+  border-radius: 3px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.searchInput {
+  padding: 0;
+  -webkit-appearance: textfield;
+  &::-webkit-search-decoration {
+    -webkit-appearance: none;
+  }
+}
+
+.sortSelect {
+  margin: 0;
+  border: none;
+  background-color: white;
+  color: black;
+  padding-inline: 4px;
+  padding-block: 2px;
+  font-family: monospace;
+  font-weight: 600;
+  font-size: 18px;
+  line-height: inherit;
+  cursor: pointer;
+  appearance: none;
+  outline: none;
+  z-index: 1;
+}
+
 .musicItemsContainer {
   display: flex;
   flex-direction: column;

@@ -15,14 +15,6 @@
   align-items: center;
 }
 
-.searchInput {
-  padding: 0;
-  -webkit-appearance: textfield;
-  &::-webkit-search-decoration {
-    -webkit-appearance: none;
-  }
-}
-
 .sortSelect {
   margin: 0;
   border: none;

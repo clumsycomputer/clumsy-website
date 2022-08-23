@@ -184,47 +184,96 @@ export const MusicCurationsPage: NextPage<MusicCurationsPageProps> = (
             }}
           />
         </div>
-        <input
-          className={styles.searchInput}
+        <div
           style={{
-            padding: 0,
-            appearance: "textfield",
-            WebkitAppearance: "textfield",
-            margin: 0,
-            minWidth: 0,
-            flexShrink: 1,
-            flexGrow: 1,
-            fontFamily: "monospace",
-            fontSize: 18,
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
             borderColor: "black",
             borderStyle: "solid",
             borderRadius: 3,
             borderWidth: 1.5,
-            fontWeight: 600,
-            fontStyle: "italic",
             paddingBlock: 1,
             paddingInline: 4,
+            paddingInlineEnd: 2,
           }}
-          type={"search"}
-          placeholder={"search music"}
-          value={pageState.searchQuery}
-          onChange={(someChangeEvent) => {
-            pageRouter.push(
-              getUpdatedPageRoute({
-                pageRouter,
-                currentState: pageState,
-                stateUpdates: {
-                  searchQuery: someChangeEvent.currentTarget.value,
-                  pageIndex: 1,
-                },
-              }),
-              undefined,
-              {
-                shallow: true,
-              }
-            );
-          }}
-        />
+        >
+          <input
+            type={"text"}
+            style={{
+              flexGrow: 1,
+              border: "none",
+              outline: "none",
+              padding: 0,
+              fontFamily: "monospace",
+              fontStyle: "italic",
+              fontWeight: 600,
+              fontSize: 18,
+            }}
+            placeholder={"search music"}
+            value={pageState.searchQuery}
+            onChange={(someChangeEvent) => {
+              pageRouter.push(
+                getUpdatedPageRoute({
+                  pageRouter,
+                  currentState: pageState,
+                  stateUpdates: {
+                    searchQuery: someChangeEvent.currentTarget.value,
+                    pageIndex: 1,
+                  },
+                }),
+                undefined,
+                {
+                  shallow: true,
+                }
+              );
+            }}
+          />
+          <svg
+            width={18}
+            height={18}
+            viewBox={"0 0 1 1"}
+            style={{ paddingLeft: 8, cursor: "pointer" }}
+            onClick={() => {
+              pageRouter.push(
+                getUpdatedPageRoute({
+                  pageRouter,
+                  currentState: pageState,
+                  stateUpdates: {
+                    searchQuery: "",
+                    pageIndex: 1,
+                  },
+                }),
+                undefined,
+                {
+                  shallow: true,
+                }
+              );
+            }}
+          >
+            <g transform={"translate(0.0,0)"}>
+              <circle
+                cx={0.5}
+                cy={0.5}
+                r={0.35}
+                stroke={"black"}
+                strokeWidth={0.07}
+                strokeLinejoin={"round"}
+                strokeLinecap={"round"}
+                fill={"white"}
+              />
+              <polygon
+                points={
+                  "0.5,0.5 0.625,0.375, 0.5,0.5 0.625,0.625 0.5,0.5, 0.375,0.625 0.5,0.5, 0.375,0.375 0.5,0.5"
+                }
+                stroke={"black"}
+                strokeWidth={0.07}
+                strokeLinejoin={"round"}
+                fill={"white"}
+              />
+            </g>
+          </svg>
+        </div>
       </div>
       <div className={styles.musicItemsContainer} role={"list"}>
         {filteredMusicItemsPage.length > 0 ? (
@@ -333,11 +382,11 @@ function SortSelect(props: SortSelectProps) {
         <svg
           width={14}
           height={14}
-          viewBox="0 0 1 1"
+          viewBox={"0 0 1 1"}
           style={{ paddingLeft: 8 }}
         >
           <polygon
-            points="0.2,0.375 0.8,0.375 0.5,0.775"
+            points={"0.2,0.375 0.8,0.375 0.5,0.775"}
             stroke={"black"}
             strokeWidth={0.11}
             strokeLinejoin={"round"}

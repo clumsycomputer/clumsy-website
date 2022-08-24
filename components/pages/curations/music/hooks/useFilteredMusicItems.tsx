@@ -6,7 +6,7 @@ import {
   DisabledMusicItemsPageLink,
   FilteredMusicItemsNavigation,
 } from "../components/FilteredMusicItemsNavigation";
-import { MusicListItem } from "../components/MusicListItem";
+import { EmptyListItem, MusicListItem } from "../components/MusicListItem";
 import { MusicCurationsPageProps } from "../MusicCurationsPage";
 import { usePageState } from "./usePageState";
 
@@ -83,20 +83,7 @@ export function useFilteredMusicItems(api: UseFilteredMusicItemsApi) {
             />
           ))
         ) : (
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              fontSize: 18,
-              fontWeight: 600,
-              fontStyle: "italic",
-              color: "#CCCCCC",
-              padding: 32,
-              paddingTop: 24,
-            }}
-          >
-            no items match
-          </div>
+          <EmptyListItem />
         ),
       filteredMusicItemsNavigation: (
         <FilteredMusicItemsNavigation

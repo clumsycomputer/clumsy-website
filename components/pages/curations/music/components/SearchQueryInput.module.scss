@@ -1,33 +1,35 @@
 @import 'styles/websiteTheme.scss';
 
 .inputContainer {
+  position: relative;
   display: flex;
   flex-direction: row;
   align-items: center;
-  border-style: solid;
-  border-color: black;
-  border-radius: 3px;
-  border-width: 1.5px;
-  padding-inline: $spacer / 2;
-  padding-inline-end: $spacer / 4;
-  padding-block: $spacer / 8;  
 }
 
 .searchInput {
- flex-grow: 1;
- outline: none;
- border: none;
- padding: 0;
- font-family: monospace;
- font-style: italic;
- font-weight: 600;
- font-size: 18px;
+  flex-grow: 1;
+  border-style: solid;
+  border-color: black;
+  border-radius: $borderRadius;
+  border-width: 1.5px;
+  padding-inline: $spacer / 2;
+  padding-inline-end: $spacer * 3;
+  padding-block: $spacer / 8;
+  overflow: visible;  
+  font-family: monospace;
+  font-style: italic;
+  font-weight: 600;
+  font-size: 18px;
 }
 
 .clearSearchContainer {
+  margin: 0;
+  position: absolute;
+  right: 0;
   display: flex;
   align-items: center;
-  padding-inline-start: $spacer;
+  padding-inline-end: $spacer / 2 - 0.75px;
 }
 
 .clearSearchButton {

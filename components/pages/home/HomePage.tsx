@@ -14,13 +14,9 @@ export const HomePage: NextPage = () => {
       pageContentContainerClassname={homePageStyles.pageContentContainer}
     >
       <div role={"figure"} className={homePageStyles.landingImageContainer}>
-        <Image
-          className={homePageStyles.landingImage}
-          src={"/graphics/alignmentuntangled.png"}
-          alt={"alignment untangled"}
-          width={1024}
-          height={1024}
-        />
+        <svg className={homePageStyles.landingImage} viewBox={"0 0 100 100"}>
+          <rect x={0} y={0} width={100} height={100} fill={"gold"} />
+        </svg>
       </div>
       <div role={"list"} className={homePageStyles.routesContainer}>
         {[

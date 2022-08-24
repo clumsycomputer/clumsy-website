@@ -55,7 +55,7 @@
   margin-inline-end: $spacer; 
   margin-block-end: $spacer;
   background-color: $textBackgroundGrey;
-  border-radius: 3px;
+  border-radius: $borderRadius;
   padding-inline: $spacer / 2;
   padding-block: $spacer / 8;
   overflow: hidden;
@@ -63,4 +63,15 @@
   text-overflow: ellipsis;  
   font-weight: 600;
   font-size: 16px;
+}
+
+.emptyListItem {
+  display: flex;
+  justify-content: center;
+  padding: $spacer * 4;
+  padding-block-start: $spacer * 3;
+  font-size: 18px;
+  font-weight: 600;
+  font-style: italic;
+  color: $disabledGrey;
 }

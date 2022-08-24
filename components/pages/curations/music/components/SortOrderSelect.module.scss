@@ -5,7 +5,7 @@
   border-style: solid;
   border-color: black;
   border-width: 1.5px;
-  border-radius: 3px;
+  border-radius: $borderRadius;;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -28,10 +28,11 @@
 }
 
 .selectMenuContainer {
+  z-index: 1;
   border-style: solid;
   border-color: black;
   border-width: 1.5px;
-  border-radius: 3px;
+  border-radius: $borderRadius;;
   background-color: white;
   display: flex;
   flex-direction: column;  

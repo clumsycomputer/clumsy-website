@@ -3,7 +3,6 @@
 .footerContainer {
   padding: $spacer;
   padding-top: $spacer * 3 / 2;
-  // padding-bottom: theme.pdfMode ? theme.spacing(5 / 2) : theme.spacing(5),
   padding-bottom: $spacer * 5;
 }
 
@@ -13,6 +12,6 @@
   padding: $spacer;
   padding-left: $spacer / 4;
   padding-right: $spacer / 4;
-  border-radius: $spacer / 2;
+  border-radius: $borderRadius;
   background-color: $textBackgroundGrey;
 }

@@ -43,8 +43,8 @@ export function MusicListItem(props: MusicListItemProps) {
                 y={0}
                 width={100}
                 height={100}
-                rx={3}
-                ry={3}
+                rx={4}
+                ry={4}
                 fill={"#EEEEEE"}
               />
               <image
@@ -53,7 +53,7 @@ export function MusicListItem(props: MusicListItemProps) {
                 y={1}
                 width={98}
                 height={98}
-                clipPath={"inset(0% round 2.5)"}
+                clipPath={"inset(0% round 3)"}
               />
             </svg>
           </a>
@@ -129,4 +129,10 @@ function MusicItemLabelList(props: MusicItemLabelListProps) {
       ))}
     </div>
   );
+}
+
+export interface EmptyListItemsProps {}
+
+export function EmptyListItem(props: EmptyListItemsProps) {
+  return <div className={styles.emptyListItem}>no items match</div>;
 }

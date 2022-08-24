@@ -13,8 +13,7 @@
 
 .landingImage {
   width: 100%;
-  border-radius: $spacer / 2;
-  background-color: black;
+  border-radius: $borderRadius;
 }
 
 .routesContainer {
@@ -34,7 +33,7 @@
   padding-right: $spacer * 5 / 8;
   padding-top: $spacer * 3 / 8;
   padding-bottom: $spacer * 3 / 8;
-  border-radius: $spacer * 3 / 8;
+  border-radius: $borderRadius;
   font-weight: 700;
   font-size: 30px;
 }

@@ -59,7 +59,7 @@ export const MusicCurationsPage: NextPage<MusicCurationsPageProps> = (
           }}
         >
           <SortOrderSelect
-            sortOrder={pageState.sortOrder}
+            value={pageState.sortOrder}
             onChange={(nextSortOrder) => {
               pageRouter.push(
                 getUpdatedPageRoute({

@@ -24,8 +24,8 @@ export function MusicListItem(props: MusicListItemProps) {
     musicStyles,
   } = props;
   return (
-    <div className={styles.musicItemContainer} role={"listitem"}>
-      <div className={styles.musicItemTopRowContainer} role={"presentation"}>
+    <div className={styles.itemContainer} role={"listitem"}>
+      <div className={styles.topRowContainer} role={"presentation"}>
         <Link href={externalLinks[0].linkHref}>
           <a
             className={styles.thumbnailLink}
@@ -83,7 +83,7 @@ export function MusicListItem(props: MusicListItemProps) {
           })}
         </div>
       </div>
-      <div className={styles.musicItemLabelsContainer} role={"group"}>
+      <div className={styles.itemLabelsContainer} role={"group"}>
         <MusicItemLabelList
           accessibilityLabel={"music title"}
           musicLabels={[musicTitle]}
@@ -114,13 +114,13 @@ function MusicItemLabelList(props: MusicItemLabelListProps) {
   const { accessibilityLabel, musicLabels } = props;
   return (
     <div
-      className={styles.musicItemLabelList}
+      className={styles.itemLabelList}
       role={"list"}
       aria-label={accessibilityLabel}
     >
       {musicLabels.map((someMusicLabel) => (
         <div
-          className={styles.musicItemLabel}
+          className={styles.itemLabel}
           key={someMusicLabel}
           role={"listitem"}
         >

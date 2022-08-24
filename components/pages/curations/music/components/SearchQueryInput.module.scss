@@ -1,0 +1,37 @@
+@import 'styles/websiteTheme.scss';
+
+.inputContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  border-style: solid;
+  border-color: black;
+  border-radius: 3px;
+  border-width: 1.5px;
+  padding-inline: $spacer / 2;
+  padding-inline-end: $spacer / 4;
+  padding-block: $spacer / 8;  
+}
+
+.searchInput {
+ flex-grow: 1;
+ outline: none;
+ border: none;
+ padding: 0;
+ font-family: monospace;
+ font-style: italic;
+ font-weight: 600;
+ font-size: 18px;
+}
+
+.clearSearchContainer {
+  display: flex;
+  align-items: center;
+  padding-inline-start: $spacer;
+}
+
+.clearSearchButton {
+  cursor: pointer;
+  width: 18px;
+  height: 18px;
+}

@@ -1,72 +1,49 @@
-import { Fragment, useEffect, useState } from "react";
+import {
+  Dispatch,
+  Fragment,
+  ReactNode,
+  SetStateAction,
+  useMemo,
+  useState,
+} from "react";
 import ClickAwayListener from "react-click-away-listener";
 import { usePopper } from "react-popper";
-import { MusicCurationsPageState } from "../common/models";
+import { MusicCurationsPageState, StringPermutation } from "../common/models";
 import styles from "./SortOrderSelect.module.scss";
 
 export interface SortOrderSelectProps {
-  sortOrder: MusicCurationsPageState["sortOrder"];
+  value: MusicCurationsPageState["sortOrder"];
   onChange: (nextSortOrder: MusicCurationsPageState["sortOrder"]) => void;
 }
 
 export function SortOrderSelect(props: SortOrderSelectProps) {
-  const { sortOrder, onChange } = props;
-  const [selectMenuOpen, setSelectMenuOpen] = useState(false);
-  useEffect(() => {
-    setSelectMenuOpen(false);
-  }, [sortOrder]);
-  const [selectElement, setSelectElement] = useState<HTMLDivElement | null>(
-    null
-  );
-  const [selectMenuElement, setSelectMenuElement] =
+  const { value, onChange } = props;
+  const [selectButtonElement, setSelectButtonElement] =
     useState<HTMLDivElement | null>(null);
-  const selectMenuPopper = usePopper(selectElement, selectMenuElement, {
-    placement: "bottom-end",
-    modifiers: [
-      {
-        name: "offset",
-        options: {
-          offset: [2, -28],
-        },
-      },
-    ],
-  });
+  const [selectMenu, setSelectMenu] = useState<ReactNode>(null);
   return (
     <Fragment>
       <div
         tabIndex={0}
-        ref={setSelectElement}
-        style={{
-          width: 164,
-          borderStyle: "solid",
-          borderColor: "black",
-          borderWidth: 1.5,
-          borderRadius: 3,
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-          paddingBlock: 1,
-          paddingInline: 4,
-          fontWeight: 600,
-          fontSize: 18,
-          fontStyle: "italic",
-          cursor: "pointer",
-        }}
+        className={styles.selectButton}
+        ref={setSelectButtonElement}
         onClick={() => {
-          setSelectMenuOpen(true);
+          setSelectMenu(
+            <SortOrderSelectMenu
+              value={value}
+              onChange={onChange}
+              selectButtonElement={selectButtonElement}
+              setSelectMenu={setSelectMenu}
+            />
+          );
         }}
       >
-        <div style={{ flexGrow: 1 }}>
+        <div className={styles.buttonLabel}>
           {getSortOrderLabel({
-            sortOrder,
+            someSortOrder: value,
           })}
         </div>
-        <svg
-          width={14}
-          height={14}
-          viewBox={"0 0 1 1"}
-          style={{ paddingLeft: 8 }}
-        >
+        <svg className={styles.buttonArrow} viewBox={"0 0 1 1"}>
           <polygon
             points={"0.2,0.375 0.8,0.375 0.5,0.775"}
             stroke={"black"}
@@ -76,84 +53,89 @@ export function SortOrderSelect(props: SortOrderSelectProps) {
           />
         </svg>
       </div>
-      {selectMenuOpen ? (
-        <ClickAwayListener
-          onClickAway={() => {
-            setSelectMenuOpen(false);
-          }}
-        >
-          <div
-            ref={setSelectMenuElement}
-            {...selectMenuPopper.attributes.popper}
-            style={{
-              ...selectMenuPopper.styles.popper,
-              backgroundColor: "white",
-              borderStyle: "solid",
-              borderColor: "black",
-              borderWidth: 1.5,
-              borderRadius: 3,
-              display: "flex",
-              flexDirection: "column",
-              padding: 8,
-              paddingRight: 12,
-              paddingTop: 4,
-              paddingBottom: 0,
-              fontWeight: 600,
-              fontSize: 18,
-            }}
-          >
-            {(
-              [
-                "titleAscending",
-                "titleDescending",
-                "artistAscending",
-                "artistDescending",
-                "yearDescending",
-                "yearAscending",
-              ] as Array<MusicCurationsPageState["sortOrder"]>
-            ).map((someSortOrder) => (
-              <div
-                key={someSortOrder}
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  alignItems: "center",
-                  paddingBottom: 4,
-                  cursor: "pointer",
-                }}
-                onClick={() => {
-                  const nextSortOrder = someSortOrder;
-                  onChange(nextSortOrder);
-                }}
-              >
-                <div
-                  style={{
-                    fontSize: 24,
-                    paddingRight: 8,
-                    visibility:
-                      someSortOrder === sortOrder ? "visible" : "hidden",
-                  }}
-                >
-                  ✓
-                </div>
-                {getSortOrderLabel({
-                  sortOrder: someSortOrder,
-                })}
-              </div>
-            ))}
-          </div>
-        </ClickAwayListener>
-      ) : null}
+      {selectMenu}
     </Fragment>
   );
 }
 
-interface GetSortOrderLabelApi
-  extends Pick<SortOrderSelectProps, "sortOrder"> {}
+interface SortOrderSelectMenuProps
+  extends Pick<SortOrderSelectProps, "value" | "onChange"> {
+  selectButtonElement: HTMLDivElement | null;
+  setSelectMenu: Dispatch<SetStateAction<ReactNode>>;
+}
+
+function SortOrderSelectMenu(props: SortOrderSelectMenuProps) {
+  const { selectButtonElement, setSelectMenu, value, onChange } = props;
+  const [selectMenuElement, setSelectMenuElement] =
+    useState<HTMLDivElement | null>(null);
+  const selectMenuPopper = usePopper(selectButtonElement, selectMenuElement, {
+    placement: "bottom-end",
+    modifiers: [
+      {
+        name: "offset",
+        options: {
+          offset: [3, -29],
+        },
+      },
+    ],
+  });
+  const sortOrderList = useMemo<
+    StringPermutation<MusicCurationsPageState["sortOrder"]>
+  >(
+    () => [
+      "titleAscending",
+      "titleDescending",
+      "artistAscending",
+      "artistDescending",
+      "yearDescending",
+      "yearAscending",
+    ],
+    []
+  );
+  return (
+    <ClickAwayListener
+      onClickAway={() => {
+        setSelectMenu(null);
+      }}
+    >
+      <div
+        className={styles.selectMenuContainer}
+        {...selectMenuPopper.attributes.popper}
+        style={{ ...selectMenuPopper.styles.popper }}
+        ref={setSelectMenuElement}
+      >
+        {sortOrderList.map((someSortOrder) => (
+          <div
+            key={someSortOrder}
+            className={`${styles.selectMenuItem} ${
+              someSortOrder === value ? styles.itemSelected : ""
+            }`}
+            onClick={() => {
+              const nextSortOrder = someSortOrder;
+              onChange(nextSortOrder);
+              setTimeout(() => {
+                setSelectMenu(null);
+              });
+            }}
+          >
+            <div className={styles.itemCheck}>✓</div>
+            {getSortOrderLabel({
+              someSortOrder,
+            })}
+          </div>
+        ))}
+      </div>
+    </ClickAwayListener>
+  );
+}
+
+interface GetSortOrderLabelApi {
+  someSortOrder: MusicCurationsPageState["sortOrder"];
+}
 
 function getSortOrderLabel(api: GetSortOrderLabelApi) {
-  const { sortOrder } = api;
-  switch (sortOrder) {
+  const { someSortOrder } = api;
+  switch (someSortOrder) {
     case "titleAscending":
       return "title: a → z";
     case "titleDescending":
@@ -166,5 +148,7 @@ function getSortOrderLabel(api: GetSortOrderLabelApi) {
       return "year: oldest";
     case "yearDescending":
       return "year: newest";
+    default:
+      throw new Error(`getSortOrderLabel: ${someSortOrder} not handled`);
   }
 }

@@ -1,0 +1,66 @@
+@import 'styles/websiteTheme.scss';
+
+.itemContainer {
+  display: flex;
+  flex-direction: column;
+  padding: $spacer;
+}
+
+.topRowContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+}
+
+.thumbnailLink {
+  display: flex;
+  align-items: flex-start;
+}
+
+.thumbnailSvg {
+  width: 160px;
+  height: 160px;
+}
+
+.externalLinksContainer {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.externalLinkContainer {
+  padding-block-end: $spacer;
+}
+
+.externalLinkLabel {  
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.itemLabelsContainer {
+  display: flex;
+  flex-direction: column;
+  padding-inline-start: $spacer / 2;
+  padding-block-start: $spacer * 3 / 2;
+}
+
+.itemLabelList {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.itemLabel {
+  margin-inline-end: $spacer; 
+  margin-block-end: $spacer;
+  background-color: $textBackgroundGrey;
+  border-radius: 3px;
+  padding-inline: $spacer / 2;
+  padding-block: $spacer / 8;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;  
+  font-weight: 600;
+  font-size: 16px;
+}

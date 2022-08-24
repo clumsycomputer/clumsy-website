@@ -10,6 +10,15 @@ export interface MusicCurationsPageState {
   searchQuery: string;
 }
 
+export type StringPermutation<SomeString extends string> = {
+  [SomeStringValue in SomeString]: [
+    SomeStringValue,
+    ...(Exclude<SomeString, SomeStringValue> extends never
+      ? []
+      : StringPermutation<Exclude<SomeString, SomeStringValue>>)
+  ];
+}[SomeString];
+
 export type MusicItem = ClippedMusicItem | WholeMusicItem;
 
 interface ClippedMusicItem

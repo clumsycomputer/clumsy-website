@@ -21,20 +21,20 @@ export function FilteredMusicItemsNavigation(
 
   return (
     <div
-      className={styles.dataPageNavigationContainer}
+      className={styles.navigationContainer}
       role={"navigation"}
       aria-label={"filtered music items page navigation"}
     >
       {previousPageLink}
-      <div className={styles.focusedDataPageIndexDisplayContainer}>
+      <div className={styles.currentIndexContainer}>
         <label
-          className={styles.filteredMusicItemsPageLabel}
+          className={styles.currentIndexLabel}
           id={"filteredMusicItemsPageLabel"}
         >
           filtered music items page:
         </label>
         <div
-          className={styles.filteredMusicItemsPageText}
+          className={styles.navigationText}
           role={"meter"}
           aria-valuemin={1}
           aria-valuemax={filteredMusicItemsPageCount}
@@ -57,9 +57,7 @@ export function ActiveMusicItemsPageLink(props: ActiveMusicItemsPageLinkProps) {
   const { dataPageHref, relativePageLinkLabel } = props;
   return (
     <Link href={dataPageHref}>
-      <a className={styles.activeFilteredMusicItemsPageLink}>
-        {relativePageLinkLabel}
-      </a>
+      <a className={styles.activeNavigationLink}>{relativePageLinkLabel}</a>
     </Link>
   );
 }
@@ -72,9 +70,7 @@ export function DisabledMusicItemsPageLink(
 ) {
   const { relativePageLinkLabel } = props;
   return (
-    <a className={styles.disabledFilteredMusicItemsPageLink}>
-      {relativePageLinkLabel}
-    </a>
+    <a className={styles.disabledNavigationLink}>{relativePageLinkLabel}</a>
   );
 }
 

@@ -5,111 +5,21 @@
   max-width: 512px;
 }
 
-.musicItemsContainer {
+.itemsFilterContainer {
+  display: flex;
+  flex-direction: column;
+  padding: $spacer * 3 / 2;
+}
+
+.sortOrderSelectContainer {
+  display: flex;
+  flex-direction: row-reverse;
+  padding-block-end: $spacer;
+}
+
+.musicItemsList {
   display: flex;
   flex-direction: column;
   padding-inline: $spacer / 2;
   padding-block-start: $spacer / 2;
-}
-
-.musicItemContainer {
-  display: flex;
-  flex-direction: column;
-  padding: $spacer;
-}
-
-.musicItemTopRowContainer {
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-}
-
-.thumbnailLink {
-  display: flex;
-  align-items: flex-start;
-}
-
-.thumbnailSvg {
-  width: 128px;
-  height: 128px;
-}
-
-.externalLinksContainer {
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-}
-
-.externalLinkContainer {
-  padding-block-end: $spacer;
-}
-
-.externalLinkLabel {  
-  font-weight: 600;
-  font-size: 14px;
-}
-
-.musicItemLabelsContainer {
-  display: flex;
-  flex-direction: column;
-  padding-inline-start: $spacer / 2;
-  padding-block-start: $spacer * 3 / 2;
-}
-
-.musicItemLabelList {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-}
-
-.musicItemLabel {
-  margin-inline-end: $spacer; 
-  margin-block-end: $spacer;
-  background-color: $textBackgroundGrey;
-  border-radius: 3px;
-  padding-inline: $spacer / 2;
-  padding-block: $spacer / 8;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;  
-  font-weight: 600;
-  font-size: 14px;
-}
-
-.dataPageNavigationContainer {
-  display: flex;
-  flex-direction: row;
-  align-items: baseline;
-  padding-inline: $spacer * 2;
-  padding-block-start: $spacer;
-  padding-block-end: $spacer * 2;
-}
-
-.focusedDataPageIndexDisplayContainer {
-  flex-grow: 1;
-  display: flex;
-  justify-content: center;
-}
-
-.activeFilteredMusicItemsPageLink {
-  @extend .filteredMusicItemsPageLink;  
-}
-
-.disabledFilteredMusicItemsPageLink {
-  @extend .filteredMusicItemsPageLink;
-  color: $disabledGrey;
-}
-
-.filteredMusicItemsPageLink {
-  @extend .filteredMusicItemsPageText;
-}
-
-.filteredMusicItemsPageText {
-  font-weight: 600;
-  font-size: 18px;
-}
-
-.filteredMusicItemsPageLabel {
-  display: none;
 }

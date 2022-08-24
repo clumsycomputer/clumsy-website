@@ -1,3 +1,3 @@
-import { ResumePdfPage } from "../../components/pages/resume/ResumePage";
+import { ResumePdfPage } from "../../components/pages/software/resume/ResumePage";
 
 export default ResumePdfPage;

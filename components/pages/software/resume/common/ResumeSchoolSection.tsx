@@ -1,4 +1,4 @@
-import { DocumentContentSection } from "../../../common/Document/DocumentContentSection";
+import { DocumentContentSection } from "../../../../common/Document/DocumentContentSection";
 
 export interface ResumeSchoolSectionProps {
   schoolName: string;

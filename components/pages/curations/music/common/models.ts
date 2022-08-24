@@ -1,61 +1,76 @@
-export type MusicItemData = ClippedMusicItemData | WholeMusicItemData;
+export interface MusicCurationsPageState {
+  pageIndex: number;
+  sortOrder:
+    | "titleAscending"
+    | "titleDescending"
+    | "artistAscending"
+    | "artistDescending"
+    | "yearAscending"
+    | "yearDescending";
+  searchQuery: string;
+}
 
-interface ClippedMusicItemData
+export type StringPermutation<SomeString extends string> = {
+  [SomeStringValue in SomeString]: [
+    SomeStringValue,
+    ...(Exclude<SomeString, SomeStringValue> extends never
+      ? []
+      : StringPermutation<Exclude<SomeString, SomeStringValue>>)
+  ];
+}[SomeString];
+
+export type MusicItem = ClippedMusicItem | WholeMusicItem;
+
+interface ClippedMusicItem
   extends MusicItemBase<"clip">,
-    Pick<SongMusicItemData | MixMusicItemData, "sourceType"> {}
+    Pick<SongMusicItem | MixMusicItem, "sourceType"> {}
 
-type WholeMusicItemData =
-  | SongMusicItemData
-  | CollectionMusicItemData
-  | MixMusicItemData;
+type WholeMusicItem = SongMusicItem | CollectionMusicItem | MixMusicItem;
 
-interface SongMusicItemData extends SourceMusicItemBase<"song"> {}
+interface SongMusicItem extends SourceMusicItemBase<"track"> {}
 
-type CollectionMusicItemData =
-  | SingleMusicItemData
-  | EpMusicItemData
-  | AlbumMusicItemData
-  | CompilationMusicItemData
-  | SoundtrackMusicItemData;
+type CollectionMusicItem =
+  | SingleMusicItem
+  | EpMusicItem
+  | AlbumMusicItem
+  | CompilationMusicItem
+  | SoundtrackMusicItem;
 
-interface SingleMusicItemData extends CollectionMusicItemBase<"single"> {}
+interface SingleMusicItem extends CollectionMusicItemBase<"single"> {}
 
-interface EpMusicItemData extends CollectionMusicItemBase<"ep"> {}
+interface EpMusicItem extends CollectionMusicItemBase<"ep"> {}
 
-interface AlbumMusicItemData extends CollectionMusicItemBase<"album"> {}
+interface AlbumMusicItem extends CollectionMusicItemBase<"album"> {}
 
-interface CompilationMusicItemData
-  extends CollectionMusicItemBase<"compilation"> {}
+interface CompilationMusicItem extends CollectionMusicItemBase<"compilation"> {}
 
-interface SoundtrackMusicItemData
-  extends CollectionMusicItemBase<"soundtrack"> {}
+interface SoundtrackMusicItem extends CollectionMusicItemBase<"soundtrack"> {}
 
 interface CollectionMusicItemBase<CollectionType extends string>
   extends SourceMusicItemBase<"collection"> {
   collectionType: CollectionType;
 }
 
-interface MixMusicItemData extends SourceMusicItemBase<"mix"> {}
+interface MixMusicItem extends SourceMusicItemBase<"mix"> {}
 
 interface SourceMusicItemBase<SourceType extends string>
   extends MusicItemBase<"source"> {
   sourceType: SourceType;
 }
 
-interface MusicItemBase<
-  ItemType extends string,
-  RecordingStyle = "studio" | "live" | "concert",
-  ExternalLink = {
+interface MusicItemBase<MusicItemType extends string> {
+  musicId: number;
+  musicType: MusicItemType;
+  musicThumbnailHref: string;
+  musicTitle: string;
+  musicYear: string;
+  musicArtist: ArrayOfAtLeastOne<string>;
+  musicStyles: ArrayOfAtLeastOne<string>;
+  recordingContext: ArrayOfAtLeastOne<"studio" | "live" | "concert">;
+  externalLinks: ArrayOfAtLeastOne<{
     linkLabel: string;
     linkHref: string;
-  }
-> {
-  itemId: number;
-  itemType: ItemType;
-  thumbnailHref: string;
-  musicName: string;
-  musicArtist: Array<string>;
-  musicTags: Array<string>;
-  recordingStyle: Array<RecordingStyle>;
-  externalLinks: [ExternalLink, ...Array<ExternalLink>];
+  }>;
 }
+
+type ArrayOfAtLeastOne<T> = [T, ...Array<T>];

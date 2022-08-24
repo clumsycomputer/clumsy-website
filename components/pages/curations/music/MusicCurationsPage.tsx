@@ -1,96 +1,42 @@
 import { NextPage } from "next";
-import Link from "next/link";
 import { useRouter } from "next/router";
-import { ReactNode, useMemo } from "react";
 import { NavigationFooter } from "../../../common/NavigationFooter/NavigationFooter";
 import { Page } from "../../../common/Page/Page";
-import { MusicItemData } from "./common/models";
+import { getUpdatedPageRoute } from "./common/getUpdatedPageRoute";
+import { MusicItem } from "./common/models";
+import { SearchQueryInput } from "./components/SearchQueryInput";
+import { SortOrderSelect } from "./components/SortOrderSelect";
+import { useFilteredMusicItems } from "./hooks/useFilteredMusicItems";
+import { usePageState } from "./hooks/usePageState";
 import styles from "./MusicCurationsPage.module.scss";
-import { musicItemsDataset } from "./musicItemsDataset";
+import { musicItemDataset } from "./musicItemDataset";
 
 export function getStaticProps() {
   return {
     props: {
-      randomlySortedMusicItemsDataset: musicItemsDataset
-        .map((value) => ({ value, sort: Math.random() }))
-        .sort((a, b) => a.sort - b.sort)
-        .map(({ value }) => value),
+      musicItemDataset: musicItemDataset.map((someItem) => someItem),
     },
   };
 }
 
 export interface MusicCurationsPageProps {
-  randomlySortedMusicItemsDataset: Array<MusicItemData>;
+  musicItemDataset: Array<MusicItem>;
 }
 
 export const MusicCurationsPage: NextPage<MusicCurationsPageProps> = (
   props: MusicCurationsPageProps
 ) => {
-  const { randomlySortedMusicItemsDataset } = props;
+  const { musicItemDataset } = props;
   const pageRouter = useRouter();
-  const { filteredMusicItemsPage, filteredMusicItemsPageNavigation } =
-    useMemo(() => {
-      const filteredMusicItemsPageSize = 10;
-      const filteredMusicItems = randomlySortedMusicItemsDataset.filter(
-        () => true
-      );
-      const filteredMusicItemsPageCount = Math.ceil(
-        filteredMusicItems.length / filteredMusicItemsPageSize
-      );
-      const filteredMusicItemsPageIndexQueryParam =
-        parseInt(
-          typeof pageRouter.query.filteredMusicItemsPageIndex === "string"
-            ? pageRouter.query.filteredMusicItemsPageIndex
-            : "wtf?"
-        ) || -1;
-      const filteredMusicItemsPageIndex =
-        filteredMusicItemsPageIndexQueryParam >= 1 &&
-        filteredMusicItemsPageIndexQueryParam <= filteredMusicItemsPageCount
-          ? filteredMusicItemsPageIndexQueryParam
-          : 1;
-      const filteredMusicItemsItemIndexStart =
-        filteredMusicItemsPageSize * (filteredMusicItemsPageIndex - 1);
-      return {
-        filteredMusicItemsPage: filteredMusicItems.slice(
-          filteredMusicItemsItemIndexStart,
-          filteredMusicItemsItemIndexStart + filteredMusicItemsPageSize
-        ),
-        filteredMusicItemsPageNavigation: (
-          <FilteredMusicItemsPageNavigation
-            filteredMusicItemsPageIndex={filteredMusicItemsPageIndex}
-            filteredMusicItemsPageCount={filteredMusicItemsPageCount}
-            previousPageLink={
-              filteredMusicItemsPageIndex > 1 ? (
-                <ActiveMusicItemsPageLink
-                  relativePageLinkLabel={"prev"}
-                  dataPageHref={`${
-                    pageRouter.route
-                  }?filteredMusicItemsPageIndex=${
-                    filteredMusicItemsPageIndex - 1
-                  }`}
-                />
-              ) : (
-                <DisabledMusicItemsPageLink relativePageLinkLabel={"prev"} />
-              )
-            }
-            nextPageLink={
-              filteredMusicItemsPageIndex < filteredMusicItemsPageCount ? (
-                <ActiveMusicItemsPageLink
-                  relativePageLinkLabel={"next"}
-                  dataPageHref={`${
-                    pageRouter.route
-                  }?filteredMusicItemsPageIndex=${
-                    filteredMusicItemsPageIndex + 1
-                  }`}
-                />
-              ) : (
-                <DisabledMusicItemsPageLink relativePageLinkLabel={"next"} />
-              )
-            }
-          />
-        ),
-      };
-    }, [pageRouter.query]);
+  const pageState = usePageState({
+    pageRouter,
+  });
+  const { filteredMusicListItems, filteredMusicItemsNavigation } =
+    useFilteredMusicItems({
+      musicItemDataset,
+      pageRouter,
+      pageState,
+    });
   return (
     <Page
       pageContentContainerClassname={styles.pageContentContainer}
@@ -98,239 +44,76 @@ export const MusicCurationsPage: NextPage<MusicCurationsPageProps> = (
       pageTabTitle={"+ music - clumsycomputer"}
       pageDescription={"a catalog of awesome music"}
     >
-      <div className={styles.musicItemsContainer} role={"list"}>
-        {filteredMusicItemsPage.map((someMusicItemData) => (
-          <MusicItem
-            key={someMusicItemData.itemId}
-            musicName={someMusicItemData.musicName}
-            musicArtist={someMusicItemData.musicArtist}
-            musicTags={someMusicItemData.musicTags}
-            thumbnailHref={someMusicItemData.thumbnailHref}
-            externalLinks={someMusicItemData.externalLinks}
-            musicType={`${someMusicItemData.recordingStyle.join("/")} ${
-              someMusicItemData.sourceType === "collection"
-                ? someMusicItemData.collectionType
-                : someMusicItemData.sourceType
-            }${someMusicItemData.itemType === "clip" ? " (clip)" : ""}`}
+      <div className={styles.itemsFilterContainer}>
+        <div className={styles.sortOrderSelectContainer}>
+          <SortOrderSelect
+            value={pageState.sortOrder}
+            onChange={(nextSortOrder) => {
+              pageRouter.push(
+                getUpdatedPageRoute({
+                  pageRouter,
+                  currentState: pageState,
+                  stateUpdates: {
+                    sortOrder: nextSortOrder,
+                  },
+                }),
+                undefined,
+                {
+                  shallow: true,
+                }
+              );
+            }}
           />
-        ))}
+        </div>
+        <SearchQueryInput
+          value={pageState.searchQuery}
+          onChange={(someChangeEvent) => {
+            pageRouter.push(
+              getUpdatedPageRoute({
+                pageRouter,
+                currentState: pageState,
+                stateUpdates: {
+                  searchQuery: someChangeEvent.currentTarget.value,
+                  pageIndex: 1,
+                },
+              }),
+              undefined,
+              {
+                shallow: true,
+              }
+            );
+          }}
+          clearSearchQuery={() => {
+            pageRouter.push(
+              getUpdatedPageRoute({
+                pageRouter,
+                currentState: pageState,
+                stateUpdates: {
+                  searchQuery: "",
+                  pageIndex: 1,
+                },
+              }),
+              undefined,
+              {
+                shallow: true,
+              }
+            );
+          }}
+        />
       </div>
-      {filteredMusicItemsPageNavigation}
+      <div className={styles.musicItemsList} role={"list"}>
+        {filteredMusicListItems}
+      </div>
+      {filteredMusicItemsNavigation}
       <NavigationFooter
         routeLinks={[
           { routeName: "home", routeHref: "/" },
-          { routeName: "software", routeHref: "/software" },
-          { routeName: "resume", routeHref: "/resume" },
-          { routeName: "graphics", routeHref: "/graphics" },
+          { routeName: "packages", routeHref: "/software/packages" },
+          { routeName: "resume", routeHref: "/software/resume" },
+          { routeName: "graphics", routeHref: "/art/graphics" },
         ]}
         pdfLink={null}
       />
     </Page>
   );
 };
-
-interface MusicItemProps
-  extends Pick<
-    MusicItemData,
-    | "musicName"
-    | "musicArtist"
-    | "musicTags"
-    | "thumbnailHref"
-    | "externalLinks"
-  > {
-  musicType: string;
-}
-
-function MusicItem(props: MusicItemProps) {
-  const {
-    thumbnailHref,
-    externalLinks,
-    musicName,
-    musicArtist,
-    musicType,
-    musicTags,
-  } = props;
-  return (
-    <div className={styles.musicItemContainer} role={"listitem"}>
-      <div className={styles.musicItemTopRowContainer} role={"presentation"}>
-        <Link href={externalLinks[0].linkHref}>
-          <a
-            className={styles.thumbnailLink}
-            rel={"noreferrer"}
-            target={"_blank"}
-          >
-            <svg
-              className={styles.thumbnailSvg}
-              viewBox={"0 0 100 100"}
-              role={"img"}
-            >
-              <title>{`${musicName}: thumbnail image`}</title>
-              <rect
-                x={0}
-                y={0}
-                width={100}
-                height={100}
-                rx={3}
-                ry={3}
-                fill={"#EEEEEE"}
-              />
-              <image
-                href={thumbnailHref}
-                x={1}
-                y={1}
-                width={98}
-                height={98}
-                clipPath={"inset(0% round 2.5)"}
-              />
-            </svg>
-          </a>
-        </Link>
-        <div className={styles.externalLinksContainer} role={"list"}>
-          {externalLinks.map((someExternalLink) => {
-            return (
-              <div
-                className={styles.externalLinkContainer}
-                key={someExternalLink.linkLabel}
-                role={"listitem"}
-              >
-                <Link
-                  key={someExternalLink.linkLabel}
-                  href={someExternalLink.linkHref}
-                >
-                  <a
-                    className={styles.externalLinkLabel}
-                    rel={"noreferrer"}
-                    target={"_blank"}
-                  >
-                    {someExternalLink.linkLabel}
-                  </a>
-                </Link>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-      <div className={styles.musicItemLabelsContainer} role={"group"}>
-        <MusicItemLabelList
-          accessibilityLabel={"music name"}
-          musicLabels={[musicName]}
-        />
-        <MusicItemLabelList
-          accessibilityLabel={"music artist"}
-          musicLabels={musicArtist}
-        />
-        <MusicItemLabelList
-          accessibilityLabel={"music type"}
-          musicLabels={[musicType]}
-        />
-        <MusicItemLabelList
-          accessibilityLabel={"music tags"}
-          musicLabels={musicTags}
-        />
-      </div>
-    </div>
-  );
-}
-
-interface MusicItemLabelListProps {
-  accessibilityLabel: string;
-  musicLabels: Array<string>;
-}
-
-function MusicItemLabelList(props: MusicItemLabelListProps) {
-  const { accessibilityLabel, musicLabels } = props;
-  return (
-    <div
-      className={styles.musicItemLabelList}
-      role={"list"}
-      aria-label={accessibilityLabel}
-    >
-      {musicLabels.map((someMusicLabel) => (
-        <div
-          className={styles.musicItemLabel}
-          key={someMusicLabel}
-          role={"listitem"}
-        >
-          {someMusicLabel.toLowerCase()}
-        </div>
-      ))}
-    </div>
-  );
-}
-
-interface FilteredMusicItemsPageNavigationProps {
-  filteredMusicItemsPageCount: number;
-  filteredMusicItemsPageIndex: number;
-  previousPageLink: ReactNode;
-  nextPageLink: ReactNode;
-}
-
-function FilteredMusicItemsPageNavigation(
-  props: FilteredMusicItemsPageNavigationProps
-) {
-  const {
-    previousPageLink,
-    filteredMusicItemsPageIndex,
-    filteredMusicItemsPageCount,
-    nextPageLink,
-  } = props;
-
-  return (
-    <div
-      className={styles.dataPageNavigationContainer}
-      role={"navigation"}
-      aria-label={"filtered music items page navigation"}
-    >
-      {previousPageLink}
-      <div className={styles.focusedDataPageIndexDisplayContainer}>
-        <label
-          className={styles.filteredMusicItemsPageLabel}
-          id={"filteredMusicItemsPageLabel"}
-        >
-          filtered music items page:
-        </label>
-        <div
-          className={styles.filteredMusicItemsPageText}
-          role={"meter"}
-          aria-valuemin={1}
-          aria-valuemax={filteredMusicItemsPageCount}
-          aria-valuenow={filteredMusicItemsPageIndex}
-          aria-labelledby={"filteredMusicItemsPageLabel"}
-        >
-          {`${filteredMusicItemsPageIndex} / ${filteredMusicItemsPageCount}`}
-        </div>
-      </div>
-      {nextPageLink}
-    </div>
-  );
-}
-
-interface ActiveMusicItemsPageLinkProps extends MusicItemsPageBaseProps {
-  dataPageHref: string;
-}
-
-function ActiveMusicItemsPageLink(props: ActiveMusicItemsPageLinkProps) {
-  const { dataPageHref, relativePageLinkLabel } = props;
-  return (
-    <Link href={dataPageHref}>
-      <a className={styles.activeFilteredMusicItemsPageLink}>
-        {relativePageLinkLabel}
-      </a>
-    </Link>
-  );
-}
-
-interface DisabledMusicItemsPageLinkProps extends MusicItemsPageBaseProps {}
-
-function DisabledMusicItemsPageLink(props: DisabledMusicItemsPageLinkProps) {
-  const { relativePageLinkLabel } = props;
-  return (
-    <a className={styles.disabledFilteredMusicItemsPageLink}>
-      {relativePageLinkLabel}
-    </a>
-  );
-}
-
-interface MusicItemsPageBaseProps {
-  relativePageLinkLabel: string;
-}

@@ -16,8 +16,8 @@ export const HomePage: NextPage = () => {
       <div role={"figure"} className={homePageStyles.landingImageContainer}>
         <Image
           className={homePageStyles.landingImage}
-          src={"/graphics/whichway.gif"}
-          alt={"¡which way!"}
+          src={"/graphics/alignmentuntangled.png"}
+          alt={"alignment untangled"}
           width={1024}
           height={1024}
         />
@@ -25,16 +25,16 @@ export const HomePage: NextPage = () => {
       <div role={"list"} className={homePageStyles.routesContainer}>
         {[
           {
-            prompt: "software",
-            linkHref: "/software",
+            prompt: "packages",
+            linkHref: "/software/packages",
           },
           {
             prompt: "resume",
-            linkHref: "/resume",
+            linkHref: "/software/resume",
           },
           {
             prompt: "graphics",
-            linkHref: "/graphics",
+            linkHref: "/art/graphics",
           },
           {
             prompt: "- music +",

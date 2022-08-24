@@ -1,9 +1,9 @@
-import { DocumentContentSection } from "../../../common/Document/DocumentContentSection";
+import { DocumentContentSection } from "../../../../common/Document/DocumentContentSection";
 
 export interface SoftwareProjectSectionProps {
   projectName: string;
-  repositoryHref: string;
-  packageHref: string;
+  githubHref: string;
+  npmHref: string;
   projectDescription: string;
   projectRoadmap: Array<string>;
   projectTech: Array<string>;
@@ -12,8 +12,8 @@ export interface SoftwareProjectSectionProps {
 export function SoftwareProjectSection(props: SoftwareProjectSectionProps) {
   const {
     projectName,
-    repositoryHref,
-    packageHref,
+    githubHref,
+    npmHref,
     projectDescription,
     projectRoadmap,
     projectTech,
@@ -28,13 +28,13 @@ export function SoftwareProjectSection(props: SoftwareProjectSectionProps) {
         },
         {
           variant: "link",
-          label: "repository",
-          linkHref: repositoryHref,
+          label: "github",
+          linkHref: githubHref,
         },
         {
           variant: "link",
-          label: "package",
-          linkHref: packageHref,
+          label: "npm",
+          linkHref: npmHref,
         },
       ]}
       bodyContents={[

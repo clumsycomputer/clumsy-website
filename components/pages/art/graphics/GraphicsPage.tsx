@@ -1,7 +1,7 @@
 import type { NextPage } from "next";
-import { NavigationFooter } from "../../common/NavigationFooter/NavigationFooter";
-import { Page } from "../../common/Page/Page";
-import { SectionDivider } from "../../common/SectionDivider/SectionDivider";
+import { NavigationFooter } from "../../../common/NavigationFooter/NavigationFooter";
+import { Page } from "../../../common/Page/Page";
+import { SectionDivider } from "../../../common/SectionDivider/SectionDivider";
 import { GraphicSection } from "./common/GraphicSection";
 import graphicsPageStyles from "./GraphicsPage.module.scss";
 
@@ -216,8 +216,8 @@ export const GraphicsPage: NextPage = () => {
       <NavigationFooter
         routeLinks={[
           { routeName: "home", routeHref: "/" },
-          { routeName: "software", routeHref: "/software" },
-          { routeName: "resume", routeHref: "/resume" },
+          { routeName: "packages", routeHref: "/software/packages" },
+          { routeName: "resume", routeHref: "/software/resume" },
           { routeName: "- music +", routeHref: "/curations/music" },
         ]}
         pdfLink={null}

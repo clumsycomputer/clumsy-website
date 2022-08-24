@@ -5,34 +5,19 @@
   max-width: 512px;
 }
 
-.sortSelectContainer {
-  border-style: solid;
-  border-color: black;
-  border-width: 1.5px;
-  border-radius: 3px;
+.itemsFilterContainer {
   display: flex;
-  flex-direction: row;
-  align-items: center;
+  flex-direction: column;
+  padding: $spacer * 3 / 2;
 }
 
-.sortSelect {
-  margin: 0;
-  border: none;
-  background-color: white;
-  color: black;
-  padding-inline: 4px;
-  padding-block: 2px;
-  font-family: monospace;
-  font-weight: 600;
-  font-size: 18px;
-  line-height: inherit;
-  cursor: pointer;
-  appearance: none;
-  outline: none;
-  z-index: 1;
+.sortOrderSelectContainer {
+  display: flex;
+  flex-direction: row-reverse;
+  padding-block-end: $spacer;
 }
 
-.musicItemsContainer {
+.musicItemsList {
   display: flex;
   flex-direction: column;
   padding-inline: $spacer / 2;

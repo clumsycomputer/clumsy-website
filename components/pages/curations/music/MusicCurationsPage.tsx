@@ -44,20 +44,8 @@ export const MusicCurationsPage: NextPage<MusicCurationsPageProps> = (
       pageTabTitle={"+ music - clumsycomputer"}
       pageDescription={"a catalog of awesome music"}
     >
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          padding: 12,
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "row-reverse",
-            paddingBottom: 8,
-          }}
-        >
+      <div className={styles.itemsFilterContainer}>
+        <div className={styles.sortOrderSelectContainer}>
           <SortOrderSelect
             value={pageState.sortOrder}
             onChange={(nextSortOrder) => {
@@ -113,7 +101,7 @@ export const MusicCurationsPage: NextPage<MusicCurationsPageProps> = (
           }}
         />
       </div>
-      <div className={styles.musicItemsContainer} role={"list"}>
+      <div className={styles.musicItemsList} role={"list"}>
         {filteredMusicListItems}
       </div>
       {filteredMusicItemsNavigation}

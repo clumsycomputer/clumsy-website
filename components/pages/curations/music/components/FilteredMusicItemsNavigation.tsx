@@ -70,7 +70,7 @@ export function DisabledMusicItemsPageLink(
 ) {
   const { relativePageLinkLabel } = props;
   return (
-    <a className={styles.disabledNavigationLink}>{relativePageLinkLabel}</a>
+    <div className={styles.disabledNavigationLink}>{relativePageLinkLabel}</div>
   );
 }
 

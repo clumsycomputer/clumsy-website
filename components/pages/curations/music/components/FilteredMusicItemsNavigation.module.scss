@@ -26,6 +26,7 @@
 .disabledNavigationLink {
   @extend .navigationLink;
   color: $disabledGrey;
+  cursor: default;
 }
 
 .navigationLink {

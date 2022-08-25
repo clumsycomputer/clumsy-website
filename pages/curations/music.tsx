@@ -13,6 +13,6 @@ export default (props: MusicCurationsPageProps) => {
     if (pageRouter.isReady) {
       setPageElement(<MusicCurationsPage {...props} />);
     }
-  }, [pageRouter]);
+  }, [pageRouter, props]);
   return pageElement;
 };

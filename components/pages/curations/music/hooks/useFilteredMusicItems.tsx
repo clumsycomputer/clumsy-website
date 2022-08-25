@@ -56,8 +56,13 @@ export function useFilteredMusicItems(api: UseFilteredMusicItemsApi) {
       });
     const filteredMusicItemsPageCount =
       Math.ceil(filteredMusicItems.length / filteredMusicItemsPageSize) || 1;
+    const filteredMusicItemsPageIndex =
+      pageState.pageIndex > 0 &&
+      pageState.pageIndex <= filteredMusicItemsPageCount
+        ? pageState.pageIndex
+        : 1;
     const filteredMusicItemsItemIndexStart =
-      filteredMusicItemsPageSize * (pageState.pageIndex - 1);
+      filteredMusicItemsPageSize * (filteredMusicItemsPageIndex - 1);
     const filteredMusicItemsPage = filteredMusicItems.slice(
       filteredMusicItemsItemIndexStart,
       filteredMusicItemsItemIndexStart + filteredMusicItemsPageSize
@@ -87,17 +92,17 @@ export function useFilteredMusicItems(api: UseFilteredMusicItemsApi) {
         ),
       filteredMusicItemsNavigation: (
         <FilteredMusicItemsNavigation
-          filteredMusicItemsPageIndex={pageState.pageIndex}
+          filteredMusicItemsPageIndex={filteredMusicItemsPageIndex}
           filteredMusicItemsPageCount={filteredMusicItemsPageCount}
           previousPageLink={
-            pageState.pageIndex > 1 ? (
+            filteredMusicItemsPageIndex > 1 ? (
               <ActiveMusicItemsPageLink
                 relativePageLinkLabel={"prev"}
                 dataPageHref={getUpdatedPageRoute({
                   pageRouter,
                   currentState: pageState,
                   stateUpdates: {
-                    pageIndex: pageState.pageIndex - 1,
+                    pageIndex: filteredMusicItemsPageIndex - 1,
                   },
                 })}
               />
@@ -106,14 +111,14 @@ export function useFilteredMusicItems(api: UseFilteredMusicItemsApi) {
             )
           }
           nextPageLink={
-            pageState.pageIndex < filteredMusicItemsPageCount ? (
+            filteredMusicItemsPageIndex < filteredMusicItemsPageCount ? (
               <ActiveMusicItemsPageLink
                 relativePageLinkLabel={"next"}
                 dataPageHref={getUpdatedPageRoute({
                   pageRouter,
                   currentState: pageState,
                   stateUpdates: {
-                    pageIndex: pageState.pageIndex + 1,
+                    pageIndex: filteredMusicItemsPageIndex + 1,
                   },
                 })}
               />
@@ -124,5 +129,5 @@ export function useFilteredMusicItems(api: UseFilteredMusicItemsApi) {
         />
       ),
     };
-  }, [pageRouter, pageState]);
+  }, [pageRouter, pageState, musicItemDataset]);
 }

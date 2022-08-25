@@ -55,6 +55,7 @@ export const MusicCurationsPage: NextPage<MusicCurationsPageProps> = (
                   currentState: pageState,
                   stateUpdates: {
                     sortOrder: nextSortOrder,
+                    pageIndex: 1,
                   },
                 }),
                 undefined,

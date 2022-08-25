@@ -1070,4 +1070,215 @@ export const musicItemDataset: Array<MusicItem> = [
       }),
     ],
   },
+  {
+    musicId: 42,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref: "https://m.media-amazon.com/images/I/514IbrAP8bL.jpg",
+    musicYear: "2007",
+    musicTitle: "Little Dragon",
+    musicArtist: ["Little Dragon"],
+    recordingContext: ["studio"],
+    musicStyles: ["synth", "pop"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_mnKHVBgZ9G6rpLaG7kBDx29McU7sCDCS4&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/34AtsFexhxnKPVJFtLIN1I?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref: "https://music.apple.com/br/album/little-dragon/258615649",
+      }),
+    ],
+  },
+  {
+    musicId: 43,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/91KglRYrTKL._AC_UY436_QL65_.jpg",
+    musicYear: "2017",
+    musicTitle: "Tinfoil & Turmoil",
+    musicArtist: ["Billy Strings"],
+    recordingContext: ["studio"],
+    musicStyles: ["bluegrass"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_mUZqe4t8Kj9nBNfFN0xgsfiRSaVt0eza4&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/3CKP5G9f93RBbUi73HnyVC?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref:
+          "https://music.apple.com/br/album/turmoil-tinfoil/1285696865",
+      }),
+    ],
+  },
+  {
+    musicId: 44,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/51bVeULg4hL._AC_UY436_QL65_.jpg",
+    musicYear: "2015",
+    musicTitle: "Natureboy",
+    musicArtist: ["Natureboy Flako"],
+    recordingContext: ["studio"],
+    musicStyles: ["electronica"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/watch?v=lvfbHQ5kNTo&list=OLAK5uy_nDgp2lEchi1x_c3JnF9i9yjQXM2YJvVmk",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/6y5l3VyZmHrIabKU0Lrp8n?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref: "https://music.apple.com/br/album/natureboy/962791803",
+      }),
+    ],
+  },
+  {
+    musicId: 45,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/8195f6EtPuL._AC_UY436_QL65_.jpg",
+    musicYear: "2012",
+    musicTitle: "Shark Wolf Rabbit Snake",
+    musicArtist: ["Eliot Lipp"],
+    recordingContext: ["studio"],
+    musicStyles: ["electronic"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_nA-a4QgGruRJy24mbLh8HkZocpZo_ZM6I&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/5A7rqZVUTMf4uYUHQaxLkn?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref:
+          "https://music.apple.com/br/album/shark-wolf-rabbit-snake/1553491366",
+      }),
+    ],
+  },
+  {
+    musicId: 46,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/71PKyCCYIZL._AC_UY436_QL65_.jpg",
+    musicYear: "2015",
+    musicTitle: "Are You Satisfied?",
+    musicArtist: ["Slaves"],
+    recordingContext: ["studio"],
+    musicStyles: ["punk"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_mM4EF0OQ4_ZpGK6hBk1b-XNTlyvgiRraQ&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/4522HLG4hPLFfN6GvuFX7X?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref:
+          "https://music.apple.com/br/album/are-you-satisfied-deluxe/1440845239",
+      }),
+    ],
+  },
+  {
+    musicId: 47,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/91KBmUeHXML._AC_UY436_QL65_.jpg",
+    musicYear: "2018",
+    musicTitle: "Golden Hour",
+    musicArtist: ["Kacey Musgraves"],
+    recordingContext: ["studio"],
+    musicStyles: ["pop", "country"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_kSDZsWub6uFJmTYpR5JhZdtpbp6sQ_Mv0&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/7f6xPqyaolTiziKf5R5Z0c?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref: "https://music.apple.com/br/album/golden-hour/1440918116",
+      }),
+    ],
+  },
+  {
+    musicId: 48,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/71rVkpW9DsL._AC_UY436_QL65_.jpg",
+    musicYear: "1993",
+    musicTitle: "On the Night",
+    musicArtist: ["Dire Straits"],
+    recordingContext: ["concert"],
+    musicStyles: ["rock"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_nkwORLvfaOjs4WxwsEfoeKadIDcxok-qk&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/3tybckgVqaIsR5oGnfWKpA?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref:
+          "https://music.apple.com/br/album/on-the-night-remastered-live/1440910981",
+      }),
+    ],
+  },
+  {
+    musicId: 49,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/51lGB1vZOnL._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2006",
+    musicTitle: "10000 Days",
+    musicArtist: ["Tool"],
+    recordingContext: ["studio"],
+    musicStyles: ["metal"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_l7KrE4YuWhZsfCdXlLJERHyk4YlwydukA&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/1fvWYcbjuycyHpzNPH1Vfk?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref: "https://music.apple.com/br/album/10-000-days/1474250650",
+      }),
+    ],
+  },
 ];

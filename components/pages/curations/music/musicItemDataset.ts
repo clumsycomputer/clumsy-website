@@ -43,7 +43,7 @@ export const musicItemDataset: Array<MusicItem> = [
     musicTitle: "Premiers Symptômes",
     musicArtist: ["Air"],
     recordingContext: ["studio"],
-    musicStyles: ["downtempo", "electronica"],
+    musicStyles: ["downtempo", "electronic"],
     externalLinks: [
       getYoutubeLinkData({
         youtubeHref:
@@ -70,7 +70,7 @@ export const musicItemDataset: Array<MusicItem> = [
     musicYear: "2020",
     musicArtist: ["Parcels"],
     recordingContext: ["live"],
-    musicStyles: ["pop"],
+    musicStyles: ["disco", "funk", "pop"],
     externalLinks: [
       getYoutubeLinkData({
         youtubeHref:
@@ -96,7 +96,7 @@ export const musicItemDataset: Array<MusicItem> = [
     musicTitle: "The Best Of What's Around Vol. 01",
     musicArtist: ["Dave Matthews Band"],
     recordingContext: ["studio", "concert"],
-    musicStyles: ["jam"],
+    musicStyles: ["jam", "rock"],
     externalLinks: [
       getYoutubeLinkData({
         youtubeHref:
@@ -254,7 +254,7 @@ export const musicItemDataset: Array<MusicItem> = [
     musicTitle: "Filling Up the City Skies - Disc 1",
     musicArtist: ["Pretty Lights"],
     recordingContext: ["studio"],
-    musicStyles: ["downtempo", "electronica", "hip-hop"],
+    musicStyles: ["downtempo", "electronic", "hip-hop"],
     externalLinks: [
       getYoutubeLinkData({
         youtubeHref:
@@ -281,7 +281,7 @@ export const musicItemDataset: Array<MusicItem> = [
     musicTitle: "Bon Iver at AIR studios",
     musicArtist: ["Bon Iver", "Sean Carey"],
     recordingContext: ["live"],
-    musicStyles: ["minimal", "soul"],
+    musicStyles: ["folk"],
     externalLinks: [
       getYoutubeLinkData({
         youtubeHref: "https://www.youtube.com/watch?v=A9Tp5fl18Ho",
@@ -337,7 +337,7 @@ export const musicItemDataset: Array<MusicItem> = [
     musicTitle: "Nicolas Jaar Presents the Network",
     musicArtist: ["Nicolas Jaar"],
     recordingContext: ["studio"],
-    musicStyles: ["world", "electronica", "hip-hop", "ambient"],
+    musicStyles: ["experimental", "ambient", "electronic"],
     externalLinks: [
       getYoutubeLinkData({
         youtubeHref: "https://www.youtube.com/watch?v=JqjhIrys238",
@@ -364,7 +364,7 @@ export const musicItemDataset: Array<MusicItem> = [
     musicTitle: "hip-hop portion - Nicolas Jaar Presents the Network",
     musicArtist: ["Nicolas Jaar"],
     recordingContext: ["studio"],
-    musicStyles: ["ambient", "electronica", "hip-hop"],
+    musicStyles: ["ambient", "electronic", "hip-hop"],
     externalLinks: [
       getYoutubeLinkData({
         youtubeHref:
@@ -409,7 +409,7 @@ export const musicItemDataset: Array<MusicItem> = [
     musicTitle: "Beyond Serious",
     musicArtist: ["Bibio"],
     recordingContext: ["studio"],
-    musicStyles: ["electronic", "funk"],
+    musicStyles: ["electronic", "house"],
     externalLinks: [
       getYoutubeLinkData({
         youtubeHref:
@@ -488,7 +488,7 @@ export const musicItemDataset: Array<MusicItem> = [
     musicTitle: "Entroducing",
     musicArtist: ["DJ Shadow"],
     recordingContext: ["studio"],
-    musicStyles: ["electronic", "hip-hop"],
+    musicStyles: ["downtempo", "electronic", "hip-hop"],
     externalLinks: [
       getYoutubeLinkData({
         youtubeHref:
@@ -541,7 +541,7 @@ export const musicItemDataset: Array<MusicItem> = [
     musicTitle: "Los Angeles",
     musicArtist: ["Flying Lotus"],
     recordingContext: ["studio"],
-    musicStyles: ["downtempo", "electronic"],
+    musicStyles: ["downtempo", "experimental", "electronic"],
     externalLinks: [
       getYoutubeLinkData({
         youtubeHref:
@@ -567,7 +567,7 @@ export const musicItemDataset: Array<MusicItem> = [
     musicTitle: "Alive 2007",
     musicArtist: ["Daft Punk"],
     recordingContext: ["concert"],
-    musicStyles: ["electronic"],
+    musicStyles: ["electronic", "house"],
     externalLinks: [
       getYoutubeLinkData({
         youtubeHref:
@@ -621,7 +621,7 @@ export const musicItemDataset: Array<MusicItem> = [
     musicTitle: "Speaking in Tongues",
     musicArtist: ["Talking Heads"],
     recordingContext: ["studio"],
-    musicStyles: ["pop"],
+    musicStyles: ["pop", "new wave"],
     externalLinks: [
       getYoutubeLinkData({
         youtubeHref:
@@ -700,7 +700,7 @@ export const musicItemDataset: Array<MusicItem> = [
     musicTitle: "Little Dark Age",
     musicArtist: ["MGMT"],
     recordingContext: ["studio"],
-    musicStyles: ["psychedelic", "rock"],
+    musicStyles: ["psychedelic", "rock", "pop"],
     externalLinks: [
       getYoutubeLinkData({
         youtubeHref:
@@ -754,7 +754,7 @@ export const musicItemDataset: Array<MusicItem> = [
     musicTitle: "Mister Mellow",
     musicArtist: ["Washed Out"],
     recordingContext: ["studio"],
-    musicStyles: ["psychedelic", "electronic"],
+    musicStyles: ["downtempo", "electronic"],
     externalLinks: [
       getYoutubeLinkData({
         youtubeHref:
@@ -937,7 +937,7 @@ export const musicItemDataset: Array<MusicItem> = [
     musicTitle: "The Doors",
     musicArtist: ["The Doors"],
     recordingContext: ["studio"],
-    musicStyles: ["rock"],
+    musicStyles: ["psychedelic", "rock"],
     externalLinks: [
       getYoutubeLinkData({
         youtubeHref:
@@ -963,7 +963,7 @@ export const musicItemDataset: Array<MusicItem> = [
     musicTitle: "Le Sacre du Printemps",
     musicArtist: ["Igor Stravinsky"],
     recordingContext: ["live"],
-    musicStyles: ["atonal", "classic"],
+    musicStyles: ["atonal", "classical"],
     externalLinks: [
       getYoutubeLinkData({
         youtubeHref: "https://m.youtube.com/watch?v=Q3SvnwGVem4",
@@ -973,7 +973,7 @@ export const musicItemDataset: Array<MusicItem> = [
       }),
       getAppleLinkData({
         appleHref:
-          "https://music.apple.com/br/album/stravinsky-conducts-le-sacre-du-printemps-rite-spring/257253660",
+          "https://music.apple.com/us/album/stravinsky-conducts-le-sacre-du-printemps-rite-spring/257253660",
       }),
     ],
   },
@@ -988,7 +988,7 @@ export const musicItemDataset: Array<MusicItem> = [
     musicTitle: "Adult Themes",
     musicArtist: ["El Michels Affair"],
     recordingContext: ["studio"],
-    musicStyles: ["jazz"],
+    musicStyles: ["downtempo", "jazz"],
     externalLinks: [
       getYoutubeLinkData({
         youtubeHref:
@@ -1014,7 +1014,7 @@ export const musicItemDataset: Array<MusicItem> = [
     musicTitle: "No Better Time Than Now",
     musicArtist: ["Shigeto"],
     recordingContext: ["studio"],
-    musicStyles: ["electronic", "jazz"],
+    musicStyles: ["downtempo", "electronic"],
     externalLinks: [
       getYoutubeLinkData({
         youtubeHref:
@@ -1026,7 +1026,7 @@ export const musicItemDataset: Array<MusicItem> = [
       }),
       getAppleLinkData({
         appleHref:
-          "https://music.apple.com/br/album/no-better-time-than-now/661873896",
+          "https://music.apple.com/us/album/no-better-time-than-now/661873896",
       }),
     ],
   },
@@ -1040,7 +1040,7 @@ export const musicItemDataset: Array<MusicItem> = [
     musicTitle: "Whitehouse Road",
     musicArtist: ["Tyler Childers"],
     recordingContext: ["concert"],
-    musicStyles: ["canyon", "country"],
+    musicStyles: ["country"],
     externalLinks: [
       getYoutubeLinkData({
         youtubeHref: "https://m.youtube.com/watch?v=WtVrDud1gZM",
@@ -1136,7 +1136,7 @@ export const musicItemDataset: Array<MusicItem> = [
     musicTitle: "Natureboy",
     musicArtist: ["Natureboy Flako"],
     recordingContext: ["studio"],
-    musicStyles: ["electronica"],
+    musicStyles: ["electronic"],
     externalLinks: [
       getYoutubeLinkData({
         youtubeHref:

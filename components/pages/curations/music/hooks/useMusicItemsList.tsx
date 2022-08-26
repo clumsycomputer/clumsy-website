@@ -2,28 +2,27 @@ import { NextRouter } from "next/router";
 import { useMemo } from "react";
 import { getUpdatedPageRoute } from "../common/getUpdatedPageRoute";
 import {
-  ActiveMusicItemsPageLink,
-  DisabledMusicItemsPageLink,
-  FilteredMusicItemsNavigation,
-} from "../components/FilteredMusicItemsNavigation";
+  ActiveMusicItemsListPageLink,
+  DisabledMusicItemsListPageLink,
+  MusicItemsListNavigation,
+} from "../components/MusicItemsListNavigation";
 import { EmptyListItem, MusicListItem } from "../components/MusicListItem";
 import { MusicCurationsPageProps } from "../MusicCurationsPage";
 import { usePageState } from "./usePageState";
 
-export interface UseFilteredMusicItemsApi
+export interface UseMusicItemsListApi
   extends Pick<MusicCurationsPageProps, "musicItemDataset"> {
   pageRouter: NextRouter;
   pageState: ReturnType<typeof usePageState>;
 }
 
-export function useFilteredMusicItems(api: UseFilteredMusicItemsApi) {
+export function useMusicItemsList(api: UseMusicItemsListApi) {
   const { musicItemDataset, pageRouter, pageState } = api;
   return useMemo(() => {
     const searchQuery =
       typeof pageRouter.query.searchQuery === "string"
         ? pageRouter.query.searchQuery
         : "";
-    const filteredMusicItemsPageSize = 10;
     const filteredMusicItems = musicItemDataset
       .filter((someMusicItem) =>
         `${someMusicItem.musicTitle},${someMusicItem.musicArtist.join(
@@ -54,23 +53,21 @@ export function useFilteredMusicItems(api: UseFilteredMusicItemsApi) {
             return itemB.musicYear.localeCompare(itemA.musicYear);
         }
       });
-    const filteredMusicItemsPageCount =
-      Math.ceil(filteredMusicItems.length / filteredMusicItemsPageSize) || 1;
-    const filteredMusicItemsPageIndex =
-      pageState.pageIndex > 0 &&
-      pageState.pageIndex <= filteredMusicItemsPageCount
+    const pageSize = 10;
+    const pageCount = Math.ceil(filteredMusicItems.length / pageSize) || 1;
+    const _pageIndex =
+      pageState.pageIndex > 0 && pageState.pageIndex <= pageCount
         ? pageState.pageIndex
         : 1;
-    const filteredMusicItemsItemIndexStart =
-      filteredMusicItemsPageSize * (filteredMusicItemsPageIndex - 1);
-    const filteredMusicItemsPage = filteredMusicItems.slice(
-      filteredMusicItemsItemIndexStart,
-      filteredMusicItemsItemIndexStart + filteredMusicItemsPageSize
+    const pageIndexStart = pageSize * (_pageIndex - 1);
+    const musicItemsListPage = filteredMusicItems.slice(
+      pageIndexStart,
+      pageIndexStart + pageSize
     );
     return {
-      filteredMusicListItems:
-        filteredMusicItemsPage.length > 0 ? (
-          filteredMusicItemsPage.map((someMusicItem) => (
+      musicListItems:
+        musicItemsListPage.length > 0 ? (
+          musicItemsListPage.map((someMusicItem) => (
             <MusicListItem
               key={someMusicItem.musicId}
               musicThumbnailHref={someMusicItem.musicThumbnailHref}
@@ -90,40 +87,40 @@ export function useFilteredMusicItems(api: UseFilteredMusicItemsApi) {
         ) : (
           <EmptyListItem />
         ),
-      filteredMusicItemsNavigation: (
-        <FilteredMusicItemsNavigation
-          filteredMusicItemsPageIndex={filteredMusicItemsPageIndex}
-          filteredMusicItemsPageCount={filteredMusicItemsPageCount}
+      musicItemsListNavigation: (
+        <MusicItemsListNavigation
+          _pageIndex={_pageIndex}
+          pageCount={pageCount}
           previousPageLink={
-            filteredMusicItemsPageIndex > 1 ? (
-              <ActiveMusicItemsPageLink
-                relativePageLinkLabel={"prev"}
+            _pageIndex > 1 ? (
+              <ActiveMusicItemsListPageLink
+                linkLabel={"prev"}
                 dataPageHref={getUpdatedPageRoute({
                   pageRouter,
                   currentState: pageState,
                   stateUpdates: {
-                    pageIndex: filteredMusicItemsPageIndex - 1,
+                    pageIndex: _pageIndex - 1,
                   },
                 })}
               />
             ) : (
-              <DisabledMusicItemsPageLink relativePageLinkLabel={"prev"} />
+              <DisabledMusicItemsListPageLink linkLabel={"prev"} />
             )
           }
           nextPageLink={
-            filteredMusicItemsPageIndex < filteredMusicItemsPageCount ? (
-              <ActiveMusicItemsPageLink
-                relativePageLinkLabel={"next"}
+            _pageIndex < pageCount ? (
+              <ActiveMusicItemsListPageLink
+                linkLabel={"next"}
                 dataPageHref={getUpdatedPageRoute({
                   pageRouter,
                   currentState: pageState,
                   stateUpdates: {
-                    pageIndex: filteredMusicItemsPageIndex + 1,
+                    pageIndex: _pageIndex + 1,
                   },
                 })}
               />
             ) : (
-              <DisabledMusicItemsPageLink relativePageLinkLabel={"next"} />
+              <DisabledMusicItemsListPageLink linkLabel={"next"} />
             )
           }
         />

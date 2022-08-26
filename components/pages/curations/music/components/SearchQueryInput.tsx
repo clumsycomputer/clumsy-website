@@ -18,12 +18,8 @@ export function SearchQueryInput(props: SearchQueryInputProps) {
         value={value}
         onChange={onChange}
       />
-      <div className={styles.clearSearchContainer}>
-        <svg
-          className={styles.clearSearchButton}
-          viewBox={"0 0 1 1"}
-          onClick={clearSearchQuery}
-        >
+      <div className={styles.clearSearchButton} onClick={clearSearchQuery}>
+        <svg className={styles.clearSearchIcon} viewBox={"0 0 1 1"}>
           <circle
             cx={0.5}
             cy={0.5}

@@ -57,7 +57,8 @@
   background-color: $textBackgroundGrey;
   border-radius: $borderRadius;
   padding-inline: $spacer / 2;
-  padding-block: $spacer / 8;
+  padding-block-start: $spacer / 8 + 1px;
+  padding-block-end: $spacer / 8;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;  

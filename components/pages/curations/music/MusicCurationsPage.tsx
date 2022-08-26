@@ -6,7 +6,7 @@ import { getUpdatedPageRoute } from "./common/getUpdatedPageRoute";
 import { MusicItem } from "./common/models";
 import { SearchQueryInput } from "./components/SearchQueryInput";
 import { SortOrderSelect } from "./components/SortOrderSelect";
-import { useFilteredMusicItems } from "./hooks/useFilteredMusicItems";
+import { useMusicItemsList } from "./hooks/useMusicItemsList";
 import { usePageState } from "./hooks/usePageState";
 import styles from "./MusicCurationsPage.module.scss";
 import { musicItemDataset } from "./musicItemDataset";
@@ -14,7 +14,7 @@ import { musicItemDataset } from "./musicItemDataset";
 export function getStaticProps() {
   return {
     props: {
-      musicItemDataset: musicItemDataset.map((someItem) => someItem),
+      musicItemDataset,
     },
   };
 }
@@ -31,12 +31,11 @@ export const MusicCurationsPage: NextPage<MusicCurationsPageProps> = (
   const pageState = usePageState({
     pageRouter,
   });
-  const { filteredMusicListItems, filteredMusicItemsNavigation } =
-    useFilteredMusicItems({
-      musicItemDataset,
-      pageRouter,
-      pageState,
-    });
+  const { musicListItems, musicItemsListNavigation } = useMusicItemsList({
+    musicItemDataset,
+    pageRouter,
+    pageState,
+  });
   return (
     <Page
       pageContentContainerClassname={styles.pageContentContainer}
@@ -103,9 +102,9 @@ export const MusicCurationsPage: NextPage<MusicCurationsPageProps> = (
         />
       </div>
       <div className={styles.musicItemsList} role={"list"}>
-        {filteredMusicListItems}
+        {musicListItems}
       </div>
-      {filteredMusicItemsNavigation}
+      {musicItemsListNavigation}
       <NavigationFooter
         routeLinks={[
           { routeName: "home", routeHref: "/" },

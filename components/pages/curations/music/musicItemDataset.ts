@@ -1208,7 +1208,7 @@ export const musicItemDataset: Array<MusicItem> = [
     sourceType: "collection",
     collectionType: "album",
     musicThumbnailHref:
-      "https://m.media-amazon.com/images/I/91KBmUeHXML._AC_UY436_QL65_.jpg",
+      "https://m.media-amazon.com/images/I/51aZZDUwzwL._UX500_FMwebp_QL85_.jpg",
     musicYear: "2018",
     musicTitle: "Golden Hour",
     musicArtist: ["Kacey Musgraves"],
@@ -1263,7 +1263,7 @@ export const musicItemDataset: Array<MusicItem> = [
     musicThumbnailHref:
       "https://m.media-amazon.com/images/I/51lGB1vZOnL._UX500_FMwebp_QL85_.jpg",
     musicYear: "2006",
-    musicTitle: "10000 Days",
+    musicTitle: "10 000 Days",
     musicArtist: ["Tool"],
     recordingContext: ["studio"],
     musicStyles: ["metal"],

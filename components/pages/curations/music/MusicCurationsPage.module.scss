@@ -14,7 +14,7 @@
 .sortOrderSelectContainer {
   display: flex;
   flex-direction: row-reverse;
-  padding-block-end: $spacer;
+  padding-block-end: $spacer + $spacer / 4;
 }
 
 .musicItemsList {

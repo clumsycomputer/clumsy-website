@@ -9,19 +9,21 @@ export interface GetUpdatedPageRouteApi {
 
 export function getUpdatedPageRoute(api: GetUpdatedPageRouteApi) {
   const { pageRouter, stateUpdates, currentState } = api;
-  return `${pageRouter.route}?pageIndex=${
-    stateUpdates.pageIndex || currentState.pageIndex
-  }&sortOrder=${
-    stateUpdates.sortOrder !== undefined
-      ? stateUpdates.sortOrder
-      : currentState.sortOrder
-  }${
-    stateUpdates.searchQuery !== undefined && stateUpdates.searchQuery !== ""
-      ? `&searchQuery=${stateUpdates.searchQuery}`
-      : stateUpdates.searchQuery === undefined &&
-        currentState.searchQuery &&
-        currentState.searchQuery !== ""
-      ? `&searchQuery=${currentState.searchQuery}`
-      : ""
-  }`;
+  return encodeURI(
+    `${pageRouter.route}?pageIndex=${
+      stateUpdates.pageIndex || currentState.pageIndex
+    }&sortOrder=${
+      stateUpdates.sortOrder !== undefined
+        ? stateUpdates.sortOrder
+        : currentState.sortOrder
+    }${
+      stateUpdates.searchQuery !== undefined && stateUpdates.searchQuery !== ""
+        ? `&searchQuery=${stateUpdates.searchQuery}`
+        : stateUpdates.searchQuery === undefined &&
+          currentState.searchQuery &&
+          currentState.searchQuery !== ""
+        ? `&searchQuery=${currentState.searchQuery}`
+        : ""
+    }`
+  );
 }

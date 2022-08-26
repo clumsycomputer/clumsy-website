@@ -254,7 +254,7 @@ export const musicItemDataset: Array<MusicItem> = [
     musicTitle: "Filling Up the City Skies - Disc 1",
     musicArtist: ["Pretty Lights"],
     recordingContext: ["studio"],
-    musicStyles: ["downtempo", "electronic", "hip-hop"],
+    musicStyles: ["downtempo", "hip-hop", "soul"],
     externalLinks: [
       getYoutubeLinkData({
         youtubeHref:
@@ -488,7 +488,7 @@ export const musicItemDataset: Array<MusicItem> = [
     musicTitle: "Entroducing",
     musicArtist: ["DJ Shadow"],
     recordingContext: ["studio"],
-    musicStyles: ["downtempo", "electronic", "hip-hop"],
+    musicStyles: ["downtempo", "hip-hop"],
     externalLinks: [
       getYoutubeLinkData({
         youtubeHref:
@@ -541,7 +541,7 @@ export const musicItemDataset: Array<MusicItem> = [
     musicTitle: "Los Angeles",
     musicArtist: ["Flying Lotus"],
     recordingContext: ["studio"],
-    musicStyles: ["downtempo", "experimental", "electronic"],
+    musicStyles: ["downtempo", "experimental"],
     externalLinks: [
       getYoutubeLinkData({
         youtubeHref:
@@ -988,7 +988,7 @@ export const musicItemDataset: Array<MusicItem> = [
     musicTitle: "Adult Themes",
     musicArtist: ["El Michels Affair"],
     recordingContext: ["studio"],
-    musicStyles: ["downtempo", "jazz"],
+    musicStyles: ["downtempo"],
     externalLinks: [
       getYoutubeLinkData({
         youtubeHref:
@@ -1187,7 +1187,7 @@ export const musicItemDataset: Array<MusicItem> = [
       "https://m.media-amazon.com/images/I/51zyZfXjF9L._UX500_FMwebp_QL85_.jpg",
     musicYear: "2022",
     musicTitle: "The Forever Story",
-    musicArtist: ["J.I.D"],
+    musicArtist: ["JID"],
     recordingContext: ["studio"],
     musicStyles: ["hip-hop", "rap"],
     externalLinks: [

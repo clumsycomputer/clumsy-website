@@ -48,7 +48,7 @@ export const MusicCurationsPage: NextPage<MusicCurationsPageProps> = (
           <SortOrderSelect
             value={pageState.sortOrder}
             onChange={(nextSortOrder) => {
-              pageRouter.push(
+              pageRouter.replace(
                 getUpdatedPageRoute({
                   pageRouter,
                   currentState: pageState,
@@ -68,7 +68,7 @@ export const MusicCurationsPage: NextPage<MusicCurationsPageProps> = (
         <SearchQueryInput
           value={pageState.searchQuery}
           onChange={(someChangeEvent) => {
-            pageRouter.push(
+            pageRouter.replace(
               getUpdatedPageRoute({
                 pageRouter,
                 currentState: pageState,
@@ -84,7 +84,7 @@ export const MusicCurationsPage: NextPage<MusicCurationsPageProps> = (
             );
           }}
           clearSearchQuery={() => {
-            pageRouter.push(
+            pageRouter.replace(
               getUpdatedPageRoute({
                 pageRouter,
                 currentState: pageState,

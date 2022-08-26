@@ -12,12 +12,12 @@ export const musicItemDataset: Array<MusicItem> = [
     sourceType: "collection",
     collectionType: "album",
     musicThumbnailHref:
-      "https://m.media-amazon.com/images/I/815pLljpegL._SL1500_.jpg",
+      "https://m.media-amazon.com/images/I/41lpwGEQvoL._UX500_FMwebp_QL85_.jpg",
     musicYear: "2018",
     musicTitle: "IC-01 Hanoi",
     musicArtist: ["Unknown Mortal Orchestra"],
     recordingContext: ["studio"],
-    musicStyles: ["rock", "instrumental", "experimental"],
+    musicStyles: ["experimental", "jazz", "rock"],
     externalLinks: [
       getYoutubeLinkData({
         youtubeHref:
@@ -43,7 +43,7 @@ export const musicItemDataset: Array<MusicItem> = [
     musicTitle: "Premiers Symptômes",
     musicArtist: ["Air"],
     recordingContext: ["studio"],
-    musicStyles: ["groove", "instrumental", "lush"],
+    musicStyles: ["downtempo", "electronica"],
     externalLinks: [
       getYoutubeLinkData({
         youtubeHref:
@@ -65,12 +65,12 @@ export const musicItemDataset: Array<MusicItem> = [
     sourceType: "collection",
     collectionType: "album",
     musicThumbnailHref:
-      "https://m.media-amazon.com/images/I/71CzC0CGECL._AC_UY436_FMwebp_QL65_.jpg",
+      "https://m.media-amazon.com/images/I/51ZKa067uhL._UX500_FMwebp_QL85_.jpg",
     musicTitle: "Live Vol. 1",
     musicYear: "2020",
     musicArtist: ["Parcels"],
     recordingContext: ["live"],
-    musicStyles: ["pop", "social"],
+    musicStyles: ["pop"],
     externalLinks: [
       getYoutubeLinkData({
         youtubeHref:
@@ -91,7 +91,7 @@ export const musicItemDataset: Array<MusicItem> = [
     sourceType: "collection",
     collectionType: "compilation",
     musicThumbnailHref:
-      "https://m.media-amazon.com/images/I/41Eldx-iyAL._UX500_FMwebp_QL85_.jpg",
+      "https://m.media-amazon.com/images/I/41WZvHEcbuL._UX500_FMwebp_QL85_.jpg",
     musicYear: "2006",
     musicTitle: "The Best Of What's Around Vol. 01",
     musicArtist: ["Dave Matthews Band"],
@@ -118,12 +118,12 @@ export const musicItemDataset: Array<MusicItem> = [
     sourceType: "collection",
     collectionType: "album",
     musicThumbnailHref:
-      "https://m.media-amazon.com/images/I/71XmXBCQ+XL._AC_UY436_FMwebp_QL65_.jpg",
+      "https://m.media-amazon.com/images/I/51qCkOpjBYL._UX500_FMwebp_QL85_.jpg",
     musicYear: "2016",
     musicTitle: "Blank Face LP",
     musicArtist: ["ScHoolboy Q"],
     recordingContext: ["studio"],
-    musicStyles: ["hip-hop", "street"],
+    musicStyles: ["hip-hop", "rap"],
     externalLinks: [
       getYoutubeLinkData({
         youtubeHref:
@@ -143,12 +143,13 @@ export const musicItemDataset: Array<MusicItem> = [
     musicType: "source",
     sourceType: "collection",
     collectionType: "album",
-    musicThumbnailHref: "https://m.media-amazon.com/images/I/41us+rdexmL.jpg",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/61LlZokVjxL._UX500_FMwebp_QL85_.jpg",
     musicYear: "2004",
     musicTitle: "Pickin' on Modest Mouse: A Bluegrass Tribute",
     musicArtist: ["Iron Horse", "Modest Mouse"],
     recordingContext: ["studio"],
-    musicStyles: ["covers", "bluegrass"],
+    musicStyles: ["bluegrass"],
     externalLinks: [
       getYoutubeLinkData({
         youtubeHref:
@@ -170,12 +171,12 @@ export const musicItemDataset: Array<MusicItem> = [
     sourceType: "collection",
     collectionType: "album",
     musicThumbnailHref:
-      "https://m.media-amazon.com/images/I/51my4h86mRL._AC_UY312_FMwebp_QL65_.jpg",
+      "https://m.media-amazon.com/images/I/61yiLjG7QQL._UX500_FMwebp_QL85_.jpg",
     musicYear: "2012",
     musicTitle: "Trouble",
     musicArtist: ["Totally Extinct Enormous Dinosaurs"],
     recordingContext: ["studio"],
-    musicStyles: ["electronic"],
+    musicStyles: ["electronic", "pop"],
     externalLinks: [
       getYoutubeLinkData({
         youtubeHref:
@@ -196,7 +197,7 @@ export const musicItemDataset: Array<MusicItem> = [
     sourceType: "collection",
     collectionType: "album",
     musicThumbnailHref:
-      "https://m.media-amazon.com/images/I/718tt6ncquL._AC_UY436_FMwebp_QL65_.jpg",
+      "https://m.media-amazon.com/images/I/51OoNPSy4IL._UX500_FMwebp_QL85_.jpg",
     musicYear: "2019",
     musicTitle: "Room 41",
     musicArtist: ["Paul Cauthen"],
@@ -222,12 +223,12 @@ export const musicItemDataset: Array<MusicItem> = [
     sourceType: "collection",
     collectionType: "album",
     musicThumbnailHref:
-      "https://m.media-amazon.com/images/I/61XijFIRaxL._AC_UY436_FMwebp_QL65_.jpg",
+      "https://m.media-amazon.com/images/I/41wnneBCjFL._UX500_FMwebp_QL85_.jpg",
     musicYear: "2022",
     musicTitle: "Organ Recital",
     musicArtist: ["Bastien Keb"],
     recordingContext: ["studio"],
-    musicStyles: ["soul"],
+    musicStyles: ["r&b", "soul"],
     externalLinks: [
       getYoutubeLinkData({
         youtubeHref:
@@ -248,12 +249,12 @@ export const musicItemDataset: Array<MusicItem> = [
     sourceType: "collection",
     collectionType: "album",
     musicThumbnailHref:
-      "https://m.media-amazon.com/images/I/813BJ4cG9RL._SS500_.jpg",
+      "https://m.media-amazon.com/images/I/61UpX7MWpML._UX500_FMwebp_QL85_.jpg",
     musicYear: "2008",
     musicTitle: "Filling Up the City Skies - Disc 1",
     musicArtist: ["Pretty Lights"],
     recordingContext: ["studio"],
-    musicStyles: ["soul", "hip-hop", "electronica"],
+    musicStyles: ["downtempo", "electronica", "hip-hop"],
     externalLinks: [
       getYoutubeLinkData({
         youtubeHref:
@@ -280,7 +281,7 @@ export const musicItemDataset: Array<MusicItem> = [
     musicTitle: "Bon Iver at AIR studios",
     musicArtist: ["Bon Iver", "Sean Carey"],
     recordingContext: ["live"],
-    musicStyles: ["voice", "piano", "minimal"],
+    musicStyles: ["minimal", "soul"],
     externalLinks: [
       getYoutubeLinkData({
         youtubeHref: "https://www.youtube.com/watch?v=A9Tp5fl18Ho",
@@ -292,12 +293,12 @@ export const musicItemDataset: Array<MusicItem> = [
     musicType: "source",
     sourceType: "mix",
     musicThumbnailHref:
-      "https://is4-ssl.mzstatic.com/image/thumb/Features125/v4/f4/6b/a9/f46ba999-c102-ea24-7efa-a8e48b43bebd/mza_4437830076440205700.jpg/1000x1000bb.webp",
+      "https://is4-ssl.mzstatic.com/image/thumb/Features125/v4/f4/6b/a9/f46ba999-c102-ea24-7efa-a8e48b43bebd/mza_4437830076440205700.jpg/600x600bb.webp",
     musicYear: "2021",
     musicTitle: "WhoMadeWho",
     musicArtist: ["WhoMadeWho live at Abu Simbel"],
     recordingContext: ["live"],
-    musicStyles: ["electronic", "cercle"],
+    musicStyles: ["electronic"],
     externalLinks: [
       getYoutubeLinkData({
         youtubeHref: "https://www.youtube.com/watch?v=BDwAlto-NKU",
@@ -319,7 +320,7 @@ export const musicItemDataset: Array<MusicItem> = [
     musicTitle: "In Rainbows From the Basement",
     musicArtist: ["Radiohead", "Nigel Godrich"],
     recordingContext: ["live"],
-    musicStyles: ["spooky", "spiritual", "rock"],
+    musicStyles: ["experimental", "rock"],
     externalLinks: [
       getYoutubeLinkData({
         youtubeHref: "https://www.youtube.com/watch?v=DWuAn6C8Mfc",
@@ -336,7 +337,7 @@ export const musicItemDataset: Array<MusicItem> = [
     musicTitle: "Nicolas Jaar Presents the Network",
     musicArtist: ["Nicolas Jaar"],
     recordingContext: ["studio"],
-    musicStyles: ["full-spectrum"],
+    musicStyles: ["world", "electronica", "hip-hop", "ambient"],
     externalLinks: [
       getYoutubeLinkData({
         youtubeHref: "https://www.youtube.com/watch?v=JqjhIrys238",
@@ -360,10 +361,10 @@ export const musicItemDataset: Array<MusicItem> = [
     musicThumbnailHref:
       "https://e.snmc.io/i/1200/s/af23292a9abbba762d6e0d96ffa7eb03/7962041",
     musicYear: "2016",
-    musicTitle: "Hip-Hop portion - Nicolas Jaar Presents the Network",
+    musicTitle: "hip-hop portion - Nicolas Jaar Presents the Network",
     musicArtist: ["Nicolas Jaar"],
     recordingContext: ["studio"],
-    musicStyles: ["space", "hip-hop"],
+    musicStyles: ["ambient", "electronica", "hip-hop"],
     externalLinks: [
       getYoutubeLinkData({
         youtubeHref:
@@ -377,12 +378,12 @@ export const musicItemDataset: Array<MusicItem> = [
     sourceType: "collection",
     collectionType: "album",
     musicThumbnailHref:
-      "https://m.media-amazon.com/images/I/71cHQs6MslL._AC_UY436_FMwebp_QL65_.jpg",
+      "https://m.media-amazon.com/images/I/41BZxoiQn3L._UX500_FMwebp_QL85_.jpg",
     musicYear: "2018",
     musicTitle: "iridescence",
     musicArtist: ["BROCKHAMPTON"],
     recordingContext: ["studio"],
-    musicStyles: ["pop", "hip-hop"],
+    musicStyles: ["pop", "hip-hop", "rap"],
     externalLinks: [
       getYoutubeLinkData({
         youtubeHref:
@@ -430,12 +431,12 @@ export const musicItemDataset: Array<MusicItem> = [
     sourceType: "collection",
     collectionType: "album",
     musicThumbnailHref:
-      "https://m.media-amazon.com/images/I/51h7dDC5oGL._AC_UL640_FMwebp_QL65_.jpg",
+      "https://m.media-amazon.com/images/I/31TJO2-BIvL._UX500_FMwebp_QL85_.jpg",
     musicYear: "2003",
     musicTitle: "Surrounded",
     musicArtist: ["Tipper"],
     recordingContext: ["studio"],
-    musicStyles: ["interdimensional", "hip-hop"],
+    musicStyles: ["downtempo", "electronic"],
     externalLinks: [
       getYoutubeLinkData({
         youtubeHref:
@@ -456,7 +457,7 @@ export const musicItemDataset: Array<MusicItem> = [
     sourceType: "collection",
     collectionType: "album",
     musicThumbnailHref:
-      "https://m.media-amazon.com/images/I/61zjF4Ft7tL._AC_UY436_FMwebp_QL65_.jpg",
+      "https://m.media-amazon.com/images/I/413-5cIlSdL._UX500_FMwebp_QL85_.jpg",
     musicYear: "2019",
     musicTitle: "OOFIE",
     musicArtist: ["Wiki"],
@@ -482,7 +483,7 @@ export const musicItemDataset: Array<MusicItem> = [
     sourceType: "collection",
     collectionType: "album",
     musicThumbnailHref:
-      "https://m.media-amazon.com/images/I/61V9YTk78EL._AC_UY436_FMwebp_QL65_.jpg",
+      "https://m.media-amazon.com/images/I/41+Ai+nR7WL._UX500_FMwebp_QL85_.jpg",
     musicYear: "1996",
     musicTitle: "Entroducing",
     musicArtist: ["DJ Shadow"],
@@ -513,7 +514,7 @@ export const musicItemDataset: Array<MusicItem> = [
     musicTitle: "The Love Below",
     musicArtist: ["Andre 3000", "Outkast"],
     recordingContext: ["studio"],
-    musicStyles: ["love", "rap", "hip-hop"],
+    musicStyles: ["hip-hop", "rap"],
     externalLinks: [
       getYoutubeLinkData({
         youtubeHref:
@@ -535,12 +536,12 @@ export const musicItemDataset: Array<MusicItem> = [
     sourceType: "collection",
     collectionType: "album",
     musicThumbnailHref:
-      "https://m.media-amazon.com/images/I/71LCBA0rOHL._AC_UY436_FMwebp_QL65_.jpg",
+      "https://m.media-amazon.com/images/I/51cFB2HlgsL._UX500_FMwebp_QL85_.jpg",
     musicYear: "2008",
     musicTitle: "Los Angeles",
     musicArtist: ["Flying Lotus"],
     recordingContext: ["studio"],
-    musicStyles: ["primal", "electronic", "beats"],
+    musicStyles: ["downtempo", "electronic"],
     externalLinks: [
       getYoutubeLinkData({
         youtubeHref:
@@ -561,23 +562,24 @@ export const musicItemDataset: Array<MusicItem> = [
     sourceType: "collection",
     collectionType: "album",
     musicThumbnailHref:
-      "https://m.media-amazon.com/images/I/71bsHTr6idL._AC_UY436_FMwebp_QL65_.jpg",
-    musicYear: "2001",
-    musicTitle: "Discovery",
+      "https://m.media-amazon.com/images/I/51qvf6oULJL._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2007",
+    musicTitle: "Alive 2007",
     musicArtist: ["Daft Punk"],
-    recordingContext: ["studio"],
-    musicStyles: ["house", "electronic"],
+    recordingContext: ["concert"],
+    musicStyles: ["electronic"],
     externalLinks: [
       getYoutubeLinkData({
         youtubeHref:
-          "https://m.youtube.com/playlist?list=OLAK5uy_lMA_iEf3aqk5YSDsnrPKojXegOiecSF94&playnext=1&index=1",
+          "https://m.youtube.com/playlist?list=OLAK5uy_ndzMGozj4WUls-asc1dYQ_srOAacIY4yM&playnext=1&index=1",
       }),
       getSpotifyLinkData({
         spotifyHref:
-          "https://open.spotify.com/album/2noRn2Aes5aoNVsU6iWThc?autoplay=true",
+          "https://open.spotify.com/album/7u6zL7kqpgLPISZYXNTgYk?autoplay=true",
       }),
       getAppleLinkData({
-        appleHref: "https://music.apple.com/us/album/discovery/697194953",
+        appleHref:
+          "https://music.apple.com/us/album/alive-2007-live-deluxe-edition/717067737",
       }),
     ],
   },
@@ -587,12 +589,12 @@ export const musicItemDataset: Array<MusicItem> = [
     sourceType: "collection",
     collectionType: "album",
     musicThumbnailHref:
-      "https://m.media-amazon.com/images/I/71lpRjtW+YL._AC_UY436_FMwebp_QL65_.jpg",
+      "https://m.media-amazon.com/images/I/41Vjs9jFvwL._UX500_FMwebp_QL85_.jpg",
     musicYear: "2018",
     musicTitle: "Con Todo El Mundo",
     musicArtist: ["Khruangbin"],
     recordingContext: ["studio"],
-    musicStyles: ["style", "groove", "funk"],
+    musicStyles: ["funk"],
     externalLinks: [
       getYoutubeLinkData({
         youtubeHref:
@@ -614,7 +616,7 @@ export const musicItemDataset: Array<MusicItem> = [
     sourceType: "collection",
     collectionType: "album",
     musicThumbnailHref:
-      "https://m.media-amazon.com/images/I/81D9t2wdqiL._AC_UY436_FMwebp_QL65_.jpg",
+      "https://m.media-amazon.com/images/I/51ff-TQODYL._UX500_FMwebp_QL85_.jpg",
     musicYear: "1983",
     musicTitle: "Speaking in Tongues",
     musicArtist: ["Talking Heads"],
@@ -752,7 +754,7 @@ export const musicItemDataset: Array<MusicItem> = [
     musicTitle: "Mister Mellow",
     musicArtist: ["Washed Out"],
     recordingContext: ["studio"],
-    musicStyles: ["psychedelic", "groove", "electronic"],
+    musicStyles: ["psychedelic", "electronic"],
     externalLinks: [
       getYoutubeLinkData({
         youtubeHref:
@@ -799,7 +801,7 @@ export const musicItemDataset: Array<MusicItem> = [
     sourceType: "collection",
     collectionType: "album",
     musicThumbnailHref:
-      "https://is2-ssl.mzstatic.com/image/thumb/Video112/v4/fc/1b/b5/fc1bb5f1-252f-24a3-53d3-38753dcbb135/Job23508cff-ee56-4c24-9025-020e49851f71-132680369-PreviewImage_preview_image_nonvideo_sdr-Time1654619187377.png/540x540bb.webp",
+      "https://m.media-amazon.com/images/I/61V5APQ63eL._UX500_FMwebp_QL85_.jpg",
     musicYear: "2017",
     musicTitle: "Ctrl",
     musicArtist: ["SZA"],
@@ -825,7 +827,7 @@ export const musicItemDataset: Array<MusicItem> = [
     sourceType: "collection",
     collectionType: "album",
     musicThumbnailHref:
-      "https://is2-ssl.mzstatic.com/image/thumb/Music113/v4/dc/2a/14/dc2a1483-015c-2959-994a-d92786b2d2a9/cover.jpg/540x540bb.webp",
+      "https://m.media-amazon.com/images/I/4198maCNIwL._UX500_FMwebp_QL85_.jpg",
     musicYear: "1997",
     musicTitle: "Overcast!",
     musicArtist: ["Atmosphere"],
@@ -903,7 +905,7 @@ export const musicItemDataset: Array<MusicItem> = [
     sourceType: "collection",
     collectionType: "album",
     musicThumbnailHref:
-      "https://m.media-amazon.com/images/I/812op+rEfKL._AA256._SX354_SY354_BL0_QL100__UX500_FMwebp_QL85_.jpg",
+      "https://m.media-amazon.com/images/I/61sx5GAnvfL._UX500_FMwebp_QL85_.jpg",
     musicYear: "2008",
     musicTitle: "Flight of the Conchords",
     musicArtist: ["Flight of the Conchords"],
@@ -956,7 +958,7 @@ export const musicItemDataset: Array<MusicItem> = [
     sourceType: "collection",
     collectionType: "album",
     musicThumbnailHref:
-      "https://is1-ssl.mzstatic.com/image/thumb/Features/70/0a/9f/dj.dnkdzyhk.jpg/1000x1000bf.webp",
+      "https://m.media-amazon.com/images/I/51YHX77vkwL._UX500_FMwebp_QL85_.jpg",
     musicYear: "1962",
     musicTitle: "Le Sacre du Printemps",
     musicArtist: ["Igor Stravinsky"],
@@ -1007,7 +1009,7 @@ export const musicItemDataset: Array<MusicItem> = [
     sourceType: "collection",
     collectionType: "album",
     musicThumbnailHref:
-      "https://m.media-amazon.com/images/I/813SCblk8XL._AA256._SX354_SY354_BL0_QL100__UX500_FMwebp_QL85_.jpg",
+      "https://m.media-amazon.com/images/I/51iY-50F1AL._UX500_FMwebp_QL85_.jpg",
     musicYear: "2013",
     musicTitle: "No Better Time Than Now",
     musicArtist: ["Shigeto"],
@@ -1055,7 +1057,7 @@ export const musicItemDataset: Array<MusicItem> = [
     musicTitle: "Girlfriend is Better",
     musicArtist: ["Yonder Mountain String Band", "Talking Heads"],
     recordingContext: ["concert"],
-    musicStyles: ["cover", "bluegrass"],
+    musicStyles: ["bluegrass"],
     externalLinks: [
       getYoutubeLinkData({
         youtubeHref: "https://www.youtube.com/watch?v=7Owzmf9vp3E",
@@ -1075,7 +1077,8 @@ export const musicItemDataset: Array<MusicItem> = [
     musicType: "source",
     sourceType: "collection",
     collectionType: "album",
-    musicThumbnailHref: "https://m.media-amazon.com/images/I/514IbrAP8bL.jpg",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/51RMSBoXEEL._UX500_FMwebp_QL85_.jpg",
     musicYear: "2007",
     musicTitle: "Little Dragon",
     musicArtist: ["Little Dragon"],
@@ -1101,7 +1104,7 @@ export const musicItemDataset: Array<MusicItem> = [
     sourceType: "collection",
     collectionType: "album",
     musicThumbnailHref:
-      "https://m.media-amazon.com/images/I/91KglRYrTKL._AC_UY436_QL65_.jpg",
+      "https://m.media-amazon.com/images/I/61KSacLEgbL._UX500_FMwebp_QL85_.jpg",
     musicYear: "2017",
     musicTitle: "Tinfoil & Turmoil",
     musicArtist: ["Billy Strings"],
@@ -1154,7 +1157,7 @@ export const musicItemDataset: Array<MusicItem> = [
     sourceType: "collection",
     collectionType: "album",
     musicThumbnailHref:
-      "https://m.media-amazon.com/images/I/8195f6EtPuL._AC_UY436_QL65_.jpg",
+      "https://m.media-amazon.com/images/I/612eezueHrL._UX500_FMwebp_QL85_.jpg",
     musicYear: "2012",
     musicTitle: "Shark Wolf Rabbit Snake",
     musicArtist: ["Eliot Lipp"],
@@ -1181,24 +1184,24 @@ export const musicItemDataset: Array<MusicItem> = [
     sourceType: "collection",
     collectionType: "album",
     musicThumbnailHref:
-      "https://m.media-amazon.com/images/I/71PKyCCYIZL._AC_UY436_QL65_.jpg",
-    musicYear: "2015",
-    musicTitle: "Are You Satisfied?",
-    musicArtist: ["Slaves"],
+      "https://m.media-amazon.com/images/I/51zyZfXjF9L._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2022",
+    musicTitle: "The Forever Story",
+    musicArtist: ["J.I.D"],
     recordingContext: ["studio"],
-    musicStyles: ["punk"],
+    musicStyles: ["hip-hop", "rap"],
     externalLinks: [
       getYoutubeLinkData({
         youtubeHref:
-          "https://m.youtube.com/playlist?list=OLAK5uy_mM4EF0OQ4_ZpGK6hBk1b-XNTlyvgiRraQ&playnext=1&index=1",
+          "https://m.youtube.com/watch?v=SOdbgUKx-s8&list=PL7FP4DkWGBb5BmcBuFaDjBVEaePMeE866",
       }),
       getSpotifyLinkData({
         spotifyHref:
-          "https://open.spotify.com/album/4522HLG4hPLFfN6GvuFX7X?autoplay=true",
+          "https://open.spotify.com/album/3QVjpIxcksDkJmOnvlOJjg?si=jO1mnqDaR9aivCY24AnVtQ?autoplay=true",
       }),
       getAppleLinkData({
         appleHref:
-          "https://music.apple.com/br/album/are-you-satisfied-deluxe/1440845239",
+          "https://music.apple.com/us/album/the-forever-story/1637738689",
       }),
     ],
   },
@@ -1208,7 +1211,7 @@ export const musicItemDataset: Array<MusicItem> = [
     sourceType: "collection",
     collectionType: "album",
     musicThumbnailHref:
-      "https://m.media-amazon.com/images/I/51aZZDUwzwL._UX500_FMwebp_QL85_.jpg",
+      "https://m.media-amazon.com/images/I/51XwxD4CiEL._UX500_FMwebp_QL85_.jpg",
     musicYear: "2018",
     musicTitle: "Golden Hour",
     musicArtist: ["Kacey Musgraves"],
@@ -1234,7 +1237,7 @@ export const musicItemDataset: Array<MusicItem> = [
     sourceType: "collection",
     collectionType: "album",
     musicThumbnailHref:
-      "https://m.media-amazon.com/images/I/71rVkpW9DsL._AC_UY436_QL65_.jpg",
+      "https://m.media-amazon.com/images/I/51ehsnfmZIL._UX500_FMwebp_QL85_.jpg",
     musicYear: "1993",
     musicTitle: "On the Night",
     musicArtist: ["Dire Straits"],

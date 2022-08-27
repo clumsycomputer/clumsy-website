@@ -754,7 +754,7 @@ export const musicItemDataset: Array<MusicItem> = [
     musicTitle: "Mister Mellow",
     musicArtist: ["Washed Out"],
     recordingContext: ["studio"],
-    musicStyles: ["downtempo", "electronic"],
+    musicStyles: ["psychedelic", "downtempo", "electronic"],
     externalLinks: [
       getYoutubeLinkData({
         youtubeHref:
@@ -1322,7 +1322,7 @@ export const musicItemDataset: Array<MusicItem> = [
     musicTitle: "Wildflower",
     musicArtist: ["The Avalanches"],
     recordingContext: ["studio"],
-    musicStyles: ["hip-hop", "downtempo"],
+    musicStyles: ["psychedelic", "downtempo", "hip-hop"],
     externalLinks: [
       getYoutubeLinkData({
         youtubeHref:
@@ -1573,6 +1573,110 @@ export const musicItemDataset: Array<MusicItem> = [
       }),
       getAppleLinkData({
         appleHref: "https://music.apple.com/us/album/mezzanine/724466069",
+      }),
+    ],
+  },
+  {
+    musicId: 61,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/51Eorz17p1L._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2001",
+    musicTitle: "Melody A.M.",
+    musicArtist: ["Röyksopp"],
+    recordingContext: ["studio"],
+    musicStyles: ["downtempo", "electronic"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_nWbm1n0nx7GV9PMjwqdoF9a5MJuA_JBuI&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/1WHbPhjPCBhjo49DpKvYbL?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref: "https://music.apple.com/us/album/melody-a-m/1049806381",
+      }),
+    ],
+  },
+  {
+    musicId: 62,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/51tuHve4KIL._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2005",
+    musicTitle: "Artifact",
+    musicArtist: ["STS9"],
+    recordingContext: ["studio"],
+    musicStyles: ["electronic", "jam"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_l27tUNcpmHN5RPafx4QHnzfUY6m2GA9CA&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/5c3Yycwt69IZn6fevjQ0Ky?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref: "https://music.apple.com/us/album/artifact/274859333",
+      }),
+    ],
+  },
+  {
+    musicId: 63,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/51yzWaNgxCL._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2008",
+    musicTitle: "obZen",
+    musicArtist: ["Meshuggah"],
+    recordingContext: ["studio"],
+    musicStyles: ["metal"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_mgNjCiPvJes7uDGvGD0EtIKJrWNa0Hd_M&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/2x2VoPa1pG2jSElA73a9Xa?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref: "https://music.apple.com/br/album/obzen/274547457",
+      }),
+    ],
+  },
+  {
+    musicId: 64,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/51b6CP2xdiL._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2018",
+    musicTitle: "Isolation",
+    musicArtist: ["Kali Uchis"],
+    recordingContext: ["studio"],
+    musicStyles: ["r&b", "pop"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_mDBx9zKmDyvGMR1obcyOGwq-knkpK7ez8&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/4EPQtdq6vvwxuYeQTrwDVY?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref: "https://music.apple.com/br/album/isolation/1358285249",
       }),
     ],
   },

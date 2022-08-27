@@ -228,7 +228,7 @@ export const musicItemDataset: Array<MusicItem> = [
     musicTitle: "Organ Recital",
     musicArtist: ["Bastien Keb"],
     recordingContext: ["studio"],
-    musicStyles: ["r&b", "soul"],
+    musicStyles: ["r&b", "folk", "soul"],
     externalLinks: [
       getYoutubeLinkData({
         youtubeHref:
@@ -334,8 +334,8 @@ export const musicItemDataset: Array<MusicItem> = [
     musicThumbnailHref:
       "https://i1.sndcdn.com/artworks-000484735170-v2qg5l-t500x500.jpg",
     musicYear: "2016",
-    musicTitle: "Nicolas Jaar Presents the Network",
-    musicArtist: ["Nicolas Jaar"],
+    musicTitle: "Nicolás Jaar Presents the Network",
+    musicArtist: ["Nicolás Jaar"],
     recordingContext: ["studio"],
     musicStyles: ["experimental", "ambient", "electronic"],
     externalLinks: [
@@ -361,8 +361,8 @@ export const musicItemDataset: Array<MusicItem> = [
     musicThumbnailHref:
       "https://e.snmc.io/i/1200/s/af23292a9abbba762d6e0d96ffa7eb03/7962041",
     musicYear: "2016",
-    musicTitle: "hip-hop portion - Nicolas Jaar Presents the Network",
-    musicArtist: ["Nicolas Jaar"],
+    musicTitle: "hip-hop portion - Nicolás Jaar Presents the Network",
+    musicArtist: ["Nicolás Jaar"],
     recordingContext: ["studio"],
     musicStyles: ["ambient", "electronic", "hip-hop"],
     externalLinks: [
@@ -700,7 +700,7 @@ export const musicItemDataset: Array<MusicItem> = [
     musicTitle: "Little Dark Age",
     musicArtist: ["MGMT"],
     recordingContext: ["studio"],
-    musicStyles: ["psychedelic", "rock", "pop"],
+    musicStyles: ["psychedelic", "rock"],
     externalLinks: [
       getYoutubeLinkData({
         youtubeHref:
@@ -884,7 +884,7 @@ export const musicItemDataset: Array<MusicItem> = [
     musicTitle: "Evil Friends",
     musicArtist: ["Portugal. The Man"],
     recordingContext: ["studio"],
-    musicStyles: ["rock"],
+    musicStyles: ["psychedelic", "rock"],
     externalLinks: [
       getYoutubeLinkData({
         youtubeHref:
@@ -1281,6 +1281,298 @@ export const musicItemDataset: Array<MusicItem> = [
       }),
       getAppleLinkData({
         appleHref: "https://music.apple.com/br/album/10-000-days/1474250650",
+      }),
+    ],
+  },
+  {
+    musicId: 50,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/51ZXbgjtobL._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2017",
+    musicTitle: "Nü Religion: HYENA",
+    musicArtist: ["THEY."],
+    recordingContext: ["studio"],
+    musicStyles: ["r&b", "rap"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_ly1GjQX6ksVI_JPynYXAssySTmgKsCN0U&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/4XNJu6IYQqODqryQy8KjPo?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref:
+          "https://music.apple.com/us/album/nü-religion-hyena/1199639601",
+      }),
+    ],
+  },
+  {
+    musicId: 51,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/51dH2Rh-1sL._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2016",
+    musicTitle: "Wildflower",
+    musicArtist: ["The Avalanches"],
+    recordingContext: ["studio"],
+    musicStyles: ["hip-hop", "downtempo"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_mU6NoiUNrq0gGFf-7y2gR7GXaW2VA-huY&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/0j0djiGxLnBiW7meVc2PER?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref: "https://music.apple.com/us/album/wildflower/1440837124",
+      }),
+    ],
+  },
+  {
+    musicId: 52,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/418It7qCWoL._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2022",
+    musicTitle: "Bronco",
+    musicArtist: ["Orville Peck"],
+    recordingContext: ["studio"],
+    musicStyles: ["country"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_kLBv1ZbTasPgNhwBRetBKPuqPxHNyp1Ls&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/2hCcPHWTbvF81CiXPUrM6I?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref: "https://music.apple.com/us/album/bronco/1607593873",
+      }),
+    ],
+  },
+  {
+    musicId: 53,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/51JzY2Ksr6L._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2010",
+    musicTitle: "Timeless: Suite For Ma Dukes",
+    musicArtist: ["Miguel Atwood-Ferguson", "J Dilla"],
+    recordingContext: ["studio"],
+    musicStyles: ["classical", "hip-hop"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/watch?v=ZS4l3NuSjDM&list=OLAK5uy_mBml-e54liexygnBq2s9lYACv9J_QTzaE",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/47TTaPKE8uOi4jiCatDCad?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref:
+          "https://music.apple.com/us/album/timeless-suite-for-ma-dukes/1609098487",
+      }),
+    ],
+  },
+  {
+    musicId: 54,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/51tm8shm6WL._UX500_FMwebp_QL85_.jpg",
+    musicYear: "1998",
+    musicTitle: "Roseland NYC Live",
+    musicArtist: ["Portishead"],
+    recordingContext: ["concert"],
+    musicStyles: ["downtempo", "soul"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_mG_O2IZQqda0JOo1RQ9CHDrMjTcD8HJiw&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/1Td5bSMxDrTIDAvxJQIo5t?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref:
+          "https://music.apple.com/us/album/roseland-nyc-live/1440913466",
+      }),
+    ],
+  },
+  {
+    musicId: 55,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/61RRvrNYAAL._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2016",
+    musicTitle: "We Got It From Here... Thank You 4 Your Service",
+    musicArtist: ["A Tribe Called Quest"],
+    recordingContext: ["studio"],
+    musicStyles: ["hip-hop", "rap"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_l1UCXPjqeTGO130ZjhMRPrHRaNukHqLZU&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/3WvQpufOsPzkZvcSuynCf3?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref:
+          "https://music.apple.com/us/album/we-got-it-from-here-thank-you-4-your-service/1173106678",
+      }),
+    ],
+  },
+  {
+    musicId: 56,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/51bxil4Hu2L._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2020",
+    musicTitle: "2017–2019",
+    musicArtist: ["Against All Logic", "Nicolás Jaar"],
+    recordingContext: ["studio"],
+    musicStyles: ["experimental", "electronic"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/watch?v=-gagW4QNcC4&list=OLAK5uy_mfGMP65Xt17DHisxYdEVpe-qY2660o5Vs",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/75vFTgDgdfVhbniLoyCNKh?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref: "https://music.apple.com/us/album/2017-2019/1496655403",
+      }),
+    ],
+  },
+  {
+    musicId: 57,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/51upfK1l2JL._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2013",
+    musicTitle: "Anything in Return",
+    musicArtist: ["Toro y Moi"],
+    recordingContext: ["studio"],
+    musicStyles: ["synth", "pop"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/watch?v=iWe8Yx_SFcw&list=OLAK5uy_n68suY4-R7b6iLvlJOM9BwbBHqkwKARpM",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/6x1wyRPGlqGJ1b8uQ9UQdX?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref:
+          "https://music.apple.com/us/album/anything-in-return/1583617153",
+      }),
+    ],
+  },
+  {
+    musicId: 58,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "ep",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/51BZte7XfeL._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2017",
+    musicTitle: "Death to the Planet",
+    musicArtist: ["The Comet is Coming", "Shabaka Hutchings"],
+    recordingContext: ["studio"],
+    musicStyles: ["electronic", "jazz"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/watch?v=-y3h4sIHzVo&list=OLAK5uy_kDIyut2vE2O5z0CCn2MyhBhm-ojwP2Bns",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/3qFgijcQbTS5frVRo3wt9R?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref:
+          "https://music.apple.com/us/album/death-to-the-planet-ep/1384684762",
+      }),
+    ],
+  },
+  {
+    musicId: 59,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/51TKPzaSFfL._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2010",
+    musicTitle: "Palomino",
+    musicArtist: ["Trampled By Turtles"],
+    recordingContext: ["studio"],
+    musicStyles: ["bluegrass", "country"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_mEzcfTNRVCifyQ0frr0G7PGD_JouHSD-4&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/5sT4iQKiMLVJvOQKPVxn62?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref: "https://music.apple.com/us/album/palomino/370090822",
+      }),
+    ],
+  },
+  {
+    musicId: 60,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/51fK06Sf7PL._UX500_FMwebp_QL85_.jpg",
+    musicYear: "1998",
+    musicTitle: "Mezzanine",
+    musicArtist: ["Massive Attack", "Tricky"],
+    recordingContext: ["studio"],
+    musicStyles: ["downtempo", "electronic"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_k2Qyv7jShU8WuWSBxfK5r20PZrwb81TPY&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/49MNmJhZQewjt06rpwp6QR?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref: "https://music.apple.com/us/album/mezzanine/724466069",
       }),
     ],
   },

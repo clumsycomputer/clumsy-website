@@ -541,7 +541,7 @@ export const musicItemDataset: Array<MusicItem> = [
     musicTitle: "Los Angeles",
     musicArtist: ["Flying Lotus"],
     recordingContext: ["studio"],
-    musicStyles: ["downtempo", "experimental"],
+    musicStyles: ["downtempo", "experimental", "electronic"],
     externalLinks: [
       getYoutubeLinkData({
         youtubeHref:
@@ -1677,6 +1677,401 @@ export const musicItemDataset: Array<MusicItem> = [
       }),
       getAppleLinkData({
         appleHref: "https://music.apple.com/br/album/isolation/1358285249",
+      }),
+    ],
+  },
+  {
+    musicId: 65,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "soundtrack",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/51b6CP2xdiL._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2007",
+    musicTitle: "Across The Universe",
+    musicArtist: ["The Beatles"],
+    recordingContext: ["studio"],
+    musicStyles: ["pop"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/watch?v=H4G32euigcs&list=OLAK5uy_m8F2SWaziGfyIO3ZZMVSaHJrVsfun1Srw",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/0wk2LEg0xFuuRq35UuLoNz?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref:
+          "https://music.apple.com/us/album/across-the-universe/1598996306",
+      }),
+    ],
+  },
+  {
+    musicId: 66,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/517I+0LWGIL._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2017",
+    musicTitle: "I Tell A Fly",
+    musicArtist: ["Benjamin Clementine"],
+    recordingContext: ["studio"],
+    musicStyles: ["soul", "folk"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_mVhy2T-LOfEM3LYcZGYVAJJuAfPXdXafQ&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/1v4zmET7gBMnQ9UTfPatgs?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref: "https://music.apple.com/us/album/i-tell-a-fly/1440883967",
+      }),
+    ],
+  },
+  {
+    musicId: 67,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/61H0B6ZkUCL._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2009",
+    musicTitle: "Butter",
+    musicArtist: ["Hudson Mohawke"],
+    recordingContext: ["studio"],
+    musicStyles: ["experimental", "electronic"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_lllYOGq5U_RWH8jEK367eUgoetZIOlKMU&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/5mM1wM86RvYN7IPwAcyxLR?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref: "https://music.apple.com/us/album/butter/331305005",
+      }),
+    ],
+  },
+  {
+    musicId: 68,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/51pT0R4OFxL._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2013",
+    musicTitle: "Amygdala",
+    musicArtist: ["DJ Koze"],
+    recordingContext: ["studio"],
+    musicStyles: ["electronic", "house"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/watch?v=UMbNfVIN2Bg&list=PLJXDRKQUE7CAwc4ycTxQdEhmHhUMFaiBt",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/4W6mTFGMa5Zc4lWp7sOifv?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref: "https://music.apple.com/us/album/amygdala/604071430",
+      }),
+    ],
+  },
+  {
+    musicId: 69,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/41+yrqt7VGS._UX500_FMwebp_QL85_.jpg",
+    musicYear: "1997",
+    musicTitle: "The Lonesome Crowded West",
+    musicArtist: ["Modest Mouse"],
+    recordingContext: ["studio"],
+    musicStyles: ["rock"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/watch?v=VuCXo7Vtrks&list=OLAK5uy_l8YHyFTor9ODe5M80fUoSo5W3Ava4KwRo",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/5mvHTVy1iUIkAflIufoOpj?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref:
+          "https://music.apple.com/us/album/the-lonesome-crowded-west/1566174024",
+      }),
+    ],
+  },
+  {
+    musicId: 70,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/41SzxWmko3L._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2005",
+    musicTitle: "Prefuse 73 Reads The Books E.P.",
+    musicArtist: ["Prefuse 73", "The Books"],
+    recordingContext: ["studio"],
+    musicStyles: ["downtempo", "hip-hop"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/watch?v=2CHr63JjgGM&list=OLAK5uy_ljP5OGG4FVLyDdsAW80PnBZHNgl3KOvOA",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/3NVmiw6v7IGahPrrvVGEAc?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref:
+          "https://music.apple.com/us/album/prefuse-73-reads-the-books/292788233",
+      }),
+    ],
+  },
+  {
+    musicId: 71,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/61a4Emiuf3L._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2014",
+    musicTitle: "Our Love",
+    musicArtist: ["Caribou"],
+    recordingContext: ["studio"],
+    musicStyles: ["electronic", "house"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_k-Homl-MhTJmgWrYh4Vl9LaK1apMwKcK0&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/1J9DdlpYK1NxXL6ciqSVoJ?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref: "https://music.apple.com/us/album/our-love/883739153",
+      }),
+    ],
+  },
+  {
+    musicId: 72,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/41E0neZS+mL._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2018",
+    musicTitle: "Harry Hard-On",
+    musicArtist: ["Allan Rayman"],
+    recordingContext: ["studio"],
+    musicStyles: ["rock"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_noItPgVtIYqK5GoaAkjc1tQbZ9tFHKr0A&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/1eN0asiUp2OoMuRkI61cmm?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref: "https://music.apple.com/us/album/harry-hard-on/1440609229",
+      }),
+    ],
+  },
+  {
+    musicId: 73,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/51bmAqjAv4L._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2013",
+    musicTitle: "Danish & Blue",
+    musicArtist: ["Lilacs & Champagne"],
+    recordingContext: ["studio"],
+    musicStyles: ["downtempo", "hip-hop"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_khGVsZgYtss5nGHpgwNNDPylcXbWP4ruc&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/75EUlG7J74DW9ocTmJ6sh1?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref: "https://music.apple.com/us/album/danish-blue/1602628444",
+      }),
+    ],
+  },
+  {
+    musicId: 74,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/41s9LnNp5CL._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2011",
+    musicTitle: "SBTRKT",
+    musicArtist: ["SBTRKT"],
+    recordingContext: ["studio"],
+    musicStyles: ["electronic"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_n5h-Iqdogy6kMId3BriCkKjgr09dgRwto&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/4ncktAfHYJlko5yZgqce3H?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref: "https://music.apple.com/us/album/sbtrkt/1573470216",
+      }),
+    ],
+  },
+  {
+    musicId: 75,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/41TZusHUilL._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2022",
+    musicTitle: "Grotto",
+    musicArtist: ["Wilma Vritra"],
+    recordingContext: ["studio"],
+    musicStyles: ["hip-hop"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_kkbTa04DN2fq6ZttwNDi3CIopqwsmJ4ZY&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/12betAHniGpAyDzg4ty8ER?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref: "https://music.apple.com/us/album/grotto/1610003157",
+      }),
+    ],
+  },
+  {
+    musicId: 76,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/51VmF8pZVZL._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2016",
+    musicTitle: "IV",
+    musicArtist: ["BADBADNOTGOOD"],
+    recordingContext: ["studio"],
+    musicStyles: ["jazz"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_kqhKkmbySqG4EMUgLHLkavMNLOEXmZQKw&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/5wAGlQICfKYQfaBppnUbmP?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref: "https://music.apple.com/us/album/iv/1608122086",
+      }),
+    ],
+  },
+  {
+    musicId: 77,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/51Nc7RIH1JL._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2012",
+    musicTitle: "Even If It Isn't Right",
+    musicArtist: ["Michal Menert"],
+    recordingContext: ["studio"],
+    musicStyles: ["electronic", "hip-hop"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_mH-IhOeeJOXkDhlSKaR2PQSmZ7lKl79l8&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/5hvWMXFoeAxCK3RcBdgt7N?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref:
+          "https://music.apple.com/us/album/even-if-it-isnt-right/521981386",
+      }),
+    ],
+  },
+  {
+    musicId: 78,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/21VT4tYkuGL._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2011",
+    musicTitle: "Black Up",
+    musicArtist: ["Shabazz Palaces"],
+    recordingContext: ["studio"],
+    musicStyles: ["experimental", "hip-hop", "rap"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_m4osqPwgG9lghYoipG9XQZbxz6Uop8WIg&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/2dNexssEWbK7rgh0veTjjz?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref: "https://music.apple.com/us/album/black-up/669854622",
+      }),
+    ],
+  },
+  {
+    musicId: 79,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/51q9VetBVFL._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2002",
+    musicTitle: "Songs About Jane",
+    musicArtist: ["Maroon 5"],
+    recordingContext: ["studio"],
+    musicStyles: ["pop"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_miihNoza4ukqBJAhVKTs5i7mX8cRtjoZo&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/1Rv9WRKyYhFaGbuYDaQunN?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref:
+          "https://music.apple.com/us/album/songs-about-jane/1440851650",
       }),
     ],
   },

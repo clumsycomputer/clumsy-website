@@ -1686,7 +1686,7 @@ export const musicItemDataset: Array<MusicItem> = [
     sourceType: "collection",
     collectionType: "soundtrack",
     musicThumbnailHref:
-      "https://m.media-amazon.com/images/I/51b6CP2xdiL._UX500_FMwebp_QL85_.jpg",
+      "https://m.media-amazon.com/images/I/51hIrsByYxL._UX500_FMwebp_QL85_.jpg",
     musicYear: "2007",
     musicTitle: "Across The Universe",
     musicArtist: ["The Beatles"],

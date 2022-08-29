@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://www.clumsycomputer.com
+
+# Sitemaps
+Sitemap: https://www.clumsycomputer.com/sitemap.xml

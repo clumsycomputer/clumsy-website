@@ -2054,24 +2054,287 @@ export const musicItemDataset: Array<MusicItem> = [
     sourceType: "collection",
     collectionType: "album",
     musicThumbnailHref:
-      "https://m.media-amazon.com/images/I/51q9VetBVFL._UX500_FMwebp_QL85_.jpg",
-    musicYear: "2002",
-    musicTitle: "Songs About Jane",
-    musicArtist: ["Maroon 5"],
+      "https://m.media-amazon.com/images/I/515FDvfvkbL._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2022",
+    musicTitle: "Louie",
+    musicArtist: ["Kenny Beats"],
     recordingContext: ["studio"],
-    musicStyles: ["pop"],
+    musicStyles: ["hip-hop"],
     externalLinks: [
       getYoutubeLinkData({
         youtubeHref:
-          "https://m.youtube.com/playlist?list=OLAK5uy_miihNoza4ukqBJAhVKTs5i7mX8cRtjoZo&playnext=1&index=1",
+          "https://m.youtube.com/watch?v=duMX-T4qDm8&list=PLOa7rvaTYe0Z96jY1oifR4AQ_YA9oAbC5",
       }),
       getSpotifyLinkData({
         spotifyHref:
-          "https://open.spotify.com/album/1Rv9WRKyYhFaGbuYDaQunN?autoplay=true",
+          "https://open.spotify.com/album/3SKVtzmihlnGFylW5nC5kj?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref: "https://music.apple.com/us/album/louie/1635648979",
+      }),
+    ],
+  },
+  {
+    musicId: 80,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/51cq-0hWQXL._UX500_FMwebp_QL85_.jpg",
+    musicYear: "1992",
+    musicTitle: "Rage Against The Machine",
+    musicArtist: ["Rage Against The Machine"],
+    recordingContext: ["studio"],
+    musicStyles: ["rock", "hip-hop"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_mG7ndizgcX0QrrKh3zF9lFyU6eFzprgiE&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/4Io5vWtmV1rFj4yirKb4y4?autoplay=true",
       }),
       getAppleLinkData({
         appleHref:
-          "https://music.apple.com/us/album/songs-about-jane/1440851650",
+          "https://music.apple.com/us/album/rage-against-the-machine-xx-20th-anniversary-special/578028823",
+      }),
+    ],
+  },
+  {
+    musicId: 81,
+    musicType: "source",
+    sourceType: "track",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/51KDF5v8X1L._UX500_FMwebp_QL85_.jpg",
+    musicYear: "1984",
+    musicTitle: "Love Kills",
+    musicArtist: ["Freddie Mercury", "Giorgio Moroder"],
+    recordingContext: ["studio"],
+    musicStyles: ["synth", "pop"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref: "https://www.youtube.com/watch?v=YcgBgJCaC-M",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/track/4HeNuE5fHrBQFErXCdVU7s?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref:
+          "https://music.apple.com/us/album/love-kills-special-edition/1478416229?i=1478416406",
+      }),
+    ],
+  },
+  {
+    musicId: 82,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/61Y8zY9DcBL._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2012",
+    musicTitle: "Be Strong",
+    musicArtist: ["The 2 Bears"],
+    recordingContext: ["studio"],
+    musicStyles: ["electronic", "house"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_noXzslSBp14rG_4GcV90IFNxepFTUXaSY&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/0DSCXv8rx9jJgdqZnJ2LH9?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref: "https://music.apple.com/us/album/be-strong/482128355",
+      }),
+    ],
+  },
+  {
+    musicId: 83,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/51dH7OtfXGL._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2008",
+    musicTitle: "Loaded",
+    musicArtist: ["The Wood Brothers"],
+    recordingContext: ["studio"],
+    musicStyles: ["rock", "blues"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_mm0bQQzoFsaWkr90K_qrnhtVYBWti6ABU&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/1IOJo40EKOLngOzy09pQMi?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref: "https://music.apple.com/us/album/loaded/721290211",
+      }),
+    ],
+  },
+  {
+    musicId: 84,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/61OfIe4JirL._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2005",
+    musicTitle: "Visions of Backbeat",
+    musicArtist: ["BoomBox"],
+    recordingContext: ["studio"],
+    musicStyles: ["electronic", "funk"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/watch?v=A-TWpsfEO2U&list=OLAK5uy_lmxfos_kLmLAiSr3D8YM9f9uKaKaD9xnU",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/6lXhc0jECygZK464JIUvRb?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref:
+          "https://music.apple.com/us/album/visions-of-backbeat/152216551",
+      }),
+    ],
+  },
+  {
+    musicId: 85,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/61J5q+6hieL._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2016",
+    musicTitle: "99.9%",
+    musicArtist: ["Kaytranada"],
+    recordingContext: ["studio"],
+    musicStyles: ["electronic", "hip-hop"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_lH2xUVNwi41nO_YeXVWSkTcejBwDN2MdE&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/6JD4Qerb8IcaAzFgpFw0sa?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref: "https://music.apple.com/us/album/99-9/1092026376",
+      }),
+    ],
+  },
+  {
+    musicId: 86,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/615kPrlw-HL._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2019",
+    musicTitle: "Hi This Is Flume",
+    musicArtist: ["Flume"],
+    recordingContext: ["studio"],
+    musicStyles: ["experimental", "electronic"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_mebYgGjMINiO11XqdRUSOHf7i30KuJ4Ns&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/2Vx9FC6Um8i6kEtY7HNswB?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref:
+          "https://music.apple.com/us/album/hi-this-is-flume-mixtape/1455360241",
+      }),
+    ],
+  },
+  {
+    musicId: 87,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/51ehbJbCYKS._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2016",
+    musicTitle: "Bloom",
+    musicArtist: ["Rüfüs Du Sol"],
+    recordingContext: ["studio"],
+    musicStyles: ["electronic", "house"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_liwjzoU3ZYzKmofLkADaaHg3oK7I_-Ib0&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/56GSVkl0UZdallOvJuMOaO?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref: "https://music.apple.com/us/album/bloom/1569160808",
+      }),
+    ],
+  },
+  {
+    musicId: 88,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/41OmwgSEy0L._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2016",
+    musicTitle: "Traditional Synthesizer Music",
+    musicArtist: ["Venetian Snares"],
+    recordingContext: ["studio"],
+    musicStyles: ["electronic"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_kY6oiIafXcHlROlDvHDUb4IgwYoGw2sCU&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/7nqOcV9Ilnrnuzwvq77xn4?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref:
+          "https://music.apple.com/us/album/traditional-synthesizer-music/1063392214",
+      }),
+    ],
+  },
+  {
+    musicId: 89,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "ep",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/41sMeY50WeL._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2015",
+    musicTitle: "Computer Controlled Acoustic Instruments pt2",
+    musicArtist: ["Aphex Twin"],
+    recordingContext: ["studio"],
+    musicStyles: ["experimental", "electronic"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/watch?v=laMkR-fxg6g&list=OLAK5uy_lNgiqMe1FzN7OlTUBG73a39yyzqV8tuBY",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/5IUjJ4VcmUvZnGAONAp2IX?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref:
+          "https://music.apple.com/us/album/computer-controlled-acoustic-instruments-pt-2/955440196",
       }),
     ],
   },

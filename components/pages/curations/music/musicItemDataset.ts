@@ -2390,4 +2390,218 @@ export const musicItemDataset: Array<MusicItem> = [
       }),
     ],
   },
+  {
+    musicId: 92,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/51gYvSDtu2L._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2016",
+    musicTitle: "24K Magic",
+    musicArtist: ["Bruno Mars"],
+    recordingContext: ["studio"],
+    musicStyles: ["pop", "funk"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_nkOzLA76zVCUotP8td84Cvi4I788jjC1s&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/4PgleR09JVnm3zY1fW3XBA?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref: "https://music.apple.com/us/album/24k-magic/1161503945",
+      }),
+    ],
+  },
+  {
+    musicId: 93,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/613wW1S1PsL._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2009",
+    musicTitle: "Guns Don't Kill People... Lazers Do",
+    musicArtist: ["Major Lazer"],
+    recordingContext: ["studio"],
+    musicStyles: ["electronic", "reggae"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_lsVLUb5HMhJ10EVmUIrJbvhpSoU8cZSxI&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/690h3YPCXOCE022G31IUaH?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref:
+          "https://music.apple.com/us/album/guns-dont-kill-people-lazers-do-bonus-track-version/1443153977",
+      }),
+    ],
+  },
+  {
+    musicId: 94,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/61xutJvvOUL._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2017",
+    musicTitle: "Funk Wav Bounces Vol. 1",
+    musicArtist: ["Calvin Harris"],
+    recordingContext: ["studio"],
+    musicStyles: ["electronic", "pop"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/watch?v=8Ee4QjCEHHc&list=PLKDRMeFOOHVgv9c0wPQqt_4lDUyWGv5nI",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/2HaqChIDc5go3qxVunBDK0?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref:
+          "https://music.apple.com/us/album/funk-wav-bounces-vol-1/1233869908",
+      }),
+    ],
+  },
+  {
+    musicId: 95,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/61ry6fRAEqL._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2010",
+    musicTitle: "Lucky Shiner",
+    musicArtist: ["Gold Panda"],
+    recordingContext: ["studio"],
+    musicStyles: ["electronic"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_lnXmxUy2fhwy881e88r2_-4zIeS5WCMBQ&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/2wSMFAWmbsbXCitByPWPLk?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref: "https://music.apple.com/us/album/lucky-shiner/679905330",
+      }),
+    ],
+  },
+  {
+    musicId: 96,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "ep",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/41PZqyDKwYL._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2018",
+    musicTitle: "Channel Tres",
+    musicArtist: ["Channel Tres"],
+    recordingContext: ["studio"],
+    musicStyles: ["electronic", "house"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_lXO8ouPsTDuM2jpY9R95Gwd1ob7Mbw5NQ&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/01Vvrmisrvr1YOIGRn4brG?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref:
+          "https://music.apple.com/us/album/channel-tres-ep/1591988570",
+      }),
+    ],
+  },
+  {
+    musicId: 97,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/41TW9snxRgL._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2013",
+    musicTitle: "Cold Spring Fault Less Youth",
+    musicArtist: ["Mount Kimbie"],
+    recordingContext: ["studio"],
+    musicStyles: ["electronic"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_lkJ_5y5TaPnSZto82qlNfRFcIZd2JHWBE&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/6ETAoJJ5NhxsGyD53cHApT?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref:
+          "https://music.apple.com/us/album/cold-spring-fault-less-youth/627943335",
+      }),
+    ],
+  },
+  {
+    musicId: 98,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/51vMhxO6TrL._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2001",
+    musicTitle: "Fahrenheit Fair Enough",
+    musicArtist: ["Telefon Tel Aviv"],
+    recordingContext: ["studio"],
+    musicStyles: ["downtempo", "electronic"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_miDydIpPg4OVMW9EFqiXzX2NL9kUtm1Is&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/27teXombBxDGNa9f5jtOr2?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref:
+          "https://music.apple.com/us/album/fahrenheit-fair-enough/1163911790",
+      }),
+    ],
+  },
+  {
+    musicId: 99,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/41Bt31ZEFqL._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2019",
+    musicTitle: "Imagination & the Misfit Kid",
+    musicArtist: ["Labrinth"],
+    recordingContext: ["studio"],
+    musicStyles: ["pop"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_milII0AL66b3Z-LdHfEemlrpwLWSjdcxo&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/0FSsRH1jeZqKbGcHwq3UO0?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref:
+          "https://music.apple.com/us/album/imagination-the-misfit-kid/1485285334",
+      }),
+    ],
+  },
 ];

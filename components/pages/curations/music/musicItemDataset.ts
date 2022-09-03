@@ -2338,4 +2338,56 @@ export const musicItemDataset: Array<MusicItem> = [
       }),
     ],
   },
+  {
+    musicId: 90,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/614WuP4jf5L._UX500_FMwebp_QL85_.jpg",
+    musicYear: "1999",
+    musicTitle: "Ghetty Green",
+    musicArtist: ["Project Pat"],
+    recordingContext: ["studio"],
+    musicStyles: ["hip-hop", "rap"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/watch?v=8NYL2zl_qo0&list=OLAK5uy_nqyp1stMgk_Z-jomPVj8S_DHvU5_M24k0",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/60dkMXwuRlDMnOis7Y4L2t?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref: "https://music.apple.com/us/album/ghetty-green/413579602",
+      }),
+    ],
+  },
+  {
+    musicId: 91,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/61ouDVI1jBL._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2017",
+    musicTitle: "Paradise",
+    musicArtist: ["Knox Fortune"],
+    recordingContext: ["studio"],
+    musicStyles: ["pop"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_nGEtbcXMhfXIhpf5n7wMiHzwdhcthin4w&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/0yCW3blpXzA0owDGQVQ5xY?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref: "https://music.apple.com/us/album/paradise/1281804676",
+      }),
+    ],
+  },
 ];

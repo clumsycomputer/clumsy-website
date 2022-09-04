@@ -2604,4 +2604,266 @@ export const musicItemDataset: Array<MusicItem> = [
       }),
     ],
   },
+  {
+    musicId: 100,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/41Bt31ZEFqL._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2006",
+    musicTitle: "Donuts",
+    musicArtist: ["J Dilla"],
+    recordingContext: ["studio"],
+    musicStyles: ["hip-hop"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/watch?v=HOHa6j6Pd5E&list=OLAK5uy_m8VPjbn9rF3ninCB-n_ToxxHH5U3_TkvE",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/5fMlysqhFE0itGn4KezMBW?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref: "https://music.apple.com/us/album/donuts/108233171",
+      }),
+    ],
+  },
+  {
+    musicId: 101,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/616fELvttAL._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2016",
+    musicTitle: '"AWAKEN, MY LOVE!"',
+    musicArtist: ["Childish Gambino"],
+    recordingContext: ["studio"],
+    musicStyles: ["r&b", "pop"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_lSoKa_JSXsvMGFOTc7JqL791Mk1KnnwGk&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/4Carzsnpd6yvuHZ49I0oz8?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref: "https://music.apple.com/us/album/awaken-my-love/1450975800",
+      }),
+    ],
+  },
+  {
+    musicId: 102,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/41KLi267rgL._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2018",
+    musicTitle: "Swimming",
+    musicArtist: ["Mac Miller"],
+    recordingContext: ["studio"],
+    musicStyles: ["hip-hop", "rap"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_nDheeuXYg9hksmCezWxswPTivVoqyNCQc&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/5wtE5aLX5r7jOosmPhJhhk?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref: "https://music.apple.com/us/album/swimming/1408996052",
+      }),
+    ],
+  },
+  {
+    musicId: 103,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/51hNMl0yO2L._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2015",
+    musicTitle: "Elaenia",
+    musicArtist: ["Floating Points"],
+    recordingContext: ["studio"],
+    musicStyles: ["electronic"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_nymiUNxoqFZEzgvf4t0SW8ej2glgpTFRI&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/51QBkcL7S3KYdXSSA0zM9R?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref: "https://music.apple.com/us/album/elaenia/1030953710",
+      }),
+    ],
+  },
+  {
+    musicId: 104,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/51OEecp-0yL._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2010",
+    musicTitle: "Plastic Beach",
+    musicArtist: ["Gorillaz"],
+    recordingContext: ["studio"],
+    musicStyles: ["pop", "electronic", "hip-hop"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_mYzpOFB-6D0ooK-rCL5PuR9zjAxFIV9lo&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/2dIGnmEIy1WZIcZCFSj6i8?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref: "https://music.apple.com/us/album/plastic-beach/850569437",
+      }),
+    ],
+  },
+  {
+    musicId: 105,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/319bGSNLyqL._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2019",
+    musicTitle: "Amnioverse",
+    musicArtist: ["Lapalux"],
+    recordingContext: ["studio"],
+    musicStyles: ["electronic"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_lyUazMI1Dzud6YTMopEEaMoefFQ_F0L80&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/0xwvefY0dNUton1yVR6jal?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref: "https://music.apple.com/us/album/amnioverse/1480355473",
+      }),
+    ],
+  },
+  {
+    musicId: 106,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/51C19Sc2SmL._UX500_FMwebp_QL85_.jpg",
+    musicYear: "1978",
+    musicTitle: "Ambient 1: Music for Airports",
+    musicArtist: ["Brian Eno"],
+    recordingContext: ["studio"],
+    musicStyles: ["ambient", "electronic"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/watch?v=LKZ3fGR2SDY&list=OLAK5uy_mfRTetqFB_MtRhjeOxR5tp0uVfK1YH-Sw",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/063f8Ej8rLVTz9KkjQKEMa?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref:
+          "https://music.apple.com/us/album/ambient-1-music-for-airports/724435863",
+      }),
+    ],
+  },
+  {
+    musicId: 107,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/51LBlAoj-DL._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2008",
+    musicTitle: "Elephant Revival",
+    musicArtist: ["Elephant Revival"],
+    recordingContext: ["studio"],
+    musicStyles: ["folk"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_lod7nZPYLV_S1fF4PlB_WQgR2yt680jYg&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/1Qyc6kxZYssUHELLcImDnX?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref:
+          "https://music.apple.com/us/album/elephant-revival/1133319156",
+      }),
+    ],
+  },
+  {
+    musicId: 108,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/41XDwJZFL0L._UX500_FMwebp_QL85_.jpg",
+    musicYear: "1998",
+    musicTitle: "Permutation",
+    musicArtist: ["Amon Tobin"],
+    recordingContext: ["studio"],
+    musicStyles: ["experimental", "electronic"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/watch?v=V4zGRmrG20w&list=OLAK5uy_kzoWUKmY03AQ8TpSRznZOusi-IQX3y5FM",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/7jxs0XY2yJS36PZCjUv4Hp?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref: "https://music.apple.com/us/album/permutation/416328412",
+      }),
+    ],
+  },
+  {
+    musicId: 109,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/515WLLCQOjL._UX500_FMwebp_QL10_.jpg",
+    musicYear: "2008",
+    musicTitle: "GEA",
+    musicArtist: ["Mia Doi Todd"],
+    recordingContext: ["studio"],
+    musicStyles: ["folk"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_m-_It5NCT_EsFze1o2V0_mKYYtyVnKUNE&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/6PKJSufT6gVNjQ7dQ5c72V?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref: "https://music.apple.com/us/album/gea/432067242",
+      }),
+    ],
+  },
 ];

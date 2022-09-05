@@ -2610,7 +2610,7 @@ export const musicItemDataset: Array<MusicItem> = [
     sourceType: "collection",
     collectionType: "album",
     musicThumbnailHref:
-      "https://m.media-amazon.com/images/I/41Bt31ZEFqL._UX500_FMwebp_QL85_.jpg",
+      "https://m.media-amazon.com/images/I/416adyFdguS._UX500_FMwebp_QL85_.jpg",
     musicYear: "2006",
     musicTitle: "Donuts",
     musicArtist: ["J Dilla"],
@@ -2863,6 +2863,269 @@ export const musicItemDataset: Array<MusicItem> = [
       }),
       getAppleLinkData({
         appleHref: "https://music.apple.com/us/album/gea/432067242",
+      }),
+    ],
+  },
+  {
+    musicId: 110,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/416q2EVuheL._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2011",
+    musicTitle: "Dive",
+    musicArtist: ["Tycho"],
+    recordingContext: ["studio"],
+    musicStyles: ["downtempo"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_lkCgIijL5sMC8ks-r6oAlOJXDZMt8mUQI&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/4CBUbnGFz2iKFJjYqRIwst?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref: "https://music.apple.com/us/album/dive/679251532",
+      }),
+    ],
+  },
+  {
+    musicId: 111,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/51TjcVN952L._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2014",
+    musicTitle: "This Is All Yours",
+    musicArtist: ["alt-J"],
+    recordingContext: ["studio"],
+    musicStyles: ["psychedelic", "rock"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_k0ZBPQh_nb1yaxillHshHa80jdM2Q96t0&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/4oktVvRuO1In9B7Hz0xm0a?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref:
+          "https://music.apple.com/us/album/this-is-all-yours/1625672169",
+      }),
+    ],
+  },
+  {
+    musicId: 112,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/61lb2MMKUuL._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2016",
+    musicTitle: "22, A Million",
+    musicArtist: ["Bon Iver"],
+    recordingContext: ["studio"],
+    musicStyles: ["psychedelic", "folk"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_nwQaP_wXtJiNSkfmaUkQYxY7RztNFtLIU&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/4bJCKmpKgti10f3ltz6LLl?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref: "https://music.apple.com/us/album/22-a-million/1141107722",
+      }),
+    ],
+  },
+  {
+    musicId: 113,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/414riTT7KOL._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2020",
+    musicTitle: "Heaven To A Tortured Mind",
+    musicArtist: ["Yves Tumour"],
+    recordingContext: ["studio"],
+    musicStyles: ["experimental", "rock"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_ke9gfBt56OHmCZr7SONStxmyMKu5zZdqI&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/5wnCTZtzIZxasRSHzI1JeW?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref:
+          "https://music.apple.com/us/album/heaven-to-a-tortured-mind/1494929769",
+      }),
+    ],
+  },
+  {
+    musicId: 114,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/414om-EA5XL._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2021",
+    musicTitle: "Sunsetter",
+    musicArtist: ["Leisure"],
+    recordingContext: ["studio"],
+    musicStyles: ["pop", "funk"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_kO1qhmbRQWD-9EnC6P0bP1IbQbRuFbm-8&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/2jzhUfQcf0ypdVTs5eViUU?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref: "https://music.apple.com/us/album/sunsetter/1593348262",
+      }),
+    ],
+  },
+  {
+    musicId: 115,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/51f0-qjHSPL._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2011",
+    musicTitle: "Galactic Melt",
+    musicArtist: ["Com Truise"],
+    recordingContext: ["studio"],
+    musicStyles: ["electronic"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_mBQkB2kJcdmt0pEhNzVCvkJ6au1ROUnyg&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/1PSr89gL5T8Ki87t4V5BGZ?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref:
+          "https://music.apple.com/us/album/galactic-melt-10th-anniversary-edition/1593742194",
+      }),
+    ],
+  },
+  {
+    musicId: 116,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://i.discogs.com/s3FSO_b2zSfYnJZFRHi--gg-Dt5dcw_cizXWg48BviM/rs:fit/g:sm/q:90/h:600/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTYyMjMy/ODMtMTQxNDEwNzcy/Ny02NDg3LmpwZWc.jpeg",
+    musicYear: "2013",
+    musicTitle: "Studio Sessions From A Color Map of the Sun",
+    musicArtist: ["Pretty Lights", "Joel Hamilton"],
+    recordingContext: ["live"],
+    musicStyles: ["funk", "soul", "instrumental"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/watch?v=q_YrcGRzIE0&list=PLRI0bqhn-VeZz9_SpgRkNMoHF8BsZbXwn",
+      }),
+      {
+        linkLabel: "soundcloud",
+        linkHref:
+          "https://soundcloud.com/prettylights/sets/a-color-map-of-the-sun-live",
+      },
+    ],
+  },
+  {
+    musicId: 117,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/61vKtD942xL._UX500_FMwebp_QL85_.jpg",
+    musicYear: "1998",
+    musicTitle: "Psyence Fiction",
+    musicArtist: ["Unkle"],
+    recordingContext: ["studio"],
+    musicStyles: ["downtempo", "electronic"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_nl7mHg_l7FRu7pINT5r348Y2337k9KAcM&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/6Dxx0vxLQ83LK1PMZezlcY?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref:
+          "https://music.apple.com/us/album/psyence-fiction/1440922148",
+      }),
+    ],
+  },
+  {
+    musicId: 118,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/61AnhrPSfzL._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2016",
+    musicTitle: "Cloak",
+    musicArtist: ["Jordan Rakei"],
+    recordingContext: ["studio"],
+    musicStyles: ["soul", "funk"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_lpWWJEDKyxBhoJDIj4Jqvn9TtMWQUKgPc&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/6iuOPJ2AAEdG71e5Y1mDMy?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref: "https://music.apple.com/us/album/cloak/1540037358",
+      }),
+    ],
+  },
+  {
+    musicId: 119,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/61A2MYHIdHL._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2009",
+    musicTitle: "Water 4 The Soul",
+    musicArtist: ["Gramatik"],
+    recordingContext: ["studio"],
+    musicStyles: ["electronic", "hip-hop", "funk"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/watch?v=3S6u8FHkIeE&list=OLAK5uy_mRl7Fkins6Y3F1l6WXlYvcgjvF0FmUlPw",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/09ffEBtiinB8HP4FDJ2apt?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref:
+          "https://music.apple.com/us/album/water-4-the-soul/806754280",
       }),
     ],
   },

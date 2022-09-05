@@ -1,10 +1,62 @@
 export default () => {
-  return getPrimesLessThanNumber({
-    maxNumber: getPrimeContainer({
-      containerIndex: 13,
+  return JSON.stringify(
+    getPrimeSequence({
+      firstPrimeIndex: 12,
+      lastPrimeIndex: 24,
     }),
-  }).length;
+    null,
+    2
+  );
 };
+
+interface GetPrimesInRangeApi {
+  minNumber: number;
+  maxNumber: number;
+}
+
+function getPrimesInRange(api: GetPrimesInRangeApi) {
+  const { minNumber, maxNumber } = api;
+  const primesLessThanOrEqualToMaxNumber = getPrimesLessThanOrEqualToNumber({
+    maxNumber,
+  });
+  const minPrimeIndex = primesLessThanOrEqualToMaxNumber.findIndex(
+    (somePrime) => somePrime >= minNumber
+  );
+  return primesLessThanOrEqualToMaxNumber.slice(minPrimeIndex);
+}
+
+interface GetPrimeSequenceApi {
+  firstPrimeIndex: number;
+  lastPrimeIndex: number;
+}
+
+function getPrimeSequence(api: GetPrimeSequenceApi) {
+  const { lastPrimeIndex, firstPrimeIndex } = api;
+  return getPrimes({
+    maxPrimeIndex: lastPrimeIndex,
+  }).slice(firstPrimeIndex);
+}
+
+interface GetNearestPrimesApi {
+  someNumber: number;
+}
+
+function getNearestPrimes(
+  api: GetNearestPrimesApi
+): [lessThanOrEqualTo: number, greaterThanOrEqualTo: number] {
+  const { someNumber } = api;
+  const lessThanPrimes = getPrimesLessThanOrEqualToNumber({
+    maxNumber: someNumber,
+  });
+  const lessThanPrime = lessThanPrimes[lessThanPrimes.length - 1];
+  const moreThanPrime =
+    lessThanPrime === someNumber
+      ? lessThanPrime
+      : getPrime({
+          primeIndex: lessThanPrimes.length,
+        });
+  return [lessThanPrime, moreThanPrime];
+}
 
 interface GetPrimeContainerApi {
   containerIndex: number;
@@ -27,11 +79,8 @@ function getPrimeContainers(api: GetPrimeContainersApi): Array<number> {
   let n = 4;
   while (primeContainers.length < maxContainerIndex + 1) {
     if (
-      isPrime({
-        someNumber: n - 1,
-      }) &&
-      isPrime({
-        someNumber: n + 1,
+      isPrimeContainer({
+        someNumber: n,
       })
     ) {
       primeContainers.push(n);
@@ -41,12 +90,28 @@ function getPrimeContainers(api: GetPrimeContainersApi): Array<number> {
   return primeContainers;
 }
 
+interface IsPrimeContainerApi {
+  someNumber: number;
+}
+
+function isPrimeContainer(api: IsPrimeContainerApi): boolean {
+  const { someNumber } = api;
+  return (
+    isPrime({
+      someNumber: someNumber - 1,
+    }) &&
+    isPrime({
+      someNumber: someNumber + 1,
+    })
+  );
+}
+
 interface IsPrimeApi {
   someNumber: number;
 }
 
 // https://stackoverflow.com/a/40200710
-function isPrime(api: IsPrimeApi) {
+function isPrime(api: IsPrimeApi): boolean {
   const { someNumber } = api;
   for (let n = 2; n <= Math.sqrt(someNumber); n++) {
     if (someNumber % n === 0) {
@@ -73,28 +138,28 @@ interface GetPrimesApi {
 
 function getPrimes(api: GetPrimesApi): Array<number> {
   const { maxPrimeIndex } = api;
-  return getPrimesLessThanNumber({
+  return getPrimesLessThanOrEqualToNumber({
     maxNumber: getNumberGreaterThanNthPrime({
       primeIndex: maxPrimeIndex,
     }),
   });
 }
 
-interface GetPrimesLessThanNumberApi {
+interface GetPrimesLessThanOrEqualToNumberApi {
   maxNumber: number;
 }
 
-function getPrimesLessThanNumber(
-  api: GetPrimesLessThanNumberApi
+function getPrimesLessThanOrEqualToNumber(
+  api: GetPrimesLessThanOrEqualToNumberApi
 ): Array<number> {
   const { maxNumber } = api;
   const nonPrimes = new Set<number>();
   const primesResult: Array<number> = [];
-  for (let n = 2; n < maxNumber; n++) {
+  for (let n = 2; n <= maxNumber; n++) {
     if (!nonPrimes.has(n)) {
       primesResult.push(n);
       let nextNonPrime = Math.pow(n, 2);
-      while (nextNonPrime < maxNumber) {
+      while (nextNonPrime <= maxNumber) {
         nonPrimes.add(nextNonPrime);
         nextNonPrime = nextNonPrime + n;
       }

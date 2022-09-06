@@ -1686,24 +1686,23 @@ export const musicItemDataset: Array<MusicItem> = [
     sourceType: "collection",
     collectionType: "soundtrack",
     musicThumbnailHref:
-      "https://m.media-amazon.com/images/I/51hIrsByYxL._UX500_FMwebp_QL85_.jpg",
-    musicYear: "2007",
-    musicTitle: "Across The Universe",
-    musicArtist: ["The Beatles"],
+      "https://m.media-amazon.com/images/I/51GPCRVZO5L._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2018",
+    musicTitle: "For Ever",
+    musicArtist: ["Jungle"],
     recordingContext: ["studio"],
-    musicStyles: ["pop"],
+    musicStyles: ["funk", "pop"],
     externalLinks: [
       getYoutubeLinkData({
         youtubeHref:
-          "https://m.youtube.com/watch?v=H4G32euigcs&list=OLAK5uy_m8F2SWaziGfyIO3ZZMVSaHJrVsfun1Srw",
+          "https://m.youtube.com/playlist?list=OLAK5uy_nzsuqiqd2_BIUSjIA9R77yLv_CfWnha7M&playnext=1&index=1",
       }),
       getSpotifyLinkData({
         spotifyHref:
-          "https://open.spotify.com/album/0wk2LEg0xFuuRq35UuLoNz?autoplay=true",
+          "https://open.spotify.com/album/5gYCZgmXzzWXxOCb9fMfBm?autoplay=true",
       }),
       getAppleLinkData({
-        appleHref:
-          "https://music.apple.com/us/album/across-the-universe/1598996306",
+        appleHref: "https://music.apple.com/us/album/for-ever/1409552051",
       }),
     ],
   },
@@ -3126,6 +3125,270 @@ export const musicItemDataset: Array<MusicItem> = [
       getAppleLinkData({
         appleHref:
           "https://music.apple.com/us/album/water-4-the-soul/806754280",
+      }),
+    ],
+  },
+  {
+    musicId: 120,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/51yUN63IFZL._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2017",
+    musicTitle: "French Kiwi Juice",
+    musicArtist: ["FKJ"],
+    recordingContext: ["studio"],
+    musicStyles: ["electronic", "jazz", "funk"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_m9VyQofRLP7MOGChiLyrW0ConRAorzVvo&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/0jJ7mMkCkTe7p9EJgSRxgi?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref:
+          "https://music.apple.com/us/album/french-kiwi-juice/1199108601",
+      }),
+    ],
+  },
+  {
+    musicId: 121,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/61co1M3i09L._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2020",
+    musicTitle: "Synchronicity",
+    musicArtist: ["WhoMadeWho"],
+    recordingContext: ["studio"],
+    musicStyles: ["electronic"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_ld_sn54tu8SauZbwd1nE1l2B5GhTfgbwU&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/51my18W1EFlHAMZf10r5vn?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref: "https://music.apple.com/us/album/synchronicity/1534598303",
+      }),
+    ],
+  },
+  {
+    musicId: 122,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/31ddLn+yXGL._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2007",
+    musicTitle: "Justice",
+    musicArtist: ["Justice"],
+    recordingContext: ["studio"],
+    musicStyles: ["electronic"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/watch?v=VKzWLUQizz8&list=PLH3lfNtPhUxjcC11tohb73LKyZFo6v9hB",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/5P4Wx3YhpsD4zFTvmPskWd?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref: "https://music.apple.com/us/album/justice/259751732",
+      }),
+    ],
+  },
+  {
+    musicId: 123,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/511GdjPg8fL._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2011",
+    musicTitle: "Collections 01",
+    musicArtist: ["Teebs"],
+    recordingContext: ["studio"],
+    musicStyles: ["hip-hop"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_n8o8zzM1VvkMTBhELfpCzuc37Bwzih9u8&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/6MfmIuNJmgLZ0kGE5ot8vi?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref: "https://music.apple.com/us/album/collections-01/472038029",
+      }),
+    ],
+  },
+  {
+    musicId: 124,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/41du5OP2RVL._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2017",
+    musicTitle: "The Far Field",
+    musicArtist: ["Future Islands"],
+    recordingContext: ["studio"],
+    musicStyles: ["rock"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_ng4N3XsgdNZashXG2Xl07KP59F_PFc72g&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/37Xk4WSzbCfYBFTHUHgDYv?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref: "https://music.apple.com/us/album/the-far-field/1195221378",
+      }),
+    ],
+  },
+  {
+    musicId: 125,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/41oq+vfuB8L._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2013",
+    musicTitle: "Tomorrow's Harvest",
+    musicArtist: ["Boards of Canada"],
+    recordingContext: ["studio"],
+    musicStyles: ["downtempo", "electronic"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_kj-NXH-Dp19sAf08Q04Zkn-bWXMUb-_hk&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/72a7uA2qJvC7sXxvBqmIvz?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref:
+          "https://music.apple.com/us/album/tomorrows-harvest/641229267",
+      }),
+    ],
+  },
+  {
+    musicId: 126,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/31XkIJsoOYL._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2009",
+    musicTitle: "Drift",
+    musicArtist: ["Nosaj Thing"],
+    recordingContext: ["studio"],
+    musicStyles: ["electronic"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_mgky2T34Kbdail-Cfmz8ka62izlZzMVFs&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/1OQOqtUzBQ7zouOQyhTbLk?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref: "https://music.apple.com/us/album/drift/1499854243",
+      }),
+    ],
+  },
+  {
+    musicId: 127,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/41m+gasD2YL._UX500_FMwebp_QL10_.jpg",
+    musicYear: "2010",
+    musicTitle: "My Beautiful Dark Twisted Fantasy",
+    musicArtist: ["Kanye West"],
+    recordingContext: ["studio"],
+    musicStyles: ["hip-hop", "rap"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_mRFuqe0IIrexXkU7JOxo4rOb0WLEcwuz8&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/20r762YmB5HeofjMCiPMLv?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref:
+          "https://music.apple.com/us/album/my-beautiful-dark-twisted-fantasy-deluxe-edition/1440621197",
+      }),
+    ],
+  },
+  {
+    musicId: 128,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/413i4eHi+yL._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2016",
+    musicTitle: "untitled unmastered.",
+    musicArtist: ["Kendrick Lamar"],
+    recordingContext: ["studio"],
+    musicStyles: ["hip-hop", "rap"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_ni-4jK_Z1iHKOkLAL1_6wzbnmJi-SXG-8&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/0kL3TYRsSXnu0iJvFO3rud?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref:
+          "https://music.apple.com/us/album/untitled-unmastered/1440844834",
+      }),
+    ],
+  },
+  {
+    musicId: 129,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/419g40cERRL._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2018",
+    musicTitle: "Veteran",
+    musicArtist: ["JPEGMAFIA"],
+    recordingContext: ["studio"],
+    musicStyles: ["hip-hop", "rap"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_ndXRQcfXenF1Uw-0aAIjlJhJSI2fvtp2I&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/51WLEfPEEkzAWurvuY6Gco?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref: "https://music.apple.com/us/album/veteran/1429075456",
       }),
     ],
   },

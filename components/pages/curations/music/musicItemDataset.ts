@@ -3392,4 +3392,269 @@ export const musicItemDataset: Array<MusicItem> = [
       }),
     ],
   },
+  {
+    musicId: 130,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/61linIwAqbL._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2017",
+    musicTitle: "Big Fish Theory",
+    musicArtist: ["Vince Staples"],
+    recordingContext: ["studio"],
+    musicStyles: ["hip-hop", "rap"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_n98-iurWG5FdxK2pdV71vltAvY-fzrcHo&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/5h3WJG0aZjNOrayFu3MhCS?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref:
+          "https://music.apple.com/us/album/big-fish-theory/1440887126",
+      }),
+    ],
+  },
+  {
+    musicId: 131,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/61M1agK-UAL._UX500_FMwebp_QL85_.jpg",
+    musicYear: "1998",
+    musicTitle: "Aquemini",
+    musicArtist: ["Outkast"],
+    recordingContext: ["studio"],
+    musicStyles: ["hip-hop", "rap"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_lwzyxndqmZUFugX14sD1uEOw22Lbwq7_c&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/5ceB3rxgXqIRpsOvVzTG28?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref: "https://music.apple.com/us/album/aquemini/266365274",
+      }),
+    ],
+  },
+  {
+    musicId: 132,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/615MFwjSLxL._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2016",
+    musicTitle: "Atrocity Exhibition",
+    musicArtist: ["Danny Brown"],
+    recordingContext: ["studio"],
+    musicStyles: ["hip-hop", "rap"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_mRg0fag70i_uNV_4XSkw6ueMJzPk4sV18&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/3e7vtKJ3m1zVh38VGq2g3H?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref:
+          "https://music.apple.com/us/album/atrocity-exhibition/1142690534",
+      }),
+    ],
+  },
+  {
+    musicId: 133,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/41P7j800n7L._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2015",
+    musicTitle: "If You're Reading This It's Too Late",
+    musicArtist: ["Drake"],
+    recordingContext: ["studio"],
+    musicStyles: ["hip-hop", "rap"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_mzFOUXdaAgjlZjJFNOcXOqMuXVwXUOw0I&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/0ptlfJfwGTy0Yvrk14JK1I?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref:
+          "https://music.apple.com/us/album/if-youre-reading-this-its-too-late/1440839718",
+      }),
+    ],
+  },
+  {
+    musicId: 134,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/418XoY1l0PL._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2016",
+    musicTitle: "Passion, Pain, and Demon Slayin'",
+    musicArtist: ["Kid Cudi"],
+    recordingContext: ["studio"],
+    musicStyles: ["hip-hop", "rap"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_lWegs8qXAGPC1bpf8uT6lJPOuEV4nRvJQ&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/5bCk3kWAy2JbbTfHqzZCII?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref:
+          "https://music.apple.com/us/album/passion-pain-demon-slayin/1440866929",
+      }),
+    ],
+  },
+  {
+    musicId: 135,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/61IQfmxHsKL._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2014",
+    musicTitle: "Piñata",
+    musicArtist: ["Freddie Gibbs", "Madlib"],
+    recordingContext: ["studio"],
+    musicStyles: ["hip-hop", "rap"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_nWgYNwy_If96pi6iiOHTPqJ4JHmuQxs1M&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/43uErencdmuTRFZPG3zXL1?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref: "https://music.apple.com/us/album/piñata/826080165",
+      }),
+    ],
+  },
+  {
+    musicId: 136,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/518StsD3DYL._UX500_FMwebp_QL10_.jpg",
+    musicYear: "1995",
+    musicTitle: "The Infamous",
+    musicArtist: ["Mobb Deep"],
+    recordingContext: ["studio"],
+    musicStyles: ["hip-hop", "rap"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_nRBW1WQYURvrK2sGYyppRD0urZmMWuC-I&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/1cCAb1vN8uUsdfEylVmTLs?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref: "https://music.apple.com/us/album/the-infamous/255342338",
+      }),
+    ],
+  },
+  {
+    musicId: 137,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/51RAO0+buIL._UX500_FMwebp_QL85_.jpg",
+    musicYear: "1993",
+    musicTitle: "Enter The Wu-Tang (36 Chambers)",
+    musicArtist: ["Wu-Tang Clan"],
+    recordingContext: ["studio"],
+    musicStyles: ["hip-hop", "rap"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_ndleDeDM1b2BP8QnQFb3FrSAacMZ6s1ms&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/3tQd5mwBtVyxCoEo4htGAV?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref:
+          "https://music.apple.com/us/album/enter-the-wu-tang-36-chambers-expanded-edition/269842381",
+      }),
+    ],
+  },
+  {
+    musicId: 138,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/41dOH78jnqL._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2012",
+    musicTitle: "Blacklisted",
+    musicArtist: ["Skepta"],
+    recordingContext: ["studio"],
+    musicStyles: ["hip-hop", "rap"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_ndleDeDM1b2BP8QnQFb3FrSAacMZ6s1ms&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/1w9JFLfJEGPibnydqQlPAO?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref: "https://music.apple.com/us/album/blacklisted/1493380203",
+      }),
+    ],
+  },
+  {
+    musicId: 139,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/71L9StkT45L._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2017",
+    musicTitle: "At What Cost",
+    musicArtist: ["Goldlink"],
+    recordingContext: ["studio"],
+    musicStyles: ["hip-hop", "rap"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_m7XvFMv9lIVAUzROJ5lCLbXk2pGpa46Nc&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/18JrBX1QkpnUSJF3oxX6RX?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref: "https://music.apple.com/us/album/at-what-cost/1215426121",
+      }),
+    ],
+  },
 ];

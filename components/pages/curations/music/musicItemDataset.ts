@@ -3657,4 +3657,56 @@ export const musicItemDataset: Array<MusicItem> = [
       }),
     ],
   },
+  {
+    musicId: 140,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/61jqPZQ7IQL._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2013",
+    musicTitle: "Double Cup",
+    musicArtist: ["DJ Rashad"],
+    recordingContext: ["studio"],
+    musicStyles: ["electronic", "hip-hop"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_lX-poAvJBtrLW_JSreTbJhGW9Y_8_Ujjw&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/21dsgJBSUM6IvAGFjfotgF?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref: "https://music.apple.com/us/album/double-cup/897998509",
+      }),
+    ],
+  },
+  {
+    musicId: 141,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/51GzjXnSoJL._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2019",
+    musicTitle: "IGOR",
+    musicArtist: ["Tyler, The Creator"],
+    recordingContext: ["studio"],
+    musicStyles: ["hip-hop", "rap", "pop"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_mao9YHfZtBBTlxeT138lO0prcGHzNSWQM&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/5zi7WsKlIiUXv09tbGLKsE?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref: "https://music.apple.com/us/album/igor/1463409338",
+      }),
+    ],
+  },
 ];

@@ -6,7 +6,7 @@ import {
 } from "../../components/pages/curations/music/MusicCurationsPage";
 export { getStaticProps } from "../../components/pages/curations/music/MusicCurationsPage";
 
-export default (props: MusicCurationsPageProps) => {
+const _MusicCurationsPage = (props: MusicCurationsPageProps) => {
   const pageRouter = useRouter();
   const [pageElement, setPageElement] = useState<ReactNode>(null);
   useEffect(() => {
@@ -16,3 +16,5 @@ export default (props: MusicCurationsPageProps) => {
   }, [pageRouter, props]);
   return pageElement;
 };
+
+export default _MusicCurationsPage;

@@ -21,11 +21,11 @@
 }
 
 .textContainer {
-  padding-left: $spacer * 3 / 2;
+  padding-inline-start: $spacer * 9 / 8;
 }
 
 .columnListContainer {
-  padding-left: $spacer * 3 / 2;
+  padding-inline-start: $spacer * 9 / 8;
 }
 
 .columnListItemContainer {
@@ -47,7 +47,7 @@
   flex-direction: row;
   justify-content: flex-start;
   flex-wrap: wrap;
-  padding-left: $spacer * 3 / 2;
+  padding-inline-start: $spacer * 9 / 8;
   margin-top: $spacer * -5 / 4;
 }
 

@@ -1,4 +1,5 @@
 import type { NextPage } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { NavigationFooter } from "../../common/NavigationFooter/NavigationFooter";
 import { Page } from "../../common/Page/Page";
@@ -13,9 +14,13 @@ export const HomePage: NextPage = () => {
       pageContentContainerClassname={homePageStyles.pageContentContainer}
     >
       <div role={"figure"} className={homePageStyles.landingImageContainer}>
-        <svg className={homePageStyles.landingImage} viewBox={"0 0 100 100"}>
-          <rect x={0} y={0} width={100} height={100} fill={"gold"} />
-        </svg>
+        <Image
+          className={homePageStyles.landingImage}
+          src={"/graphics/mahs-koh-tah.png"}
+          alt={"mahs-koh-tah"}
+          width={512}
+          height={512}
+        />
       </div>
       <div role={"list"} className={homePageStyles.routesContainer}>
         {[

@@ -3,16 +3,14 @@
 .sectionContainer {
   display: flex;
   flex-direction: column;
-  padding-left: $spacer;
-  padding-right: $spacer;
-  padding-bottom: $spacer * 2;
+  padding-inline: $spacer * 3 / 2;
+  padding-block-end: $spacer * 2;
 }
 
 .contentContainer {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-left: $spacer;
 }
 
 .accessibilityHeader {
@@ -22,8 +20,7 @@
 .bodyContainer {
   flex-grow: 1;
   flex-shrink: 1;
-  padding-top: $spacer * 2;
-  padding-right: $spacer;
+  padding-block-start: $spacer * 3 / 2;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -31,21 +28,20 @@
 
 .bodyContentContainer {
   flex-grow: 0;
-  flex-shrink: 1;
+  flex-shrink: 1;  
 }
 
 .graphicImage {
   width: 100%;  
   border-radius: $borderRadius;
   cursor: pointer;
+  background-color: $textBackgroundGrey;
 }
 
 .footerContainer {
   display: flex;
   flex-direction: row;
-  padding-left: $spacer;
-  padding-right: $spacer;
-  padding-bottom: $spacer;
+  padding-top: $spacer / 4;
 }
 
 .labelsContainer {
@@ -53,10 +49,10 @@
   flex-shrink: 1;
   display: flex;
   flex-direction: column;
-  // flex-wrap: wrap;
+  padding-left: $spacer / 4;
 }
 
-.labelContainer {
+.labelContainer {  
   display: flex;
   padding-top: $spacer;
   padding-right: $spacer;
@@ -76,7 +72,7 @@
 
 .actionContainer {
   display: flex;
-  padding-top: $spacer;
+  padding-top: $spacer * 2 / 3;
 }
 
 .graphicAction {

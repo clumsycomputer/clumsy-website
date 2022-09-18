@@ -13,7 +13,9 @@
   "dependencies": {
     "@playwright/test": "^1.23.3",
     "@popperjs/core": "^2.11.6",
+    "@types/colormap": "^2.3.1",
     "@types/mathjs": "^9.4.2",
+    "colormap": "^2.3.2",
     "mathjs": "^11.2.1",
     "next": "^12.3.0",
     "next-sitemap": "^3.1.21",

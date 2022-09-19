@@ -29,53 +29,158 @@ export default () => {
         baseCircle.center.y,
     },
   };
-  const closestBaseCirclePointToSubCircle = getCirclePoint({
+  const baseSubCenterDistance = getDistanceBetweenPoints({
+    pointA: baseCircle.center,
+    pointB: subCircle.center,
+  });
+  const subBaseMinBasePoint = getCirclePoint({
     someCircle: baseCircle,
     pointAngle: relativeSubCircle.phase,
   });
-  const closestSubCirclePointToBaseCircle = getCirclePoint({
+  const subBaseMinSubPoint = getCirclePoint({
     someCircle: subCircle,
     pointAngle: relativeSubCircle.phase,
   });
-  const closestDistanceFromSubToBase = getDistanceBetweenPoints({
-    pointA: closestBaseCirclePointToSubCircle,
-    pointB: closestSubCirclePointToBaseCircle,
+  const subBaseMinDistance = getDistanceBetweenPoints({
+    pointA: subBaseMinBasePoint,
+    pointB: subBaseMinSubPoint,
   });
-  const minIntersectionRadius = closestDistanceFromSubToBase + subCircle.radius;
-  const minIntersectionCircle = {
-    radius: minIntersectionRadius,
-    center: subCircle.center,
-  };
-  const farthestBaseCirclePointToSubCircle = getCirclePoint({
+  const minIntersectionRadius = subBaseMinDistance + subCircle.radius;
+  const subBaseMaxBasePoint = getCirclePoint({
     someCircle: baseCircle,
     pointAngle: relativeSubCircle.phase + Math.PI,
   });
-  const closestSubCirclePointToFarthestBaseCirclePoint = getCirclePoint({
+  const subBaseMaxSubPoint = getCirclePoint({
     someCircle: subCircle,
     pointAngle: relativeSubCircle.phase + Math.PI,
   });
-  const farthestDistanceFromSubToBase = getDistanceBetweenPoints({
-    pointA: farthestBaseCirclePointToSubCircle,
-    pointB: closestSubCirclePointToFarthestBaseCirclePoint,
+  const subBaseMaxDistance = getDistanceBetweenPoints({
+    pointA: subBaseMaxBasePoint,
+    pointB: subBaseMaxSubPoint,
   });
-  const maxIntersectionRadius =
-    farthestDistanceFromSubToBase + subCircle.radius;
-  const maxIntersectionCircle = {
-    radius: maxIntersectionRadius,
+  const maxIntersectionRadius = subBaseMaxDistance + subCircle.radius;
+  const minMaxIntersectionRadiusRangeDistance =
+    maxIntersectionRadius - minIntersectionRadius;
+  const intersectionCircleCount = 128;
+  const intersectionRadiusStep =
+    minMaxIntersectionRadiusRangeDistance / (intersectionCircleCount - 1);
+  const loopPoints = new Array(intersectionCircleCount - 2)
+    .fill(null)
+    .reduce<Array<Point>>(
+      (loopPointsResult, _, circleIndex) => {
+        const intersectionCircle = {
+          radius:
+            intersectionRadiusStep * (circleIndex + 1) + minIntersectionRadius,
+          center: subCircle.center,
+        };
+        const intersectionAngleBase = Math.acos(
+          (Math.pow(baseCircle.radius, 2) -
+            Math.pow(baseSubCenterDistance, 2) -
+            Math.pow(intersectionCircle.radius, 2)) /
+            (-2 * baseSubCenterDistance * intersectionCircle.radius)
+        );
+        const intersectionAngleA =
+          Math.PI + relativeSubCircle.phase - intersectionAngleBase;
+        const intersectionPointA = getCirclePoint({
+          someCircle: intersectionCircle,
+          pointAngle: intersectionAngleA,
+        });
+        const subPointA = getCirclePoint({
+          someCircle: subCircle,
+          pointAngle: intersectionAngleA,
+        });
+        const loopPointA = {
+          x: intersectionPointA.x,
+          y: subPointA.y,
+        };
+        const intersectionAngleB =
+          Math.PI + relativeSubCircle.phase + intersectionAngleBase;
+        const intersectionPointB = getCirclePoint({
+          someCircle: intersectionCircle,
+          pointAngle: intersectionAngleB,
+        });
+        const subPointB = getCirclePoint({
+          someCircle: subCircle,
+          pointAngle: intersectionAngleB,
+        });
+        const loopPointB = {
+          x: intersectionPointB.x,
+          y: subPointB.y,
+        };
+        loopPointsResult.unshift(loopPointA);
+        loopPointsResult.push(loopPointB);
+        return loopPointsResult;
+      },
+      [
+        {
+          x: getCirclePoint({
+            someCircle: {
+              radius: minIntersectionRadius,
+              center: subCircle.center,
+            },
+            pointAngle: relativeSubCircle.phase,
+          }).x,
+          y: getCirclePoint({
+            someCircle: subCircle,
+            pointAngle: relativeSubCircle.phase,
+          }).y,
+        },
+      ]
+    );
+  loopPoints.push({
+    x: getCirclePoint({
+      someCircle: {
+        radius: maxIntersectionRadius,
+        center: subCircle.center,
+      },
+      pointAngle: relativeSubCircle.phase + Math.PI,
+    }).x,
+    y: getCirclePoint({
+      someCircle: subCircle,
+      pointAngle: relativeSubCircle.phase + Math.PI,
+    }).y,
+  });
+  const traceRelativeIntersectionRadius = 0.5;
+  const traceIntersectionCircle = {
+    radius:
+      traceRelativeIntersectionRadius * minMaxIntersectionRadiusRangeDistance +
+      minIntersectionRadius,
     center: subCircle.center,
   };
-  const baseIntersectionPoints = getBaseIntersectionPoints({
-    baseCircle,
-    subCircle,
-    subCirclePhase: relativeSubCircle.phase,
-    baseCenterToSubCenterDistance: getDistanceBetweenPoints({
-      pointA: baseCircle.center,
-      pointB: subCircle.center,
-    }),
-    minCircle: minIntersectionCircle,
-    maxCircle: maxIntersectionCircle,
-    depthCount: 9,
+  const traceIntersectionAngleBase = Math.acos(
+    (Math.pow(baseCircle.radius, 2) -
+      Math.pow(baseSubCenterDistance, 2) -
+      Math.pow(traceIntersectionCircle.radius, 2)) /
+      (-2 * baseSubCenterDistance * traceIntersectionCircle.radius)
+  );
+  const traceIntersectionAngleA =
+    Math.PI + relativeSubCircle.phase - traceIntersectionAngleBase;
+  const traceIntersectionPointA = getCirclePoint({
+    someCircle: traceIntersectionCircle,
+    pointAngle: traceIntersectionAngleA,
   });
+  const traceSubPointA = getCirclePoint({
+    someCircle: subCircle,
+    pointAngle: traceIntersectionAngleA,
+  });
+  const traceLoopPointA = {
+    x: traceIntersectionPointA.x,
+    y: traceSubPointA.y,
+  };
+  const traceIntersectionAngleB =
+    Math.PI + relativeSubCircle.phase + traceIntersectionAngleBase;
+  const intersectionPointB = getCirclePoint({
+    someCircle: traceIntersectionCircle,
+    pointAngle: traceIntersectionAngleB,
+  });
+  const traceSubPointB = getCirclePoint({
+    someCircle: subCircle,
+    pointAngle: traceIntersectionAngleB,
+  });
+  const traceLoopPointB = {
+    x: intersectionPointB.x,
+    y: traceSubPointB.y,
+  };
   return (
     <svg viewBox={"-2 -2 4 4"} width={250} height={250}>
       <rect x={-2} y={-2} width={4} height={4} fill={"grey"} />
@@ -95,7 +200,58 @@ export default () => {
         stroke={"deeppink"}
         strokeWidth={0.02}
       />
-      {baseIntersectionPoints}
+      <circle
+        r={traceIntersectionCircle.radius}
+        cx={traceIntersectionCircle.center.x}
+        cy={traceIntersectionCircle.center.y}
+        fill={"transparent"}
+        stroke={"deepskyblue"}
+        strokeWidth={0.02}
+      />
+      <polygon
+        points={loopPoints
+          .map((somePoint) => `${somePoint.x},${somePoint.y}`)
+          .join(" ")}
+        fill={"transparent"}
+        stroke={"yellow"}
+        strokeWidth={0.02}
+      />
+      <circle
+        cx={traceIntersectionPointA.x}
+        cy={traceIntersectionPointA.y}
+        r={0.025}
+        fill={"lime"}
+      />
+      <circle
+        cx={traceSubPointA.x}
+        cy={traceSubPointA.y}
+        r={0.025}
+        fill={"lime"}
+      />
+      <circle
+        cx={traceLoopPointA.x}
+        cy={traceLoopPointA.y}
+        r={0.025}
+        fill={"black"}
+      />
+      <circle
+        cx={intersectionPointB.x}
+        cy={intersectionPointB.y}
+        r={0.025}
+        fill={"lime"}
+      />
+      <circle
+        cx={traceSubPointB.x}
+        cy={traceSubPointB.y}
+        r={0.025}
+        fill={"lime"}
+      />
+      <circle
+        cx={traceLoopPointB.x}
+        cy={traceLoopPointB.y}
+        r={0.025}
+        fill={"black"}
+      />
     </svg>
   );
 };

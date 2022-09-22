@@ -1,7 +1,4 @@
-import getColormap from "colormap";
-import { number } from "mathjs";
 import { SVGAttributes, useEffect, useMemo, useRef, useState } from "react";
-import Zod from "zod";
 
 export default () => {
   const baseCircleNode = getCircleNode({
@@ -20,9 +17,9 @@ export default () => {
     nodeName: "subCircle",
     nodeEncoding: {
       baseCircleNode: baseCircleNode,
-      relativeRadius: 0.675,
-      relativeDepth: 0.5,
-      relativePhase: Math.PI / 3,
+      relativeRadius: 0.5,
+      relativeDepth: 0.25,
+      relativePhase: Math.PI / 2,
     },
     nodeAttributes: {
       stroke: "deeppink",
@@ -39,6 +36,7 @@ export default () => {
       stroke: "yellow",
     },
   });
+  const loopPoints = loopNode.nodeGeometry;
   const [traceStamp, setTraceStamp] = useState(0);
   const traceIntersectionCircleNode = getCircleNode({
     nodeId: 3,
@@ -51,6 +49,7 @@ export default () => {
       }),
       subCircleCenter: subCircleNode.nodeGeometry.center,
       relativeIntersectionRadius: Math.sin(Math.PI * traceStamp),
+      // relativeIntersectionRadius: Math.abs(((2 * traceStamp + 1) % 2) - 1),
     }),
     nodeAttributes: {
       stroke: "deepskyblue",
@@ -110,7 +109,7 @@ export default () => {
     nodeEncoding: getLoopTracePoint({
       baseCircle: baseCircleNode.nodeGeometry,
       subCircle: subCircleNode.nodeGeometry,
-      loopPoints: loopNode.nodeGeometry,
+      loopPoints: loopPoints,
       traceAngle: traceIntersectionAngle,
     }),
     nodeAttributes: {
@@ -131,11 +130,10 @@ export default () => {
     <div
       style={{
         display: "flex",
-        flexDirection: "column",
-        alignItems: "flex-start",
+        flexDirection: "row",
       }}
     >
-      <div style={{ padding: 8 }}>
+      <div style={{ padding: 16 }}>
         <KnobInput
           inputSize={40}
           knobAngleOffset={subCircleNode.nodeEncoding.relativePhase}
@@ -147,48 +145,97 @@ export default () => {
           }}
         />
       </div>
-      <svg viewBox={"-2 -2 4 4"} width={512} height={512}>
-        <rect x={-2} y={-2} width={4} height={4} fill={"grey"} />
-        {basicLoopDiagram.map((someGeometryNode) => {
-          if (someGeometryNode.nodeType === "point") {
-            return (
-              <circle
-                {...someGeometryNode.nodeAttributes}
-                key={someGeometryNode.nodeId}
-                cx={someGeometryNode.nodeGeometry[0]}
-                cy={someGeometryNode.nodeGeometry[1]}
+      <div style={{ display: "flex", flexDirection: "column" }}>
+        <svg
+          viewBox={"-2 -2 4 4"}
+          width={256}
+          height={256}
+          style={{ marginBottom: 8 }}
+        >
+          <rect x={-2} y={-2} width={4} height={4} fill={"grey"} />
+          {basicLoopDiagram.map((someGeometryNode) => {
+            if (someGeometryNode.nodeType === "point") {
+              return (
+                <circle
+                  {...someGeometryNode.nodeAttributes}
+                  key={someGeometryNode.nodeId}
+                  cx={someGeometryNode.nodeGeometry[0]}
+                  cy={someGeometryNode.nodeGeometry[1]}
+                />
+              );
+            } else if (
+              someGeometryNode.nodeType === "circle" ||
+              someGeometryNode.nodeType === "relativeCircle"
+            ) {
+              return (
+                <circle
+                  {...someGeometryNode.nodeAttributes}
+                  key={someGeometryNode.nodeId}
+                  r={someGeometryNode.nodeGeometry.radius}
+                  cx={someGeometryNode.nodeGeometry.center[0]}
+                  cy={someGeometryNode.nodeGeometry.center[1]}
+                />
+              );
+            } else if (someGeometryNode.nodeType === "loop") {
+              return (
+                <polygon
+                  {...someGeometryNode.nodeAttributes}
+                  key={someGeometryNode.nodeId}
+                  points={someGeometryNode.nodeGeometry
+                    .map(
+                      (someLoopPoint) =>
+                        `${someLoopPoint[0]},${someLoopPoint[1]}`
+                    )
+                    .join(" ")}
+                />
+              );
+            } else {
+              throw new Error("invalid path reached: geometry node render");
+            }
+          })}
+        </svg>
+        <svg
+          width={256}
+          height={256}
+          viewBox={`${-0.25} ${-0.25} ${1.5} ${1.5}`}
+        >
+          <rect x={-0.25} y={-0.25} width={1.5} height={1.5} fill={"grey"} />
+          <g transform="translate(0,1)">
+            <g transform="scale(1,-1)">
+              <line
+                x1={0}
+                y1={1}
+                x2={1}
+                y2={1}
+                stroke={"lime"}
+                strokeWidth={0.02}
               />
-            );
-          } else if (
-            someGeometryNode.nodeType === "circle" ||
-            someGeometryNode.nodeType === "relativeCircle"
-          ) {
-            return (
-              <circle
-                {...someGeometryNode.nodeAttributes}
-                key={someGeometryNode.nodeId}
-                r={someGeometryNode.nodeGeometry.radius}
-                cx={someGeometryNode.nodeGeometry.center[0]}
-                cy={someGeometryNode.nodeGeometry.center[1]}
+              <line
+                x1={0}
+                y1={0}
+                x2={1}
+                y2={0}
+                stroke={"lime"}
+                strokeWidth={0.02}
               />
-            );
-          } else if (someGeometryNode.nodeType === "loop") {
-            return (
-              <polygon
-                {...someGeometryNode.nodeAttributes}
-                key={someGeometryNode.nodeId}
-                points={someGeometryNode.nodeGeometry
-                  .map(
-                    (someLoopPoint) => `${someLoopPoint[0]},${someLoopPoint[1]}`
-                  )
-                  .join(" ")}
-              />
-            );
-          } else {
-            throw new Error("invalid path reached: geometry node render");
-          }
-        })}
-      </svg>
+              {loopPoints
+                // .sort((a, b) => a[3] - b[3])
+                .map((someLoopPoint, pointIndex) => {
+                  return (
+                    <circle
+                      key={pointIndex}
+                      // cx={someLoopPoint[2] / (2 * Math.PI)}
+                      cx={pointIndex / loopPoints.length}
+                      cy={someLoopPoint[3]}
+                      r={0.01}
+                      fill={"white"}
+                    />
+                  );
+                })}
+            </g>
+          </g>
+        </svg>
+      </div>
     </div>
   );
 };
@@ -295,7 +342,7 @@ function changeKnobValue(api: ChangeKnobValueApi) {
 
 type Point = [x: number, y: number];
 
-type LoopPoint = [x: number, y: number, outputAngle: number];
+type LoopPoint = [x: number, y: number, subAngle: number, sandwich: number];
 
 interface Circle {
   radius: number;
@@ -527,17 +574,24 @@ function getLoopPoint(api: GetLoopPointApi): LoopPoint {
       intersectionCircle.center[0],
     y: subCircle.radius * Math.sin(intersectionAngle) + subCircle.center[1],
   };
-  return [
+  const xComponent =
     intersectionCircle.radius * Math.cos(intersectionAngle) +
-      intersectionCircle.center[0],
-    subCircle.radius * Math.sin(intersectionAngle) + subCircle.center[1],
-    getNormalizedAngle({
-      someAngle: Math.atan2(
-        loopPointBase.y - subCircle.center[1],
-        loopPointBase.x - subCircle.center[0]
-      ),
-    }),
-  ];
+    intersectionCircle.center[0];
+  const yComponent =
+    subCircle.radius * Math.sin(intersectionAngle) + subCircle.center[1];
+  const subAngle = getNormalizedAngle({
+    someAngle: Math.atan2(
+      loopPointBase.y - subCircle.center[1],
+      loopPointBase.x - subCircle.center[0]
+    ),
+  });
+  const loopRadius = getDistanceBetweenPoints({
+    pointA: subCircle.center,
+    pointB: [xComponent, yComponent],
+  });
+  const sandwichSize = intersectionCircle.radius - subCircle.radius;
+  const sandwichComponent = (loopRadius - subCircle.radius) / sandwichSize;
+  return [xComponent, yComponent, subAngle, sandwichComponent];
 }
 
 interface GetIntersectionBaseAngleApi {

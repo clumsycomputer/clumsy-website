@@ -12,14 +12,19 @@ export default () => {
       stroke: "darkorange",
     },
   });
+  const [relativeSubCircleState, setRelativeSubCircleState] = useState({
+    radius: 1,
+    depth: 0,
+    phase: 0,
+  });
   const subCircleNode = getRelativeCircleNode({
     nodeId: 1,
     nodeName: "subCircle",
     nodeEncoding: {
       baseCircleNode: baseCircleNode,
-      relativeRadius: 0.5,
-      relativeDepth: 0.25,
-      relativePhase: Math.PI / 2,
+      relativeRadius: relativeSubCircleState.radius,
+      relativeDepth: relativeSubCircleState.depth,
+      relativePhase: relativeSubCircleState.phase,
     },
     nodeAttributes: {
       stroke: "deeppink",
@@ -133,17 +138,71 @@ export default () => {
         flexDirection: "row",
       }}
     >
-      <div style={{ padding: 16 }}>
-        <KnobInput
-          inputSize={40}
-          knobAngleOffset={subCircleNode.nodeEncoding.relativePhase}
-          minValue={0}
-          maxValue={1}
-          value={traceStamp}
-          onChange={(nextValue) => {
-            setTraceStamp(nextValue);
-          }}
+      <div style={{ padding: 16, display: "flex", flexDirection: "column" }}>
+        <div style={{ marginBottom: 8 }}>
+          <HorizontalSliderInput
+            inputSize={40}
+            minValue={0.00000001}
+            maxValue={1}
+            value={relativeSubCircleState.radius}
+            onChange={(nextRelativeSubCircleRadius) => {
+              setRelativeSubCircleState((currentState) => {
+                return {
+                  ...currentState,
+                  radius: nextRelativeSubCircleRadius,
+                };
+              });
+            }}
+          />
+        </div>
+        <div style={{ marginBottom: 8 }}>
+          <HorizontalSliderInput
+            inputSize={40}
+            minValue={0}
+            maxValue={1}
+            value={relativeSubCircleState.depth}
+            onChange={(nextRelativeSubCircleDepth) => {
+              setRelativeSubCircleState((currentState) => {
+                return {
+                  ...currentState,
+                  depth: nextRelativeSubCircleDepth,
+                };
+              });
+            }}
+          />
+        </div>
+        <div style={{ marginBottom: 8 }}>
+          <KnobInput
+            inputSize={40}
+            knobAngleOffset={0}
+            minValue={0}
+            maxValue={2 * Math.PI}
+            value={relativeSubCircleState.phase}
+            onChange={(nextRelativeSubCirclePhase) => {
+              setRelativeSubCircleState((currentState) => {
+                return {
+                  ...currentState,
+                  phase: nextRelativeSubCirclePhase,
+                };
+              });
+            }}
+          />
+        </div>
+        <div
+          style={{ height: 2, backgroundColor: "lightgray", marginBottom: 12 }}
         />
+        <div>
+          <KnobInput
+            inputSize={40}
+            knobAngleOffset={0}
+            minValue={0}
+            maxValue={1}
+            value={traceStamp}
+            onChange={(nextValue) => {
+              setTraceStamp(nextValue);
+            }}
+          />
+        </div>
       </div>
       <div style={{ display: "flex", flexDirection: "column" }}>
         <svg
@@ -258,6 +317,8 @@ function KnobInput(props: KnobInputProps) {
     const pointerMoveHandler = (somePointerEvent: PointerEvent) => {
       if (knobGraphicRef.current && trackingPointerRef.current === true) {
         changeKnobValue({
+          maxValue,
+          minValue,
           onChange,
           knobAngleOffset,
           somePointerEvent,
@@ -269,6 +330,8 @@ function KnobInput(props: KnobInputProps) {
       if (knobGraphicRef.current && trackingPointerRef.current === true) {
         trackingPointerRef.current = false;
         changeKnobValue({
+          maxValue,
+          minValue,
           onChange,
           knobAngleOffset,
           somePointerEvent,
@@ -319,25 +382,154 @@ function KnobInput(props: KnobInputProps) {
 }
 
 interface ChangeKnobValueApi
-  extends Pick<KnobInputProps, "onChange" | "knobAngleOffset"> {
+  extends Pick<
+    KnobInputProps,
+    "onChange" | "knobAngleOffset" | "minValue" | "maxValue"
+  > {
   somePointerEvent: PointerEvent;
   knobClientRect: DOMRect;
 }
 function changeKnobValue(api: ChangeKnobValueApi) {
-  const { somePointerEvent, knobClientRect, onChange, knobAngleOffset } = api;
+  const {
+    somePointerEvent,
+    knobClientRect,
+    onChange,
+    knobAngleOffset,
+    minValue,
+    maxValue,
+  } = api;
   const targetPoint = [somePointerEvent.clientX, somePointerEvent.clientY];
   const centerPoint = [
     (knobClientRect.left + knobClientRect.right) / 2,
     (knobClientRect.top + knobClientRect.bottom) / 2,
   ];
-  const knobAngle = getNormalizedAngle({
-    someAngle:
-      Math.atan2(
-        targetPoint[1] - centerPoint[1],
-        targetPoint[0] - centerPoint[0]
-      ) - knobAngleOffset,
-  });
-  onChange(knobAngle / (2 * Math.PI));
+  const knobAngle =
+    getNormalizedAngle({
+      someAngle:
+        Math.atan2(
+          targetPoint[1] - centerPoint[1],
+          targetPoint[0] - centerPoint[0]
+        ) - knobAngleOffset,
+    }) /
+    (2 * Math.PI);
+  onChange(knobAngle * (maxValue - minValue) + minValue);
+}
+
+interface HorizontalSliderInputProps {
+  minValue: number;
+  maxValue: number;
+  value: number;
+  onChange: (nextValue: number) => void;
+  inputSize: number;
+}
+
+function HorizontalSliderInput(props: HorizontalSliderInputProps) {
+  const { inputSize, value, maxValue, minValue, onChange } = props;
+  const sliderLineRef = useRef<SVGLineElement>(null);
+  const trackingPointerRef = useRef(false);
+  useEffect(() => {
+    const pointerMoveHandler = (somePointerEvent: PointerEvent) => {
+      if (sliderLineRef.current && trackingPointerRef.current === true) {
+        changeSliderValue({
+          maxValue,
+          minValue,
+          onChange,
+          somePointerEvent,
+          sliderLineClientRect: sliderLineRef.current.getBoundingClientRect(),
+        });
+      }
+    };
+    const pointerUpHandler = (somePointerEvent: PointerEvent) => {
+      if (sliderLineRef.current && trackingPointerRef.current === true) {
+        trackingPointerRef.current = false;
+        changeSliderValue({
+          maxValue,
+          minValue,
+          onChange,
+          somePointerEvent,
+          sliderLineClientRect: sliderLineRef.current.getBoundingClientRect(),
+        });
+      }
+    };
+    window.addEventListener("pointermove", pointerMoveHandler);
+    window.addEventListener("pointerup", pointerUpHandler);
+    return () => {
+      window.removeEventListener("pointermove", pointerMoveHandler);
+      window.removeEventListener("pointerup", pointerUpHandler);
+    };
+  }, []);
+  const sliderPoint = useMemo(() => {
+    return [2 * value * (maxValue - minValue) + minValue, 0];
+  }, [value, maxValue, minValue]);
+  return (
+    <svg
+      viewBox={"-0.5 -0.75 3 1.5"}
+      width={inputSize}
+      height={inputSize}
+      style={{
+        cursor: "pointer",
+      }}
+      onPointerDown={() => {
+        trackingPointerRef.current = true;
+      }}
+    >
+      <line
+        ref={sliderLineRef}
+        x1={0}
+        y1={0}
+        x2={2}
+        y2={0}
+        strokeWidth={0.15}
+        stroke={"black"}
+        strokeLinecap={"round"}
+      />
+      <g>
+        <circle
+          r={0.3}
+          cx={sliderPoint[0]}
+          cy={sliderPoint[1]}
+          fill={"black"}
+        />
+        <circle
+          r={0.2}
+          cx={sliderPoint[0]}
+          cy={sliderPoint[1]}
+          fill={"white"}
+        />
+        <circle
+          r={0.125}
+          cx={sliderPoint[0]}
+          cy={sliderPoint[1]}
+          fill={"black"}
+        />
+      </g>
+    </svg>
+  );
+}
+
+interface ChangeSliderValueApi
+  extends Pick<KnobInputProps, "onChange" | "minValue" | "maxValue"> {
+  somePointerEvent: PointerEvent;
+  sliderLineClientRect: DOMRect;
+}
+function changeSliderValue(api: ChangeSliderValueApi) {
+  const {
+    somePointerEvent,
+    sliderLineClientRect,
+    onChange,
+    minValue,
+    maxValue,
+  } = api;
+  const pointerX = somePointerEvent.clientX;
+  const minSliderX = sliderLineClientRect.left;
+  const maxSliderX = sliderLineClientRect.right;
+  const relativeSliderValue =
+    pointerX >= maxSliderX
+      ? 1
+      : pointerX <= minSliderX
+      ? 0
+      : (somePointerEvent.clientX - minSliderX) / (maxSliderX - minSliderX);
+  onChange(relativeSliderValue * (maxValue - minValue) + minValue);
 }
 
 type Point = [x: number, y: number];

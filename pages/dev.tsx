@@ -142,7 +142,7 @@ export default () => {
         <div style={{ marginBottom: 8 }}>
           <HorizontalSliderInput
             inputSize={40}
-            minValue={0.00000001}
+            minValue={0}
             maxValue={1}
             value={relativeSubCircleState.radius}
             onChange={(nextRelativeSubCircleRadius) => {
@@ -626,16 +626,18 @@ function getRelativeCircleNode(
       const { baseCircleNode, relativeRadius, relativeDepth, relativePhase } =
         this.nodeEncoding;
       const baseCircle = baseCircleNode.nodeGeometry;
-      const subCircleRadius = relativeRadius * baseCircle.radius;
+      const subCircleRadius = (relativeRadius || 0.0000001) * baseCircle.radius;
       const maxSubCircleDepth = baseCircle.radius - subCircleRadius;
       const subCircleDepth =
         relativeDepth === 0 || maxSubCircleDepth === 0
-          ? 0.00000001
+          ? 0.0000001 // (a): (a) needs to be closer to zero than (b)
+          : relativeDepth === 1
+          ? (relativeDepth - 0.0000001) * maxSubCircleDepth
           : relativeDepth * maxSubCircleDepth;
       return {
         radius:
           subCircleRadius === baseCircle.radius
-            ? subCircleRadius - 0.00000001
+            ? subCircleRadius - 0.000001 // (b)
             : subCircleRadius,
         center: [
           subCircleDepth * Math.cos(relativePhase) + baseCircle.center[0],

@@ -1,6 +1,6 @@
 import getColormap from "colormap";
 import { number } from "mathjs";
-import { SVGAttributes } from "react";
+import { SVGAttributes, useEffect, useMemo, useRef, useState } from "react";
 import Zod from "zod";
 
 export default () => {
@@ -21,7 +21,7 @@ export default () => {
     nodeEncoding: {
       baseCircleNode: baseCircleNode,
       relativeRadius: 0.675,
-      relativeDepth: 0.5, // 0 breaks when should works
+      relativeDepth: 0.5,
       relativePhase: Math.PI / 3,
     },
     nodeAttributes: {
@@ -39,7 +39,7 @@ export default () => {
       stroke: "yellow",
     },
   });
-  const traceStamp = 0.75;
+  const [traceStamp, setTraceStamp] = useState(0);
   const traceIntersectionCircleNode = getCircleNode({
     nodeId: 3,
     nodeName: "traceCircle",
@@ -128,8 +128,25 @@ export default () => {
     linearTraceLoopPointNode,
   ];
   return (
-    <div style={{ display: "flex", flexDirection: "column" }}>
-      <div></div>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "flex-start",
+      }}
+    >
+      <div style={{ padding: 8 }}>
+        <KnobInput
+          inputSize={40}
+          knobAngleOffset={subCircleNode.nodeEncoding.relativePhase}
+          minValue={0}
+          maxValue={1}
+          value={traceStamp}
+          onChange={(nextValue) => {
+            setTraceStamp(nextValue);
+          }}
+        />
+      </div>
       <svg viewBox={"-2 -2 4 4"} width={512} height={512}>
         <rect x={-2} y={-2} width={4} height={4} fill={"grey"} />
         {basicLoopDiagram.map((someGeometryNode) => {
@@ -175,6 +192,106 @@ export default () => {
     </div>
   );
 };
+
+interface KnobInputProps {
+  minValue: number;
+  maxValue: number;
+  value: number;
+  onChange: (nextValue: number) => void;
+  knobAngleOffset: number;
+  inputSize: number;
+}
+
+function KnobInput(props: KnobInputProps) {
+  const { value, onChange, maxValue, minValue, knobAngleOffset, inputSize } =
+    props;
+  const knobGraphicRef = useRef<SVGSVGElement>(null);
+  const trackingPointerRef = useRef(false);
+  useEffect(() => {
+    const pointerMoveHandler = (somePointerEvent: PointerEvent) => {
+      if (knobGraphicRef.current && trackingPointerRef.current === true) {
+        changeKnobValue({
+          onChange,
+          knobAngleOffset,
+          somePointerEvent,
+          knobClientRect: knobGraphicRef.current.getBoundingClientRect(),
+        });
+      }
+    };
+    const pointerUpHandler = (somePointerEvent: PointerEvent) => {
+      if (knobGraphicRef.current && trackingPointerRef.current === true) {
+        trackingPointerRef.current = false;
+        changeKnobValue({
+          onChange,
+          knobAngleOffset,
+          somePointerEvent,
+          knobClientRect: knobGraphicRef.current.getBoundingClientRect(),
+        });
+      }
+    };
+    window.addEventListener("pointermove", pointerMoveHandler);
+    window.addEventListener("pointerup", pointerUpHandler);
+    return () => {
+      window.removeEventListener("pointermove", pointerMoveHandler);
+      window.removeEventListener("pointerup", pointerUpHandler);
+    };
+  }, []);
+  const knobPoint = useMemo(() => {
+    const knobStamp = (value - minValue) / (maxValue - minValue);
+    const knobAngle = 2 * Math.PI * knobStamp + knobAngleOffset;
+    return [Math.cos(knobAngle), Math.sin(knobAngle)];
+  }, [minValue, maxValue, value]);
+  return (
+    <svg
+      ref={knobGraphicRef}
+      viewBox={"-1.5 -1.5 3 3"}
+      width={inputSize}
+      height={inputSize}
+      style={{
+        cursor: "pointer",
+      }}
+      onPointerDown={() => {
+        trackingPointerRef.current = true;
+      }}
+    >
+      <circle
+        r={1}
+        cx={0}
+        cy={0}
+        stroke={"black"}
+        strokeWidth={0.15}
+        fillOpacity={0}
+      />
+      <g>
+        <circle r={0.3} cx={knobPoint[0]} cy={knobPoint[1]} fill={"black"} />
+        <circle r={0.2} cx={knobPoint[0]} cy={knobPoint[1]} fill={"white"} />
+        <circle r={0.125} cx={knobPoint[0]} cy={knobPoint[1]} fill={"black"} />
+      </g>
+    </svg>
+  );
+}
+
+interface ChangeKnobValueApi
+  extends Pick<KnobInputProps, "onChange" | "knobAngleOffset"> {
+  somePointerEvent: PointerEvent;
+  knobClientRect: DOMRect;
+}
+function changeKnobValue(api: ChangeKnobValueApi) {
+  const { somePointerEvent, knobClientRect, onChange, knobAngleOffset } = api;
+  const targetPoint = [somePointerEvent.clientX, somePointerEvent.clientY];
+  const centerPoint = [
+    (knobClientRect.left + knobClientRect.right) / 2,
+    (knobClientRect.top + knobClientRect.bottom) / 2,
+  ];
+  const knobAngle = getNormalizedAngle({
+    someAngle:
+      Math.atan2(
+        targetPoint[1] - centerPoint[1],
+        targetPoint[0] - centerPoint[0]
+      ) - knobAngleOffset,
+  });
+  onChange(knobAngle / (2 * Math.PI));
+}
 
 type Point = [x: number, y: number];
 
@@ -523,7 +640,7 @@ interface GetLoopTracePointApi {
 function getLoopTracePoint(api: GetLoopTracePointApi) {
   const { loopPoints, traceAngle, subCircle, baseCircle } = api;
   const loopPointIndexA = loopPoints.findIndex((_, loopPointIndex) => {
-    if (loopPointIndex + 1 === loopPoints.length) return false;
+    if (loopPointIndex + 1 === loopPoints.length) return true;
     const loopPointA = loopPoints[loopPointIndex];
     const loopPointB = loopPoints[loopPointIndex + 1];
     return traceAngle >= loopPointA[2] && traceAngle <= loopPointB[2];
@@ -617,4 +734,21 @@ export function getIntersectionPoint(api: GetIntersectionPointApi): Point {
       deltaYB * (lineA[0][0] - lineB[0][0])) /
     (deltaYB * deltaXA - deltaXB * deltaYA);
   return [lineA[0][0] + slopeA * deltaXA, lineA[0][1] + slopeA * deltaYA];
+}
+
+export interface GetNormalizedAngleBetweenPointsApi {
+  basePoint: Point;
+  targetPoint: Point;
+}
+
+export function getNormalizedAngleBetweenPoints(
+  api: GetNormalizedAngleBetweenPointsApi
+): number {
+  const { targetPoint, basePoint } = api;
+  return getNormalizedAngle({
+    someAngle: Math.atan2(
+      targetPoint[1] - basePoint[1],
+      targetPoint[0] - basePoint[0]
+    ),
+  });
 }

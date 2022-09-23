@@ -131,14 +131,25 @@ export default () => {
     traceLoopPointNode,
     linearTraceLoopPointNode,
   ];
+  const maxPendulum = loopPoints.reduce((maxResult, someLoopPoint) => {
+    const somePendulum = Math.abs(someLoopPoint[4]);
+    return somePendulum > maxResult ? somePendulum : maxResult;
+  }, 0);
   return (
     <div
       style={{
         display: "flex",
         flexDirection: "row",
+        padding: 8,
       }}
     >
-      <div style={{ padding: 16, display: "flex", flexDirection: "column" }}>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          paddingInline: 8,
+        }}
+      >
         <div style={{ marginBottom: 8 }}>
           <HorizontalSliderInput
             inputSize={40}
@@ -204,96 +215,146 @@ export default () => {
           />
         </div>
       </div>
-      <div style={{ display: "flex", flexDirection: "column" }}>
-        <svg
-          viewBox={"-2 -2 4 4"}
-          width={256}
-          height={256}
-          style={{ marginBottom: 8 }}
-        >
-          <rect x={-2} y={-2} width={4} height={4} fill={"grey"} />
-          {basicLoopDiagram.map((someGeometryNode) => {
-            if (someGeometryNode.nodeType === "point") {
-              return (
-                <circle
-                  {...someGeometryNode.nodeAttributes}
-                  key={someGeometryNode.nodeId}
-                  cx={someGeometryNode.nodeGeometry[0]}
-                  cy={someGeometryNode.nodeGeometry[1]}
+      <div style={{ display: "flex", flexDirection: "row", padding: 8 }}>
+        <div style={{ display: "flex", flexDirection: "column" }}>
+          <svg
+            viewBox={"-2 -2 4 4"}
+            width={256}
+            height={256}
+            style={{ marginBottom: 8, borderRadius: 4 }}
+          >
+            <rect x={-2} y={-2} width={4} height={4} fill={"grey"} />
+            {basicLoopDiagram.map((someGeometryNode) => {
+              if (someGeometryNode.nodeType === "point") {
+                return (
+                  <circle
+                    {...someGeometryNode.nodeAttributes}
+                    key={someGeometryNode.nodeId}
+                    cx={someGeometryNode.nodeGeometry[0]}
+                    cy={someGeometryNode.nodeGeometry[1]}
+                  />
+                );
+              } else if (
+                someGeometryNode.nodeType === "circle" ||
+                someGeometryNode.nodeType === "relativeCircle"
+              ) {
+                return (
+                  <circle
+                    {...someGeometryNode.nodeAttributes}
+                    key={someGeometryNode.nodeId}
+                    r={someGeometryNode.nodeGeometry.radius}
+                    cx={someGeometryNode.nodeGeometry.center[0]}
+                    cy={someGeometryNode.nodeGeometry.center[1]}
+                  />
+                );
+              } else if (someGeometryNode.nodeType === "loop") {
+                return (
+                  <polygon
+                    {...someGeometryNode.nodeAttributes}
+                    key={someGeometryNode.nodeId}
+                    points={someGeometryNode.nodeGeometry
+                      .map(
+                        (someLoopPoint) =>
+                          `${someLoopPoint[0]},${someLoopPoint[1]}`
+                      )
+                      .join(" ")}
+                  />
+                );
+              } else {
+                throw new Error("invalid path reached: geometry node render");
+              }
+            })}
+          </svg>
+          <svg
+            width={256}
+            height={256}
+            viewBox={`${-0.25} ${-0.25} ${1.5} ${1.5}`}
+            style={{ borderRadius: 4 }}
+          >
+            <rect x={-0.25} y={-0.25} width={1.5} height={1.5} fill={"grey"} />
+            <g transform="translate(0,1)">
+              <g transform="scale(1,-1)">
+                <line
+                  x1={0}
+                  y1={1}
+                  x2={1}
+                  y2={1}
+                  stroke={"lime"}
+                  strokeWidth={0.02}
+                  strokeLinecap={"round"}
                 />
-              );
-            } else if (
-              someGeometryNode.nodeType === "circle" ||
-              someGeometryNode.nodeType === "relativeCircle"
-            ) {
-              return (
-                <circle
-                  {...someGeometryNode.nodeAttributes}
-                  key={someGeometryNode.nodeId}
-                  r={someGeometryNode.nodeGeometry.radius}
-                  cx={someGeometryNode.nodeGeometry.center[0]}
-                  cy={someGeometryNode.nodeGeometry.center[1]}
+                <line
+                  x1={0}
+                  y1={0}
+                  x2={1}
+                  y2={0}
+                  stroke={"lime"}
+                  strokeWidth={0.02}
+                  strokeLinecap={"round"}
                 />
-              );
-            } else if (someGeometryNode.nodeType === "loop") {
-              return (
-                <polygon
-                  {...someGeometryNode.nodeAttributes}
-                  key={someGeometryNode.nodeId}
-                  points={someGeometryNode.nodeGeometry
+                <polyline
+                  points={loopPoints
                     .map(
-                      (someLoopPoint) =>
-                        `${someLoopPoint[0]},${someLoopPoint[1]}`
+                      (someLoopPoint, pointIndex) =>
+                        `${pointIndex / loopPoints.length},${someLoopPoint[3]}`
                     )
                     .join(" ")}
+                  stroke={"white"}
+                  strokeWidth={0.02}
+                  fillOpacity={0}
+                  strokeLinecap={"round"}
+                  strokeLinejoin={"round"}
                 />
-              );
-            } else {
-              throw new Error("invalid path reached: geometry node render");
-            }
-          })}
-        </svg>
-        <svg
-          width={256}
-          height={256}
-          viewBox={`${-0.25} ${-0.25} ${1.5} ${1.5}`}
+              </g>
+            </g>
+          </svg>
+        </div>
+        <div
+          style={{ display: "flex", flexDirection: "column", marginLeft: 8 }}
         >
-          <rect x={-0.25} y={-0.25} width={1.5} height={1.5} fill={"grey"} />
-          <g transform="translate(0,1)">
+          <svg
+            width={256}
+            height={256}
+            viewBox={`${-0.75} ${-0.75} ${1.5} ${1.5}`}
+            style={{ borderRadius: 4 }}
+          >
+            <rect
+              x={-0.75}
+              y={-0.75}
+              width={1.5}
+              height={1.5}
+              fill={"grey"}
+              rx={0.02}
+              ry={0.02}
+            />
             <g transform="scale(1,-1)">
               <line
-                x1={0}
-                y1={1}
-                x2={1}
-                y2={1}
-                stroke={"lime"}
-                strokeWidth={0.02}
-              />
-              <line
-                x1={0}
+                x1={-0.5}
                 y1={0}
-                x2={1}
+                x2={0.5}
                 y2={0}
                 stroke={"lime"}
                 strokeWidth={0.02}
+                strokeLinecap={"round"}
               />
-              {loopPoints
-                // .sort((a, b) => a[3] - b[3])
-                .map((someLoopPoint, pointIndex) => {
-                  return (
-                    <circle
-                      key={pointIndex}
-                      // cx={someLoopPoint[2] / (2 * Math.PI)}
-                      cx={pointIndex / loopPoints.length}
-                      cy={someLoopPoint[3]}
-                      r={0.01}
-                      fill={"white"}
-                    />
-                  );
-                })}
+              <polyline
+                points={`-0.5,0 ${loopPoints
+                  .map(
+                    (someLoopPoint, pointIndex) =>
+                      `${pointIndex / loopPoints.length - 0.5},${
+                        someLoopPoint[4] / (2 * maxPendulum)
+                      }`
+                  )
+                  .join(" ")} 0.5,0`}
+                stroke={"black"}
+                strokeWidth={0.02}
+                fillOpacity={0}
+                strokeLinecap={"round"}
+                strokeLinejoin={"round"}
+              />
             </g>
-          </g>
-        </svg>
+          </svg>
+        </div>
       </div>
     </div>
   );
@@ -534,7 +595,13 @@ function changeSliderValue(api: ChangeSliderValueApi) {
 
 type Point = [x: number, y: number];
 
-type LoopPoint = [x: number, y: number, subAngle: number, sandwich: number];
+type LoopPoint = [
+  x: number,
+  y: number,
+  outputAngle: number,
+  sandwich: number,
+  pendulum: number
+];
 
 interface Circle {
   radius: number;
@@ -714,14 +781,18 @@ function getLoopNode(api: GetLoopNodeApi): LoopNode {
             const loopPointA = getLoopPoint({
               subCircle,
               intersectionCircle,
-              intersectionAngle:
-                Math.PI + relativeSubCirclePhase - intersectionBaseAngle,
+              intersectionAngle: getNormalizedAngle({
+                someAngle:
+                  Math.PI + relativeSubCirclePhase - intersectionBaseAngle,
+              }),
             });
             const loopPointB = getLoopPoint({
               subCircle,
               intersectionCircle,
-              intersectionAngle:
-                Math.PI + relativeSubCirclePhase + intersectionBaseAngle,
+              intersectionAngle: getNormalizedAngle({
+                someAngle:
+                  Math.PI + relativeSubCirclePhase + intersectionBaseAngle,
+              }),
             });
             loopPointsResult.unshift(loopPointA);
             loopPointsResult.push(loopPointB);
@@ -773,7 +844,7 @@ function getLoopPoint(api: GetLoopPointApi): LoopPoint {
     intersectionCircle.center[0];
   const yComponent =
     subCircle.radius * Math.sin(intersectionAngle) + subCircle.center[1];
-  const subAngle = getNormalizedAngle({
+  const outputAngle = getNormalizedAngle({
     someAngle: Math.atan2(
       loopPointBase.y - subCircle.center[1],
       loopPointBase.x - subCircle.center[0]
@@ -785,7 +856,31 @@ function getLoopPoint(api: GetLoopPointApi): LoopPoint {
   });
   const sandwichSize = intersectionCircle.radius - subCircle.radius;
   const sandwichComponent = (loopRadius - subCircle.radius) / sandwichSize;
-  return [xComponent, yComponent, subAngle, sandwichComponent];
+  const pendulumComponent = getDifferenceOfNormalizedAngles({
+    normalizedAngleA: intersectionAngle,
+    normalizedAngleB: outputAngle,
+  });
+  return [
+    xComponent,
+    yComponent,
+    outputAngle,
+    sandwichComponent,
+    pendulumComponent,
+  ];
+}
+
+interface GetDifferenceOfNormalizedAnglesApi {
+  normalizedAngleA: number;
+  normalizedAngleB: number;
+}
+
+function getDifferenceOfNormalizedAngles(
+  api: GetDifferenceOfNormalizedAnglesApi
+) {
+  const { normalizedAngleB, normalizedAngleA } = api;
+  return normalizedAngleB < Math.PI && normalizedAngleA > Math.PI
+    ? 2 * Math.PI + normalizedAngleB - normalizedAngleA
+    : normalizedAngleB - normalizedAngleA;
 }
 
 interface GetIntersectionBaseAngleApi {

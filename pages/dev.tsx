@@ -135,18 +135,27 @@ export default () => {
     const somePendulum = Math.abs(someLoopPoint[4]);
     return somePendulum > maxResult ? somePendulum : maxResult;
   }, 0);
-  // console.log(
-  //   loopPoints.map((somePoint) => {
-  //     return somePoint[4] / maxPendulum / somePoint[3];
-  //   })
-  // );
-  // console.log(
-  //   loopPoints.map((somePoint) => {
-  //     return Math.sqrt(
-  //       Math.pow(somePoint[3], 2) + Math.pow(somePoint[4] / maxPendulum, 2)
-  //     );
-  //   })
-  // );
+  const maxSine = loopPoints.reduce((maxResult, someLoopPoint) => {
+    const someSine = Math.abs(
+      someLoopPoint[1] - subCircleNode.nodeGeometry.center[1]
+    );
+    return someSine > maxResult ? someSine : maxResult;
+  }, 0);
+  // const maxCosine = loopPoints.reduce((maxResult, someLoopPoint) => {
+  //   const someCosine = Math.abs(
+  //     someLoopPoint[0] - subCircleNode.nodeGeometry.center[0]
+  //   );
+  //   return someCosine > maxResult ? someCosine : maxResult;
+  // }, 0);
+  const minCos = loopPoints.reduce((maxResult, someLoopPoint) => {
+    const someCosine = someLoopPoint[0] - subCircleNode.nodeGeometry.center[0];
+    return someCosine < maxResult ? someCosine : maxResult;
+  }, 0);
+  const maxCos = loopPoints.reduce((maxResult, someLoopPoint) => {
+    const someCosine = someLoopPoint[0] - subCircleNode.nodeGeometry.center[0];
+    return someCosine > maxResult ? someCosine : maxResult;
+  }, 0);
+  const cosSize = maxCos - minCos;
   return (
     <div
       style={{
@@ -286,32 +295,22 @@ export default () => {
             <rect x={-0.25} y={-0.25} width={1.5} height={1.5} fill={"grey"} />
             <g transform="translate(0,1)">
               <g transform="scale(1,-1)">
-                <line
-                  x1={0}
-                  y1={1}
-                  x2={1}
-                  y2={1}
-                  stroke={"lime"}
-                  strokeWidth={0.02}
-                  strokeLinecap={"round"}
-                />
-                <line
-                  x1={0}
-                  y1={0}
-                  x2={1}
-                  y2={0}
-                  stroke={"lime"}
-                  strokeWidth={0.02}
-                  strokeLinecap={"round"}
-                />
                 <polyline
                   points={loopPoints
                     .map(
                       (someLoopPoint, pointIndex) =>
-                        `${pointIndex / loopPoints.length},${someLoopPoint[3]}`
+                        `${pointIndex / loopPoints.length},${
+                          someLoopPoint[5] /
+                          getIntersectionRadiusData({
+                            baseCircle: baseCircleNode.nodeGeometry,
+                            subCircle: subCircleNode.nodeGeometry,
+                            relativeSubCirclePhase:
+                              subCircleNode.nodeEncoding.relativePhase,
+                          }).maxIntersectionRadius
+                        }`
                     )
                     .join(" ")}
-                  stroke={"white"}
+                  stroke={"lime"}
                   strokeWidth={0.02}
                   fillOpacity={0}
                   strokeLinecap={"round"}
@@ -375,28 +374,113 @@ export default () => {
             <rect x={-0.25} y={-0.25} width={1.5} height={1.5} fill={"grey"} />
             <g transform="translate(0,1)">
               <g transform="scale(1,-1)">
+                <line
+                  x1={0}
+                  y1={1}
+                  x2={1}
+                  y2={1}
+                  stroke={"lime"}
+                  strokeWidth={0.02}
+                  strokeLinecap={"round"}
+                />
+                <line
+                  x1={0}
+                  y1={0}
+                  x2={1}
+                  y2={0}
+                  stroke={"lime"}
+                  strokeWidth={0.02}
+                  strokeLinecap={"round"}
+                />
                 <polyline
                   points={loopPoints
                     .map(
                       (someLoopPoint, pointIndex) =>
-                        `${pointIndex / loopPoints.length},${
-                          someLoopPoint[5] /
-                          getIntersectionRadiusData({
-                            baseCircle: baseCircleNode.nodeGeometry,
-                            subCircle: subCircleNode.nodeGeometry,
-                            relativeSubCirclePhase:
-                              subCircleNode.nodeEncoding.relativePhase,
-                          }).maxIntersectionRadius
-                        }`
+                        `${pointIndex / loopPoints.length},${someLoopPoint[3]}`
                     )
                     .join(" ")}
-                  stroke={"lime"}
+                  stroke={"white"}
                   strokeWidth={0.02}
                   fillOpacity={0}
                   strokeLinecap={"round"}
                   strokeLinejoin={"round"}
                 />
               </g>
+            </g>
+          </svg>
+        </div>
+        <div
+          style={{ display: "flex", flexDirection: "column", marginLeft: 8 }}
+        >
+          <svg
+            width={256}
+            height={256}
+            viewBox={`${-0.75} ${-0.75} ${1.5} ${1.5}`}
+            style={{ borderRadius: 4, marginBottom: 8 }}
+          >
+            <rect
+              x={-0.75}
+              y={-0.75}
+              width={1.5}
+              height={1.5}
+              fill={"grey"}
+              rx={0.02}
+              ry={0.02}
+            />
+            <g transform="scale(1,-1)">
+              <polyline
+                points={`-0.5,0 ${loopPoints
+                  .map(
+                    (someLoopPoint, pointIndex) =>
+                      `${pointIndex / loopPoints.length - 0.5},${
+                        (someLoopPoint[1] -
+                          subCircleNode.nodeGeometry.center[1]) /
+                        (2 * maxSine)
+                      }`
+                  )
+                  .join(" ")} 0.5,0`}
+                stroke={"black"}
+                strokeWidth={0.02}
+                fillOpacity={0}
+                strokeLinecap={"round"}
+                strokeLinejoin={"round"}
+              />
+            </g>
+          </svg>
+          <svg
+            width={256}
+            height={256}
+            viewBox={`${-0.75} ${-0.75} ${1.5} ${1.5}`}
+            style={{ borderRadius: 4 }}
+          >
+            <rect
+              x={-0.75}
+              y={-0.75}
+              width={1.5}
+              height={1.5}
+              fill={"grey"}
+              rx={0.02}
+              ry={0.02}
+            />
+            <g transform="scale(1,-1)">
+              <polyline
+                points={`${loopPoints
+                  .map(
+                    (someLoopPoint, pointIndex) =>
+                      `${pointIndex / loopPoints.length - 0.5},${
+                        (someLoopPoint[0] -
+                          subCircleNode.nodeGeometry.center[0] +
+                          (-1 - minCos)) *
+                        (1 / cosSize)
+                      }`
+                  )
+                  .join(" ")}`}
+                stroke={"white"}
+                strokeWidth={0.02}
+                fillOpacity={0}
+                strokeLinecap={"round"}
+                strokeLinejoin={"round"}
+              />
             </g>
           </svg>
         </div>

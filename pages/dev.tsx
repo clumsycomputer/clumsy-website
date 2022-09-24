@@ -1,6 +1,8 @@
 import { SVGAttributes, useEffect, useMemo, useRef, useState } from "react";
 
-export default () => {
+export default DevPage;
+
+function DevPage() {
   const baseCircleNode = getCircleNode({
     nodeId: 0,
     nodeName: "baseCircle",
@@ -481,7 +483,7 @@ export default () => {
       </div>
     </div>
   );
-};
+}
 
 interface KnobInputProps {
   minValue: number;

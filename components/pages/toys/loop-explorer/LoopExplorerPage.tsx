@@ -4,11 +4,20 @@ export interface LoopExplorerPageProps {}
 
 export function LoopExplorerPage(props: LoopExplorerPageProps) {
   const {} = props;
-  const baseCircleEncoding: Circle = {
+  const baseCircle: Circle = {
     radius: 1,
     center: [0, 0],
   };
-  const baseCircleGeometry = baseCircleEncoding;
+  const subCircle: SubCircle = {
+    baseCircle,
+    relativeRadius: 0.5,
+    relativeDepth: 0.5,
+    relativePhase: Math.PI / 4,
+  };
+  const baseCircleGeometry = baseCircle;
+  const subCircleGeometry = getSubCircleGeometry({
+    someSubCircle: subCircle,
+  });
   return (
     <div>
       <div style={{ width: 256, height: 256 }}>
@@ -24,6 +33,14 @@ export function LoopExplorerPage(props: LoopExplorerPageProps) {
             cx={baseCircleGeometry.center[0]}
             cy={baseCircleGeometry.center[1]}
             stroke={"red"}
+            strokeWidth={0.05}
+            fillOpacity={0}
+          />
+          <circle
+            r={subCircleGeometry.radius}
+            cx={subCircleGeometry.center[0]}
+            cy={subCircleGeometry.center[1]}
+            stroke={"blue"}
             strokeWidth={0.05}
             fillOpacity={0}
           />
@@ -72,18 +89,18 @@ interface GetViewBoxApi {
   someRectangle: Rectangle;
 }
 
-function getViewBox(api: GetViewBoxApi): string {
+function getViewBox(
+  api: GetViewBoxApi
+): `${number} ${number} ${number} ${number}` {
   const { someRectangle } = api;
   return `${someRectangle.x} ${someRectangle.y} ${someRectangle.width} ${someRectangle.height}`;
 }
-
-type Space2 = [x: Vector2, y: Vector2];
 
 interface GetSpaceRectangelApi {
   someSpace: Space2;
 }
 
-function getSpaceRectangle(api: GetSpaceRectangelApi) {
+function getSpaceRectangle(api: GetSpaceRectangelApi): Rectangle {
   const { someSpace } = api;
   return {
     x: someSpace[0][0],
@@ -92,6 +109,47 @@ function getSpaceRectangle(api: GetSpaceRectangelApi) {
     height: someSpace[1][1] - someSpace[1][0],
   };
 }
+
+interface GetSubCircleGeometryApi {
+  someSubCircle: SubCircle;
+}
+
+function getSubCircleGeometry(api: GetSubCircleGeometryApi): Circle {
+  const { someSubCircle } = api;
+  const adjustedSubCircle: SubCircle = {
+    baseCircle: someSubCircle.baseCircle,
+    relativeRadius:
+      someSubCircle.relativeRadius === 1
+        ? 0.9999999
+        : someSubCircle.relativeRadius === 0
+        ? 0.0000001
+        : someSubCircle.relativeRadius,
+    relativeDepth:
+      someSubCircle.relativeDepth === 0
+        ? 0.0000001
+        : someSubCircle.relativeDepth === 1
+        ? 0.9999999
+        : someSubCircle.relativeDepth,
+    relativePhase: someSubCircle.relativePhase,
+  };
+  const subCircleRadius =
+    adjustedSubCircle.relativeRadius * adjustedSubCircle.baseCircle.radius;
+  const maxSubCircleDepth =
+    adjustedSubCircle.baseCircle.radius - subCircleRadius;
+  const subCircleDepth = adjustedSubCircle.relativeDepth * maxSubCircleDepth;
+  const subCircleCenter: Point = [
+    subCircleDepth * Math.cos(adjustedSubCircle.relativePhase) +
+      adjustedSubCircle.baseCircle.center[0],
+    subCircleDepth * Math.sin(adjustedSubCircle.relativePhase) +
+      adjustedSubCircle.baseCircle.center[1],
+  ];
+  return {
+    radius: subCircleRadius,
+    center: subCircleCenter,
+  };
+}
+
+type Space2 = [x: Vector2, y: Vector2];
 
 interface Rectangle {
   x: number;
@@ -103,6 +161,13 @@ interface Rectangle {
 interface Circle {
   radius: number;
   center: Point;
+}
+
+interface SubCircle {
+  baseCircle: Circle;
+  relativeRadius: number;
+  relativeDepth: number;
+  relativePhase: number;
 }
 
 type Point = Vector2;

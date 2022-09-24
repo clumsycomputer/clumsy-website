@@ -1,17 +1,5 @@
 import { Circle, Point } from "./encodings";
 
-export interface GetDistanceBetweenPointsApi {
-  pointA: Point;
-  pointB: Point;
-}
-
-export function getDistanceBetweenPoints(api: GetDistanceBetweenPointsApi) {
-  const { pointA, pointB } = api;
-  const deltaX = pointB[0] - pointA[0];
-  const deltaY = pointB[1] - pointA[1];
-  return Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
-}
-
 export interface GetCirclePointApi {
   someCircle: Circle;
   pointAngle: number;
@@ -44,6 +32,27 @@ export function getIntersectionPoint(api: GetIntersectionPointApi): Point {
   return [lineA[0][0] + slopeA * deltaXA, lineA[0][1] + slopeA * deltaYA];
 }
 
+export interface GetDistanceBetweenPointsApi {
+  pointA: Point;
+  pointB: Point;
+}
+
+export function getDistanceBetweenPoints(api: GetDistanceBetweenPointsApi) {
+  const { pointA, pointB } = api;
+  const deltaX = pointB[0] - pointA[0];
+  const deltaY = pointB[1] - pointA[1];
+  return Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
+}
+
+export interface GetNormalizedAngleApi {
+  someAngle: number;
+}
+
+export function getNormalizedAngle(api: GetNormalizedAngleApi) {
+  const { someAngle } = api;
+  return (someAngle + 2 * Math.PI) % (2 * Math.PI);
+}
+
 export interface GetDifferenceOfNormalizedAnglesApi {
   normalizedAngleA: number;
   normalizedAngleB: number;
@@ -56,13 +65,4 @@ export function getDifferenceOfNormalizedAngles(
   return normalizedAngleB < Math.PI && normalizedAngleA > Math.PI
     ? 2 * Math.PI + normalizedAngleB - normalizedAngleA
     : normalizedAngleB - normalizedAngleA;
-}
-
-export interface GetNormalizedAngleApi {
-  someAngle: number;
-}
-
-export function getNormalizedAngle(api: GetNormalizedAngleApi) {
-  const { someAngle } = api;
-  return (someAngle + 2 * Math.PI) % (2 * Math.PI);
 }

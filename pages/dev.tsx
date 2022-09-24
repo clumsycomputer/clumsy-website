@@ -871,6 +871,7 @@ function getLoopNode(api: GetLoopNodeApi): LoopNode {
       const subCircle = this.nodeEncoding.subCircle.nodeGeometry;
       const relativeSubCirclePhase =
         this.nodeEncoding.subCircle.nodeEncoding.relativePhase;
+      const intersectionCircleCount = 512;
       const baseSubCenterDistance = getDistanceBetweenPoints({
         pointA: baseCircle.center,
         pointB: subCircle.center,
@@ -884,7 +885,6 @@ function getLoopNode(api: GetLoopNodeApi): LoopNode {
         subCircle,
         relativeSubCirclePhase,
       });
-      const intersectionCircleCount = 512;
       const loopPoints = new Array(intersectionCircleCount - 2)
         .fill(null)
         .reduce<Array<LoopPoint>>(

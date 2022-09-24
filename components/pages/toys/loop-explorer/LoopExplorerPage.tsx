@@ -1,22 +1,46 @@
 import { PropsWithChildren } from "react";
+import {
+  Circle,
+  Loop,
+  LoopPoint,
+  Point,
+  Rectangle,
+  Space2,
+  Vector2,
+} from "./common/math/encodings";
+import {
+  getCirclePoint,
+  getDifferenceOfNormalizedAngles,
+  getDistanceBetweenPoints,
+  getNormalizedAngle,
+} from "./common/math/general";
 
 export interface LoopExplorerPageProps {}
 
 export function LoopExplorerPage(props: LoopExplorerPageProps) {
   const {} = props;
-  const baseCircle: Circle = {
-    radius: 1,
-    center: [0, 0],
+  const activeLoop: Loop = {
+    baseCircle: {
+      radius: 1,
+      center: [0, 0],
+    },
+    subCircle: {
+      relativeRadius: 0.5,
+      relativeDepth: 0.5,
+      relativePhase: Math.PI / 4,
+    },
   };
-  const subCircle: SubCircle = {
-    baseCircle,
-    relativeRadius: 0.5,
-    relativeDepth: 0.5,
-    relativePhase: Math.PI / 4,
-  };
-  const baseCircleGeometry = baseCircle;
+  const baseCircleGeometry = activeLoop.baseCircle;
   const subCircleGeometry = getSubCircleGeometry({
-    someSubCircle: subCircle,
+    someLoop: activeLoop,
+  });
+  const loopGeometry = getLoopGeometry({
+    intersectionCircleCount: 256,
+    someLoop: activeLoop,
+    precomputedGeometry: {
+      baseCircle: baseCircleGeometry,
+      subCircle: subCircleGeometry,
+    },
   });
   return (
     <div>
@@ -28,21 +52,30 @@ export function LoopExplorerPage(props: LoopExplorerPageProps) {
             [-2, 2],
           ]}
         >
+          <rect fill={"lightgray"} x={-2} width={4} y={-2} height={4} />
           <circle
-            r={baseCircleGeometry.radius}
-            cx={baseCircleGeometry.center[0]}
-            cy={baseCircleGeometry.center[1]}
             stroke={"red"}
             strokeWidth={0.05}
             fillOpacity={0}
+            r={baseCircleGeometry.radius}
+            cx={baseCircleGeometry.center[0]}
+            cy={baseCircleGeometry.center[1]}
           />
           <circle
-            r={subCircleGeometry.radius}
-            cx={subCircleGeometry.center[0]}
-            cy={subCircleGeometry.center[1]}
             stroke={"blue"}
             strokeWidth={0.05}
             fillOpacity={0}
+            r={subCircleGeometry.radius}
+            cx={subCircleGeometry.center[0]}
+            cy={subCircleGeometry.center[1]}
+          />
+          <polygon
+            stroke={"gold"}
+            strokeWidth={0.05}
+            fillOpacity={0}
+            points={loopGeometry
+              .map((someLoopPoint) => `${someLoopPoint[0]},${someLoopPoint[1]}`)
+              .join(" ")}
           />
         </Graphic>
       </div>
@@ -111,37 +144,39 @@ function getSpaceRectangle(api: GetSpaceRectangelApi): Rectangle {
 }
 
 interface GetSubCircleGeometryApi {
-  someSubCircle: SubCircle;
+  someLoop: Loop;
 }
 
 function getSubCircleGeometry(api: GetSubCircleGeometryApi): Circle {
-  const { someSubCircle } = api;
-  const adjustedSubCircle: SubCircle = {
-    baseCircle: someSubCircle.baseCircle,
-    relativeRadius:
-      someSubCircle.relativeRadius === 1
-        ? 0.9999999
-        : someSubCircle.relativeRadius === 0
-        ? 0.0000001
-        : someSubCircle.relativeRadius,
-    relativeDepth:
-      someSubCircle.relativeDepth === 0
-        ? 0.0000001
-        : someSubCircle.relativeDepth === 1
-        ? 0.9999999
-        : someSubCircle.relativeDepth,
-    relativePhase: someSubCircle.relativePhase,
+  const { someLoop } = api;
+  const adjustedLoop: Loop = {
+    baseCircle: someLoop.baseCircle,
+    subCircle: {
+      relativeRadius:
+        someLoop.subCircle.relativeRadius === 1
+          ? 0.9999999
+          : someLoop.subCircle.relativeRadius === 0
+          ? 0.0000001
+          : someLoop.subCircle.relativeRadius,
+      relativeDepth:
+        someLoop.subCircle.relativeDepth === 0
+          ? 0.0000001
+          : someLoop.subCircle.relativeDepth === 1
+          ? 0.9999999
+          : someLoop.subCircle.relativeDepth,
+      relativePhase: someLoop.subCircle.relativePhase,
+    },
   };
   const subCircleRadius =
-    adjustedSubCircle.relativeRadius * adjustedSubCircle.baseCircle.radius;
-  const maxSubCircleDepth =
-    adjustedSubCircle.baseCircle.radius - subCircleRadius;
-  const subCircleDepth = adjustedSubCircle.relativeDepth * maxSubCircleDepth;
+    adjustedLoop.subCircle.relativeRadius * adjustedLoop.baseCircle.radius;
+  const maxSubCircleDepth = adjustedLoop.baseCircle.radius - subCircleRadius;
+  const subCircleDepth =
+    adjustedLoop.subCircle.relativeDepth * maxSubCircleDepth;
   const subCircleCenter: Point = [
-    subCircleDepth * Math.cos(adjustedSubCircle.relativePhase) +
-      adjustedSubCircle.baseCircle.center[0],
-    subCircleDepth * Math.sin(adjustedSubCircle.relativePhase) +
-      adjustedSubCircle.baseCircle.center[1],
+    subCircleDepth * Math.cos(adjustedLoop.subCircle.relativePhase) +
+      adjustedLoop.baseCircle.center[0],
+    subCircleDepth * Math.sin(adjustedLoop.subCircle.relativePhase) +
+      adjustedLoop.baseCircle.center[1],
   ];
   return {
     radius: subCircleRadius,
@@ -149,27 +184,228 @@ function getSubCircleGeometry(api: GetSubCircleGeometryApi): Circle {
   };
 }
 
-type Space2 = [x: Vector2, y: Vector2];
-
-interface Rectangle {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
+interface GetLoopGeometryApi {
+  someLoop: Loop;
+  intersectionCircleCount: number;
+  precomputedGeometry: {
+    baseCircle: Circle;
+    subCircle: Circle;
+  };
 }
 
-interface Circle {
-  radius: number;
-  center: Point;
+function getLoopGeometry(api: GetLoopGeometryApi): Array<LoopPoint> {
+  const { precomputedGeometry, someLoop, intersectionCircleCount } = api;
+  const baseSubCenterDistance = getDistanceBetweenPoints({
+    pointA: precomputedGeometry.baseCircle.center,
+    pointB: precomputedGeometry.subCircle.center,
+  });
+  const {
+    minIntersectionRadius,
+    intersectionRadiusMinMaxDelta,
+    maxIntersectionRadius,
+  } = getIntersectionRadiusData({
+    baseCircle: precomputedGeometry.baseCircle,
+    subCircle: precomputedGeometry.subCircle,
+    relativeSubCirclePhase: someLoop.subCircle.relativePhase,
+  });
+  const loopGeometry = new Array(intersectionCircleCount - 2)
+    .fill(null)
+    .reduce<Array<LoopPoint>>(
+      (loopPointsResult, _, circleIndex) => {
+        const intersectionCircle = getIntersectionCircle({
+          minIntersectionRadius,
+          intersectionRadiusMinMaxDelta,
+          subCircleCenter: precomputedGeometry.subCircle.center,
+          relativeIntersectionRadius: Math.sin(
+            (Math.PI / 2) * ((circleIndex + 1) / intersectionCircleCount)
+          ),
+        });
+        const baseIntersectionAngleBase = getBaseIntersectionAngleBase({
+          baseSubCenterDistance,
+          baseCircleRadius: precomputedGeometry.baseCircle.radius,
+          intersectionCircleRadius: intersectionCircle.radius,
+        });
+        const loopPointA = getLoopPoint({
+          subCircle: precomputedGeometry.subCircle,
+          intersectionCircle,
+          baseIntersectionAngle: getNormalizedAngle({
+            someAngle:
+              Math.PI +
+              someLoop.subCircle.relativePhase -
+              baseIntersectionAngleBase,
+          }),
+        });
+        const loopPointB = getLoopPoint({
+          intersectionCircle,
+          subCircle: precomputedGeometry.subCircle,
+          baseIntersectionAngle: getNormalizedAngle({
+            someAngle:
+              Math.PI +
+              someLoop.subCircle.relativePhase +
+              baseIntersectionAngleBase,
+          }),
+        });
+        loopPointsResult.unshift(loopPointA);
+        loopPointsResult.push(loopPointB);
+        return loopPointsResult;
+      },
+      [
+        getLoopPoint({
+          subCircle: precomputedGeometry.subCircle,
+          intersectionCircle: {
+            radius: minIntersectionRadius,
+            center: precomputedGeometry.subCircle.center,
+          },
+          baseIntersectionAngle: someLoop.subCircle.relativePhase,
+        }),
+      ]
+    );
+  loopGeometry.push(
+    getLoopPoint({
+      subCircle: precomputedGeometry.subCircle,
+      intersectionCircle: {
+        radius: maxIntersectionRadius,
+        center: precomputedGeometry.subCircle.center,
+      },
+      baseIntersectionAngle: someLoop.subCircle.relativePhase + Math.PI,
+    })
+  );
+  loopGeometry.sort((loopPointA, loopPointB) => loopPointA[5] - loopPointB[5]);
+  return loopGeometry;
 }
 
-interface SubCircle {
+interface GetLoopPointApi {
+  subCircle: Circle;
+  intersectionCircle: Circle;
+  baseIntersectionAngle: number;
+}
+
+function getLoopPoint(api: GetLoopPointApi): LoopPoint {
+  const { intersectionCircle, baseIntersectionAngle, subCircle } = api;
+  const xComponent =
+    intersectionCircle.radius * Math.cos(baseIntersectionAngle) +
+    subCircle.center[0];
+  const yComponent =
+    subCircle.radius * Math.sin(baseIntersectionAngle) + subCircle.center[1];
+  const cosineComponent = xComponent - subCircle.center[0];
+  const sineComponent = yComponent - subCircle.center[1];
+  const loopSubAngle = getNormalizedAngle({
+    someAngle: Math.atan2(sineComponent, cosineComponent),
+  });
+  const loopRadius = getDistanceBetweenPoints({
+    pointA: subCircle.center,
+    pointB: [xComponent, yComponent],
+  });
+  const subIntersectionRadiusDelta =
+    intersectionCircle.radius - subCircle.radius;
+  const sandwichComponent =
+    (loopRadius - subCircle.radius) / subIntersectionRadiusDelta;
+  const pendulumComponent = getDifferenceOfNormalizedAngles({
+    normalizedAngleA: baseIntersectionAngle,
+    normalizedAngleB: loopSubAngle,
+  });
+  return [
+    xComponent,
+    yComponent,
+    cosineComponent,
+    sineComponent,
+    baseIntersectionAngle,
+    loopSubAngle,
+    loopRadius,
+    subIntersectionRadiusDelta,
+    sandwichComponent,
+    pendulumComponent,
+  ];
+}
+
+interface GetIntersectionRadiusDataApi {
   baseCircle: Circle;
-  relativeRadius: number;
-  relativeDepth: number;
-  relativePhase: number;
+  subCircle: Circle;
+  relativeSubCirclePhase: number;
 }
 
-type Point = Vector2;
+function getIntersectionRadiusData(api: GetIntersectionRadiusDataApi) {
+  const { baseCircle, relativeSubCirclePhase, subCircle } = api;
+  const subBaseMinBasePoint = getCirclePoint({
+    someCircle: baseCircle,
+    pointAngle: relativeSubCirclePhase,
+  });
+  const subBaseMinSubPoint = getCirclePoint({
+    someCircle: subCircle,
+    pointAngle: relativeSubCirclePhase,
+  });
+  const subBaseMinDistance = getDistanceBetweenPoints({
+    pointA: subBaseMinBasePoint,
+    pointB: subBaseMinSubPoint,
+  });
+  const minIntersectionRadius = subBaseMinDistance + subCircle.radius;
+  const subBaseMaxBasePoint = getCirclePoint({
+    someCircle: baseCircle,
+    pointAngle: relativeSubCirclePhase + Math.PI,
+  });
+  const subBaseMaxSubPoint = getCirclePoint({
+    someCircle: subCircle,
+    pointAngle: relativeSubCirclePhase + Math.PI,
+  });
+  const subBaseMaxDistance = getDistanceBetweenPoints({
+    pointA: subBaseMaxBasePoint,
+    pointB: subBaseMaxSubPoint,
+  });
+  const maxIntersectionRadius = subBaseMaxDistance + subCircle.radius;
+  const intersectionRadiusMinMaxDelta =
+    maxIntersectionRadius - minIntersectionRadius;
+  return {
+    minIntersectionRadius,
+    maxIntersectionRadius,
+    intersectionRadiusMinMaxDelta,
+  };
+}
 
-type Vector2 = [x: number, y: number];
+interface GetIntersectionCircleApi {
+  subCircleCenter: Point;
+  minIntersectionRadius: number;
+  relativeIntersectionRadius: number;
+  intersectionRadiusMinMaxDelta: number;
+}
+
+function getIntersectionCircle(api: GetIntersectionCircleApi): Circle {
+  const {
+    subCircleCenter,
+    relativeIntersectionRadius,
+    intersectionRadiusMinMaxDelta,
+    minIntersectionRadius,
+  } = api;
+  return {
+    center: subCircleCenter,
+    radius:
+      relativeIntersectionRadius * intersectionRadiusMinMaxDelta +
+      minIntersectionRadius,
+  };
+}
+
+interface GetBaseIntersectionAngleBaseApi {
+  baseCircleRadius: number;
+  baseSubCenterDistance: number;
+  intersectionCircleRadius: number;
+}
+
+function getBaseIntersectionAngleBase(
+  api: GetBaseIntersectionAngleBaseApi
+): number {
+  const { baseCircleRadius, baseSubCenterDistance, intersectionCircleRadius } =
+    api;
+  const numerator =
+    Math.pow(baseCircleRadius, 2) -
+    Math.pow(baseSubCenterDistance, 2) -
+    Math.pow(intersectionCircleRadius, 2);
+  const denominator = -2 * baseSubCenterDistance * intersectionCircleRadius;
+  return (
+    Math.acos(numerator / denominator) ||
+    // weird js math precision workaround
+    Math.acos(
+      (numerator > 0 && denominator > 0) || (numerator < 0 && denominator < 0)
+        ? 1
+        : -1
+    )
+  );
+}

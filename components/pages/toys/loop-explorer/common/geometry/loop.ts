@@ -6,6 +6,74 @@ import {
   getNormalizedAngle,
 } from "./general";
 
+export interface GetLoopDiagramGeometryApi
+  extends Pick<GetLoopGeometryApi, "someLoop" | "intersectionCircleCount"> {
+  someLoop: Loop;
+  intersectionCircleCount: number;
+}
+
+export function getLoopDiagramGeometry(api: GetLoopDiagramGeometryApi) {
+  const { someLoop, intersectionCircleCount } = api;
+  const baseCircleGeometry = someLoop.baseCircle;
+  const subCircleGeometry = getSubCircleGeometry({
+    someLoop,
+  });
+  const loopGeometry = getLoopGeometry({
+    someLoop,
+    intersectionCircleCount,
+    precomputedGeometry: {
+      baseCircle: baseCircleGeometry,
+      subCircle: subCircleGeometry,
+    },
+  });
+  return {
+    baseCircleGeometry,
+    subCircleGeometry,
+    loopGeometry,
+  };
+}
+
+export interface GetSubCircleGeometryApi {
+  someLoop: Loop;
+}
+
+export function getSubCircleGeometry(api: GetSubCircleGeometryApi): Circle {
+  const { someLoop } = api;
+  const adjustedLoop: Loop = {
+    baseCircle: someLoop.baseCircle,
+    subCircle: {
+      relativeRadius:
+        someLoop.subCircle.relativeRadius === 1
+          ? 0.9999999
+          : someLoop.subCircle.relativeRadius === 0
+          ? 0.0000001
+          : someLoop.subCircle.relativeRadius,
+      relativeDepth:
+        someLoop.subCircle.relativeDepth === 0
+          ? 0.0000001
+          : someLoop.subCircle.relativeDepth === 1
+          ? 0.9999999
+          : someLoop.subCircle.relativeDepth,
+      relativePhase: someLoop.subCircle.relativePhase,
+    },
+  };
+  const subCircleRadius =
+    adjustedLoop.subCircle.relativeRadius * adjustedLoop.baseCircle.radius;
+  const maxSubCircleDepth = adjustedLoop.baseCircle.radius - subCircleRadius;
+  const subCircleDepth =
+    adjustedLoop.subCircle.relativeDepth * maxSubCircleDepth;
+  const subCircleCenter: Point = [
+    subCircleDepth * Math.cos(adjustedLoop.subCircle.relativePhase) +
+      adjustedLoop.baseCircle.center[0],
+    subCircleDepth * Math.sin(adjustedLoop.subCircle.relativePhase) +
+      adjustedLoop.baseCircle.center[1],
+  ];
+  return {
+    radius: subCircleRadius,
+    center: subCircleCenter,
+  };
+}
+
 export interface GetLoopGeometryApi {
   someLoop: Loop;
   intersectionCircleCount: number;
@@ -230,45 +298,4 @@ function getBaseIntersectionAngleBase(
         : -1
     )
   );
-}
-
-export interface GetSubCircleGeometryApi {
-  someLoop: Loop;
-}
-
-export function getSubCircleGeometry(api: GetSubCircleGeometryApi): Circle {
-  const { someLoop } = api;
-  const adjustedLoop: Loop = {
-    baseCircle: someLoop.baseCircle,
-    subCircle: {
-      relativeRadius:
-        someLoop.subCircle.relativeRadius === 1
-          ? 0.9999999
-          : someLoop.subCircle.relativeRadius === 0
-          ? 0.0000001
-          : someLoop.subCircle.relativeRadius,
-      relativeDepth:
-        someLoop.subCircle.relativeDepth === 0
-          ? 0.0000001
-          : someLoop.subCircle.relativeDepth === 1
-          ? 0.9999999
-          : someLoop.subCircle.relativeDepth,
-      relativePhase: someLoop.subCircle.relativePhase,
-    },
-  };
-  const subCircleRadius =
-    adjustedLoop.subCircle.relativeRadius * adjustedLoop.baseCircle.radius;
-  const maxSubCircleDepth = adjustedLoop.baseCircle.radius - subCircleRadius;
-  const subCircleDepth =
-    adjustedLoop.subCircle.relativeDepth * maxSubCircleDepth;
-  const subCircleCenter: Point = [
-    subCircleDepth * Math.cos(adjustedLoop.subCircle.relativePhase) +
-      adjustedLoop.baseCircle.center[0],
-    subCircleDepth * Math.sin(adjustedLoop.subCircle.relativePhase) +
-      adjustedLoop.baseCircle.center[1],
-  ];
-  return {
-    radius: subCircleRadius,
-    center: subCircleCenter,
-  };
 }

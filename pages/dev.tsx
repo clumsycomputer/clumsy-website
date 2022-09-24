@@ -141,12 +141,6 @@ export default () => {
     );
     return someSine > maxResult ? someSine : maxResult;
   }, 0);
-  // const maxCosine = loopPoints.reduce((maxResult, someLoopPoint) => {
-  //   const someCosine = Math.abs(
-  //     someLoopPoint[0] - subCircleNode.nodeGeometry.center[0]
-  //   );
-  //   return someCosine > maxResult ? someCosine : maxResult;
-  // }, 0);
   const minCos = loopPoints.reduce((maxResult, someLoopPoint) => {
     const someCosine = someLoopPoint[0] - subCircleNode.nodeGeometry.center[0];
     return someCosine < maxResult ? someCosine : maxResult;

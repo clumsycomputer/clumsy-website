@@ -3709,7 +3709,184 @@ export const musicItemDataset: Array<MusicItem> = [
       }),
     ],
   },
+  {
+    musicId: 142,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/51o30tHym2L._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2017",
+    musicTitle: "PRETTY GIRLS LIKE TRAP MUSIC",
+    musicArtist: ["2 Chainz"],
+    recordingContext: ["studio"],
+    musicStyles: ["hip-hop", "rap"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_n6xUHqxPh80G5tZ1iUYQ3oorop6NjEj5A&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/5vvvo79z68vWj9yimoygfS?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref:
+          "https://music.apple.com/us/album/pretty-girls-like-trap-music/1440880354",
+      }),
+    ],
+  },
+  {
+    musicId: 143,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref: "https://f4.bcbits.com/img/a1983573620_16.jpg",
+    musicYear: "2005",
+    musicTitle: "Three Piece Puzzel",
+    musicArtist: ["Jneiro Jarel"],
+    recordingContext: ["studio"],
+    musicStyles: ["electronic", "hip-hop"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref: "https://m.youtube.com/watch?v=PcWK10DaQL4",
+      }),
+      {
+        linkLabel: "bandcamp",
+        linkHref:
+          "https://jneirojarel.bandcamp.com/album/three-piece-puzzle-uk-version",
+      },
+    ],
+  },
+  {
+    musicId: 144,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/51+fQK2Cj+L._UX500_FMwebp_QL85_.jpg",
+    musicYear: "1959",
+    musicTitle: "Kind of Blue",
+    musicArtist: ["Miles Davis"],
+    recordingContext: ["studio"],
+    musicStyles: ["jazz"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_nNowSDRXeotBWkCyljP2pnYkLOvj9CMnA&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/1weenld61qoidwYuZ1GESA?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref: "https://music.apple.com/us/album/kind-of-blue/268443092",
+      }),
+    ],
+  },
+  {
+    musicId: 145,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/41wQNS4R+AL._UX500_FMwebp_QL85_.jpg",
+    musicYear: "1958",
+    musicTitle: "Blue Train",
+    musicArtist: ["John Coltrane", "Rudy Van Gelder"],
+    recordingContext: ["studio"],
+    musicStyles: ["jazz"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/watch?v=HT_Zs5FKDZE&list=PLBZmD4G_qXo6wSvUYQqjtBINnPkfwoXWB",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/2Z11cXWEa2qqYQBGkJrCga?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref: "https://music.apple.com/us/album/blue-train/1468202477",
+      }),
+    ],
+  },
+  {
+    musicId: 146,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://i.discogs.com/tz4tsa5_pTztKx_mWvRvKp7jZ2YyztvF69PTEmVFlLg/rs:fit/g:sm/q:90/h:600/w:591/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTEyMzg0/NTAyLTE1NjQ4NDQ1/MTMtMTEwNi5qcGVn.jpeg",
+    musicYear: "1959",
+    musicTitle: "Time Out",
+    musicArtist: ["Dave Brubeck"],
+    recordingContext: ["studio"],
+    musicStyles: ["jazz"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_nzNqlLAs3PLitt_FR1-_pO-1Vswhe8ff8&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/4jEfuEYJ34e3N8AHccUJ7u?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref: "https://music.apple.com/us/album/time-out/193085545",
+      }),
+    ],
+  },
+  {
+    musicId: 147,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://i.discogs.com/YyhQF7q8v9Fd5g108OTKRDBazdJQTF5KfGa7fukaSs0/rs:fit/g:sm/q:90/h:600/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTc1Nzk0/NS0xNjM4MDE0MjMx/LTMxNDIuanBlZw.jpeg",
+    musicYear: "1959",
+    musicTitle: "Moanin'",
+    musicArtist: ["Art Blakey", "Rudy Van Gelder"],
+    recordingContext: ["studio"],
+    musicStyles: ["jazz"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_nmXv5bzBPXOZ3NKknqdRQZPS4OsFosUY8",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/7h42sjCPyY31q6sIk52JbX?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref: "https://music.apple.com/us/album/moanin/1459438950",
+      }),
+    ],
+  },
+  {
+    musicId: 148,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/51l4PExv10L._UX500_FMwebp_QL85_.jpg",
+    musicYear: "1959",
+    musicTitle: "Actual Factual Pterodactyl",
+    musicArtist: ["Homeboy Sandman"],
+    recordingContext: ["studio"],
+    musicStyles: ["hip-hop", "rap"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/watch?v=9hAhUtSo_cs&list=OLAK5uy_mxkjFCnH2TghtjbYERjk0DXkHjKK1s9KU",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/1PBIkjzjBSGabsgruRPpaz?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref:
+          "https://music.apple.com/us/album/actual-factual-pterodactyl/287788208",
+      }),
+    ],
+  },
 ];
-
-// jneiro jarel
-// jazz

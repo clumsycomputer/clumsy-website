@@ -66,3 +66,20 @@ export function getDifferenceOfNormalizedAngles(
     ? 2 * Math.PI + normalizedAngleB - normalizedAngleA
     : normalizedAngleB - normalizedAngleA;
 }
+
+export interface GetNormalizedAngleBetweenPointsApi {
+  basePoint: Point;
+  targetPoint: Point;
+}
+
+export function getNormalizedAngleBetweenPoints(
+  api: GetNormalizedAngleBetweenPointsApi
+) {
+  const { targetPoint, basePoint } = api;
+  return getNormalizedAngle({
+    someAngle: Math.atan2(
+      targetPoint[1] - basePoint[1],
+      targetPoint[0] - basePoint[0]
+    ),
+  });
+}

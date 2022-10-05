@@ -16,8 +16,12 @@ export function LoopExplorerPage() {
     Array<
       Pick<
         LoopStructure["subStructure"],
-        "relativeSubRadius" | "relativeSubDepth" | "subPhase" | "subOrientation"
-      > & { mute: boolean }
+        | "relativeSubRadius"
+        | "relativeSubDepth"
+        | "subPhase"
+        | "subOrientation"
+        | "subRotation"
+      >
     >
   >([
     {
@@ -25,7 +29,7 @@ export function LoopExplorerPage() {
       relativeSubDepth: 0,
       subPhase: 0,
       subOrientation: 0,
-      mute: false,
+      subRotation: 0,
     },
   ]);
   const sampleCount = 1024;
@@ -47,10 +51,8 @@ export function LoopExplorerPage() {
                   subStructure: [...loopStructureState]
                     .reverse()
                     .reduce<LoopStructure["subStructure"] | null>(
-                      (result, someLoopLayer) => {
-                        return someLoopLayer.mute
-                          ? result
-                          : result === null
+                      (result, someLoopLayer) =>
+                        result === null
                           ? {
                               structureType: "terminal",
                               relativeSubRadius:
@@ -59,6 +61,8 @@ export function LoopExplorerPage() {
                               subPhase: someLoopLayer.subPhase * 2 * Math.PI,
                               subOrientation:
                                 someLoopLayer.subOrientation * 2 * Math.PI,
+                              subRotation:
+                                someLoopLayer.subRotation * 2 * Math.PI,
                             }
                           : {
                               structureType: "interposed",
@@ -69,8 +73,9 @@ export function LoopExplorerPage() {
                               subPhase: someLoopLayer.subPhase * 2 * Math.PI,
                               subOrientation:
                                 someLoopLayer.subOrientation * 2 * Math.PI,
-                            };
-                      },
+                              subRotation:
+                                someLoopLayer.subRotation * 2 * Math.PI,
+                            },
                       null
                     ) || {
                     structureType: "terminal",
@@ -78,6 +83,7 @@ export function LoopExplorerPage() {
                     relativeSubDepth: 0,
                     subPhase: 0,
                     subOrientation: 0,
+                    subRotation: 0,
                   },
                 },
               });
@@ -102,7 +108,7 @@ export function LoopExplorerPage() {
                   relativeSubDepth: 0,
                   subPhase: 0,
                   subOrientation: 0,
-                  mute: false,
+                  subRotation: 0,
                 },
               ]);
             }}
@@ -264,23 +270,29 @@ export function LoopExplorerPage() {
                     padding: 8,
                   }}
                 >
-                  <label style={{ fontWeight: 600, fontSize: 18 }}>mute</label>
+                  <label style={{ fontWeight: 600, fontSize: 18 }}>
+                    rotation
+                  </label>
                   <input
                     style={{
-                      width: 36,
-                      height: 36,
+                      margin: 0,
+                      padding: 0,
+                      width: 96,
+                      height: 32,
                       fontWeight: 600,
                       fontSize: 20,
                       fontStyle: "italic",
                     }}
-                    type={"checkbox"}
-                    checked={someLoopStructureLayer.mute}
+                    type={"number"}
+                    step={1 / 25}
+                    value={someLoopStructureLayer.subRotation}
                     onChange={(someChangeEvent) => {
                       setLoopStructureState((currentState) => {
                         const nextState = [...currentState];
                         nextState.splice(layerIndex, 1, {
                           ...currentState[layerIndex],
-                          mute: someChangeEvent.target.checked,
+                          subRotation:
+                            (Number(someChangeEvent.target.value) + 1) % 1,
                         });
                         return nextState;
                       });
@@ -318,13 +330,13 @@ export function LoopExplorerPage() {
 
 type LoopStructure = RecursiveSpatialStructure<
   { loopBase: Circle },
-  // { subLoopRotationAngle: number },
   {},
   {
     relativeSubRadius: number;
     relativeSubDepth: number;
     subPhase: number;
     subOrientation: number;
+    subRotation: number;
   }
 >;
 
@@ -338,7 +350,7 @@ function getLoopPoint(api: GetLoopPointApi): Point {
   const {
     inputAngle,
     someLoopStructure,
-    inputAngleRetryDelta = 0.000000001,
+    inputAngleRetryDelta = 0.000000000001,
   } = api;
   const loopPoint = _getLoopPoint({
     inputAngle,
@@ -389,9 +401,17 @@ function _getLoopPoint(api: _GetLoopPointApi): Point {
     unorientedSubLoopPoint[1],
   ];
   return getRotatedPoint({
-    anchorPoint: baseCircle.center,
-    subjectPoint: unorientedLoopPoint,
-    rotationAngle: baseStructure.subStructure.subOrientation,
+    rotationAngle: baseStructure.subStructure.subRotation,
+    anchorPoint: getRotatedPoint({
+      anchorPoint: baseCircle.center,
+      subjectPoint: unorientedSubCircle.center,
+      rotationAngle: baseStructure.subStructure.subOrientation,
+    }),
+    subjectPoint: getRotatedPoint({
+      anchorPoint: baseCircle.center,
+      subjectPoint: unorientedLoopPoint,
+      rotationAngle: baseStructure.subStructure.subOrientation,
+    }),
   });
 }
 

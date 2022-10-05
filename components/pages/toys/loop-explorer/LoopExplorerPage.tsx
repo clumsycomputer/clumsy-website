@@ -347,23 +347,12 @@ interface GetLoopPointApi {
 }
 
 function getLoopPoint(api: GetLoopPointApi): Point {
-  const {
-    inputAngle,
-    someLoopStructure,
-    inputAngleRetryDelta = 0.000000000001,
-  } = api;
-  const loopPoint = _getLoopPoint({
+  const { inputAngle, someLoopStructure } = api;
+  return _getLoopPoint({
     inputAngle,
     baseCircle: someLoopStructure.loopBase,
     baseStructure: someLoopStructure,
   });
-  return isFinite(loopPoint[0]) && isFinite(loopPoint[1])
-    ? loopPoint
-    : getLoopPoint({
-        someLoopStructure,
-        inputAngle: inputAngle + inputAngleRetryDelta,
-        inputAngleRetryDelta: 2 * inputAngleRetryDelta,
-      });
 }
 
 interface _GetLoopPointApi {
@@ -391,10 +380,10 @@ function _getLoopPoint(api: _GetLoopPointApi): Point {
           pointAngle: inputAngle,
           someCircle: unorientedSubCircle,
         });
-  const { baseCirclePoint } = getBaseCirclePoint({
+  const baseCirclePoint = getBasePoint({
     baseCircle,
-    unorientedSubLoopPoint,
-    unorientedSubCircleCenter: unorientedSubCircle.center,
+    subCircle: unorientedSubCircle,
+    subPoint: unorientedSubLoopPoint,
   });
   const unorientedLoopPoint: Point = [
     baseCirclePoint[0],
@@ -453,81 +442,6 @@ function getUnorientedSubCircle(api: GetUnorientedSubCircleApi): {
   };
 }
 
-interface GetBaseCirclePointApi extends Pick<_GetLoopPointApi, "baseCircle"> {
-  unorientedSubCircleCenter: ReturnType<
-    typeof getUnorientedSubCircle
-  >["unorientedSubCircle"]["center"];
-  unorientedSubLoopPoint: Point;
-}
-
-function getBaseCirclePoint(api: GetBaseCirclePointApi): {
-  baseCirclePoint: Point;
-} {
-  const { baseCircle, unorientedSubCircleCenter, unorientedSubLoopPoint } = api;
-  const subCircleDepth = getDistanceBetweenPoints({
-    pointA: baseCircle.center,
-    pointB: unorientedSubCircleCenter,
-  });
-  const subLoopPointMagnitude = getDistanceBetweenPoints({
-    pointA: unorientedSubCircleCenter,
-    pointB: unorientedSubLoopPoint,
-  });
-  const baseCircleCenterToSubLoopPointLength = getDistanceBetweenPoints({
-    pointA: baseCircle.center,
-    pointB: unorientedSubLoopPoint,
-  });
-  const baseCircleCenterToSubLoopPointLengthAngle = getTriangleAngleCcc({
-    lengthAaa: subCircleDepth,
-    lengthBbb: subLoopPointMagnitude,
-    lengthCcc: baseCircleCenterToSubLoopPointLength,
-  });
-  /// this calculation doesnt make sense
-  const baseCircleCenterToSubCircleCenterAngle = Math.asin(
-    (Math.sin(baseCircleCenterToSubLoopPointLengthAngle) / baseCircle.radius) *
-      subCircleDepth
-  );
-  const subCircleCenterToSubLoopPointAngle =
-    Math.PI -
-    baseCircleCenterToSubLoopPointLengthAngle -
-    baseCircleCenterToSubCircleCenterAngle;
-  const baseCirclePointMagnitude =
-    Math.sin(subCircleCenterToSubLoopPointAngle) *
-    (baseCircle.radius / Math.sin(baseCircleCenterToSubLoopPointLengthAngle));
-  const subLoopPointOutputAngle = getNormalizedAngleBetweenPoints({
-    basePoint: unorientedSubCircleCenter,
-    targetPoint: unorientedSubLoopPoint,
-  });
-  return {
-    baseCirclePoint: [
-      baseCirclePointMagnitude * Math.cos(subLoopPointOutputAngle) +
-        unorientedSubCircleCenter[0],
-      baseCirclePointMagnitude * Math.sin(subLoopPointOutputAngle) +
-        unorientedSubCircleCenter[1],
-    ],
-  };
-}
-
-interface GetTriangleAngleCccApi {
-  lengthAaa: number;
-  lengthBbb: number;
-  lengthCcc: number;
-}
-
-function getTriangleAngleCcc(api: GetTriangleAngleCccApi) {
-  const { lengthAaa, lengthBbb, lengthCcc } = api;
-  const numerator =
-    lengthAaa * lengthAaa + lengthBbb * lengthBbb - lengthCcc * lengthCcc;
-  const denominator = 2 * lengthAaa * lengthBbb;
-  return Math.acos(numerator / denominator);
-  // ||
-  // // weird js math precision workaround
-  // Math.acos(
-  //   (numerator > 0 && denominator > 0) || (numerator < 0 && denominator < 0)
-  //     ? 1
-  //     : -1
-  // )
-}
-
 interface GetRotatedPointApi {
   rotationAngle: number;
   anchorPoint: Point;
@@ -547,5 +461,58 @@ function getRotatedPoint(api: GetRotatedPointApi): Point {
     originCenteredPoint[0] * Math.sin(rotationAngle) +
       originCenteredPoint[1] * Math.cos(rotationAngle) +
       anchorPoint[1],
+  ];
+}
+
+interface GetBasePointApi {
+  baseCircle: Circle;
+  subCircle: Circle;
+  subPoint: Point;
+}
+
+function getBasePoint(api: GetBasePointApi) {
+  const { subCircle, baseCircle, subPoint } = api;
+  const unitBasePoint = getUnitBasePoint({
+    subCenterX:
+      (subCircle.center[0] - baseCircle.center[0]) / baseCircle.radius,
+    subCenterY:
+      (subCircle.center[1] - baseCircle.center[1]) / baseCircle.radius,
+    subPointX: (subPoint[0] - baseCircle.center[0]) / baseCircle.radius,
+    subPointY: (subPoint[1] - baseCircle.center[1]) / baseCircle.radius,
+  });
+  return [
+    baseCircle.radius * unitBasePoint[0] + baseCircle.center[0],
+    baseCircle.radius * unitBasePoint[1] + baseCircle.center[1],
+  ];
+}
+
+interface GetUnitBasePointApi {
+  subCenterX: number;
+  subCenterY: number;
+  subPointX: number;
+  subPointY: number;
+}
+
+function getUnitBasePoint(api: GetUnitBasePointApi) {
+  const { subCenterX, subPointX, subCenterY, subPointY } = api;
+  const deltaX = subCenterX - subPointX;
+  const otherDeltaX = subPointX - subCenterX;
+  const deltaY = subCenterY - subPointY;
+  const otherDeltaY = subPointY - subCenterY;
+  const squaredDeltaX = deltaX * deltaX;
+  const squaredDeltaY = deltaY * deltaY;
+  const squaredDeltaAdded = squaredDeltaX + squaredDeltaY;
+  const exprA =
+    (subCenterX * subCenterX - subCenterX * subPointX + subCenterY * deltaY) /
+    squaredDeltaAdded;
+  const exprB =
+    Math.sqrt(
+      1 -
+        Math.pow(subCenterY * subPointX - subCenterX * subPointY, 2) /
+          squaredDeltaAdded
+    ) / Math.sqrt(squaredDeltaAdded);
+  return [
+    subCenterX - deltaX * exprA + otherDeltaX * exprB,
+    subCenterY + otherDeltaY * exprA + otherDeltaY * exprB,
   ];
 }

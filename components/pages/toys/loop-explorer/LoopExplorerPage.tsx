@@ -2,517 +2,265 @@ import {
   ExtractInterposedStructure,
   RecursiveSpatialStructure,
 } from "clumsy-math";
-import { useState } from "react";
 import { Circle, Point } from "./common/geometry/encodings";
-import {
-  getCirclePoint,
-  getDistanceBetweenPoints,
-  getNormalizedAngle,
-  getNormalizedAngleBetweenPoints,
-} from "./common/geometry/general";
 
 export function LoopExplorerPage() {
-  const [loopStructureState, setLoopStructureState] = useState<
-    Array<
-      Pick<
-        LoopStructure["subStructure"],
-        | "relativeSubRadius"
-        | "relativeSubDepth"
-        | "subPhase"
-        | "subOrientation"
-        | "subRotation"
-      >
-    >
-  >([
-    {
-      relativeSubRadius: 1,
-      relativeSubDepth: 0,
-      subPhase: 0,
-      subOrientation: 0,
-      subRotation: 0,
+  const loopStructure: LoopStructure = {
+    structureType: "initial",
+    loopBase: {
+      radius: 1,
+      center: [0, 0],
     },
-  ]);
-  const sampleCount = 1024;
+    loopRotation: 0,
+    subStructure: {
+      structureType: "interposed",
+      relativeSubRadius: 0.5,
+      relativeSubDepth: 0.5,
+      subPhase: 2 * Math.PI * 0.25,
+      subOrientation: 2 * Math.PI * 0.25,
+      loopRotation: 0,
+      subStructure: {
+        structureType: "interposed",
+        relativeSubRadius: 0.5,
+        relativeSubDepth: 0.5,
+        subPhase: 2 * Math.PI * 0.25,
+        subOrientation: 2 * Math.PI * 0.25,
+        loopRotation: 2 * Math.PI * 0.25,
+        subStructure: {
+          structureType: "terminal",
+          relativeSubRadius: 0.5,
+          relativeSubDepth: 0.5,
+          subPhase: 2 * Math.PI * 0.25,
+          subOrientation: 2 * Math.PI * 0.25,
+        },
+      },
+    },
+  };
+  const pointCount = 512;
+  const loopPoints = new Array(pointCount)
+    .fill(undefined)
+    .map((_, pointIndex) =>
+      getLoopPoint({
+        someLoopStructure: loopStructure,
+        inputAngle: ((2 * Math.PI) / pointCount) * pointIndex,
+      })
+    );
   return (
     <div>
-      <svg viewBox={`-1.25 -1.25 2.5 2.5`} width={256} height={256}>
+      <svg viewBox={`${-1.25} ${-1.25} ${2.5} ${2.5}`} width={256} height={256}>
         <polygon
-          points={new Array(sampleCount - 2)
-            .fill(undefined)
-            .map((_, sampleIndex) => {
-              return getLoopPoint({
-                inputAngle: ((2 * Math.PI) / sampleCount) * sampleIndex + 1,
-                someLoopStructure: {
-                  structureType: "initial",
-                  loopBase: {
-                    radius: 1,
-                    center: [0, 0],
-                  },
-                  subStructure: [...loopStructureState]
-                    .reverse()
-                    .reduce<LoopStructure["subStructure"] | null>(
-                      (result, someLoopLayer) =>
-                        result === null
-                          ? {
-                              structureType: "terminal",
-                              relativeSubRadius:
-                                someLoopLayer.relativeSubRadius,
-                              relativeSubDepth: someLoopLayer.relativeSubDepth,
-                              subPhase: someLoopLayer.subPhase * 2 * Math.PI,
-                              subOrientation:
-                                someLoopLayer.subOrientation * 2 * Math.PI,
-                              subRotation:
-                                someLoopLayer.subRotation * 2 * Math.PI,
-                            }
-                          : {
-                              structureType: "interposed",
-                              subStructure: result,
-                              relativeSubRadius:
-                                someLoopLayer.relativeSubRadius,
-                              relativeSubDepth: someLoopLayer.relativeSubDepth,
-                              subPhase: someLoopLayer.subPhase * 2 * Math.PI,
-                              subOrientation:
-                                someLoopLayer.subOrientation * 2 * Math.PI,
-                              subRotation:
-                                someLoopLayer.subRotation * 2 * Math.PI,
-                            },
-                      null
-                    ) || {
-                    structureType: "terminal",
-                    relativeSubRadius: 1,
-                    relativeSubDepth: 0,
-                    subPhase: 0,
-                    subOrientation: 0,
-                    subRotation: 0,
-                  },
-                },
-              });
-            })
+          points={loopPoints
             .map((someLoopPoint) => `${someLoopPoint[0]},${someLoopPoint[1]}`)
             .join(" ")}
           fillOpacity={0}
-          stroke={"red"}
+          stroke={"purple"}
           strokeWidth={0.03}
           strokeLinejoin={"round"}
           strokeLinecap={"round"}
         />
       </svg>
-      <div style={{ display: "flex", flexDirection: "column" }}>
-        <div style={{ display: "flex", flexDirection: "row", padding: 8 }}>
-          <button
-            onClick={() => {
-              setLoopStructureState((currentState) => [
-                ...currentState,
-                {
-                  relativeSubRadius: 1,
-                  relativeSubDepth: 0,
-                  subPhase: 0,
-                  subOrientation: 0,
-                  subRotation: 0,
-                },
-              ]);
-            }}
-          >
-            add layer
-          </button>
-        </div>
-        <div style={{ display: "flex", flexDirection: "column" }}>
-          {loopStructureState.map((someLoopStructureLayer, layerIndex) => {
-            return (
-              <div
-                key={`${layerIndex}`}
-                style={{ display: "flex", flexDirection: "row" }}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    padding: 8,
-                  }}
-                >
-                  <label style={{ fontWeight: 600, fontSize: 18 }}>
-                    radius
-                  </label>
-                  <input
-                    style={{
-                      margin: 0,
-                      padding: 0,
-                      width: 96,
-                      height: 32,
-                      fontWeight: 600,
-                      fontSize: 20,
-                      fontStyle: "italic",
-                    }}
-                    type={"number"}
-                    step={1 / 25}
-                    value={someLoopStructureLayer.relativeSubRadius}
-                    onChange={(someChangeEvent) => {
-                      setLoopStructureState((currentState) => {
-                        const nextState = [...currentState];
-                        nextState.splice(layerIndex, 1, {
-                          ...currentState[layerIndex],
-                          relativeSubRadius:
-                            (Number(someChangeEvent.target.value) + 1) % 1,
-                        });
-                        return nextState;
-                      });
-                    }}
-                  />
-                </div>
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    padding: 8,
-                  }}
-                >
-                  <label style={{ fontWeight: 600, fontSize: 18 }}>depth</label>
-                  <input
-                    style={{
-                      margin: 0,
-                      padding: 0,
-                      width: 96,
-                      height: 32,
-                      fontWeight: 600,
-                      fontSize: 20,
-                      fontStyle: "italic",
-                    }}
-                    type={"number"}
-                    step={1 / 25}
-                    value={someLoopStructureLayer.relativeSubDepth}
-                    onChange={(someChangeEvent) => {
-                      setLoopStructureState((currentState) => {
-                        const nextState = [...currentState];
-                        nextState.splice(layerIndex, 1, {
-                          ...currentState[layerIndex],
-                          relativeSubDepth:
-                            (Number(someChangeEvent.target.value) + 1) % 1,
-                        });
-                        return nextState;
-                      });
-                    }}
-                  />
-                </div>
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    padding: 8,
-                  }}
-                >
-                  <label style={{ fontWeight: 600, fontSize: 18 }}>phase</label>
-                  <input
-                    style={{
-                      margin: 0,
-                      padding: 0,
-                      width: 96,
-                      height: 32,
-                      fontWeight: 600,
-                      fontSize: 20,
-                      fontStyle: "italic",
-                    }}
-                    type={"number"}
-                    step={1 / 25}
-                    value={someLoopStructureLayer.subPhase}
-                    onChange={(someChangeEvent) => {
-                      setLoopStructureState((currentState) => {
-                        const nextState = [...currentState];
-                        nextState.splice(layerIndex, 1, {
-                          ...currentState[layerIndex],
-                          subPhase:
-                            (Number(someChangeEvent.target.value) + 1) % 1,
-                        });
-                        return nextState;
-                      });
-                    }}
-                  />
-                </div>
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    padding: 8,
-                  }}
-                >
-                  <label style={{ fontWeight: 600, fontSize: 18 }}>
-                    orientation
-                  </label>
-                  <input
-                    style={{
-                      margin: 0,
-                      padding: 0,
-                      width: 96,
-                      height: 32,
-                      fontWeight: 600,
-                      fontSize: 20,
-                      fontStyle: "italic",
-                    }}
-                    type={"number"}
-                    step={1 / 25}
-                    value={someLoopStructureLayer.subOrientation}
-                    onChange={(someChangeEvent) => {
-                      setLoopStructureState((currentState) => {
-                        const nextState = [...currentState];
-                        nextState.splice(layerIndex, 1, {
-                          ...currentState[layerIndex],
-                          subOrientation:
-                            (Number(someChangeEvent.target.value) + 1) % 1,
-                        });
-                        return nextState;
-                      });
-                    }}
-                  />
-                </div>
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    padding: 8,
-                  }}
-                >
-                  <label style={{ fontWeight: 600, fontSize: 18 }}>
-                    rotation
-                  </label>
-                  <input
-                    style={{
-                      margin: 0,
-                      padding: 0,
-                      width: 96,
-                      height: 32,
-                      fontWeight: 600,
-                      fontSize: 20,
-                      fontStyle: "italic",
-                    }}
-                    type={"number"}
-                    step={1 / 25}
-                    value={someLoopStructureLayer.subRotation}
-                    onChange={(someChangeEvent) => {
-                      setLoopStructureState((currentState) => {
-                        const nextState = [...currentState];
-                        nextState.splice(layerIndex, 1, {
-                          ...currentState[layerIndex],
-                          subRotation:
-                            (Number(someChangeEvent.target.value) + 1) % 1,
-                        });
-                        return nextState;
-                      });
-                    }}
-                  />
-                </div>
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    padding: 8,
-                    justifyContent: "flex-end",
-                  }}
-                >
-                  <button
-                    onClick={() => {
-                      setLoopStructureState((currentState) => {
-                        const nextState = [...currentState];
-                        nextState.splice(layerIndex, 1);
-                        return nextState;
-                      });
-                    }}
-                  >
-                    delete
-                  </button>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
     </div>
   );
 }
 
 type LoopStructure = RecursiveSpatialStructure<
   { loopBase: Circle },
-  {},
+  {
+    loopRotation: number;
+  },
   {
     relativeSubRadius: number;
     relativeSubDepth: number;
     subPhase: number;
     subOrientation: number;
-    subRotation: number;
   }
 >;
+
+type LoopPoint = [x: number, y: number];
+
+type _LoopPoint = [x: number, y: number, origin: Point];
 
 interface GetLoopPointApi {
   someLoopStructure: LoopStructure;
   inputAngle: number;
-  inputAngleRetryDelta?: number;
 }
 
-function getLoopPoint(api: GetLoopPointApi): Point {
+function getLoopPoint(api: GetLoopPointApi): LoopPoint {
   const { inputAngle, someLoopStructure } = api;
-  return _getLoopPoint({
+  const _loopPoint = _getLoopPoint({
     inputAngle,
-    baseCircle: someLoopStructure.loopBase,
     baseStructure: someLoopStructure,
+    baseCircle: someLoopStructure.loopBase,
   });
+  return [_loopPoint[0], _loopPoint[1]];
 }
 
-interface _GetLoopPointApi {
-  inputAngle: number;
+interface _GetLoopPointApi extends Pick<GetLoopPointApi, "inputAngle"> {
   baseCircle: Circle;
-  baseStructure: LoopStructure | ExtractInterposedStructure<LoopStructure>;
+  baseStructure:
+    | GetLoopPointApi["someLoopStructure"]
+    | ExtractInterposedStructure<GetLoopPointApi["someLoopStructure"]>;
 }
 
-function _getLoopPoint(api: _GetLoopPointApi): Point {
-  const { baseCircle, baseStructure, inputAngle } = api;
-  const { unorientedSubCircle } = getUnorientedSubCircle({
-    baseCircle,
+function _getLoopPoint(api: _GetLoopPointApi): _LoopPoint {
+  const { baseStructure, inputAngle, baseCircle } = api;
+  const { unitSubPoint } = getUnitSubPoint({
+    baseStructure,
+    inputAngle,
+  });
+  const { unitBasePointX } = getUnitBasePointX({
+    unitSubPoint,
+  });
+  const unitLoopPoint: Point = [unitBasePointX, unitSubPoint[1]];
+  const orientedUnitOrigin = getUnitRotatedPoint({
+    rotationAngle: baseStructure.subStructure.subOrientation,
+    subjectPoint: unitSubPoint[2],
+  });
+  const orientedUnitLoopPoint = getUnitRotatedPoint({
+    rotationAngle: baseStructure.subStructure.subOrientation,
+    subjectPoint: unitLoopPoint,
+  });
+  const rotatedUnitLoopPoint = getRotatedPoint({
+    rotationAngle: baseStructure.loopRotation,
+    anchorPoint: orientedUnitOrigin,
+    subjectPoint: orientedUnitLoopPoint,
+  });
+  return [
+    baseCircle.radius * rotatedUnitLoopPoint[0] + baseCircle.center[0],
+    baseCircle.radius * rotatedUnitLoopPoint[1] + baseCircle.center[1],
+    [
+      baseCircle.radius * orientedUnitOrigin[0] + baseCircle.center[0],
+      baseCircle.radius * orientedUnitOrigin[1] + baseCircle.center[1],
+    ],
+  ];
+}
+
+interface GetUnitSubPointApi
+  extends Pick<_GetLoopPointApi, "inputAngle" | "baseStructure"> {}
+
+function getUnitSubPoint(api: GetUnitSubPointApi): {
+  unitSubPoint: _LoopPoint;
+} {
+  const { baseStructure, inputAngle } = api;
+  const { unitSubCircle } = getUnitSubCircle({
     relativeSubRadius: baseStructure.subStructure.relativeSubRadius,
     relativeSubDepth: baseStructure.subStructure.relativeSubDepth,
     subPhase: baseStructure.subStructure.subPhase,
   });
-  const unorientedSubLoopPoint =
-    baseStructure.subStructure.structureType === "interposed"
-      ? _getLoopPoint({
-          inputAngle,
-          baseCircle: unorientedSubCircle,
-          baseStructure: baseStructure.subStructure,
-        })
-      : getCirclePoint({
-          pointAngle: inputAngle,
-          someCircle: unorientedSubCircle,
-        });
-  const baseCirclePoint = getBasePoint({
-    baseCircle,
-    subCircle: unorientedSubCircle,
-    subPoint: unorientedSubLoopPoint,
-  });
-  const unorientedLoopPoint: Point = [
-    baseCirclePoint[0],
-    unorientedSubLoopPoint[1],
-  ];
-  return getRotatedPoint({
-    rotationAngle: baseStructure.subStructure.subRotation,
-    anchorPoint: getRotatedPoint({
-      anchorPoint: baseCircle.center,
-      subjectPoint: unorientedSubCircle.center,
-      rotationAngle: baseStructure.subStructure.subOrientation,
-    }),
-    subjectPoint: getRotatedPoint({
-      anchorPoint: baseCircle.center,
-      subjectPoint: unorientedLoopPoint,
-      rotationAngle: baseStructure.subStructure.subOrientation,
-    }),
-  });
+  return {
+    unitSubPoint:
+      baseStructure.subStructure.structureType === "interposed"
+        ? _getLoopPoint({
+            inputAngle,
+            baseCircle: unitSubCircle,
+            baseStructure: baseStructure.subStructure,
+          })
+        : [
+            unitSubCircle.radius * Math.cos(inputAngle) +
+              unitSubCircle.center[0],
+            unitSubCircle.radius * Math.sin(inputAngle) +
+              unitSubCircle.center[1],
+            unitSubCircle.center,
+          ],
+  };
 }
 
-interface GetUnorientedSubCircleApi
-  extends Pick<_GetLoopPointApi, "baseCircle">,
-    Pick<
-      _GetLoopPointApi["baseStructure"]["subStructure"],
-      "relativeSubRadius" | "relativeSubDepth" | "subPhase"
-    > {}
+interface GetUnitSubCircleApi
+  extends Pick<
+    _GetLoopPointApi["baseStructure"]["subStructure"],
+    "relativeSubRadius" | "relativeSubDepth" | "subPhase"
+  > {}
 
-function getUnorientedSubCircle(api: GetUnorientedSubCircleApi): {
-  unorientedSubCircle: Circle;
+function getUnitSubCircle(api: GetUnitSubCircleApi): {
+  unitSubCircle: Circle;
 } {
-  const { relativeSubRadius, relativeSubDepth, baseCircle, subPhase } = api;
+  const { relativeSubRadius, relativeSubDepth, subPhase } = api;
   const adjustedRelativeSubRadius =
     relativeSubRadius === 0
-      ? 0.0000001
+      ? 0.000000000001
       : relativeSubRadius === 1
-      ? 0.9999999
+      ? 0.999999999999
       : relativeSubRadius;
   const adjustedRelativeSubDepth =
     relativeSubDepth === 0
-      ? 0.0000001
+      ? 0.000000000001
       : relativeSubDepth === 1
-      ? 0.9999999
+      ? 0.999999999999
       : relativeSubDepth;
-  const subCircleRadius = adjustedRelativeSubRadius * baseCircle.radius;
-  const maxSubCircleDepth = baseCircle.radius - subCircleRadius;
+  const subCircleRadius = adjustedRelativeSubRadius;
+  const maxSubCircleDepth = 1 - subCircleRadius;
   const subCircleDepth = adjustedRelativeSubDepth * maxSubCircleDepth;
-  const subCircleCenter: Point = [
-    subCircleDepth * Math.cos(subPhase) + baseCircle.center[0],
-    subCircleDepth * Math.sin(subPhase) + baseCircle.center[1],
-  ];
   return {
-    unorientedSubCircle: {
+    unitSubCircle: {
       radius: subCircleRadius,
-      center: subCircleCenter,
+      center: [
+        subCircleDepth * Math.cos(subPhase),
+        subCircleDepth * Math.sin(subPhase),
+      ],
     },
   };
 }
 
-interface GetRotatedPointApi {
-  rotationAngle: number;
-  anchorPoint: Point;
-  subjectPoint: Point;
+interface GetUnitBasePointXApi {
+  unitSubPoint: _LoopPoint;
 }
 
-function getRotatedPoint(api: GetRotatedPointApi): Point {
-  const { subjectPoint, anchorPoint, rotationAngle } = api;
-  const originCenteredPoint = [
-    subjectPoint[0] - anchorPoint[0],
-    subjectPoint[1] - anchorPoint[1],
-  ];
-  return [
-    originCenteredPoint[0] * Math.cos(rotationAngle) -
-      originCenteredPoint[1] * Math.sin(rotationAngle) +
-      anchorPoint[0],
-    originCenteredPoint[0] * Math.sin(rotationAngle) +
-      originCenteredPoint[1] * Math.cos(rotationAngle) +
-      anchorPoint[1],
-  ];
-}
-
-interface GetBasePointApi {
-  baseCircle: Circle;
-  subCircle: Circle;
-  subPoint: Point;
-}
-
-function getBasePoint(api: GetBasePointApi) {
-  const { subCircle, baseCircle, subPoint } = api;
-  const unitBasePoint = getUnitBasePoint({
-    subCenterX:
-      (subCircle.center[0] - baseCircle.center[0]) / baseCircle.radius,
-    subCenterY:
-      (subCircle.center[1] - baseCircle.center[1]) / baseCircle.radius,
-    subPointX: (subPoint[0] - baseCircle.center[0]) / baseCircle.radius,
-    subPointY: (subPoint[1] - baseCircle.center[1]) / baseCircle.radius,
-  });
-  return [
-    baseCircle.radius * unitBasePoint[0] + baseCircle.center[0],
-    baseCircle.radius * unitBasePoint[1] + baseCircle.center[1],
-  ];
-}
-
-interface GetUnitBasePointApi {
-  subCenterX: number;
-  subCenterY: number;
-  subPointX: number;
-  subPointY: number;
-}
-
-function getUnitBasePoint(api: GetUnitBasePointApi) {
-  const { subCenterX, subPointX, subCenterY, subPointY } = api;
-  const deltaX = subCenterX - subPointX;
-  const otherDeltaX = subPointX - subCenterX;
-  const deltaY = subCenterY - subPointY;
-  const otherDeltaY = subPointY - subCenterY;
+function getUnitBasePointX(api: GetUnitBasePointXApi): {
+  unitBasePointX: number;
+} {
+  const { unitSubPoint } = api;
+  const deltaX = unitSubPoint[2][0] - unitSubPoint[0];
+  const otherDeltaX = unitSubPoint[0] - unitSubPoint[2][0];
+  const deltaY = unitSubPoint[2][1] - unitSubPoint[1];
   const squaredDeltaX = deltaX * deltaX;
   const squaredDeltaY = deltaY * deltaY;
   const squaredDeltaAdded = squaredDeltaX + squaredDeltaY;
   const exprA =
-    (subCenterX * subCenterX - subCenterX * subPointX + subCenterY * deltaY) /
+    (unitSubPoint[2][0] * unitSubPoint[2][0] -
+      unitSubPoint[2][0] * unitSubPoint[0] +
+      unitSubPoint[2][1] * deltaY) /
     squaredDeltaAdded;
   const exprB =
-    Math.sqrt(
-      1 -
-        Math.pow(subCenterY * subPointX - subCenterX * subPointY, 2) /
-          squaredDeltaAdded
-    ) / Math.sqrt(squaredDeltaAdded);
+    unitSubPoint[2][1] * unitSubPoint[0] - unitSubPoint[2][0] * unitSubPoint[1];
+  const exprC =
+    Math.sqrt(1 - (exprB * exprB) / squaredDeltaAdded) /
+    Math.sqrt(squaredDeltaAdded);
+  return {
+    unitBasePointX: unitSubPoint[2][0] - deltaX * exprA + otherDeltaX * exprC,
+  };
+}
+
+interface GetRotatedPointApi
+  extends Pick<GetUnitRotatedPointApi, "subjectPoint" | "rotationAngle"> {
+  anchorPoint: Point;
+}
+
+function getRotatedPoint(api: GetRotatedPointApi): Point {
+  const { subjectPoint, anchorPoint, rotationAngle } = api;
+  const unitRotatedPoint = getUnitRotatedPoint({
+    rotationAngle,
+    subjectPoint: [
+      subjectPoint[0] - anchorPoint[0],
+      subjectPoint[1] - anchorPoint[1],
+    ],
+  });
   return [
-    subCenterX - deltaX * exprA + otherDeltaX * exprB,
-    subCenterY + otherDeltaY * exprA + otherDeltaY * exprB,
+    unitRotatedPoint[0] + anchorPoint[0],
+    unitRotatedPoint[1] + anchorPoint[1],
+  ];
+}
+
+interface GetUnitRotatedPointApi {
+  subjectPoint: Point;
+  rotationAngle: number;
+}
+
+function getUnitRotatedPoint(api: GetUnitRotatedPointApi): Point {
+  const { subjectPoint, rotationAngle } = api;
+  return [
+    subjectPoint[0] * Math.cos(rotationAngle) -
+      subjectPoint[1] * Math.sin(rotationAngle),
+    subjectPoint[0] * Math.sin(rotationAngle) +
+      subjectPoint[1] * Math.cos(rotationAngle),
   ];
 }

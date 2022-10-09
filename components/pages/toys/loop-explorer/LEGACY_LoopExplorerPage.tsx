@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Page } from "../../../common/Page/Page";
-import { Graphic } from "./common/components/Graphic";
-import { Loop } from "./common/geometry/encodings";
-import { getLoopDiagramGeometry } from "./common/geometry/loop";
+import { Graphic } from "./LEGACY_common/components/Graphic";
+import { Loop } from "./LEGACY_common/geometry/encodings";
+import { getLoopDiagramGeometry } from "./LEGACY_common/geometry/loop";
 import styles from "./LoopExplorerPage.module.scss";
 
 export interface LoopExplorerPageProps {}

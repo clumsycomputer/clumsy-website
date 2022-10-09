@@ -3,11 +3,11 @@ import {
   RecursiveSpatialStructure,
 } from "clumsy-math";
 import { useState } from "react";
-import { Circle, Point } from "./common/geometry/encodings";
+import { Circle, Point } from "./LEGACY_common/geometry/encodings";
 import {
   getCirclePoint,
   getDistanceBetweenPoints,
-} from "./common/geometry/general";
+} from "./LEGACY_common/geometry/general";
 
 export function LoopExplorerPage() {
   const [loopStructureState, setLoopStructureState] = useState<

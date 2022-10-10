@@ -89,6 +89,7 @@ export function LoopToyPage() {
           display: "flex",
           flexDirection: "column",
           height: viewportHeight,
+          overflow: "scroll",
         }}
       >
         <div

@@ -12,47 +12,66 @@ export function LoopExplorerPage() {
   const maxPointMagnitudeRef: [number] = [0];
   const maxCosineMagnitudeRef: [number] = [0];
   const maxSineMagnitudeRef: [number] = [0];
-  const loopPointsData = new Array(pointCount)
-    .fill(undefined)
-    .map<
-      [LoopPoint, [Point2, [number]], [number, [number]], [number, [number]]]
-    >((_, pointIndex) => {
-      const loopPoint = getLoopPoint({
-        someLoopStructure: loopStructure,
-        inputAngle: ((2 * Math.PI) / pointCount) * pointIndex,
-      });
-      const deltaLoopPointX = loopPoint[0] - loopPoint[2][0];
-      const deltaLoopPointY = loopPoint[1] - loopPoint[2][1];
-      const loopPointMagnitude = Math.sqrt(
-        deltaLoopPointX * deltaLoopPointX + deltaLoopPointY * deltaLoopPointY
-      );
-      maxPointMagnitudeRef[0] =
-        loopPointMagnitude > maxPointMagnitudeRef[0]
-          ? loopPointMagnitude
-          : maxPointMagnitudeRef[0];
-      const zeroOriginLoopPoint: Point2 = [
-        loopPoint[0] - loopPoint[2][0],
-        loopPoint[1] - loopPoint[2][1],
-      ];
-      const pointCosine = loopPoint[0] - loopPoint[2][0];
-      const pointCosineMagnitude = Math.abs(pointCosine);
-      maxCosineMagnitudeRef[0] =
-        pointCosineMagnitude > maxCosineMagnitudeRef[0]
-          ? pointCosineMagnitude
-          : maxCosineMagnitudeRef[0];
-      const pointSine = loopPoint[1] - loopPoint[2][1];
-      const pointSineMagnitude = Math.abs(pointSine);
-      maxSineMagnitudeRef[0] =
-        pointSineMagnitude > maxSineMagnitudeRef[0]
-          ? pointSineMagnitude
-          : maxSineMagnitudeRef[0];
-      return [
-        loopPoint,
-        [zeroOriginLoopPoint, maxPointMagnitudeRef],
-        [pointCosine, maxCosineMagnitudeRef],
-        [pointSine, maxSineMagnitudeRef],
-      ];
+  const maxPendulumMagnitudeRef: [number] = [0];
+  const loopPointsData = new Array(pointCount).fill(undefined).map<
+    [
+      LoopPoint,
+      [Point2, [number]],
+      [number, [number]],
+      [number, [number]]
+      // [number, [number]]
+    ]
+  >((_, pointIndex) => {
+    const loopPoint = getLoopPoint({
+      someLoopStructure: loopStructure,
+      inputAngle: ((2 * Math.PI) / pointCount) * pointIndex,
     });
+    const deltaLoopPointX = loopPoint[0] - loopPoint[2][0];
+    const deltaLoopPointY = loopPoint[1] - loopPoint[2][1];
+    const loopPointMagnitude = Math.sqrt(
+      deltaLoopPointX * deltaLoopPointX + deltaLoopPointY * deltaLoopPointY
+    );
+    maxPointMagnitudeRef[0] =
+      loopPointMagnitude > maxPointMagnitudeRef[0]
+        ? loopPointMagnitude
+        : maxPointMagnitudeRef[0];
+    const zeroOriginLoopPoint: Point2 = [
+      loopPoint[0] - loopPoint[2][0],
+      loopPoint[1] - loopPoint[2][1],
+    ];
+    const pointCosine = loopPoint[0] - loopPoint[2][0];
+    const pointCosineMagnitude = Math.abs(pointCosine);
+    maxCosineMagnitudeRef[0] =
+      pointCosineMagnitude > maxCosineMagnitudeRef[0]
+        ? pointCosineMagnitude
+        : maxCosineMagnitudeRef[0];
+    const pointSine = loopPoint[1] - loopPoint[2][1];
+    const pointSineMagnitude = Math.abs(pointSine);
+    maxSineMagnitudeRef[0] =
+      pointSineMagnitude > maxSineMagnitudeRef[0]
+        ? pointSineMagnitude
+        : maxSineMagnitudeRef[0];
+    const outputAngle = getNormalizedAngleBetweenPoints({
+      subjectPoint: [loopPoint[0], loopPoint[1]],
+      originPoint: loopPoint[2],
+    });
+    // const pointPendulum = getDifferenceBetweenNormalizedAngles({
+    //   normalizedAngleA: loopPoint[4],
+    //   normalizedAngleB: outputAngle,
+    // });
+    // const pointPendulumMagnitude = Math.abs(pointPendulum);
+    // maxPendulumMagnitudeRef[0] =
+    //   pointPendulumMagnitude > maxPendulumMagnitudeRef[0]
+    //     ? pointPendulumMagnitude
+    //     : maxPendulumMagnitudeRef[0];
+    return [
+      loopPoint,
+      [zeroOriginLoopPoint, maxPointMagnitudeRef],
+      [pointCosine, maxCosineMagnitudeRef],
+      [pointSine, maxSineMagnitudeRef],
+      // [pointPendulum, maxPendulumMagnitudeRef],
+    ];
+  });
   return (
     <div style={{ display: "flex", flexDirection: "column" }}>
       <div style={{ display: "flex", flexDirection: "row" }}>
@@ -379,4 +398,55 @@ function _getLoopStructure(api: _GetLoopStructureApi): LoopStructure {
           loopRotation: 2 * Math.PI * currentLayer.relativeLoopRotation,
         },
       };
+}
+
+interface GetNormalizedAngleApi {
+  someAngle: number;
+}
+
+function getNormalizedAngle(api: GetNormalizedAngleApi) {
+  const { someAngle } = api;
+  return (someAngle + 2 * Math.PI) % (2 * Math.PI);
+}
+
+interface GetAngleBetweenPointsApi {
+  originPoint: Point2;
+  subjectPoint: Point2;
+}
+
+function getAngleBetweenPoints(api: GetAngleBetweenPointsApi): number {
+  const { subjectPoint, originPoint } = api;
+  return Math.atan2(
+    subjectPoint[1] - originPoint[1],
+    subjectPoint[0] - originPoint[0]
+  );
+}
+
+interface GetNormalizedAngleBetweenPointsApi
+  extends Pick<GetAngleBetweenPointsApi, "originPoint" | "subjectPoint"> {}
+
+function getNormalizedAngleBetweenPoints(
+  api: GetNormalizedAngleBetweenPointsApi
+): number {
+  const { subjectPoint, originPoint } = api;
+  return getNormalizedAngle({
+    someAngle: getAngleBetweenPoints({
+      subjectPoint,
+      originPoint,
+    }),
+  });
+}
+
+interface GetDifferenceBetweenNormalizedAnglesApi {
+  normalizedAngleA: number;
+  normalizedAngleB: number;
+}
+
+function getDifferenceBetweenNormalizedAngles(
+  api: GetDifferenceBetweenNormalizedAnglesApi
+) {
+  const { normalizedAngleB, normalizedAngleA } = api;
+  return normalizedAngleB < Math.PI && normalizedAngleA > Math.PI
+    ? 2 * Math.PI + normalizedAngleB - normalizedAngleA
+    : normalizedAngleB - normalizedAngleA;
 }

@@ -4,7 +4,7 @@ import {
   getRotatedPoint,
   getUnitRotatedPoint,
 } from "../general/getRotatedPoint";
-import { LoopPoint, LoopStructure, _LoopPoint } from "./encodings";
+import { LoopPoint, LoopStructure } from "./encodings";
 
 export interface GetLoopPointApi {
   someLoopStructure: LoopStructure;
@@ -13,12 +13,11 @@ export interface GetLoopPointApi {
 
 export function getLoopPoint(api: GetLoopPointApi): LoopPoint {
   const { inputAngle, someLoopStructure } = api;
-  const _loopPoint = _getLoopPoint({
+  return _getLoopPoint({
     inputAngle,
     baseStructure: someLoopStructure,
     baseCircle: someLoopStructure.loopBase,
   });
-  return [..._loopPoint, inputAngle];
 }
 
 interface _GetLoopPointApi extends Pick<GetLoopPointApi, "inputAngle"> {
@@ -28,7 +27,7 @@ interface _GetLoopPointApi extends Pick<GetLoopPointApi, "inputAngle"> {
     | ExtractInterposedStructure<GetLoopPointApi["someLoopStructure"]>;
 }
 
-function _getLoopPoint(api: _GetLoopPointApi): _LoopPoint {
+function _getLoopPoint(api: _GetLoopPointApi): LoopPoint {
   const { baseStructure, inputAngle, baseCircle } = api;
   const { unitSubPoint } = getUnitSubPoint({
     baseStructure,
@@ -66,7 +65,7 @@ interface GetUnitSubPointApi
   extends Pick<_GetLoopPointApi, "inputAngle" | "baseStructure"> {}
 
 function getUnitSubPoint(api: GetUnitSubPointApi): {
-  unitSubPoint: _LoopPoint;
+  unitSubPoint: LoopPoint;
 } {
   const { baseStructure, inputAngle } = api;
   const { unitSubCircle } = getUnitSubCircle({
@@ -89,6 +88,7 @@ function getUnitSubPoint(api: GetUnitSubPointApi): {
               unitSubCircle.center[1],
             unitSubCircle.center,
             unitSubCircle.radius,
+            // inputAngle,
           ],
   };
 }
@@ -130,7 +130,7 @@ function getUnitSubCircle(api: GetUnitSubCircleApi): {
 }
 
 interface GetUnitBasePointXApi {
-  unitSubPoint: _LoopPoint;
+  unitSubPoint: LoopPoint;
 }
 
 function getUnitBasePointX(api: GetUnitBasePointXApi): {

@@ -17,13 +17,5 @@ export type LoopPoint = [
   x: Point2[0],
   y: Point2[1],
   origin: Point2,
-  terminalSubRadius: number,
-  inputAngle: number
-];
-
-export type _LoopPoint = [
-  x: LoopPoint[0],
-  y: LoopPoint[1],
-  origin: LoopPoint[2],
-  terminalSubRadius: LoopPoint[3]
+  terminalSubRadius: number
 ];

@@ -89,8 +89,16 @@ export function LoopToyPage() {
             flexDirection: "row",
           }}
         >
-          <div style={{ flexGrow: 1, maxWidth: 256 + 128, display: "flex" }}>
+          <div
+            style={{
+              flexGrow: 1,
+              maxWidth: 256 + 128,
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
             <svg
+              style={{ flexGrow: 1 }}
               viewBox={`${-1.25} ${-1.25} ${2.5} ${2.5}`}
               // width={256}
               // height={256}

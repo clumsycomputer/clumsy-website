@@ -1,6 +1,5 @@
 .pageContentContainer {
   width: 100%;  
   max-width: 512px;
-  height: calc(100vh - env(safe-area-inset-bottom));
   overflow: hidden;
 }

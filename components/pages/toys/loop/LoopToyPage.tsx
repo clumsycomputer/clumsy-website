@@ -6,6 +6,15 @@ import { getLoopPoint } from "./common/geometry/loop/getLoopPoint";
 import styles from "./LoopToyPage.module.scss";
 
 export function LoopToyPage() {
+  const [viewportHeight, setViewportHeight] = useState(0);
+  useEffect(() => {
+    if (window?.visualViewport) {
+      window.visualViewport!.addEventListener("resize", () => {
+        setViewportHeight(window.visualViewport!.height);
+      });
+      setViewportHeight(window.visualViewport!.height);
+    }
+  }, []);
   const activeCellInputRef = useRef<HTMLInputElement>(null);
   const [activeCellState, setActiveCellState] = useState<ActiveCellState>({
     stateType: "noActiveCell",
@@ -79,114 +88,141 @@ export function LoopToyPage() {
         style={{
           display: "flex",
           flexDirection: "column",
-          padding: 8,
-          paddingBottom: 0,
+          height: viewportHeight,
         }}
       >
         <div
           style={{
             display: "flex",
-            flexDirection: "row",
+            flexDirection: "column",
+            padding: 8,
+            paddingBottom: 0,
           }}
         >
           <div
             style={{
-              flexGrow: 1,
-              maxWidth: 256 + 128,
               display: "flex",
-              flexDirection: "column",
+              flexDirection: "row",
             }}
           >
-            <svg
-              style={{ flexGrow: 1 }}
-              viewBox={`${-1.25} ${-1.25} ${2.5} ${2.5}`}
-              // width={256}
-              // height={256}
+            <div
+              style={{
+                flexGrow: 1,
+                maxWidth: 256 + 128,
+                display: "flex",
+                flexDirection: "column",
+              }}
             >
-              <rect
-                x={-1.25}
-                y={-1.25}
-                width={2.5}
-                height={2.5}
-                fill={"gray"}
-              />
-              <g transform="scale(1,-1)">
-                <polygon
-                  points={loopPointsData
-                    .map(
-                      (someLoopPointData) =>
-                        `${
-                          someLoopPointData[1][0][0] /
-                          someLoopPointData[1][1][0]
-                        },${
-                          someLoopPointData[1][0][1] /
-                          someLoopPointData[1][1][0]
-                        }`
-                    )
-                    .join(" ")}
-                  fillOpacity={0}
-                  strokeWidth={0.03}
-                  stroke={"yellow"}
-                  strokeLinejoin={"round"}
-                  strokeLinecap={"round"}
+              <svg
+                style={{ flexGrow: 1 }}
+                viewBox={`${-1.25} ${-1.25} ${2.5} ${2.5}`}
+                // width={256}
+                // height={256}
+              >
+                <rect
+                  x={-1.25}
+                  y={-1.25}
+                  width={2.5}
+                  height={2.5}
+                  fill={"gray"}
                 />
-              </g>
-            </svg>
+                <g transform="scale(1,-1)">
+                  <polygon
+                    points={loopPointsData
+                      .map(
+                        (someLoopPointData) =>
+                          `${
+                            someLoopPointData[1][0][0] /
+                            someLoopPointData[1][1][0]
+                          },${
+                            someLoopPointData[1][0][1] /
+                            someLoopPointData[1][1][0]
+                          }`
+                      )
+                      .join(" ")}
+                    fillOpacity={0}
+                    strokeWidth={0.03}
+                    stroke={"yellow"}
+                    strokeLinejoin={"round"}
+                    strokeLinecap={"round"}
+                  />
+                </g>
+              </svg>
+            </div>
           </div>
+          <div
+            style={{
+              marginTop: 8,
+              // borderTopStyle: "solid",
+              // borderTopColor: "lightgrey",
+              // borderTopWidth: 1,
+            }}
+          />
         </div>
         <div
           style={{
-            marginTop: 8,
-            // borderTopStyle: "solid",
-            // borderTopColor: "lightgrey",
-            // borderTopWidth: 1,
+            display: "flex",
+            flexDirection: "column",
+            padding: 8,
+            paddingBottom: 0,
           }}
-        />
-      </div>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          padding: 8,
-          paddingBottom: 0,
-        }}
-      >
-        {activeCellState.stateType === "noActiveCell" ? (
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "center",
-              fontSize: 18,
-              fontWeight: 600,
-              fontStyle: "italic",
-              padding: 8,
-            }}
-          >
-            no cell selected
-          </div>
-        ) : (
-          <div style={{ display: "flex", flexDirection: "column", padding: 8 }}>
-            <div style={{ fontWeight: 600, fontSize: 18 }}>
-              {activeCellState.layerIndex}: {activeCellState.fieldLabel}
+        >
+          {activeCellState.stateType === "noActiveCell" ? (
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "center",
+                fontSize: 18,
+                fontWeight: 600,
+                fontStyle: "italic",
+                padding: 8,
+              }}
+            >
+              no cell selected
             </div>
-            <div style={{ display: "flex" }}>
-              <input
-                ref={activeCellInputRef}
-                style={{ fontSize: 18, fontWeight: 600, fontStyle: "italic" }}
-                type={"number"}
-                step={0.04}
-                value={parseFloat(activeCellState.fieldValue.toFixed(4))}
-                onChange={(someChangeEvent) => {
-                  setActiveCellState((currentActiveCellState) => {
-                    return {
-                      ...currentActiveCellState,
-                      fieldValue: Number(someChangeEvent.target.value),
-                    };
-                  });
-                }}
-                onKeyDown={(someKeyDownEvent) => {
-                  if (someKeyDownEvent.key === "Enter") {
+          ) : (
+            <div
+              style={{ display: "flex", flexDirection: "column", padding: 8 }}
+            >
+              <div style={{ fontWeight: 600, fontSize: 18 }}>
+                {activeCellState.layerIndex}: {activeCellState.fieldLabel}
+              </div>
+              <div style={{ display: "flex" }}>
+                <input
+                  ref={activeCellInputRef}
+                  style={{ fontSize: 18, fontWeight: 600, fontStyle: "italic" }}
+                  type={"number"}
+                  step={0.04}
+                  value={parseFloat(activeCellState.fieldValue.toFixed(4))}
+                  onChange={(someChangeEvent) => {
+                    setActiveCellState((currentActiveCellState) => {
+                      return {
+                        ...currentActiveCellState,
+                        fieldValue: Number(someChangeEvent.target.value),
+                      };
+                    });
+                  }}
+                  onKeyDown={(someKeyDownEvent) => {
+                    if (someKeyDownEvent.key === "Enter") {
+                      setLayersState((currentLayersState) => {
+                        const nextLayersState = [...currentLayersState];
+                        nextLayersState.splice(activeCellState.layerIndex, 1, {
+                          ...nextLayersState[activeCellState.layerIndex],
+                          [activeCellState.fieldKey]:
+                            activeCellState.fieldValue === 1
+                              ? 1
+                              : activeCellState.fieldValue < 0
+                              ? ((activeCellState.fieldValue % 1) + 1) % 1
+                              : activeCellState.fieldValue > 1
+                              ? activeCellState.fieldValue % 1
+                              : activeCellState.fieldValue,
+                        });
+                        return nextLayersState;
+                      });
+                    }
+                  }}
+                  onBlur={() => {
                     setLayersState((currentLayersState) => {
                       const nextLayersState = [...currentLayersState];
                       nextLayersState.splice(activeCellState.layerIndex, 1, {
@@ -202,168 +238,151 @@ export function LoopToyPage() {
                       });
                       return nextLayersState;
                     });
-                  }
-                }}
-                onBlur={() => {
-                  setLayersState((currentLayersState) => {
-                    const nextLayersState = [...currentLayersState];
-                    nextLayersState.splice(activeCellState.layerIndex, 1, {
-                      ...nextLayersState[activeCellState.layerIndex],
-                      [activeCellState.fieldKey]:
-                        activeCellState.fieldValue === 1
-                          ? 1
-                          : activeCellState.fieldValue < 0
-                          ? ((activeCellState.fieldValue % 1) + 1) % 1
-                          : activeCellState.fieldValue > 1
-                          ? activeCellState.fieldValue % 1
-                          : activeCellState.fieldValue,
-                    });
-                    return nextLayersState;
-                  });
-                }}
-              />
-            </div>
-          </div>
-        )}
-        <div
-          style={{
-            marginTop: 8,
-            borderTopStyle: "solid",
-            borderTopColor: "lightgrey",
-            borderTopWidth: 1,
-          }}
-        />
-      </div>
-      <div
-        style={{
-          flexShrink: 1,
-          display: "flex",
-          flexDirection: "column",
-          overflow: "scroll",
-          paddingTop: 8,
-          paddingBottom: 8,
-        }}
-      >
-        {layersState.map((someLayerState, layerIndex) => {
-          return (
-            <div
-              key={someLayerState.loopLayerId}
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                padding: 8,
-              }}
-            >
-              <div
-                style={{
-                  flexShrink: 1,
-                  display: "flex",
-                  flexDirection: "row",
-                  flexWrap: "wrap",
-                }}
-              >
-                <LoopLayerCell
-                  cellValue={someLayerState.relativeSubRadius}
-                  onClick={() => {
-                    setActiveCellState({
-                      stateType: "activeCellSelected",
-                      fieldKey: "relativeSubRadius",
-                      fieldLabel: "radius",
-                      layerIndex,
-                      fieldValue: someLayerState.relativeSubRadius,
-                    });
-                  }}
-                />
-                <LoopLayerCell
-                  cellValue={someLayerState.relativeSubDepth}
-                  onClick={() => {
-                    setActiveCellState({
-                      stateType: "activeCellSelected",
-                      fieldKey: "relativeSubDepth",
-                      fieldLabel: "depth",
-                      layerIndex,
-                      fieldValue: someLayerState.relativeSubDepth,
-                    });
-                  }}
-                />
-                <LoopLayerCell
-                  cellValue={someLayerState.relativeSubPhase}
-                  onClick={() => {
-                    setActiveCellState({
-                      stateType: "activeCellSelected",
-                      fieldKey: "relativeSubPhase",
-                      fieldLabel: "phase",
-                      layerIndex,
-                      fieldValue: someLayerState.relativeSubPhase,
-                    });
-                  }}
-                />
-                <LoopLayerCell
-                  cellValue={someLayerState.relativeSubOrientation}
-                  onClick={() => {
-                    setActiveCellState({
-                      stateType: "activeCellSelected",
-                      fieldKey: "relativeSubOrientation",
-                      fieldLabel: "orientation",
-                      layerIndex,
-                      fieldValue: someLayerState.relativeSubOrientation,
-                    });
-                  }}
-                />
-                <LoopLayerCell
-                  cellValue={someLayerState.relativeLoopRotation}
-                  onClick={() => {
-                    setActiveCellState({
-                      stateType: "activeCellSelected",
-                      fieldKey: "relativeLoopRotation",
-                      fieldLabel: "rotation",
-                      layerIndex,
-                      fieldValue: someLayerState.relativeLoopRotation,
-                    });
                   }}
                 />
               </div>
-              <div
-                style={{
-                  flexGrow: 1,
-                  flexShrink: 0,
-                  padding: 8,
-                  paddingLeft: 16,
-                  display: "flex",
-                  flexDirection: "row",
-                  justifyContent: "flex-end",
-                  alignItems: "flex-start",
-                }}
-              >
-                <button style={{ fontWeight: 600, fontSize: 18 }}>⋮</button>
-              </div>
             </div>
-          );
-        })}
+          )}
+          <div
+            style={{
+              marginTop: 8,
+              borderTopStyle: "solid",
+              borderTopColor: "lightgrey",
+              borderTopWidth: 1,
+            }}
+          />
+        </div>
         <div
           style={{
+            flexShrink: 1,
             display: "flex",
-            flexDirection: "row",
-            padding: 16,
+            flexDirection: "column",
+            overflow: "scroll",
+            paddingTop: 8,
+            paddingBottom: 8,
           }}
         >
-          <button
+          {layersState.map((someLayerState, layerIndex) => {
+            return (
+              <div
+                key={someLayerState.loopLayerId}
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  padding: 8,
+                }}
+              >
+                <div
+                  style={{
+                    flexShrink: 1,
+                    display: "flex",
+                    flexDirection: "row",
+                    flexWrap: "wrap",
+                  }}
+                >
+                  <LoopLayerCell
+                    cellValue={someLayerState.relativeSubRadius}
+                    onClick={() => {
+                      setActiveCellState({
+                        stateType: "activeCellSelected",
+                        fieldKey: "relativeSubRadius",
+                        fieldLabel: "radius",
+                        layerIndex,
+                        fieldValue: someLayerState.relativeSubRadius,
+                      });
+                    }}
+                  />
+                  <LoopLayerCell
+                    cellValue={someLayerState.relativeSubDepth}
+                    onClick={() => {
+                      setActiveCellState({
+                        stateType: "activeCellSelected",
+                        fieldKey: "relativeSubDepth",
+                        fieldLabel: "depth",
+                        layerIndex,
+                        fieldValue: someLayerState.relativeSubDepth,
+                      });
+                    }}
+                  />
+                  <LoopLayerCell
+                    cellValue={someLayerState.relativeSubPhase}
+                    onClick={() => {
+                      setActiveCellState({
+                        stateType: "activeCellSelected",
+                        fieldKey: "relativeSubPhase",
+                        fieldLabel: "phase",
+                        layerIndex,
+                        fieldValue: someLayerState.relativeSubPhase,
+                      });
+                    }}
+                  />
+                  <LoopLayerCell
+                    cellValue={someLayerState.relativeSubOrientation}
+                    onClick={() => {
+                      setActiveCellState({
+                        stateType: "activeCellSelected",
+                        fieldKey: "relativeSubOrientation",
+                        fieldLabel: "orientation",
+                        layerIndex,
+                        fieldValue: someLayerState.relativeSubOrientation,
+                      });
+                    }}
+                  />
+                  <LoopLayerCell
+                    cellValue={someLayerState.relativeLoopRotation}
+                    onClick={() => {
+                      setActiveCellState({
+                        stateType: "activeCellSelected",
+                        fieldKey: "relativeLoopRotation",
+                        fieldLabel: "rotation",
+                        layerIndex,
+                        fieldValue: someLayerState.relativeLoopRotation,
+                      });
+                    }}
+                  />
+                </div>
+                <div
+                  style={{
+                    flexGrow: 1,
+                    flexShrink: 0,
+                    padding: 8,
+                    paddingLeft: 16,
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "flex-end",
+                    alignItems: "flex-start",
+                  }}
+                >
+                  <button style={{ fontWeight: 600, fontSize: 18 }}>⋮</button>
+                </div>
+              </div>
+            );
+          })}
+          <div
             style={{
-              flexGrow: 1,
-              fontWeight: 600,
-              fontSize: 18,
-            }}
-            onClick={() => {
-              setLayersState((currentLayersState) => [
-                ...currentLayersState,
-                getNewLoopLayer({
-                  loopLayerId: generateLoopLayerId(),
-                }),
-              ]);
+              display: "flex",
+              flexDirection: "row",
+              padding: 16,
             }}
           >
-            add layer
-          </button>
+            <button
+              style={{
+                flexGrow: 1,
+                fontWeight: 600,
+                fontSize: 18,
+              }}
+              onClick={() => {
+                setLayersState((currentLayersState) => [
+                  ...currentLayersState,
+                  getNewLoopLayer({
+                    loopLayerId: generateLoopLayerId(),
+                  }),
+                ]);
+              }}
+            >
+              add layer
+            </button>
+          </div>
         </div>
       </div>
     </Page>

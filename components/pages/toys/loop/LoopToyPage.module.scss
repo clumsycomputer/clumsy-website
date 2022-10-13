@@ -1,5 +1,11 @@
-.pageContentContainer {
-  width: 100%;  
-  max-width: 512px;
-  overflow: hidden;
+.pageContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.graphicsContainer {}
+
+.cellListContainer {
+  display: flex;
+  flex-direction: column;
 }

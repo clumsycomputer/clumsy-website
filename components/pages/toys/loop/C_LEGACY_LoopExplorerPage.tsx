@@ -1,7 +1,10 @@
 import { useState } from "react";
-import { Point2 } from "./common/geometry/general/encodings";
-import { LoopPoint, LoopStructure } from "./common/geometry/loop/encodings";
-import { getLoopPoint } from "./common/geometry/loop/getLoopPoint";
+import { Point2 } from "./D_LEGACY_common/geometry/general/encodings";
+import {
+  LoopPoint,
+  LoopStructure,
+} from "./D_LEGACY_common/geometry/loop/encodings";
+import { getLoopPoint } from "./D_LEGACY_common/geometry/loop/getLoopPoint";
 
 export function LoopExplorerPage() {
   const [loopLayers, setLoopLayers] = useState<Array<LoopLayer>>([]);

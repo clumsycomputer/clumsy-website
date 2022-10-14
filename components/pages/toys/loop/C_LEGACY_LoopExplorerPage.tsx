@@ -16,7 +16,10 @@ export function LoopExplorerPage() {
   const loopStructure = getLoopStructure({
     someLoopLayers: loopLayers,
   });
-  const pointCount = 1024;
+  const [_, ...otherDiagramLoopStructures] = getLoopStructures({
+    someLoopStructure: loopStructure,
+  });
+  const pointCount = 512;
   const maxPointMagnitudeRef: [number] = [0];
   const maxCosineMagnitudeRef: [number] = [0];
   const maxSineMagnitudeRef: [number] = [0];
@@ -111,6 +114,34 @@ export function LoopExplorerPage() {
                   />
                 );
               })}
+              {otherDiagramLoopStructures.map((someLoopStructure) => (
+                <polygon
+                  points={new Array(pointCount)
+                    .fill(undefined)
+                    .map((_, pointIndex) =>
+                      getLoopPoint({
+                        someLoopStructure,
+                        inputAngle: ((2 * Math.PI) / pointCount) * pointIndex,
+                      })
+                    )
+                    .map(
+                      (someLoopPoint) =>
+                        `${
+                          (someLoopPoint[0] - someLoopPoint[2][0]) /
+                          loopPointsData[0][1][1][0]
+                        },${
+                          (someLoopPoint[1] - someLoopPoint[2][1]) /
+                          loopPointsData[0][1][1][0]
+                        }`
+                    )
+                    .join(" ")}
+                  fillOpacity={0}
+                  strokeWidth={0.03}
+                  stroke={"deepskyblue"}
+                  strokeLinejoin={"round"}
+                  strokeLinecap={"round"}
+                />
+              ))}
               <polygon
                 points={loopPointsData
                   .map(
@@ -539,18 +570,6 @@ function getUnitSubCircle(api: GetUnitSubCircleApi): {
   unitSubCircle: Circle;
 } {
   const { relativeSubRadius, relativeSubDepth, subPhase } = api;
-  // const adjustedRelativeSubRadius =
-  //   relativeSubRadius === 0
-  //     ? 0.000000000001
-  //     : relativeSubRadius === 1
-  //     ? 0.999999999999
-  //     : relativeSubRadius;
-  // const adjustedRelativeSubDepth =
-  //   relativeSubDepth === 0
-  //     ? 0.000000000001
-  //     : relativeSubDepth === 1
-  //     ? 0.999999999999
-  //     : relativeSubDepth;
   const subCircleRadius = relativeSubRadius;
   const maxSubCircleDepth = 1 - subCircleRadius;
   const subCircleDepth = relativeSubDepth * maxSubCircleDepth;
@@ -563,4 +582,52 @@ function getUnitSubCircle(api: GetUnitSubCircleApi): {
       ],
     },
   };
+}
+
+interface GetLoopStructuresApi {
+  someLoopStructure: LoopStructure;
+}
+
+function getLoopStructures(api: GetLoopStructuresApi): Array<LoopStructure> {
+  const { someLoopStructure } = api;
+  const nextLoopStructures =
+    someLoopStructure.subStructure.structureType === "interposed"
+      ? getLoopStructures({
+          someLoopStructure: {
+            structureType: "initial",
+            loopBase: getNextLoopBase({
+              someLoopStructure,
+            }),
+            subStructure: someLoopStructure.subStructure.subStructure,
+          },
+        })
+      : [];
+  return [someLoopStructure, ...nextLoopStructures];
+}
+
+interface GetNextLoopBaseApi {
+  someLoopStructure: LoopStructure;
+}
+
+function getNextLoopBase(api: GetNextLoopBaseApi): Circle {
+  const { someLoopStructure } = api;
+  const { unitSubCircle } = getUnitSubCircle({
+    relativeSubRadius: someLoopStructure.subStructure.relativeSubRadius,
+    relativeSubDepth: someLoopStructure.subStructure.relativeSubDepth,
+    subPhase: someLoopStructure.subStructure.subPhase,
+  });
+  const orientedUnitSubCenter = getUnitRotatedPoint({
+    rotationAngle: someLoopStructure.subStructure.subOrientation,
+    subjectPoint: unitSubCircle.center,
+  });
+  const scaledAndOrientedSubCircle: Circle = {
+    radius: someLoopStructure.loopBase.radius * unitSubCircle.radius,
+    center: [
+      someLoopStructure.loopBase.radius * orientedUnitSubCenter[0] +
+        someLoopStructure.loopBase.center[0],
+      someLoopStructure.loopBase.radius * orientedUnitSubCenter[1] +
+        someLoopStructure.loopBase.center[1],
+    ],
+  };
+  return scaledAndOrientedSubCircle;
 }

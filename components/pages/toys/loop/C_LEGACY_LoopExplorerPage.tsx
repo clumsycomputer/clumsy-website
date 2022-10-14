@@ -1,4 +1,5 @@
 import { ExtractInterposedStructure } from "clumsy-math";
+import { re } from "mathjs";
 import { useState } from "react";
 import { Circle, Point2 } from "./D_LEGACY_common/geometry/general/encodings";
 import { getUnitRotatedPoint } from "./D_LEGACY_common/geometry/general/getRotatedPoint";
@@ -10,85 +11,120 @@ import {
   getLoopPoint,
   GetLoopPointApi,
 } from "./D_LEGACY_common/geometry/loop/getLoopPoint";
+import { getCirclePoint } from "./LEGACY_common/geometry/general";
 
 export function LoopExplorerPage() {
   const [loopLayers, setLoopLayers] = useState<Array<LoopLayer>>([]);
   const loopStructure = getLoopStructure({
     someLoopLayers: loopLayers,
   });
-  const [_, ...otherDiagramLoopStructures] = getLoopStructures({
+  const diagramLoopStructures = getLoopStructures({
     someLoopStructure: loopStructure,
   });
+  const [_, ...otherDiagramLoopStructures] = diagramLoopStructures;
   const pointCount = 512;
   const maxPointMagnitudeRef: [number] = [0];
   const maxCosineMagnitudeRef: [number] = [0];
   const maxSineMagnitudeRef: [number] = [0];
-  // const maxPendulumMagnitudeRef: [number] = [0];
-  const loopPointsData = new Array(pointCount).fill(undefined).map<
-    [
-      LoopPoint,
-      [Point2, [number]],
-      [number, [number]],
-      [number, [number]]
-      // [number, [number]]
-    ]
-  >((_, pointIndex) => {
-    const loopPoint = getLoopPoint({
-      someLoopStructure: loopStructure,
-      inputAngle: ((2 * Math.PI) / pointCount) * pointIndex,
+  const maxPendulumMagnitudeRef: [number] = [0];
+  const loopPointsData = new Array(pointCount)
+    .fill(undefined)
+    .map<
+      [
+        LoopPoint,
+        [Point2, [number]],
+        [number, [number]],
+        [number, [number]],
+        [number, [number]]
+      ]
+    >((_, pointIndex) => {
+      const loopPoint = getLoopPoint({
+        someLoopStructure: loopStructure,
+        inputAngle: ((2 * Math.PI) / pointCount) * pointIndex,
+      });
+      const deltaLoopPointX = loopPoint[0] - loopPoint[2][0];
+      const deltaLoopPointY = loopPoint[1] - loopPoint[2][1];
+      const loopPointMagnitude = Math.sqrt(
+        deltaLoopPointX * deltaLoopPointX + deltaLoopPointY * deltaLoopPointY
+      );
+      maxPointMagnitudeRef[0] =
+        loopPointMagnitude > maxPointMagnitudeRef[0]
+          ? loopPointMagnitude
+          : maxPointMagnitudeRef[0];
+      const zeroOriginLoopPoint: Point2 = [
+        loopPoint[0] - loopPoint[2][0],
+        loopPoint[1] - loopPoint[2][1],
+      ];
+      const pointCosine = loopPoint[0] - loopPoint[2][0];
+      const pointCosineMagnitude = Math.abs(pointCosine);
+      maxCosineMagnitudeRef[0] =
+        pointCosineMagnitude > maxCosineMagnitudeRef[0]
+          ? pointCosineMagnitude
+          : maxCosineMagnitudeRef[0];
+      const pointSine = loopPoint[1] - loopPoint[2][1];
+      const pointSineMagnitude = Math.abs(pointSine);
+      maxSineMagnitudeRef[0] =
+        pointSineMagnitude > maxSineMagnitudeRef[0]
+          ? pointSineMagnitude
+          : maxSineMagnitudeRef[0];
+      // const outputBaseAngle = getNormalizedAngleBetweenPoints({
+      //   originPoint: loopPoint[2],
+      //   subjectPoint: loopPoint[4],
+      // });
+      // const outputLoopAngle = getNormalizedAngleBetweenPoints({
+      //   originPoint: loopPoint[2],
+      //   subjectPoint: [loopPoint[0], loopPoint[1]],
+      // });
+      // const pointPendulum = getDifferenceBetweenNormalizedAngles({
+      //   normalizedAngleA: outputBaseAngle,
+      //   normalizedAngleB: outputLoopAngle,
+      // });
+      const pointPendulum = getLoopPointPendulum({
+        someLoopPoint: loopPoint,
+      });
+      const pointPendulumMagnitude = Math.abs(pointPendulum);
+      maxPendulumMagnitudeRef[0] =
+        pointPendulumMagnitude > maxPendulumMagnitudeRef[0]
+          ? pointPendulumMagnitude
+          : maxPendulumMagnitudeRef[0];
+      return [
+        loopPoint,
+        [zeroOriginLoopPoint, maxPointMagnitudeRef],
+        [pointCosine, maxCosineMagnitudeRef],
+        [pointSine, maxSineMagnitudeRef],
+        [pointPendulum, maxPendulumMagnitudeRef],
+      ];
     });
-    const deltaLoopPointX = loopPoint[0] - loopPoint[2][0];
-    const deltaLoopPointY = loopPoint[1] - loopPoint[2][1];
-    const loopPointMagnitude = Math.sqrt(
-      deltaLoopPointX * deltaLoopPointX + deltaLoopPointY * deltaLoopPointY
-    );
-    maxPointMagnitudeRef[0] =
-      loopPointMagnitude > maxPointMagnitudeRef[0]
-        ? loopPointMagnitude
-        : maxPointMagnitudeRef[0];
-    const zeroOriginLoopPoint: Point2 = [
-      loopPoint[0] - loopPoint[2][0],
-      loopPoint[1] - loopPoint[2][1],
-    ];
-    const pointCosine = loopPoint[0] - loopPoint[2][0];
-    const pointCosineMagnitude = Math.abs(pointCosine);
-    maxCosineMagnitudeRef[0] =
-      pointCosineMagnitude > maxCosineMagnitudeRef[0]
-        ? pointCosineMagnitude
-        : maxCosineMagnitudeRef[0];
-    const pointSine = loopPoint[1] - loopPoint[2][1];
-    const pointSineMagnitude = Math.abs(pointSine);
-    maxSineMagnitudeRef[0] =
-      pointSineMagnitude > maxSineMagnitudeRef[0]
-        ? pointSineMagnitude
-        : maxSineMagnitudeRef[0];
-    // const outputAngle = getNormalizedAngleBetweenPoints({
-    //   subjectPoint: [loopPoint[0], loopPoint[1]],
-    //   originPoint: loopPoint[2],
-    // });
-    // const pointPendulum = getDifferenceBetweenNormalizedAngles({
-    //   normalizedAngleA: loopPoint[4],
-    //   normalizedAngleB: outputAngle,
-    // });
-    // const pointPendulumMagnitude = Math.abs(pointPendulum);
-    // maxPendulumMagnitudeRef[0] =
-    //   pointPendulumMagnitude > maxPendulumMagnitudeRef[0]
-    //     ? pointPendulumMagnitude
-    //     : maxPendulumMagnitudeRef[0];
-    return [
-      loopPoint,
-      [zeroOriginLoopPoint, maxPointMagnitudeRef],
-      [pointCosine, maxCosineMagnitudeRef],
-      [pointSine, maxSineMagnitudeRef],
-      // [pointPendulum, maxPendulumMagnitudeRef],
-    ];
-  });
   const loopCircles = getLoopCircles({
     someLoopStructure: loopStructure,
   });
+  const [relativeTraceAngle, setRelativeTraceAngle] = useState(0);
+  const tracePoint = getLoopPoint({
+    someLoopStructure: loopStructure,
+    inputAngle: 2 * Math.PI * relativeTraceAngle,
+  });
+  // console.log(
+  //   getAngleBetweenPoints({
+  //     originPoint: tracePoint[2],
+  //     subjectPoint: tracePoint[4],
+  //   })
+  // );
+  // console.log(
+  //   getAngleBetweenPoints({
+  //     originPoint: tracePoint[2],
+  //     subjectPoint: [tracePoint[0], tracePoint[1]],
+  //   })
+  // );
+  // const tracePendulum = getLoopPointPendulum({
+  //   someLoopPoint: tracePoint,
+  // });
+  // console.log(tracePendulum);
+  // console.log("");
   return (
     <div style={{ display: "flex", flexDirection: "column" }}>
-      <div style={{ display: "flex", flexDirection: "row" }}>
+      <div
+        style={{ display: "flex", flexDirection: "row", overflow: "scroll" }}
+      >
         <div style={{ padding: 8 }}>
           <svg
             viewBox={`${-1.25} ${-1.25} ${2.5} ${2.5}`}
@@ -138,6 +174,7 @@ export function LoopExplorerPage() {
                   fillOpacity={0}
                   strokeWidth={0.03}
                   stroke={"deepskyblue"}
+                  strokeOpacity={0.75}
                   strokeLinejoin={"round"}
                   strokeLinecap={"round"}
                 />
@@ -159,6 +196,44 @@ export function LoopExplorerPage() {
                 strokeLinejoin={"round"}
                 strokeLinecap={"round"}
               />
+              <circle
+                cx={
+                  (tracePoint[4][0] -
+                    loopCircles[loopCircles.length - 1].center[0]) /
+                  loopPointsData[0][1][1][0]
+                }
+                cy={
+                  (tracePoint[4][1] -
+                    loopCircles[loopCircles.length - 1].center[1]) /
+                  loopPointsData[0][1][1][0]
+                }
+                r={0.04}
+                fill={"lime"}
+              />
+              <circle
+                cx={
+                  (tracePoint[0] - loopPointsData[0][0][2][0]) /
+                  loopPointsData[0][1][1][0]
+                }
+                cy={
+                  (tracePoint[1] - loopPointsData[0][0][2][1]) /
+                  loopPointsData[0][1][1][0]
+                }
+                r={0.03}
+                fill={"black"}
+              />
+              {/* <circle
+                cx={
+                  (tracePoint[0] - loopPointsData[0][0][2][0]) /
+                  loopPointsData[0][1][1][0]
+                }
+                cy={
+                  (tracePoint[1] - loopPointsData[0][0][2][1]) /
+                  loopPointsData[0][1][1][0]
+                }
+                r={0.03}
+                fill={"red"}
+              /> */}
             </g>
           </svg>
         </div>
@@ -214,8 +289,44 @@ export function LoopExplorerPage() {
             </g>
           </svg>
         </div>
+        <div style={{ padding: 8 }}>
+          <svg
+            viewBox={`${-1.25} ${-1.25} ${2.5} ${2.5}`}
+            width={256}
+            height={256}
+          >
+            <rect x={-1.25} y={-1.25} width={2.5} height={2.5} fill={"gray"} />
+            <g transform="scale(1,-1)">
+              <polyline
+                points={loopPointsData
+                  .map(
+                    (someLoopPointData, pointIndex) =>
+                      `${(pointIndex / loopPointsData.length) * 2 - 1},${
+                        someLoopPointData[4][0] / someLoopPointData[4][1][0]
+                      }`
+                  )
+                  .join(" ")}
+                stroke={"yellow"}
+                strokeWidth={0.03}
+                fillOpacity={0}
+                strokeLinecap={"round"}
+                strokeLinejoin={"round"}
+              />
+            </g>
+          </svg>
+        </div>
       </div>
       <div style={{ display: "flex", flexDirection: "column" }}>
+        <div style={{ display: "flex", flexDirection: "row" }}>
+          <RelativeNumberField
+            label={"trace"}
+            value={relativeTraceAngle}
+            valueStep={1 / 50}
+            onValueChange={(nextRelativeTraceAngle) => {
+              setRelativeTraceAngle(nextRelativeTraceAngle);
+            }}
+          />
+        </div>
         <div style={{ display: "flex", flexDirection: "row" }}>
           <div style={{ padding: 8 }}>
             <button
@@ -496,20 +607,6 @@ function getNormalizedAngleBetweenPoints(
   });
 }
 
-interface GetDifferenceBetweenNormalizedAnglesApi {
-  normalizedAngleA: number;
-  normalizedAngleB: number;
-}
-
-function getDifferenceBetweenNormalizedAngles(
-  api: GetDifferenceBetweenNormalizedAnglesApi
-) {
-  const { normalizedAngleB, normalizedAngleA } = api;
-  return normalizedAngleB < Math.PI && normalizedAngleA > Math.PI
-    ? 2 * Math.PI + normalizedAngleB - normalizedAngleA
-    : normalizedAngleB - normalizedAngleA;
-}
-
 interface GetLoopCirclesApi {
   someLoopStructure: LoopStructure;
 }
@@ -630,4 +727,25 @@ function getNextLoopBase(api: GetNextLoopBaseApi): Circle {
     ],
   };
   return scaledAndOrientedSubCircle;
+}
+
+interface GetLoopPointPendulumApi {
+  someLoopPoint: LoopPoint;
+}
+function getLoopPointPendulum(api: GetLoopPointPendulumApi) {
+  const { someLoopPoint } = api;
+  const outputBaseAngle = getNormalizedAngleBetweenPoints({
+    originPoint: someLoopPoint[2],
+    subjectPoint: someLoopPoint[4],
+  });
+  const outputLoopAngle = getNormalizedAngleBetweenPoints({
+    originPoint: someLoopPoint[2],
+    subjectPoint: [someLoopPoint[0], someLoopPoint[1]],
+  });
+  const pointPendulum = outputLoopAngle - outputBaseAngle;
+  return pointPendulum > Math.PI
+    ? outputLoopAngle - (2 * Math.PI + outputBaseAngle)
+    : pointPendulum < -Math.PI
+    ? 2 * Math.PI + outputLoopAngle - outputBaseAngle
+    : pointPendulum;
 }

@@ -33,10 +33,10 @@ function _getLoopPoint(api: _GetLoopPointApi): LoopPoint {
     baseStructure,
     inputAngle,
   });
-  const { unitBasePointX } = getUnitBasePointX({
+  const { unitBasePoint } = getUnitBasePoint({
     unitSubPoint,
   });
-  const unitLoopPoint: Point2 = [unitBasePointX, unitSubPoint[1]];
+  const unitLoopPoint: Point2 = [unitBasePoint[0], unitSubPoint[1]];
   const orientedUnitOrigin = getUnitRotatedPoint({
     rotationAngle: baseStructure.subStructure.subOrientation,
     subjectPoint: unitSubPoint[2],
@@ -50,6 +50,15 @@ function _getLoopPoint(api: _GetLoopPointApi): LoopPoint {
     anchorPoint: orientedUnitOrigin,
     subjectPoint: orientedUnitLoopPoint,
   });
+  const orientedUnitBasePoint = getUnitRotatedPoint({
+    rotationAngle: baseStructure.subStructure.subOrientation,
+    subjectPoint: unitBasePoint,
+  });
+  const rotatedUnitBasePoint = getRotatedPoint({
+    rotationAngle: baseStructure.subStructure.loopRotation,
+    anchorPoint: orientedUnitOrigin,
+    subjectPoint: orientedUnitBasePoint,
+  });
   return [
     baseCircle.radius * rotatedUnitLoopPoint[0] + baseCircle.center[0],
     baseCircle.radius * rotatedUnitLoopPoint[1] + baseCircle.center[1],
@@ -58,6 +67,10 @@ function _getLoopPoint(api: _GetLoopPointApi): LoopPoint {
       baseCircle.radius * orientedUnitOrigin[1] + baseCircle.center[1],
     ],
     baseCircle.radius * unitSubPoint[3],
+    [
+      baseCircle.radius * rotatedUnitBasePoint[0] + baseCircle.center[0],
+      baseCircle.radius * rotatedUnitBasePoint[1] + baseCircle.center[1],
+    ],
   ];
 }
 
@@ -88,7 +101,7 @@ function getUnitSubPoint(api: GetUnitSubPointApi): {
               unitSubCircle.center[1],
             unitSubCircle.center,
             unitSubCircle.radius,
-            // inputAngle,
+            [NaN, NaN], // not really needed, just lazy and wanted to appease typescript
           ],
   };
 }
@@ -129,17 +142,18 @@ function getUnitSubCircle(api: GetUnitSubCircleApi): {
   };
 }
 
-interface GetUnitBasePointXApi {
+interface GetUnitBasePointApi {
   unitSubPoint: LoopPoint;
 }
 
-function getUnitBasePointX(api: GetUnitBasePointXApi): {
-  unitBasePointX: number;
+function getUnitBasePoint(api: GetUnitBasePointApi): {
+  unitBasePoint: Point2;
 } {
   const { unitSubPoint } = api;
   const deltaX = unitSubPoint[2][0] - unitSubPoint[0];
   const otherDeltaX = unitSubPoint[0] - unitSubPoint[2][0];
   const deltaY = unitSubPoint[2][1] - unitSubPoint[1];
+  const otherDeltaY = unitSubPoint[1] - unitSubPoint[2][1];
   const squaredDeltaX = deltaX * deltaX;
   const squaredDeltaY = deltaY * deltaY;
   const squaredDeltaAdded = squaredDeltaX + squaredDeltaY;
@@ -154,7 +168,9 @@ function getUnitBasePointX(api: GetUnitBasePointXApi): {
     Math.sqrt(1 - (exprB * exprB) / squaredDeltaAdded) /
     Math.sqrt(squaredDeltaAdded);
   return {
-    unitBasePointX: unitSubPoint[2][0] - deltaX * exprA + otherDeltaX * exprC,
-    // unitBasePointY: unitSubPoint[2][1] + otherDeltaY * exprA + otherDeltaY * exprB,
+    unitBasePoint: [
+      unitSubPoint[2][0] - deltaX * exprA + otherDeltaX * exprC,
+      unitSubPoint[2][1] + otherDeltaY * exprA + otherDeltaY * exprC,
+    ],
   };
 }

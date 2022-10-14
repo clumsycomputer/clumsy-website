@@ -155,5 +155,6 @@ function getUnitBasePointX(api: GetUnitBasePointXApi): {
     Math.sqrt(squaredDeltaAdded);
   return {
     unitBasePointX: unitSubPoint[2][0] - deltaX * exprA + otherDeltaX * exprC,
+    // unitBasePointY: unitSubPoint[2][1] + otherDeltaY * exprA + otherDeltaY * exprB,
   };
 }

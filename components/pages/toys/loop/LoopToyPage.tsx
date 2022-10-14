@@ -1,8 +1,13 @@
 import { RecursiveSpatialStructure } from "clumsy-math";
+import { useMemo } from "react";
 import pageStyles from "./LoopToyPage.module.scss";
 
 export function LoopToyPage() {
-  const loopNode = getLoopObjectNode();
+  const topLevelNodes = useMemo<Array<ComputationNode>>(
+    () => [getLoopObjectNode()],
+    []
+  );
+  // const cell
   return (
     <div className={pageStyles.pageContainer}>
       <div className={pageStyles.graphicsContainer}></div>
@@ -13,20 +18,20 @@ export function LoopToyPage() {
 
 function getLoopObjectNode(): LoopObjectNode {
   return {
-    nodeId: `${Math.random()}`,
     nodeType: "object",
     objectType: "loop",
-    objectData: [],
     objectApi: [
       {
         apiLabel: "push layer",
         apiFunction: pushLoopLayer,
-      },
+      },arn
       {
         apiLabel: "remove layer",
         apiFunction: removeLoopLayer,
       },
     ],
+    nodeId: generateNodeId(),
+    objectData: [],
   };
 }
 
@@ -40,13 +45,16 @@ function pushLoopLayer(api: PushLoopLayerApi): LoopObjectNode["objectData"] {
 
 interface RemoveLoopLayerApi {
   currentObjectData: LoopObjectNode["objectData"];
-  foo: number;
 }
 
 function removeLoopLayer(
   api: RemoveLoopLayerApi
 ): LoopObjectNode["objectData"] {
   return [];
+}
+
+function generateNodeId(): NodeBase<string>["nodeId"] {
+  return `${Math.random()}`;
 }
 
 type ComputationNode = CellNode | RecordNode | ObjectNode;

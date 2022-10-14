@@ -1,10 +1,15 @@
+import { ExtractInterposedStructure } from "clumsy-math";
 import { useState } from "react";
-import { Point2 } from "./D_LEGACY_common/geometry/general/encodings";
+import { Circle, Point2 } from "./D_LEGACY_common/geometry/general/encodings";
+import { getUnitRotatedPoint } from "./D_LEGACY_common/geometry/general/getRotatedPoint";
 import {
   LoopPoint,
   LoopStructure,
 } from "./D_LEGACY_common/geometry/loop/encodings";
-import { getLoopPoint } from "./D_LEGACY_common/geometry/loop/getLoopPoint";
+import {
+  getLoopPoint,
+  GetLoopPointApi,
+} from "./D_LEGACY_common/geometry/loop/getLoopPoint";
 
 export function LoopExplorerPage() {
   const [loopLayers, setLoopLayers] = useState<Array<LoopLayer>>([]);
@@ -15,7 +20,7 @@ export function LoopExplorerPage() {
   const maxPointMagnitudeRef: [number] = [0];
   const maxCosineMagnitudeRef: [number] = [0];
   const maxSineMagnitudeRef: [number] = [0];
-  const maxPendulumMagnitudeRef: [number] = [0];
+  // const maxPendulumMagnitudeRef: [number] = [0];
   const loopPointsData = new Array(pointCount).fill(undefined).map<
     [
       LoopPoint,
@@ -54,10 +59,10 @@ export function LoopExplorerPage() {
       pointSineMagnitude > maxSineMagnitudeRef[0]
         ? pointSineMagnitude
         : maxSineMagnitudeRef[0];
-    const outputAngle = getNormalizedAngleBetweenPoints({
-      subjectPoint: [loopPoint[0], loopPoint[1]],
-      originPoint: loopPoint[2],
-    });
+    // const outputAngle = getNormalizedAngleBetweenPoints({
+    //   subjectPoint: [loopPoint[0], loopPoint[1]],
+    //   originPoint: loopPoint[2],
+    // });
     // const pointPendulum = getDifferenceBetweenNormalizedAngles({
     //   normalizedAngleA: loopPoint[4],
     //   normalizedAngleB: outputAngle,
@@ -75,6 +80,9 @@ export function LoopExplorerPage() {
       // [pointPendulum, maxPendulumMagnitudeRef],
     ];
   });
+  const loopCircles = getLoopCircles({
+    someLoopStructure: loopStructure,
+  });
   return (
     <div style={{ display: "flex", flexDirection: "column" }}>
       <div style={{ display: "flex", flexDirection: "row" }}>
@@ -86,6 +94,23 @@ export function LoopExplorerPage() {
           >
             <rect x={-1.25} y={-1.25} width={2.5} height={2.5} fill={"gray"} />
             <g transform="scale(1,-1)">
+              <circle cx={0} cy={0} r={0.03} fill={"deeppink"} />
+              {loopCircles.map((someLoopCircle) => {
+                const originPoint = loopCircles[loopCircles.length - 1].center;
+                const scaler = loopPointsData[0][1][1][0];
+                return (
+                  <circle
+                    r={someLoopCircle.radius / scaler}
+                    cx={(someLoopCircle.center[0] - originPoint[0]) / scaler}
+                    cy={(someLoopCircle.center[1] - originPoint[1]) / scaler}
+                    fillOpacity={0}
+                    strokeWidth={0.03}
+                    stroke={"deeppink"}
+                    strokeLinejoin={"round"}
+                    strokeLinecap={"round"}
+                  />
+                );
+              })}
               <polygon
                 points={loopPointsData
                   .map(
@@ -452,4 +477,90 @@ function getDifferenceBetweenNormalizedAngles(
   return normalizedAngleB < Math.PI && normalizedAngleA > Math.PI
     ? 2 * Math.PI + normalizedAngleB - normalizedAngleA
     : normalizedAngleB - normalizedAngleA;
+}
+
+interface GetLoopCirclesApi {
+  someLoopStructure: LoopStructure;
+}
+
+function getLoopCircles(api: GetLoopCirclesApi): Array<Circle> {
+  const { someLoopStructure } = api;
+  return [
+    someLoopStructure.loopBase,
+    ..._getLoopCircles({
+      baseStructure: someLoopStructure,
+      baseCircle: someLoopStructure.loopBase,
+    }),
+  ];
+}
+
+interface _GetLoopCirclesApi {
+  baseCircle: Circle;
+  baseStructure:
+    | GetLoopPointApi["someLoopStructure"]
+    | ExtractInterposedStructure<GetLoopPointApi["someLoopStructure"]>;
+}
+
+function _getLoopCircles(api: _GetLoopCirclesApi): Array<Circle> {
+  const { baseStructure, baseCircle } = api;
+  const { unitSubCircle } = getUnitSubCircle({
+    relativeSubRadius: baseStructure.subStructure.relativeSubRadius,
+    relativeSubDepth: baseStructure.subStructure.relativeSubDepth,
+    subPhase: baseStructure.subStructure.subPhase,
+  });
+  const orientedUnitSubCenter = getUnitRotatedPoint({
+    rotationAngle: baseStructure.subStructure.subOrientation,
+    subjectPoint: unitSubCircle.center,
+  });
+  const scaledAndOrientedSubCircle: Circle = {
+    radius: baseCircle.radius * unitSubCircle.radius,
+    center: [
+      baseCircle.radius * orientedUnitSubCenter[0] + baseCircle.center[0],
+      baseCircle.radius * orientedUnitSubCenter[1] + baseCircle.center[1],
+    ],
+  };
+  const nextCircles =
+    baseStructure.subStructure.structureType === "interposed"
+      ? _getLoopCircles({
+          baseCircle: scaledAndOrientedSubCircle,
+          baseStructure: baseStructure.subStructure,
+        })
+      : [];
+  return [scaledAndOrientedSubCircle, ...nextCircles];
+}
+
+interface GetUnitSubCircleApi
+  extends Pick<
+    _GetLoopCirclesApi["baseStructure"]["subStructure"],
+    "relativeSubRadius" | "relativeSubDepth" | "subPhase"
+  > {}
+
+function getUnitSubCircle(api: GetUnitSubCircleApi): {
+  unitSubCircle: Circle;
+} {
+  const { relativeSubRadius, relativeSubDepth, subPhase } = api;
+  // const adjustedRelativeSubRadius =
+  //   relativeSubRadius === 0
+  //     ? 0.000000000001
+  //     : relativeSubRadius === 1
+  //     ? 0.999999999999
+  //     : relativeSubRadius;
+  // const adjustedRelativeSubDepth =
+  //   relativeSubDepth === 0
+  //     ? 0.000000000001
+  //     : relativeSubDepth === 1
+  //     ? 0.999999999999
+  //     : relativeSubDepth;
+  const subCircleRadius = relativeSubRadius;
+  const maxSubCircleDepth = 1 - subCircleRadius;
+  const subCircleDepth = relativeSubDepth * maxSubCircleDepth;
+  return {
+    unitSubCircle: {
+      radius: subCircleRadius,
+      center: [
+        subCircleDepth * Math.cos(subPhase),
+        subCircleDepth * Math.sin(subPhase),
+      ],
+    },
+  };
 }

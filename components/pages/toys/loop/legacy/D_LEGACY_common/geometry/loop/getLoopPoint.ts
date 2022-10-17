@@ -174,3 +174,12 @@ function getUnitBasePoint(api: GetUnitBasePointApi): {
     ],
   };
 }
+
+function foo<FooPoint extends [...Point2, ...Array<any>]>(
+  a: FooPoint
+): FooPoint {
+  return a;
+}
+
+const loopPoint: LoopPoint = [0, 0, [0, 0], 0, [0, 0]];
+const bar = foo(loopPoint);

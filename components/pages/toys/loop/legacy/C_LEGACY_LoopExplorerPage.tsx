@@ -67,18 +67,6 @@ export function LoopExplorerPage() {
         pointSineMagnitude > maxSineMagnitudeRef[0]
           ? pointSineMagnitude
           : maxSineMagnitudeRef[0];
-      // const outputBaseAngle = getNormalizedAngleBetweenPoints({
-      //   originPoint: loopPoint[2],
-      //   subjectPoint: loopPoint[4],
-      // });
-      // const outputLoopAngle = getNormalizedAngleBetweenPoints({
-      //   originPoint: loopPoint[2],
-      //   subjectPoint: [loopPoint[0], loopPoint[1]],
-      // });
-      // const pointPendulum = getDifferenceBetweenNormalizedAngles({
-      //   normalizedAngleA: outputBaseAngle,
-      //   normalizedAngleB: outputLoopAngle,
-      // });
       const pointPendulum = getLoopPointPendulum({
         someLoopPoint: loopPoint,
       });
@@ -95,31 +83,6 @@ export function LoopExplorerPage() {
         [pointPendulum, maxPendulumMagnitudeRef],
       ];
     });
-  const loopCircles = getLoopCircles({
-    someLoopStructure: loopStructure,
-  });
-  const [relativeTraceAngle, setRelativeTraceAngle] = useState(0);
-  const tracePoint = getLoopPoint({
-    someLoopStructure: loopStructure,
-    inputAngle: 2 * Math.PI * relativeTraceAngle,
-  });
-  // console.log(
-  //   getAngleBetweenPoints({
-  //     originPoint: tracePoint[2],
-  //     subjectPoint: tracePoint[4],
-  //   })
-  // );
-  // console.log(
-  //   getAngleBetweenPoints({
-  //     originPoint: tracePoint[2],
-  //     subjectPoint: [tracePoint[0], tracePoint[1]],
-  //   })
-  // );
-  // const tracePendulum = getLoopPointPendulum({
-  //   someLoopPoint: tracePoint,
-  // });
-  // console.log(tracePendulum);
-  // console.log("");
   return (
     <div style={{ display: "flex", flexDirection: "column" }}>
       <div
@@ -133,52 +96,6 @@ export function LoopExplorerPage() {
           >
             <rect x={-1.25} y={-1.25} width={2.5} height={2.5} fill={"gray"} />
             <g transform="scale(1,-1)">
-              <circle cx={0} cy={0} r={0.03} fill={"deeppink"} />
-              {loopCircles.map((someLoopCircle) => {
-                const originPoint = loopCircles[loopCircles.length - 1].center;
-                const scaler = loopPointsData[0][1][1][0];
-                return (
-                  <circle
-                    r={someLoopCircle.radius / scaler}
-                    cx={(someLoopCircle.center[0] - originPoint[0]) / scaler}
-                    cy={(someLoopCircle.center[1] - originPoint[1]) / scaler}
-                    fillOpacity={0}
-                    strokeWidth={0.03}
-                    stroke={"deeppink"}
-                    strokeLinejoin={"round"}
-                    strokeLinecap={"round"}
-                  />
-                );
-              })}
-              {otherDiagramLoopStructures.map((someLoopStructure) => (
-                <polygon
-                  points={new Array(pointCount)
-                    .fill(undefined)
-                    .map((_, pointIndex) =>
-                      getLoopPoint({
-                        someLoopStructure,
-                        inputAngle: ((2 * Math.PI) / pointCount) * pointIndex,
-                      })
-                    )
-                    .map(
-                      (someLoopPoint) =>
-                        `${
-                          (someLoopPoint[0] - someLoopPoint[2][0]) /
-                          loopPointsData[0][1][1][0]
-                        },${
-                          (someLoopPoint[1] - someLoopPoint[2][1]) /
-                          loopPointsData[0][1][1][0]
-                        }`
-                    )
-                    .join(" ")}
-                  fillOpacity={0}
-                  strokeWidth={0.03}
-                  stroke={"deepskyblue"}
-                  strokeOpacity={0.75}
-                  strokeLinejoin={"round"}
-                  strokeLinecap={"round"}
-                />
-              ))}
               <polygon
                 points={loopPointsData
                   .map(
@@ -196,44 +113,6 @@ export function LoopExplorerPage() {
                 strokeLinejoin={"round"}
                 strokeLinecap={"round"}
               />
-              <circle
-                cx={
-                  (tracePoint[4][0] -
-                    loopCircles[loopCircles.length - 1].center[0]) /
-                  loopPointsData[0][1][1][0]
-                }
-                cy={
-                  (tracePoint[4][1] -
-                    loopCircles[loopCircles.length - 1].center[1]) /
-                  loopPointsData[0][1][1][0]
-                }
-                r={0.04}
-                fill={"lime"}
-              />
-              <circle
-                cx={
-                  (tracePoint[0] - loopPointsData[0][0][2][0]) /
-                  loopPointsData[0][1][1][0]
-                }
-                cy={
-                  (tracePoint[1] - loopPointsData[0][0][2][1]) /
-                  loopPointsData[0][1][1][0]
-                }
-                r={0.03}
-                fill={"black"}
-              />
-              {/* <circle
-                cx={
-                  (tracePoint[0] - loopPointsData[0][0][2][0]) /
-                  loopPointsData[0][1][1][0]
-                }
-                cy={
-                  (tracePoint[1] - loopPointsData[0][0][2][1]) /
-                  loopPointsData[0][1][1][0]
-                }
-                r={0.03}
-                fill={"red"}
-              /> */}
             </g>
           </svg>
         </div>
@@ -317,16 +196,6 @@ export function LoopExplorerPage() {
         </div>
       </div>
       <div style={{ display: "flex", flexDirection: "column" }}>
-        <div style={{ display: "flex", flexDirection: "row" }}>
-          <RelativeNumberField
-            label={"trace"}
-            value={relativeTraceAngle}
-            valueStep={1 / 50}
-            onValueChange={(nextRelativeTraceAngle) => {
-              setRelativeTraceAngle(nextRelativeTraceAngle);
-            }}
-          />
-        </div>
         <div style={{ display: "flex", flexDirection: "row" }}>
           <div style={{ padding: 8 }}>
             <button
@@ -431,6 +300,9 @@ export function LoopExplorerPage() {
             </div>
           );
         })}
+        <div>
+          <button>add layer</button>
+        </div>
       </div>
     </div>
   );

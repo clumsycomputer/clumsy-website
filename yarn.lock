@@ -475,10 +475,10 @@ chownr@^1.1.1:
   resolved "https://registry.yarnpkg.com/chownr/-/chownr-1.1.4.tgz#6fc9d7b42d32a583596337666e7d08084da2cc6b"
   integrity sha512-jJ0bqzaylmJtVnNgzTeSOs8DPavpbYgEr/b0YL8/2GO3xJEhInFmhKMUnEJQjZumK7KXGFhUy89PrsJWlakBVg==
 
-clumsy-math@^3.0.1:
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/clumsy-math/-/clumsy-math-3.0.1.tgz#ad2f988d84cf151932430f82a33fb7e988d6d209"
-  integrity sha512-6NrHGHAuFfs2yrTKh/2JxEcuhzu1y/S8I04IFZZlSytl356lImHXUn5o/B9qTY52KoD9SS4CAKJSjgZ1LWHBbg==
+clumsy-math@^3.1.0-alpha.0:
+  version "3.1.0-alpha.0"
+  resolved "https://registry.yarnpkg.com/clumsy-math/-/clumsy-math-3.1.0-alpha.0.tgz#8105205cddf419a95d7e4f94cb942100e05dd3ad"
+  integrity sha512-ZlYOCIXXiO0F5se2CN3y3i//KEP41THKZVtx+LwRUWh8Blfta28AMNAOWsaANK+tdqhF1KAjoHYfGus90U9LfA==
   dependencies:
     typescript "^4.7.4"
 

@@ -26,7 +26,7 @@ function _SoftwarePage(props: _SoftwarePageProps) {
         fullName={fullName}
         githubHref={"https://github.com/clumsycomputer"}
         softwareOverview={
-          "listed below are open versions of software that have been iterated on in one form or another for close to a decade. these packages offer unique value to the typescript community and beyond"
+          "listed below are open versions of software that empower me. these packages offer unique value to the typescript community and beyond"
         }
       />
       <SoftwareProjectSection
@@ -57,11 +57,18 @@ function _SoftwarePage(props: _SoftwarePageProps) {
         npmHref={"https://www.npmjs.com/package/clumsy-math"}
         projectDescription={"a little library of helpful math utensils :)"}
         projectRoadmap={[
-          "add utilities for working with prime numbers",
-          "introduce loop concept and basic apis",
-          "provide in-depth documentation detailing expected inputs and outputs of exported functions",
+          "continue improving documentation",
+          "explore composing signals / waves in the context of loops",
           "implement stack-safe variants of recursive modeled functions",
         ]}
+        projectTech={["typescript", "javascript"]}
+      />
+      <SoftwareProjectSection
+        projectName={"clumsy-wav"}
+        githubHref={"https://github.com/clumsycomputer/clumsy-wav#readme"}
+        npmHref={"https://www.npmjs.com/package/clumsy-wav"}
+        projectDescription={"a function for generating .wav file data ∿"}
+        projectRoadmap={["add file export utilities", "improve documentation"]}
         projectTech={["typescript", "javascript"]}
       />
       <NavigationFooter

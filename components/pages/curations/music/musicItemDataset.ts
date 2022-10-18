@@ -3869,7 +3869,7 @@ export const musicItemDataset: Array<MusicItem> = [
     collectionType: "album",
     musicThumbnailHref:
       "https://m.media-amazon.com/images/I/51l4PExv10L._UX500_FMwebp_QL85_.jpg",
-    musicYear: "1959",
+    musicYear: "2008",
     musicTitle: "Actual Factual Pterodactyl",
     musicArtist: ["Homeboy Sandman"],
     recordingContext: ["studio"],
@@ -3886,6 +3886,113 @@ export const musicItemDataset: Array<MusicItem> = [
       getAppleLinkData({
         appleHref:
           "https://music.apple.com/us/album/actual-factual-pterodactyl/287788208",
+      }),
+    ],
+  },
+  {
+    musicId: 149,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/41ATaaJZn6L._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2020",
+    musicTitle: "Imaginary Audience",
+    musicArtist: ["Mindchatter"],
+    recordingContext: ["studio"],
+    musicStyles: ["electronic", "r&b", "pop"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_n11RbnA-499JA8KZvuaSc2m61ADPbwLV8&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/5cupSOKi7oIVsQ1LfpWKqv?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref:
+          "https://music.apple.com/us/album/imaginary-audience/1534035829",
+      }),
+    ],
+  },
+  {
+    musicId: 150,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://i.discogs.com/mA5Z-COqYtSJ2CkbxL1FlclKyIZVOKYioy1YeKplO-Q/rs:fit/g:sm/q:90/h:600/w:588/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTEzMjQy/NTQtMTQ3MTQ3NDc2/Ni0zNDkzLmpwZWc.jpeg",
+    musicYear: "1959",
+    musicTitle: "Portrait in Jazz",
+    musicArtist: ["Bill Evans"],
+    recordingContext: ["studio"],
+    musicStyles: ["jazz"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/watch?v=YuuFffOrpGU&list=OLAK5uy_kCi14IYffUedwbnb0nSH50RaMoS8tq7pg",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/093nLQ4H81HusNsFdGS4Or?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref:
+          "https://music.apple.com/us/album/portrait-in-jazz/1440941536",
+      }),
+    ],
+  },
+  {
+    musicId: 151,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/51FEGMzU6nL._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2022",
+    musicTitle: "The Man from Waco",
+    musicArtist: ["Charley Crockett"],
+    recordingContext: ["studio"],
+    musicStyles: ["cajun", "country"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_ljVZnWy6vv0AYRrdmDX0zl0qnab2b9OeE&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/04BNAzlQVg15tcK7jieje6?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref:
+          "https://music.apple.com/us/album/the-man-from-waco/1629479107",
+      }),
+    ],
+  },
+  {
+    musicId: 152,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/51MZrKlqyUL._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2015",
+    musicTitle: "DS2",
+    musicArtist: ["Future"],
+    recordingContext: ["studio"],
+    musicStyles: ["rap", "hip-hop"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/watch?v=W3J9-OvxNpo&list=OLAK5uy_n0UUwQ0J6b5pUhLbzGvGsowXv6i5EGJXA",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/0fUy6IdLHDpGNwavIlhEsl?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref: "https://music.apple.com/us/album/ds2-deluxe/1017053934",
       }),
     ],
   },

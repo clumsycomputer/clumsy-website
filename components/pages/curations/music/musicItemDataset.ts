@@ -3996,4 +3996,57 @@ export const musicItemDataset: Array<MusicItem> = [
       }),
     ],
   },
+  {
+    musicId: 153,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/418WshrgALL._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2004",
+    musicTitle: "Ratatat",
+    musicArtist: ["Ratatat"],
+    recordingContext: ["studio"],
+    musicStyles: ["electronic", "rock"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_kcg-bvjRqOWwcUuevJ3FJR5Z7sMnPVDJo&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/7nqSnoxmIdcfxAJBxl9AIh?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref: "https://music.apple.com/us/album/ratatat/1540685260",
+      }),
+    ],
+  },
+  {
+    musicId: 154,
+    musicType: "source",
+    sourceType: "collection",
+    collectionType: "album",
+    musicThumbnailHref:
+      "https://m.media-amazon.com/images/I/61UWEqlXsrL._UX500_FMwebp_QL85_.jpg",
+    musicYear: "2019",
+    musicTitle: "Everything Not Saved Will Be Lost - Part 1",
+    musicArtist: ["Foals"],
+    recordingContext: ["studio"],
+    musicStyles: ["rock"],
+    externalLinks: [
+      getYoutubeLinkData({
+        youtubeHref:
+          "https://m.youtube.com/playlist?list=OLAK5uy_lHrVYnUmTzoxyS_ltzi8T9jJuwK-myu7Q&playnext=1&index=1",
+      }),
+      getSpotifyLinkData({
+        spotifyHref:
+          "https://open.spotify.com/album/6uVaLj0YV3mWRFUw4xJ6eR?autoplay=true",
+      }),
+      getAppleLinkData({
+        appleHref:
+          "https://music.apple.com/us/album/everything-not-saved-will-be-lost-part-i/1551376342",
+      }),
+    ],
+  },
 ];

@@ -85,7 +85,7 @@ function ResumePageBase(props: ResumePageBaseProps) {
         goalText={
           "be able to implement my favorite math in a variety of contexts from javascript, wasm, and webgpu all the way down to digital and analog circuits"
         }
-        motivationsText={"selfish"}
+        motivationsText={"scratch my own itch"}
       />
       <ResumeJobSection
         companyName={"wyyerd intuition"}

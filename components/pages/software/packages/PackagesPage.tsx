@@ -67,7 +67,7 @@ function _SoftwarePage(props: _SoftwarePageProps) {
         projectName={"clumsy-wav"}
         githubHref={"https://github.com/clumsycomputer/clumsy-wav#readme"}
         npmHref={"https://www.npmjs.com/package/clumsy-wav"}
-        projectDescription={"a function for generating .wav file data ∿"}
+        projectDescription={"functions for generating .wav file data ∿"}
         projectRoadmap={["add file export utilities", "improve documentation"]}
         projectTech={["typescript", "javascript"]}
       />

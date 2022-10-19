@@ -5,12 +5,21 @@ import { DocumentSectionContent } from "../../../../common/Document/DocumentSect
 export interface ResumeHeaderSectionProps {
   fullName: string;
   emailAddress: string;
-  briefText: string;
+  briefText: ReactNode;
   statusText: ReactNode;
+  goalText: ReactNode;
+  motivationsText: ReactNode;
 }
 
 export function ResumeHeaderSection(props: ResumeHeaderSectionProps) {
-  const { fullName, emailAddress, briefText, statusText } = props;
+  const {
+    fullName,
+    emailAddress,
+    briefText,
+    statusText,
+    goalText,
+    motivationsText,
+  } = props;
   return (
     <DocumentSectionBase
       sectionDivider={null}
@@ -39,6 +48,18 @@ export function ResumeHeaderSection(props: ResumeHeaderSectionProps) {
             contentType={"text"}
             contentLabel={"status"}
             textContent={statusText}
+          />
+          <DocumentSectionContent
+            accessibilityLabel={`career goal: ${fullName}`}
+            contentType={"text"}
+            contentLabel={"goal"}
+            textContent={goalText}
+          />
+          <DocumentSectionContent
+            accessibilityLabel={`career motivations: ${fullName}`}
+            contentType={"text"}
+            contentLabel={"motivations"}
+            textContent={motivationsText}
           />
         </Fragment>
       }

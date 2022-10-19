@@ -153,7 +153,7 @@ export const GraphicsPage: NextPage = () => {
         soloUrl={"/graphics/leadtwowater.hi.png"}
         listUrl={"/graphics/leadtwowater.png"}
       />
-      <GraphicSection
+      {/* <GraphicSection
         sectionDivider={<SectionDivider />}
         graphicName={"sinkmylisten"}
         graphicDescription={"what do you see?"}
@@ -162,7 +162,7 @@ export const GraphicsPage: NextPage = () => {
         projectDate={"winter 2017-18"}
         soloUrl={"/graphics/sinkmylisten.hi.png"}
         listUrl={"/graphics/sinkmylisten.png"}
-      />
+      /> */}
       <GraphicSection
         sectionDivider={<SectionDivider />}
         graphicName={"sonsetrise"}

@@ -7,7 +7,8 @@ import {
   LoopStructure,
   Point2,
 } from "clumsy-math";
-import { PropsWithChildren, useState } from "react";
+import { getWavData, SampleRate, _getWavData } from "clumsy-wav";
+import { PropsWithChildren, useMemo, useRef, useState } from "react";
 
 export function LoopExplorerPage() {
   const [loopLayers, setLoopLayers] = useState<Array<LoopLayer>>([]);
@@ -90,6 +91,26 @@ export function LoopExplorerPage() {
             strokeLinejoin={"round"}
           />
         </Graphic>
+      </div>
+      <div style={{ display: "flex", flexDirection: "row" }}>
+        <AudioWaveButton
+          waveLabel={"cosine"}
+          getLoopComponent={getLoopCosine}
+          someLoopStructure={currentLoopStructure}
+          waveFrequency={440}
+        />
+        <AudioWaveButton
+          waveLabel={"sine"}
+          getLoopComponent={getLoopSine}
+          someLoopStructure={currentLoopStructure}
+          waveFrequency={440}
+        />
+        <AudioWaveButton
+          waveLabel={"pendulum"}
+          getLoopComponent={getLoopPendulum}
+          someLoopStructure={currentLoopStructure}
+          waveFrequency={220}
+        />
       </div>
       <div style={{ display: "flex", flexDirection: "column" }}>
         {loopLayers.map((someLoopLayer, layerIndex) => {
@@ -435,6 +456,70 @@ function Graphic(props: GraphicProps) {
           {children}
         </g>
       </svg>
+    </div>
+  );
+}
+
+interface AudioWaveButtonProps {
+  waveLabel: string;
+  getLoopComponent: (api: { someLoopPoint: LoopPoint }) => number;
+  someLoopStructure: LoopStructure;
+  waveFrequency: number;
+}
+
+function AudioWaveButton(props: AudioWaveButtonProps) {
+  const { waveFrequency, getLoopComponent, someLoopStructure, waveLabel } =
+    props;
+  return (
+    <div style={{ padding: 8 }}>
+      <button
+        onClick={(() => {
+          let context: AudioContext | null = null;
+          return async () => {
+            const lengthOfAudioInSeconds = 2;
+            const sampleRate: SampleRate = 48000;
+            const sampleCount = lengthOfAudioInSeconds * sampleRate;
+            const componentSamples: Array<number> = [];
+            let maxComponentSize = 0;
+            for (
+              let sampleIndex = 0;
+              sampleIndex < sampleCount;
+              sampleIndex++
+            ) {
+              const angleStep = (2 * Math.PI) / sampleRate;
+              const sampleAngle = sampleIndex * angleStep;
+              const componentSample = getLoopComponent({
+                someLoopPoint: getLoopPoint({
+                  someLoopStructure,
+                  inputAngle: waveFrequency * sampleAngle,
+                }),
+              });
+              componentSamples.push(componentSample);
+              maxComponentSize = Math.max(
+                Math.abs(componentSample),
+                maxComponentSize
+              );
+            }
+            const wavData = _getWavData({
+              sampleRate,
+              channelsData: [
+                componentSamples.map(
+                  (someComponentSample) =>
+                    someComponentSample / maxComponentSize
+                ),
+              ],
+            });
+            if (context) context.close();
+            context = new AudioContext();
+            const source = context.createBufferSource();
+            source.buffer = await context.decodeAudioData(wavData);
+            source.connect(context.destination);
+            source.start();
+          };
+        })()}
+      >
+        play {waveLabel}
+      </button>
     </div>
   );
 }

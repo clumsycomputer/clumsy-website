@@ -15,6 +15,16 @@ export const GraphicsPage: NextPage = () => {
     >
       <GraphicSection
         sectionDivider={null}
+        graphicName={"flauta"}
+        graphicDescription={"what do you see?"}
+        projectName={"viejo pais][new state"}
+        projectLocation={"new mexico"}
+        projectDate={"summer 2022"}
+        soloUrl={"/graphics/flauta.hi.png"}
+        listUrl={"/graphics/flauta.low.png"}
+      />
+      <GraphicSection
+        sectionDivider={null}
         graphicName={"rree-koh"}
         graphicDescription={"what do you see?"}
         projectName={"plural pinata"}

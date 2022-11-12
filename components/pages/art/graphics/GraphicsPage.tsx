@@ -15,13 +15,13 @@ export const GraphicsPage: NextPage = () => {
     >
       <GraphicSection
         sectionDivider={null}
-        graphicName={"flauta"}
+        graphicName={"pastores"}
         graphicDescription={"what do you see?"}
         projectName={"viejo pais][new state"}
         projectLocation={"new mexico"}
         projectDate={"fall 2022"}
-        soloUrl={"/graphics/flauta.hi.png"}
-        listUrl={"/graphics/flauta.low.png"}
+        soloUrl={"/graphics/pastores.hi.png"}
+        listUrl={"/graphics/pastores.low.png"}
       />
       <GraphicSection
         sectionDivider={<SectionDivider />}
@@ -41,17 +41,17 @@ export const GraphicsPage: NextPage = () => {
         projectLocation={"mexico city"}
         projectDate={"summer 2021"}
         soloUrl={"/graphics/kohm-plee-seh.hi.png"}
-        listUrl={"/graphics/kohm-plee-seh.png"}
+        listUrl={"/graphics/kohm-plee-seh.low.png"}
       />
       <GraphicSection
         sectionDivider={<SectionDivider />}
-        graphicName={"mahs-koh-tah"}
+        graphicName={"mahs-koh-teh"}
         graphicDescription={"what do you see?"}
         projectName={"plural pinata"}
         projectLocation={"mexico city"}
         projectDate={"summer 2021"}
-        soloUrl={"/graphics/mahs-koh-tah.hi.png"}
-        listUrl={"/graphics/mahs-koh-tah.png"}
+        soloUrl={"/graphics/mahs-koh-teh.hi.png"}
+        listUrl={"/graphics/mahs-koh-teh.low.png"}
       />
       <GraphicSection
         sectionDivider={<SectionDivider />}
@@ -61,7 +61,7 @@ export const GraphicsPage: NextPage = () => {
         projectLocation={"mexico city"}
         projectDate={"summer 2021"}
         soloUrl={"/graphics/kool-pah-bleh.hi.png"}
-        listUrl={"/graphics/kool-pah-bleh.png"}
+        listUrl={"/graphics/kool-pah-bleh.low.png"}
       />
       {/* <GraphicSection
         sectionDivider={<SectionDivider />}
@@ -93,7 +93,7 @@ export const GraphicsPage: NextPage = () => {
           soloUrl={"/graphics/maybetomorrow.hi.png"}
           listUrl={"/graphics/maybetomorrow.png"}
         /> */}
-      {/* <GraphicSection
+      <GraphicSection
         sectionDivider={<SectionDivider />}
         graphicName={"crosswalk"}
         graphicDescription={"what do you see?"}
@@ -101,8 +101,8 @@ export const GraphicsPage: NextPage = () => {
         projectLocation={"san jose"}
         projectDate={"summer-fall 2019"}
         soloUrl={"/graphics/crosswalk.hi.png"}
-        listUrl={"/graphics/crosswalk.png"}
-      /> */}
+        listUrl={"/graphics/crosswalk.low.png"}
+      />
       {/* <GraphicSection
           sectionDivider={<SectionDivider />}
           graphicName={"candychain"}

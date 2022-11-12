@@ -101,7 +101,7 @@ export const GraphicsPage: NextPage = () => {
         projectLocation={"san jose"}
         projectDate={"summer-fall 2019"}
         soloUrl={"/graphics/crosswalk.hi.png"}
-        listUrl={"/graphics/crosswalk.low.png"}
+        listUrl={"/graphics/crosswalk.lo.png"}
       />
       {/* <GraphicSection
           sectionDivider={<SectionDivider />}

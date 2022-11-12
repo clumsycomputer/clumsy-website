@@ -16,8 +16,8 @@ export const HomePage: NextPage = () => {
       <div role={"figure"} className={homePageStyles.landingImageContainer}>
         <Image
           className={homePageStyles.landingImage}
-          src={"/graphics/mahs-koh-tah.png"}
-          alt={"mahs-koh-tah"}
+          src={"/graphics/mahs-koh-teh.low.png"}
+          alt={"mahs-koh-teh"}
           width={512}
           height={512}
         />

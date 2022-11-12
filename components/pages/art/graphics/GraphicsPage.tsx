@@ -15,13 +15,23 @@ export const GraphicsPage: NextPage = () => {
     >
       <GraphicSection
         sectionDivider={null}
+        graphicName={"pastores"}
+        graphicDescription={"what do you see?"}
+        projectName={"viejo pais][new state"}
+        projectLocation={"new mexico"}
+        projectDate={"fall 2022"}
+        soloUrl={"/graphics/pastores.hi.png"}
+        listUrl={"/graphics/pastores.low.png"}
+      />
+      <GraphicSection
+        sectionDivider={<SectionDivider />}
         graphicName={"rree-koh"}
         graphicDescription={"what do you see?"}
         projectName={"plural pinata"}
         projectLocation={"mexico city"}
         projectDate={"summer 2021"}
         soloUrl={"/graphics/rree-koh.hi.png"}
-        listUrl={"/graphics/rree-koh.png"}
+        listUrl={"/graphics/rree-koh.low.png"}
       />
       <GraphicSection
         sectionDivider={<SectionDivider />}
@@ -31,17 +41,17 @@ export const GraphicsPage: NextPage = () => {
         projectLocation={"mexico city"}
         projectDate={"summer 2021"}
         soloUrl={"/graphics/kohm-plee-seh.hi.png"}
-        listUrl={"/graphics/kohm-plee-seh.png"}
+        listUrl={"/graphics/kohm-plee-seh.low.png"}
       />
       <GraphicSection
         sectionDivider={<SectionDivider />}
-        graphicName={"mahs-koh-tah"}
+        graphicName={"mahs-koh-teh"}
         graphicDescription={"what do you see?"}
         projectName={"plural pinata"}
         projectLocation={"mexico city"}
         projectDate={"summer 2021"}
-        soloUrl={"/graphics/mahs-koh-tah.hi.png"}
-        listUrl={"/graphics/mahs-koh-tah.png"}
+        soloUrl={"/graphics/mahs-koh-teh.hi.png"}
+        listUrl={"/graphics/mahs-koh-teh.low.png"}
       />
       <GraphicSection
         sectionDivider={<SectionDivider />}
@@ -51,9 +61,9 @@ export const GraphicsPage: NextPage = () => {
         projectLocation={"mexico city"}
         projectDate={"summer 2021"}
         soloUrl={"/graphics/kool-pah-bleh.hi.png"}
-        listUrl={"/graphics/kool-pah-bleh.png"}
+        listUrl={"/graphics/kool-pah-bleh.low.png"}
       />
-      <GraphicSection
+      {/* <GraphicSection
         sectionDivider={<SectionDivider />}
         graphicName={"neon noodles"}
         graphicDescription={"what do you see?"}
@@ -72,7 +82,7 @@ export const GraphicsPage: NextPage = () => {
         projectDate={"summer-fall 2019"}
         soloUrl={"/graphics/alignmentuntangled.hi.png"}
         listUrl={"/graphics/alignmentuntangled.png"}
-      />
+      /> */}
       {/* <GraphicSection
           sectionDivider={<SectionDivider />}
           graphicName={"maybe tomorrow"}
@@ -91,7 +101,7 @@ export const GraphicsPage: NextPage = () => {
         projectLocation={"san jose"}
         projectDate={"summer-fall 2019"}
         soloUrl={"/graphics/crosswalk.hi.png"}
-        listUrl={"/graphics/crosswalk.png"}
+        listUrl={"/graphics/crosswalk.low.png"}
       />
       {/* <GraphicSection
           sectionDivider={<SectionDivider />}
@@ -103,7 +113,7 @@ export const GraphicsPage: NextPage = () => {
           soloUrl={"/graphics/candychain.hi.png"}
           listUrl={"/graphics/candychain.png"}
         /> */}
-      <GraphicSection
+      {/* <GraphicSection
         sectionDivider={<SectionDivider />}
         graphicName={"trywe"}
         graphicDescription={"what do you see?"}
@@ -152,7 +162,7 @@ export const GraphicsPage: NextPage = () => {
         projectDate={"winter 2017-18"}
         soloUrl={"/graphics/leadtwowater.hi.png"}
         listUrl={"/graphics/leadtwowater.png"}
-      />
+      /> */}
       {/* <GraphicSection
         sectionDivider={<SectionDivider />}
         graphicName={"sinkmylisten"}
@@ -163,7 +173,7 @@ export const GraphicsPage: NextPage = () => {
         soloUrl={"/graphics/sinkmylisten.hi.png"}
         listUrl={"/graphics/sinkmylisten.png"}
       /> */}
-      <GraphicSection
+      {/* <GraphicSection
         sectionDivider={<SectionDivider />}
         graphicName={"sonsetrise"}
         graphicDescription={"what do you see?"}
@@ -202,7 +212,7 @@ export const GraphicsPage: NextPage = () => {
         projectDate={"summer 2017"}
         soloUrl={"/graphics/wherebra.hi.png"}
         listUrl={"/graphics/wherebra.png"}
-      />
+      /> */}
       {/* <GraphicSection
           sectionDivider={<SectionDivider />}
           graphicName={"duction"}

@@ -456,6 +456,20 @@ chownr@^1.1.1:
   resolved "https://registry.yarnpkg.com/chownr/-/chownr-1.1.4.tgz#6fc9d7b42d32a583596337666e7d08084da2cc6b"
   integrity sha512-jJ0bqzaylmJtVnNgzTeSOs8DPavpbYgEr/b0YL8/2GO3xJEhInFmhKMUnEJQjZumK7KXGFhUy89PrsJWlakBVg==
 
+clumsy-math@^3.1.0-alpha.0:
+  version "3.1.0-alpha.0"
+  resolved "https://registry.yarnpkg.com/clumsy-math/-/clumsy-math-3.1.0-alpha.0.tgz#8105205cddf419a95d7e4f94cb942100e05dd3ad"
+  integrity sha512-ZlYOCIXXiO0F5se2CN3y3i//KEP41THKZVtx+LwRUWh8Blfta28AMNAOWsaANK+tdqhF1KAjoHYfGus90U9LfA==
+  dependencies:
+    typescript "^4.7.4"
+
+clumsy-wav@^1.0.0-alpha.1:
+  version "1.0.0-alpha.1"
+  resolved "https://registry.yarnpkg.com/clumsy-wav/-/clumsy-wav-1.0.0-alpha.1.tgz#3cbc04801178e3e9308c4ebe78806d1b6cb57dec"
+  integrity sha512-zdbl5eDVI7Ro9oDb2YXz6jATs84j8+NvCna8Uuv8kdSZfOPkWPgnMLzCWWOKeM+wzcMNWbUo8ZEuW4KwoTnALA==
+  dependencies:
+    typescript "^4.8.4"
+
 color-convert@^2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/color-convert/-/color-convert-2.0.1.tgz#72d3a68d598c9bdb3af2ad1e84f21d896abd4de3"
@@ -2038,6 +2052,11 @@ typescript@4.7.4:
   version "4.7.4"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.7.4.tgz#1a88596d1cf47d59507a1bcdfb5b9dfe4d488235"
   integrity sha512-C0WQT0gezHuw6AdY1M2jxUO83Rjf0HP7Sk1DtXj6j1EwkQNZrHAg2XPWlq62oqEhYvONq5pkC2Y9oPljWToLmQ==
+
+typescript@^4.7.4, typescript@^4.8.4:
+  version "4.8.4"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.8.4.tgz#c464abca159669597be5f96b8943500b238e60e6"
+  integrity sha512-QCh+85mCy+h0IGff8r5XWzOVSbBO+KfeYrMQh7NJ58QujwcE22u+NUSmUxqF+un70P9GXKxa2HCNiTTMJknyjQ==
 
 unbox-primitive@^1.0.2:
   version "1.0.2"

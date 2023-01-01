@@ -13,7 +13,7 @@ export const GraphicsPage: NextPage = () => {
       pageDescription={"a sampling of recent explorations into space"}
       pageContentContainerClassname={graphicsPageStyles.pageContentContainer}
     >
-      <GraphicSection
+      {/* <GraphicSection
         sectionDivider={null}
         graphicName={"pastores"}
         graphicDescription={"what do you see?"}
@@ -22,7 +22,7 @@ export const GraphicsPage: NextPage = () => {
         projectDate={"fall 2022"}
         soloUrl={"/graphics/pastores.hi.png"}
         listUrl={"/graphics/pastores.low.png"}
-      />
+      /> */}
       <GraphicSection
         sectionDivider={<SectionDivider />}
         graphicName={"rree-koh"}

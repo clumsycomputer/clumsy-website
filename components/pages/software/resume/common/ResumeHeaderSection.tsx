@@ -7,8 +7,8 @@ export interface ResumeHeaderSectionProps {
   emailAddress: string;
   briefText: ReactNode;
   statusText: ReactNode;
-  goalText: ReactNode;
-  motivationsText: ReactNode;
+  shortTermGoalText: ReactNode;
+  longTermGoalText: ReactNode;
 }
 
 export function ResumeHeaderSection(props: ResumeHeaderSectionProps) {
@@ -17,8 +17,8 @@ export function ResumeHeaderSection(props: ResumeHeaderSectionProps) {
     emailAddress,
     briefText,
     statusText,
-    goalText,
-    motivationsText,
+    shortTermGoalText,
+    longTermGoalText,
   } = props;
   return (
     <DocumentSectionBase
@@ -50,16 +50,16 @@ export function ResumeHeaderSection(props: ResumeHeaderSectionProps) {
             textContent={statusText}
           />
           <DocumentSectionContent
-            accessibilityLabel={`career goal: ${fullName}`}
+            accessibilityLabel={`short-term career goal: ${fullName}`}
             contentType={"text"}
-            contentLabel={"goal"}
-            textContent={goalText}
+            contentLabel={"short-term goal"}
+            textContent={shortTermGoalText}
           />
           <DocumentSectionContent
-            accessibilityLabel={`career motivations: ${fullName}`}
+            accessibilityLabel={`long-term career goal: ${fullName}`}
             contentType={"text"}
-            contentLabel={"motivations"}
-            textContent={motivationsText}
+            contentLabel={"long-term goal"}
+            textContent={longTermGoalText}
           />
         </Fragment>
       }

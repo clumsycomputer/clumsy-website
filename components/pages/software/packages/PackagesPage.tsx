@@ -26,8 +26,21 @@ function _SoftwarePage(props: _SoftwarePageProps) {
         fullName={fullName}
         githubHref={"https://github.com/clumsycomputer"}
         softwareOverview={
-          "listed below are open versions of software that empower me. these packages offer unique value to the typescript community and beyond"
+          "listed below are open-source projects ive had the privledge of implementing. these packages offer unique value to the typescript community and beyond"
         }
+      />
+      <SoftwareProjectSection
+        projectName={"clumsy-math"}
+        githubHref={"https://github.com/clumsycomputer/clumsy-math#readme"}
+        npmHref={"https://www.npmjs.com/package/clumsy-math"}
+        projectDescription={"a little library of helpful math utensils :)"}
+        projectStatus={"on the back burner"}
+        projectRoadmap={[
+          "continue improving documentation",
+          "implement stack-safe variants of recursive modeled functions",
+          "build rhythm/loop signal generators that are eurorack compatible via fpga",
+        ]}
+        projectTech={["typescript", "javascript"]}
       />
       <SoftwareProjectSection
         projectName={"clumsy-graphics"}
@@ -36,6 +49,7 @@ function _SoftwarePage(props: _SoftwarePageProps) {
         projectDescription={
           "a tool for rapidly developing animations where frames are described using svg elements à la react (:"
         }
+        projectStatus={"hibernating"}
         projectRoadmap={[
           "streamline installation and initialization",
           "enable exporting animation as gif",
@@ -52,22 +66,11 @@ function _SoftwarePage(props: _SoftwarePageProps) {
         ]}
       />
       <SoftwareProjectSection
-        projectName={"clumsy-math"}
-        githubHref={"https://github.com/clumsycomputer/clumsy-math#readme"}
-        npmHref={"https://www.npmjs.com/package/clumsy-math"}
-        projectDescription={"a little library of helpful math utensils :)"}
-        projectRoadmap={[
-          "continue improving documentation",
-          "explore composing signals / waves in the context of loops",
-          "implement stack-safe variants of recursive modeled functions",
-        ]}
-        projectTech={["typescript", "javascript"]}
-      />
-      <SoftwareProjectSection
         projectName={"clumsy-wav"}
         githubHref={"https://github.com/clumsycomputer/clumsy-wav#readme"}
         npmHref={"https://www.npmjs.com/package/clumsy-wav"}
         projectDescription={"functions for generating .wav file data ∿"}
+        projectStatus={"maintenance"}
         projectRoadmap={["add file export utilities", "improve documentation"]}
         projectTech={["typescript", "javascript"]}
       />

@@ -5,6 +5,7 @@ export interface SoftwareProjectSectionProps {
   githubHref: string;
   npmHref: string;
   projectDescription: string;
+  projectStatus: string;
   projectRoadmap: Array<string>;
   projectTech: Array<string>;
 }
@@ -15,6 +16,7 @@ export function SoftwareProjectSection(props: SoftwareProjectSectionProps) {
     githubHref,
     npmHref,
     projectDescription,
+    projectStatus,
     projectRoadmap,
     projectTech,
   } = props;
@@ -43,6 +45,12 @@ export function SoftwareProjectSection(props: SoftwareProjectSectionProps) {
           contentType: "text",
           contentLabel: "description",
           textContent: projectDescription,
+        },
+        {
+          accessibilityLabel: `project status: ${projectName}`,
+          contentType: "text",
+          contentLabel: "status",
+          textContent: projectStatus,
         },
         {
           accessibilityLabel: `project roadmap: ${projectName}`,

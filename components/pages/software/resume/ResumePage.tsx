@@ -79,13 +79,16 @@ function ResumePageBase(props: ResumePageBaseProps) {
                 <b>software</b>
               </a>
             </Link>{" "}
-            that assists developers in their creative pursuits.
+            that assists developers in their creative pursuits
           </Fragment>
         }
-        goalText={
-          "be able to implement my favorite math in a variety of contexts from javascript, wasm, and webgpu all the way down to digital and analog circuits"
+        shortTermGoalText={
+          <Fragment>
+            convert my developer skills into resources{" "}
+            <i>(engineers,money,etc.)</i> for building musical instruments/toys
+          </Fragment>
         }
-        motivationsText={"scratch my own itch"}
+        longTermGoalText={"make a living building musical instruments/toys"}
       />
       <ResumeJobSection
         companyName={"wyyerd intuition"}

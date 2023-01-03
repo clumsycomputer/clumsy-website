@@ -24,7 +24,7 @@ export const GraphicsPage: NextPage = () => {
         listUrl={"/graphics/pastores.low.png"}
       /> */}
       <GraphicSection
-        sectionDivider={<SectionDivider />}
+        sectionDivider={null}
         graphicName={"rree-koh"}
         graphicDescription={"what do you see?"}
         projectName={"plural pinata"}

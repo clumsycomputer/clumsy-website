@@ -36,10 +36,6 @@ export const HomePage: NextPage = () => {
             prompt: "graphics",
             linkHref: "/art/graphics",
           },
-          {
-            prompt: "- music +",
-            linkHref: "/curations/music",
-          },
         ].map((someRouteAction) => (
           <div
             role={"listitem"}
@@ -67,6 +63,10 @@ export const HomePage: NextPage = () => {
           {
             routeName: "hnews",
             routeHref: "https://news.ycombinator.com/user?id=clumsycomputer",
+          },
+          {
+            routeName: "stews",
+            routeHref: "https://www.clumsycomputer.stews.io",
           },
         ]}
         pdfLink={null}

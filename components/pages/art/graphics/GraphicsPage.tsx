@@ -228,7 +228,6 @@ export const GraphicsPage: NextPage = () => {
           { routeName: "home", routeHref: "/" },
           { routeName: "packages", routeHref: "/software/packages" },
           { routeName: "resume", routeHref: "/software/resume" },
-          { routeName: "- music +", routeHref: "/curations/music" },
         ]}
         pdfLink={null}
       />

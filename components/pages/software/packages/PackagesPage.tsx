@@ -79,7 +79,6 @@ function _SoftwarePage(props: _SoftwarePageProps) {
           { routeName: "home", routeHref: "/" },
           { routeName: "resume", routeHref: "/software/resume" },
           { routeName: "graphics", routeHref: "/art/graphics" },
-          { routeName: "- music +", routeHref: "/curations/music" },
         ]}
         pdfLink={null}
       />

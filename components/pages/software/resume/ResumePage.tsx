@@ -90,6 +90,21 @@ function ResumePageBase(props: ResumePageBaseProps) {
         longTermGoalText={"make a living building musical instruments/toys"}
       />
       <ResumeJobSection
+        companyName={"stews.io"}
+        teamName={"product"}
+        jobTitle={"lead"}
+        dateRange={"current - 2022.08"}
+        productDescription={
+          "a web app that empowers individuals to carve out their own little corner on the web by helping them catalog content that is meaningful to them"
+        }
+        workResponsibilities={[
+          "design user interface and app architecture",
+          "implement component library and core app logic while providing a healthy developer experience",
+          "manage roadmap and issue prioritization",
+        ]}
+        techStack={["preact", "typescript", "scss", "git", "liqe"]}
+      />
+      <ResumeJobSection
         companyName={"wyyerd intuition"}
         teamName={"engineering"}
         jobTitle={"frontend developer"}
